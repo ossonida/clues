@@ -21,7 +21,6 @@ ui: {
   lockedLoc: "It's locked. You'll need to open the storeroom door in the back hallway first.",
   close: 'Close',
   ok: 'OK',
-  already: "You've already searched here.",
   newClues: n => n === 1 ? 'Added 1 new clue to your notebook.' : `Added ${n} new clues to your notebook.`,
   newClue: 'Added a new clue to your notebook.',
   wrongCost: 'Each wrong guess costs 1 minute.',
@@ -106,21 +105,56 @@ ui: {
   howTime: '<b>⏱ 80 minutes to investigate</b> <span style="color:var(--dim)">(game time, not real time — every action uses some up)</span>',
   howCosts: [['Search an object', '2 min'], ['Hear a statement · show a clue', '3 min'], ['Wrong code', '1 min'], ['Move between rooms · reread notebook', 'free']],
   howNote: "You won't have time to check everything. When you hit 0, you have to name the thief right away.",
-  story: `It was Taesu Park.
+  story: `It was the collector. Taesu Park.
 
-He found out the display date from the group chat a week before, and the next day he paid cash for a pot of Metal Gold MG-07 at the workshop next door (workshop ledger). At home, he clumsily painted the 20 meeples from his own standard edition, and even posted a photo of his painting desk in the group chat as his "new hobby." At 18:12 on the day, he double-checked that all 20 meeples were really in the box.
+[One week before]
+The owner posted in the group chat: "Next Monday only, I'm putting the Dragon Bazaar first-edition limited set on display!" That's the day Taesu's plan started.
+The next day, he went to the workshop next door and paid cash for a pot of Metal Gold MG-07 and a fine brush. He didn't leave a name. At home, he painted the 20 meeples from his own standard edition, one by one. His brushwork was sloppy. And he couldn't resist showing off: he posted a photo of his painting desk in the group chat. "new hobby lol." When someone asked what it was, all he said was "it's a secret."
 
-At 21:41, after finishing his third game, he waited for Jia Seo to go into the storeroom to look for tape. Pretending to get a cup of water from the cooler, he slipped behind the counter, took the key from the left side of the drawer, opened the showcase, made the swap, and locked it again. The showcase app had been offline since its Wi-Fi dropped at 21:31, so it recorded nothing. Jia heard the beep through the thin plywood wall, but took it for the restroom door. The restroom door creaks; it doesn't beep. He tossed his empty cup in the trash next to the showcase and was back at his table starting game four at 21:47.
+[Display day, 18:12]
+"all 20 gold meeples are in there, right?"
+The owner didn't think twice. "yep, full set."
+At 18:40, Taesu walked into the café and set up the standard edition. In his backpack were twenty gold fakes.
 
-At 22:05, while taking his receipt at checkout, he slipped the key into the right side of the drawer, the side customers can reach. Jia always puts it in the left side from behind the counter, so she'd never have left it there (Jia's statement). The café's only standard edition was the one on Table B, and its meeples were all there (shelf, Table B), so the fakes had to have been made somewhere else. The real meeples left in his backpack.
+[21:30]
+The owner went home.
 
-How to pin down the time: the showcase app is useless, since it was offline from 21:31. But Jia heard the beep while she was in the storeroom looking for Gunwoo's tape. CCTV shows Gunwoo was in the café from 21:40 to 21:47, and Taesu's log sheet has a gap from 21:41 to 21:47.
+[21:31]
+The showcase app lost its Wi-Fi. From then on, opening the showcase would leave nothing on the owner's phone. Nobody knew. Lucky break for Taesu.
 
-The red herrings:
-• Jia Seo: she had a pay dispute and gold flakes on her, but she was inside the storeroom when the beep happened (Gunwoo: "while Jia was in the storeroom"). She'd have no reason to put the key in the customer-side compartment either. The gold flakes came from the wrapping paper.
-• Mirae Yoon: she lied, but she arrived at 21:50, after it was over. All she did was take a photo at 21:55. The glitter is from her nails.
-• Gunwoo Choi: he knows paint, but he uses MG-03. The fakes have sloppy brushwork and MG-07. He isn't in the group chat, so he couldn't have known the display date in advance.
-• The gold traces are a trap. Jia's foil, Mirae's glitter, and Gunwoo's MG-03 all come from somewhere else.`,
+[21:40]
+Gunwoo Choi walked in with a birthday present. He had no tape to seal the box, so Jia Seo went into the storeroom to find some.
+Those few minutes were exactly what Taesu had been waiting for.
+
+[21:41]
+He wrote down the end time of game three and got up. He filled a paper cup at the water cooler, which sits behind the counter, right behind the drawer. He reached over and took the showcase key from the left side of the drawer. Gunwoo, standing at the counter, didn't look at the face of the customer getting water. All he remembered was something red.
+The back hallway. He turned the key. Beep.
+On the other side of a thin plywood wall, Jia heard it from the storeroom. She figured a customer was opening the restroom door. But that restroom door doesn't beep. It creaks.
+He took out the twenty real meeples and put in the twenty fakes. Locked the door again. Dropped his empty cup in the trash next to the showcase.
+
+[21:47]
+He was back at his table setting up game four. At the same moment, Gunwoo got his tape and left. On the log sheet, 21:41 to 21:47 is blank.
+
+[22:05]
+At checkout, reaching in for his receipt, he slipped the key into the right side of the drawer, the side customers can reach. Jia always puts the key on the left side, from behind the counter. She'd never leave it on the right.
+The real meeples walked out the door with him, in his backpack.
+
+[22:10]
+Jia tugged on the showcase lock and put a check on her list. It was locked, after all. She didn't open the box.
+
+────────────
+
+[Pinning down the time]
+The showcase app is no help; it was offline from 21:31. The key is the beep. Jia heard it while she was in the storeroom looking for Gunwoo's tape. CCTV shows Gunwoo was in the café from 21:40 to 21:47. And Taesu's log sheet has a gap from 21:41 to 21:47.
+
+[The fakes came from outside]
+The café's only standard edition was the one on Table B, and all 20 of its meeples were there. The fakes were painted at home. The appraisal (painted at least two days ago, MG-07, standard-edition meeples) lines up exactly with the workshop ledger (MG-07 bought with cash six days ago, "said it's for painting meeples").
+
+[The red herrings]
+• Jia Seo: she was upset with the owner about her pay, and she had gold flakes on her hands. But when the beep happened, she was inside the storeroom. The flakes came from the wrapping paper.
+• Mirae Yoon: she lied about not knowing about the display. But she showed up at 21:50, after it was all over, and only took a photo at 21:55. The sparkly gold is nail glitter.
+• Gunwoo Choi: he knows his paint. But he uses MG-03, and the fakes are sloppy MG-07. He's not in the group chat, so he couldn't have known the display date ahead of time.
+• Every gold trace was bait. The foil, the glitter, the MG-03. The real gold came off the tip of Taesu's brush.`,
 },
 
 cats: {'현장': 'Scene', '기록': 'Record', '물증': 'Evidence', '증언': 'Testimony'},

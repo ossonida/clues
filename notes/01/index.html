@@ -66,7 +66,6 @@ header.hud{display:flex;align-items:flex-end;gap:10px 18px;flex-wrap:wrap;border
 .scene-cap span:last-child{font-family:var(--mono);font-size:11.5px;color:var(--dim)}
 .hs{fill:transparent;cursor:pointer;transition:fill .15s, stroke .15s}
 .hs.vis:hover{fill:rgba(255,255,255,.08);stroke:#fff;stroke-width:2;stroke-dasharray:5 4}
-.hs.done.vis{stroke:rgba(232,90,70,.75);stroke-width:2;stroke-dasharray:none}
 .hs.hid:hover{fill:rgba(255,255,255,.03)}
 
 /* 수첩 */
@@ -93,6 +92,7 @@ header.hud{display:flex;align-items:flex-end;gap:10px 18px;flex-wrap:wrap;border
 .modal .body{white-space:pre-line}
 .modal .actions{display:flex;gap:8px;justify-content:flex-end;margin-top:18px;flex-wrap:wrap;border-top:1px solid var(--rule);padding-top:14px}
 .paper{background:#fffdf6;color:#2a221a;border:1px solid var(--rule);padding:12px 14px;font-size:14px;white-space:pre-line;margin-top:8px;font-family:var(--serif)}
+.paper b.tl{font-family:var(--mono);font-size:12.5px;color:var(--stamp);letter-spacing:.5px}
 .paper table{border-collapse:collapse;width:100%}
 .paper td,.paper th{border-bottom:1px solid #d8ccb2;padding:3px 6px;text-align:left;font-size:13px}
 .cost{display:inline-block;font-family:var(--mono);font-size:11px;font-weight:400;color:inherit;background:none;border:1px solid currentColor;border-radius:0;padding:0 4px;margin-left:6px;vertical-align:middle;opacity:.8}
@@ -579,7 +579,7 @@ function investigate(h){
     if(st.go){S.loc=st.go;renderLocs();renderScene();return}
     hn('hotspot_checked',{hotspot:h.id,location:h.loc,outcome:'revisit',step:i,minutes_used:used()});
     const cl=h.steps.flatMap(s=>s.clues);
-    modal(`<h2>${h.name||h.label}</h2><div class="body">${t('already','이미 조사한 곳이다.')}</div>${cl.map(clueBody).join('')}<div class="actions"><button class="btn" onclick="closeM()">${t('close','닫기')}</button></div>`);
+    modal(`<h2>${h.name||h.label}</h2>${cl.length?'':`<div class="body">${h.steps[h.steps.length-1].text}</div>`}${cl.map(clueBody).join('')}<div class="actions"><button class="btn" onclick="closeM()">${t('close','닫기')}</button></div>`);
     return;
   }
   const st=h.steps[i];
@@ -792,21 +792,56 @@ function result(){
   <div style="color:var(--dim);font-size:13px">${t('usedLine',`사용한 시간 ${TOTAL_TIME-S.time}분 · 찾은 단서 ${S.clues.length}/${total}`,TOTAL_TIME-S.time,S.clues.length,total)}</div>
   ${rows}
   <details style="margin-top:14px"><summary style="cursor:pointer;color:var(--gold2);font-weight:700">${t('reveal','사건의 전말 보기')}</summary>
-  <div class="paper">${esc(t('story',`범인은 박태수.
+  <div class="paper">${esc(t('story',`범인은 단골 수집가, 박태수.
 
-일주일 전 단톡방 공지로 전시 날짜를 알게 된 박태수는 이튿날 옆 공방에서 메탈골드 MG-07을 현금으로 샀다(공방 장부). 집에 있던 자기 일반판 미플 20개를 서툴게 칠했고, 단톡방에 “새 취미”라며 칠하던 책상 사진까지 올렸다. 당일 18:12에는 미플이 정말 20개인지 확인했다.
+[일주일 전]
+단톡방에 사장의 공지가 올라왔다. “다음 주 월요일 하루, 드래곤 바자르 초판 한정판 전시합니다!” 박태수의 계획은 그날 시작됐다.
+이튿날 옆 공방에서 메탈골드 MG-07 한 통과 세필붓을 현금으로 샀다. 이름은 남기지 않았다. 집에서 자기 일반판 미플 스무 개를 하나씩 칠했다. 붓질은 서툴렀다. 그러면서도 자랑하고 싶은 마음은 못 참았는지, 칠하던 책상 사진을 단톡방에 올렸다. “요즘 새 취미 ㅋㅋ” 뭐냐고 묻자 “비밀”이라고만 했다.
 
-21:41, 3판을 끝낸 그는 서지아가 테이프를 찾으러 창고에 들어간 틈을 노렸다. 정수기에 물을 뜨는 척 계산대 안으로 들어가 서랍 왼쪽 칸의 열쇠를 집었고, 쇼케이스를 열어 바꿔치기한 뒤 다시 잠갔다. 쇼케이스 앱은 21:31부터 와이파이가 끊겨 아무것도 기록하지 못했다. 창고 안의 서지아는 얇은 합판 벽 너머로 ‘띡’ 소리를 들었지만 화장실 문 소리로 착각했다. 화장실 문은 ‘끼이익’ 소리가 난다. 다 마신 종이컵은 쇼케이스 옆 쓰레기통에 버렸다. 21:47에 자리로 돌아와 4판을 시작했다.
+[전시 당일 18:12]
+“도금 미플 20개 다 들어 있는 거 맞죠?”
+사장은 아무 의심 없이 답했다. “ㅇㅇ 꽉 채워서.”
+18시 40분, 박태수는 카페에 들어와 일반판을 펼쳤다. 백팩 속에는 금색 가짜 스무 개가 들어 있었다.
 
-열쇠는 22:05 계산할 때 영수증을 받으며 손님 쪽 오른쪽 칸에 슬쩍 돌려놓았다. 늘 안쪽에서 왼쪽 칸에 넣는 서지아라면 그렇게 두지 않는다(서지아 진술). 카페의 일반판은 B테이블의 한 개뿐이고 미플이 그대로였으니(선반·B테이블), 가짜는 밖에서 만들어 온 것이다. 진짜 미플은 백팩에 넣어 나갔다.
+[21:30]
+사장이 퇴근했다.
 
-범행 시각을 좁히는 법: 쇼케이스 앱은 21:31부터 끊겨 있어 쓸모없다. 대신 서지아가 ‘띡’ 소리를 들은 건 최건우의 테이프를 찾으러 창고에 있을 때다. 최건우가 카페에 있던 시간은 CCTV상 21:40~21:47이고, 박태수의 기록지도 21:41~21:47이 비어 있다.
+[21:31]
+쇼케이스 앱의 와이파이가 끊겼다. 이제 쇼케이스가 열려도 사장 휴대폰에는 아무 기록이 남지 않는다. 그 사실을 아는 사람은 아무도 없었다. 박태수에게는 운이 좋았다.
 
-함정들:
-• 서지아: 알바비 갈등과 금박 가루가 있지만, ‘띡’ 소리가 났을 때 창고 안에 있었다(최건우 진술: 지아 씨가 창고에 간 사이). 열쇠도 손님 쪽 오른쪽 칸에 둘 이유가 없다. 금박은 선물 포장지에서 나왔다.
-• 윤미래: 거짓말을 했지만 범행이 끝난 뒤인 21:50에 왔다. 21:55에 사진만 찍었다. 글리터는 네일 장식이다.
-• 최건우: 물감 전문가지만 그가 쓰는 건 MG-03이다. 가짜는 서툰 붓질에 MG-07이다. 단톡방 멤버가 아니라 전시 날짜를 미리 알 수 없었다.
-• 금색 흔적은 함정이다. 서지아의 금박, 윤미래의 글리터, 최건우의 MG-03은 모두 출처가 따로 있다.`))}</div></details>
+[21:40]
+최건우가 생일 선물을 들고 들어왔다. 상자를 봉할 테이프가 없었다. 서지아가 테이프를 찾으러 창고로 들어갔다.
+박태수가 기다린 건 바로 이 몇 분이었다.
+
+[21:41]
+3판 종료 시각을 적자마자 그가 일어났다. 정수기에서 종이컵에 물을 받았다. 정수기는 계산대 안쪽, 서랍 바로 뒤에 있다. 손을 뻗어 서랍 왼쪽 칸에서 쇼케이스 열쇠를 꺼냈다. 계산대 앞에 서 있던 최건우는 물 뜨러 온 손님의 얼굴까지는 보지 않았다. 빨간 옷이었다는 것만 어렴풋이 기억했다.
+안쪽 복도. 열쇠를 돌리자 ‘띡’.
+얇은 합판 벽 너머, 창고 안의 서지아가 그 소리를 들었다. 손님이 화장실 문을 연 줄 알았다. 하지만 그 카페의 화장실 문은 ‘끼이익’ 하고 운다.
+진짜 미플 스무 개를 꺼내고 가짜 스무 개를 넣었다. 문을 다시 잠갔다. 다 마신 종이컵은 쇼케이스 옆 쓰레기통에 버렸다.
+
+[21:47]
+자리로 돌아와 4판을 펼쳤다. 같은 시각, 테이프를 받은 최건우가 카페를 나섰다. 기록지의 21:41부터 21:47까지는 비어 있다.
+
+[22:05]
+계산을 하며 영수증을 꺼내는 척 서랍 오른쪽 칸에 열쇠를 슬쩍 내려놓았다. 손님 쪽에서 손이 닿는 칸이다. 서지아는 늘 계산대 안쪽에서 왼쪽 칸에 열쇠를 넣는다. 오른쪽 칸에 둘 일이 없다.
+진짜 미플은 백팩에 담겨 그와 함께 문을 나섰다.
+
+[22:10]
+서지아는 쇼케이스 자물쇠를 당겨 보고 체크리스트에 ✔를 그었다. 잠겨 있었으니까. 상자 안까지 열어 보지는 않았다.
+
+────────────
+
+[범행 시각을 좁히는 법]
+쇼케이스 앱은 21:31부터 끊겨 있어서 쓸모가 없다. 단서는 ‘띡’ 소리다. 서지아가 그 소리를 들은 건 최건우의 테이프를 찾으러 창고에 있을 때였다. CCTV상 최건우가 카페에 있던 시간은 21:40~21:47. 박태수의 기록지도 21:41~21:47이 비어 있다.
+
+[가짜는 밖에서 왔다]
+카페의 일반판은 B테이블에 있던 한 세트뿐이고, 미플은 스무 개 그대로였다. 가짜는 집에서 칠해 온 것이다. 감정 결과(칠한 지 이틀 이상, MG-07, 일반판 미플)와 공방 장부(6일 전 MG-07 현금 구매, “미플 칠한다고 함”)가 정확히 맞아떨어진다.
+
+[함정들]
+• 서지아: 알바비 문제로 사장에게 서운했고 손에 금박 가루도 묻어 있었다. 하지만 ‘띡’ 소리가 났을 때 지아는 창고 안에 있었다. 금박은 선물 포장지에서 나왔다.
+• 윤미래: 전시를 몰랐다고 거짓말을 했다. 하지만 범행이 끝난 뒤인 21:50에 왔고, 21:55에 사진만 찍었다. 반짝이는 금색 가루는 네일 글리터다.
+• 최건우: 물감 전문가다. 하지만 그가 쓰는 건 MG-03이고, 가짜는 서툰 붓질의 MG-07이다. 단톡방에 없으니 전시 날짜를 미리 알 수도 없었다.
+• 금색 흔적은 전부 미끼였다. 금박, 글리터, MG-03. 진짜 금색은 박태수의 붓끝에서 나왔다.`)).replace(/^\[(.+)\]$/gm,'<b class="tl">$1</b>')}</div></details>
   <div class="actions"><button class="btn primary" id="again">${t('again','처음부터 다시')}</button></div>`);
   $('#again').onclick=()=>{hn('case_restarted');closeM();reset();showIntro()};
 }
