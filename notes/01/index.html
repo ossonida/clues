@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" data-note="note01">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Note 01 · 퍼니보드 사건 파일 | 히든노트</title>
+<script>window.hn=window.hn||function(){(hn.q=hn.q||[]).push(arguments)}</script>
+<script type="module" src="../../analytics.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Nanum+Gothic:wght@400;700;800&family=Nanum+Gothic+Coding:wght@400;700&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
 <style>
@@ -439,17 +441,22 @@ const LOCS = [
 /* ===================== STATE ===================== */
 let S;
 function reset(){
-  S={time:TOTAL_TIME,clues:[],seen:new Set(),step:{},solved:{},apps:{},heard:{},asked:{},loc:'counter',over:false,cur:'seo'};
+  S={time:TOTAL_TIME,clues:[],seen:new Set(),step:{},solved:{},apps:{},heard:{},asked:{},loc:'counter',over:false,cur:'seo',tries:{},startedAt:0,leftSent:false};
   render();
 }
 const stepOf=id=>S.step[id]||0;
+/* 이용 분석: analytics.js의 스키마에 맞춰 보낸다 */
+const used=()=>TOTAL_TIME-S.time;
+const playMin=()=>S.startedAt?Math.round((Date.now()-S.startedAt)/60000):0;
+function tried(h,ok){S.tries[h.id]=(S.tries[h.id]||0)+1;hn('puzzle_tried',{puzzle:h.id,outcome:ok?'solved':'wrong',attempt:S.tries[h.id],minutes_used:used()})}
+addEventListener('pagehide',()=>{if(S.over||S.leftSent)return;S.leftSent=true;hn('case_left',{stage:!S.startedAt?'intro':ACC.active?'accusing':'investigating',location:S.loc,clue_count:S.clues.length,minutes_used:used(),play_minutes:playMin()},true)});
 const has=c=>S.clues.includes(c);
 
 /* ===================== UI HELPERS ===================== */
 const $=s=>document.querySelector(s);
 function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),1800)}
 function modal(html){$('#modal').innerHTML=html;$('#mbg').classList.add('on');$('#modal').scrollTop=0}
-function closeM(){$('#mbg').classList.remove('on')}
+function closeM(){$('#mbg').classList.remove('on');if(ACC.active&&!S.over){ACC.active=false;hn('accuse_cancelled',{step:ACC.step})}}
 $('#mbg').addEventListener('click',e=>{if(e.target.id==="mbg"&&!S.over&&!(ACC&&ACC.forced))closeM()});
 
 function spend(n){
@@ -457,12 +464,12 @@ function spend(n){
   S.time=Math.max(0,S.time-n);renderHud();
 }
 function checkTime(){
-  if(S.time<=0&&!S.over){setTimeout(()=>{toast('조사 시간이 끝났습니다');openAccuse(true)},400);return true}
+  if(S.time<=0&&!S.over){hn('time_ran_out',{clue_count:S.clues.length});setTimeout(()=>{toast('조사 시간이 끝났습니다');openAccuse(true)},400);return true}
   return false;
 }
-function addClues(list){
+function addClues(list,source='scene'){
   const fresh=[];
-  list.forEach(c=>{if(!has(c)){S.clues.push(c);fresh.push(c)}});
+  list.forEach(c=>{if(!has(c)){S.clues.push(c);fresh.push(c);hn('clue_found',{clue:c,source,clue_count:S.clues.length,minutes_used:used()})}});
   renderNotebook(fresh);
   return fresh;
 }
@@ -498,6 +505,7 @@ function renderLocs(){
   document.querySelectorAll('.loc').forEach(b=>b.onclick=()=>{
     const l=LOCS.find(x=>x.id===b.dataset.loc);
     if(!locOpen(l)){toast('잠겨 있습니다. 안쪽 복도의 창고 문을 열어야 해요.');return}
+    if(S.loc!==l.id)hn('location_opened',{location:l.id,minutes_used:used()});
     S.loc=l.id;renderLocs();renderScene();
   });
 }
@@ -537,6 +545,7 @@ function investigate(h){
     // already done: show last text, free
     const st=h.steps[h.steps.length-1];
     if(st.go){S.loc=st.go;renderLocs();renderScene();return}
+    hn('hotspot_checked',{hotspot:h.id,location:h.loc,outcome:'revisit',step:i,minutes_used:used()});
     const cl=h.steps.flatMap(s=>s.clues);
     modal(`<h2>${h.name||h.label}</h2><div class="body">이미 조사한 곳이다.</div>${cl.map(clueBody).join('')}<div class="actions"><button class="btn" onclick="closeM()">닫기</button></div>`);
     return;
@@ -544,13 +553,15 @@ function investigate(h){
   const st=h.steps[i];
   if(st.req&&!has(st.req)){
     spend(st.lockCost||0);
+    hn('hotspot_checked',{hotspot:h.id,location:h.loc,outcome:'blocked',step:i+1,minutes_used:used()});
     modal(`<h2>${h.name||h.label}</h2><div class="body">${st.lockText}</div><div class="actions"><button class="btn" onclick="closeM()">닫기</button></div>`);
     checkTime();return;
   }
   spend(st.cost);
   S.step[h.id]=i+1;
-  if(st.go){closeM();S.loc=st.go;renderLocs();renderScene();toast(st.text);checkTime();return}
+  if(st.go){closeM();hn('hotspot_checked',{hotspot:h.id,location:h.loc,outcome:'nothing_new',step:i+1,minutes_used:used()});hn('location_opened',{location:st.go,minutes_used:used()});S.loc=st.go;renderLocs();renderScene();toast(st.text);checkTime();return}
   const fresh=addClues(st.clues);
+  hn('hotspot_checked',{hotspot:h.id,location:h.loc,outcome:fresh.length?'found':'nothing_new',step:i+1,minutes_used:used()});
   modal(`<h2>${h.name||h.label}</h2><div class="body">${st.text}</div>${st.clues.map(clueBody).join('')}${fresh.length?`<div class="newtag">새 단서 ${fresh.length}개를 수첩에 적었다.</div>`:''}<div class="actions"><button class="btn primary" onclick="closeM()">확인</button></div>`);
   renderScene();checkTime();
 }
@@ -575,6 +586,7 @@ function padKey(k){
 }
 function submitPad(){
   const h=pad.h;if(pad.val.length<h.puzzle.len)return;
+  tried(h,pad.val===h.puzzle.ans);
   if(pad.val===h.puzzle.ans){
     S.solved[h.id]=true;toast('잠금 해제!');
     if(h.phone){renderScene();openPhone();return}
@@ -604,6 +616,7 @@ function openDialLock(h){
 function drawDial(){dial.forEach((v,i)=>{$('#dw'+i).innerHTML=`<div class="num prev">${(v+1)%10}</div><div class="num cur">${v}</div><div class="num next">${(v+9)%10}</div>`})}
 function pullLock(){
   const h=pad.h;
+  tried(h,dial.join('')===h.puzzle.ans);
   if(dial.join('')===h.puzzle.ans){$('#shackle').classList.add('open');S.solved[h.id]=true;setTimeout(()=>{toast('자물쇠가 열렸다!');renderLocs();investigate(h)},500)}
   else{spend(1);toast('꿈쩍도 하지 않는다 (1분 경과)');const w=$('#lockwrap');w.classList.remove('shake');void w.offsetWidth;w.classList.add('shake');checkTime()}
 }
@@ -636,6 +649,7 @@ function phoneKey(k){
   if(k==='del')pad.val=pad.val.slice(0,-1);else if(pad.val.length<4)pad.val+=k;
   document.querySelectorAll('#pdots i').forEach((d,i)=>d.classList.toggle('f',i<pad.val.length));
   if(pad.val.length===4)setTimeout(()=>{
+    tried(pad.h,pad.val===pad.h.puzzle.ans);
     if(pad.val===pad.h.puzzle.ans){S.solved[pad.h.id]=true;toast('잠금 해제!');renderScene();openPhone()}
     else{spend(1);toast('암호가 틀렸다 (1분 경과)');const d=$('#pdots');d.classList.remove('shake');void d.offsetWidth;d.classList.add('shake');pad.val='';document.querySelectorAll('#pdots i').forEach(x=>x.classList.remove('f'));checkTime()}
   },180);
@@ -646,7 +660,7 @@ function openPhone(){
 }
 function openApp(a){
   let freshTxt='';
-  if(!S.apps[a.id]){S.apps[a.id]=true;spend(2);const f=addClues([a.clue]);if(f.length)freshTxt='<div class="newtag">새 단서를 수첩에 적었다.</div>'}
+  if(!S.apps[a.id]){S.apps[a.id]=true;spend(2);hn('phone_app_opened',{app:a.id,minutes_used:used()});const f=addClues([a.clue],'phone');if(f.length)freshTxt='<div class="newtag">새 단서를 수첩에 적었다.</div>'}
   modal(`<h2>${a.name}</h2>${clueBody(a.clue)}${freshTxt}<div class="actions"><button class="btn" id="backPhone">← 휴대폰</button><button class="btn primary" onclick="closeM()">닫기</button></div>`);
   $('#backPhone').onclick=openPhone;renderScene();checkTime();
 }
@@ -664,7 +678,7 @@ function openTalk(){
    <div style="display:flex;gap:8px"><select id="evSel">${S.clues.length?S.clues.map(c=>`<option value="${c}">${CLUES[c].title}</option>`).join(''):'<option value="">(단서 없음)</option>'}</select><button class="btn primary" id="evBtn" ${S.clues.length?'':'disabled'}>제시</button></div></div>`:''}
   <div class="actions"><button class="btn" onclick="closeM()">닫기</button></div>`);
   document.querySelectorAll('.sus').forEach(b=>b.onclick=()=>{S.cur=b.dataset.s;openTalk()});
-  const hb=$('#hear');if(hb)hb.onclick=()=>{S.heard[k]=true;spend(3);openTalk();checkTime()};
+  const hb=$('#hear');if(hb)hb.onclick=()=>{S.heard[k]=true;spend(3);hn('statement_heard',{suspect:k,minutes_used:used()});openTalk();checkTime()};
   const eb=$('#evBtn');if(eb)eb.onclick=()=>present(k,$('#evSel').value);
 }
 function present(k,c){
@@ -675,7 +689,8 @@ function present(k,c){
   const s=SUSPECTS[k],r=s.ev[c];
   let a=r?r.text:s.def;
   S.asked[k].push({c,q:`제시: ${CLUES[c].title}`,a});
-  if(r&&r.add){const f=addClues([r.add]);if(f.length)toast('새 단서: '+CLUES[r.add].title)}
+  let f=[];if(r&&r.add){f=addClues([r.add],'interrogation');if(f.length)toast('새 단서: '+CLUES[r.add].title)}
+  hn('evidence_shown',{suspect:k,clue:c,outcome:f.length?'new_clue':r?'reaction':'no_reaction',minutes_used:used()});
   openTalk();checkTime();
 }
 
@@ -685,7 +700,8 @@ const KEY_EVIDENCE=['c_t_choi','c_t_park','c_sheet','c_ledger','c_chat','c_cctvp
 let ACC={};
 function openAccuse(forced){
   if(S.over)return;
-  ACC={forced:!!forced,who:null,hh:'',mm:'',ev:[]};
+  ACC={forced:!!forced,who:null,hh:'',mm:'',ev:[],active:true,step:1};
+  hn('accuse_started',{forced:forced?'yes':'no',clue_count:S.clues.length,minutes_used:used(),play_minutes:playMin()});
   accStep1();
 }
 function accHead(n,t){return `<div style="font-size:12px;color:var(--gold2);font-weight:700;letter-spacing:1px">STEP ${n} / 3</div><h2 style="margin-top:2px">${t}</h2>`}
@@ -699,6 +715,7 @@ function accStep1(){
   $('#n1').onclick=accStep2;
 }
 function accStep2(){
+  ACC.step=2;
   const hs=['21','22'].map(h=>`<option>${h}</option>`).join('');
   const ms=Array.from({length:60},(_,i)=>`<option>${String(i).padStart(2,'0')}</option>`).join('');
   modal(`${accHead(2,'쇼케이스가 열린 시각은?')}
@@ -711,6 +728,7 @@ function accStep2(){
   $('#n2').onclick=()=>{ACC.hh=$('#hh').value;ACC.mm=$('#mm').value;accStep3()};
 }
 function accStep3(){
+  ACC.step=3;
   const list=S.clues.length?S.clues.map(c=>`<label class="opt"><input type="checkbox" value="${c}"><span class="cat" style="font-size:11px;color:var(--dim);margin-right:6px">${CLUES[c].cat}</span>${CLUES[c].title}</label>`).join(''):'<div class="empty">수첩에 단서가 없습니다.</div>';
   modal(`${accHead(3,'지목의 근거')}
   <div class="hint" style="margin:0 0 10px">${SUSPECTS[ACC.who].name}이(가) 범인이라는 근거가 되는 단서를 수첩에서 <b>최대 3개</b> 고르세요.</div>
@@ -721,7 +739,7 @@ function accStep3(){
   $('#n3').onclick=()=>{ACC.ev=boxes.filter(x=>x.checked).map(x=>x.value);result()};
 }
 function result(){
-  S.over=true;
+  S.over=true;ACC.active=false;
   const total=Object.keys(CLUES).length;
   const okWho=ACC.who==='park';
   const t=+ACC.hh*60+ +ACC.mm, okTime=t>=21*60+40&&t<=21*60+47;
@@ -729,6 +747,9 @@ function result(){
   const okEv=okWho&&good.length>=2;
   const pts=(okWho?1:0)+(okTime?1:0)+(okEv?1:0);
   const grade=pts===3?'완전 해결':okWho&&pts===2?'거의 해결':okWho?'범인은 맞혔지만…':'미해결';
+  hn('case_finished',{grade:pts===3?'solved':okWho&&pts===2?'almost':okWho?'culprit_only':'unsolved',points:pts,accused:ACC.who,
+    culprit_correct:okWho?'yes':'no',time_correct:okTime?'yes':'no',evidence_correct:okEv?'yes':'no',evidence_count:ACC.ev.length,
+    forced:ACC.forced?'yes':'no',clue_count:S.clues.length,clue_total:total,minutes_used:used(),play_minutes:playMin()});
   const line=(ok,label,mine,right)=>`<div style="margin:8px 0"><b>${label}</b><br><span class="${ok?'ok':'ng'}">${ok?'✔':'✘'} ${mine}</span>${ok?'':`<br><span style="color:var(--dim)">정답: ${right}</span>`}</div>`;
   const evTxt=ACC.ev.length?ACC.ev.map(c=>`${KEY_EVIDENCE.includes(c)&&okWho?'●':'○'} ${CLUES[c].title}`).join('<br>'):'(고른 단서 없음)';
   const rows=line(okWho,'STEP 1 · 범인',SUSPECTS[ACC.who].name,'박태수')
@@ -754,7 +775,7 @@ function result(){
 • 최건우: 물감 전문가지만 그가 쓰는 건 MG-03이다. 가짜는 서툰 붓질에 MG-07이다. 단톡방 멤버가 아니라 전시 날짜를 미리 알 수 없었다.
 • 금색 흔적은 함정이다. 서지아의 금박, 윤미래의 글리터, 최건우의 MG-03은 모두 출처가 따로 있다.`)}</div></details>
   <div class="actions"><button class="btn primary" id="again">처음부터 다시</button></div>`);
-  $('#again').onclick=()=>{closeM();reset();showIntro()};
+  $('#again').onclick=()=>{hn('case_restarted');closeM();reset();showIntro()};
 }
 
 /* ===================== SCENES (SVG) ===================== */
@@ -871,6 +892,7 @@ ${[0,1,2].map(r=>Array.from({length:4},(_,i)=>`<rect x="${58+i*42}" y="${64+r*70
 
 /* ===================== INTRO ===================== */
 function showIntro(){
+  hn('case_intro_viewed');
   modal(`<div class="intro"><h2>퍼니보드 사건 파일<br><span style="font-size:15px;color:var(--dim)">보드게임 카페의 마지막 손님</span></h2>
   <p>보드게임 카페 「퍼니보드」의 사장 한도윤은 《드래곤 바자르》 초판 한정판을 딱 하루 카페에 전시했다. 이 판에만 들어 있는 도금 미플 20개는 시세만 수백만 원이다.</p>
   <p>다음 날 아침, 사장이 미플을 집어 들자 손끝에 금색이 묻어났다. <b>20개 전부 금색 물감을 칠한 가짜였다.</b> 쇼케이스는 잠겨 있었고 부서진 곳도 없었다.</p>
@@ -890,14 +912,15 @@ function showHow(){
   <div class="timebox"><b>⏱ 조사 시간 80분</b> <span style="color:var(--dim)">(실제 시간이 아니라, 행동할 때마다 줄어드는 게임 속 시간)</span>
    <table><tr><td>물건 하나 조사</td><td>2분</td></tr><tr><td>진술 듣기 · 증거 보여주기</td><td>3분</td></tr><tr><td>비밀번호 틀림</td><td>1분</td></tr><tr><td>장소 이동 · 수첩 다시 보기</td><td>무료</td></tr></table>
    <div style="margin-top:6px;color:var(--dim)">전부 조사할 시간은 없어요. 0분이 되면 바로 범인을 지목해야 해요.</div></div>
-  <div class="actions"><button class="btn primary" onclick="closeM()">조사 시작</button></div>`);
+  <div class="actions"><button class="btn primary" id="startCase">${S.startedAt?'계속 조사하기':'조사 시작'}</button></div>`);
+  $('#startCase').onclick=()=>{if(!S.startedAt){S.startedAt=Date.now();hn('case_started')}closeM()};
 }
 function _unused(){
 
 }
 
 $('#btnTalk').onclick=openTalk;
-$('#btnHelp').onclick=showHow;
+$('#btnHelp').onclick=()=>{hn('help_opened');showHow()};
 $('#btnAccuse').onclick=()=>openAccuse(false);
 reset();showIntro();
 </script>

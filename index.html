@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>히든노트 · Hidden Note</title>
 <meta name="description" content="히든노트 — 브라우저에서 바로 플레이하는 추리 사건 파일 시리즈">
+<script>window.hn=window.hn||function(){(hn.q=hn.q||[]).push(arguments)}</script>
+<script type="module" src="analytics.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Nanum+Gothic+Coding:wght@400;700&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
 <style>
@@ -53,7 +55,9 @@ tr.off td{color:#a39a8a}
 tr.off td.t{font-family:"Nanum Pen Script",cursive;font-size:20px;color:#8f877a}
 td a{text-decoration:none;border-bottom:1px solid var(--rule)}
 td a:hover{border-color:var(--ink)}
-td.rv{width:38%;max-width:0}
+td.lv{white-space:nowrap;font-size:13px}
+td.lv .dots{color:var(--stamp);letter-spacing:1px;font-size:11px}
+td.rv{width:34%;max-width:0}
 .rv-open{all:unset;cursor:pointer;display:flex;align-items:baseline;gap:8px;width:100%}
 .rv-last{flex:1;min-width:0;font-family:"Nanum Pen Script",cursive;font-size:20px;line-height:1.1;color:var(--pen);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .rv-n{flex:none;font-family:"Nanum Gothic Coding",monospace;font-size:12px;border-bottom:1px solid var(--ink)}
@@ -71,7 +75,7 @@ td.rv{width:38%;max-width:0}
 .rv-form button:disabled{opacity:.5;cursor:wait}
 .rv-msg{margin:6px 0 0;font-size:12px;color:var(--dim)}
 .rv-msg.err{color:var(--stamp)}
-@media(max-width:600px){th:nth-child(3),td:nth-child(3){display:none}.rv-panel td{display:table-cell}td.rv{width:auto}}
+@media(max-width:640px){th:nth-child(4),td:nth-child(4),th:nth-child(5),td:nth-child(5){display:none}.rv-panel td{display:table-cell}td.rv{width:auto}}
 
 footer{margin:60px 0 0;padding:16px 0 40px;border-top:1px solid var(--rule);color:var(--dim);font-family:"Nanum Gothic Coding",monospace;font-size:12px}
 </style>
@@ -81,8 +85,8 @@ footer{margin:60px 0 0;padding:16px 0 40px;border-top:1px solid var(--rule);colo
   <div class="wrap">
     <div class="top"><span>HIDDEN NOTE</span><span>사건 파일 보관함</span></div>
     <h1>히든노트<em>Vol. 1</em></h1>
-    <p class="lead">현장을 뒤지고, 잠긴 걸 열고, 증거를 들이미세요. 설치할 건 없고 브라우저만 있으면 됩니다. 혼자 해도 되고, 여럿이 화면 하나 놓고 머리를 맞대도 됩니다.</p>
-    <span class="scribble">↳ 한 사건은 한 번만 풀 수 있어요. 메모해 두세요!</span>
+    <p class="lead">직접 현장을 뒤져서 범인을 찾는 추리 게임이에요. 설치 없이 브라우저에서 바로 할 수 있고, 사건 하나에 한 시간 남짓이면 됩니다. 혼자 해도 되지만 친구랑 같이 보면서 풀면 훨씬 재밌어요.</p>
+    <span class="scribble">↳ 메모지 한 장 옆에 두고 시작하세요</span>
   </div>
 </header>
 <main>
@@ -95,6 +99,7 @@ footer{margin:60px 0 0;padding:16px 0 40px;border-top:1px solid var(--rule);colo
         <div class="sub">보드게임 카페의 마지막 손님</div>
         <dl class="fields">
           <div><dt>사건 종류</dt><dd>바꿔치기</dd></div>
+          <div><dt>난이도</dt><dd>●●●○○ 보통</dd></div>
           <div><dt>용의자</dt><dd>4명</dd></div>
           <div><dt>인원</dt><dd>1인 이상</dd></div>
           <div><dt>소요 시간</dt><dd>60~90분</dd></div>
@@ -122,11 +127,11 @@ footer{margin:60px 0 0;padding:16px 0 40px;border-top:1px solid var(--rule);colo
     <section class="ledger">
       <h3>사건 대장</h3>
       <table>
-        <thead><tr><th>번호</th><th>사건명</th><th>인원</th><th>시간</th><th>한줄 후기</th></tr></thead>
+        <thead><tr><th>번호</th><th>사건명</th><th>난이도</th><th>인원</th><th>시간</th><th>한줄 후기</th></tr></thead>
         <tbody>
-          <tr><td class="n">NOTE 01</td><td><a href="notes/01/">퍼니보드 사건 파일</a></td><td>1인~</td><td>60~90분</td>
+          <tr><td class="n">NOTE 01</td><td><a href="notes/01/">퍼니보드 사건 파일</a></td><td class="lv" title="난이도 3/5"><span class="dots">●●●○○</span> 보통</td><td>1인~</td><td>60~90분</td>
             <td class="rv"><button class="rv-open" data-note="note01" aria-expanded="false"><span class="rv-last">아직 후기가 없어요</span><span class="rv-n">✎ 남기기</span></button></td></tr>
-          <tr class="rv-panel" id="rv-note01" hidden><td colspan="5">
+          <tr class="rv-panel" id="rv-note01" hidden><td colspan="6">
             <ul class="rv-list"></ul>
             <form class="rv-form" data-note="note01">
               <input name="text" maxlength="80" required placeholder="스포일러 없이 한 줄로 (80자)" autocomplete="off">
@@ -134,7 +139,7 @@ footer{margin:60px 0 0;padding:16px 0 40px;border-top:1px solid var(--rule);colo
             </form>
             <p class="rv-msg">후기를 적으려면 Google 로그인이 필요해요. 한 사건에 한 사람당 한 줄이고, 다시 적으면 고쳐집니다.</p>
           </td></tr>
-          <tr class="off"><td class="n">NOTE 02</td><td class="t">조사 중…</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr class="off"><td class="n">NOTE 02</td><td class="t">조사 중…</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
         </tbody>
       </table>
     </section>
@@ -188,13 +193,16 @@ function render(note){
     ? list.map(r=>`<li><q>${esc(r.text)}</q><small>${fmt(r.createdAt)}</small></li>`).join('')
     : '<li class="none">첫 번째 후기를 남겨 주세요.</li>';
 }
+document.querySelectorAll('a[href^="notes/"]').forEach(a=>a.addEventListener('click',()=>{
+  hn('case_link_clicked', {note: 'note'+a.getAttribute('href').match(/notes\/(\d+)/)[1], place: a.classList.contains('case') ? 'folder' : 'ledger'}, true);
+}));
 document.querySelectorAll('.rv-open').forEach(btn=>{
   const note = btn.dataset.note;
   load(note).catch(()=>{ btn.querySelector('.rv-last').textContent = '후기를 불러오지 못했어요'; });
   btn.onclick = ()=>{
     const panel = document.getElementById('rv-'+note), open = panel.hidden;
     panel.hidden = !open; btn.setAttribute('aria-expanded', open);
-    if(open) panel.querySelector('input').focus();
+    if(open){ panel.querySelector('input').focus(); hn('review_opened', {note}); }
   };
 });
 document.querySelectorAll('.rv-form').forEach(form=>{
@@ -208,10 +216,13 @@ document.querySelectorAll('.rv-form').forEach(form=>{
       const u = await user(), c = await connect();
       await c.store.setDoc(c.store.doc(c.db,'clueReviews',`${note}_${u.uid}`), {note, text, uid:u.uid, createdAt:c.store.serverTimestamp()});
       form.reset(); msg.textContent = '수첩에 적었어요. 고마워요!';
+      hn('review_submitted', {note, outcome:'saved'});
       await load(note);
     }catch(err){
+      const cancelled = err?.code === 'auth/popup-closed-by-user' || err?.code === 'auth/cancelled-popup-request';
+      hn('review_submitted', {note, outcome: cancelled ? 'login_cancelled' : 'failed'});
       msg.className = 'rv-msg err';
-      msg.textContent = err?.code === 'auth/popup-closed-by-user' ? '로그인 창이 닫혔어요.' : '저장하지 못했어요. 잠시 후 다시 시도해 주세요.';
+      msg.textContent = cancelled ? '로그인 창이 닫혔어요.' : '저장하지 못했어요. 잠시 후 다시 시도해 주세요.';
       console.error(err);
     }finally{ submit.disabled = false; }
   };
