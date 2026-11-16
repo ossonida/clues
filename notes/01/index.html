@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Note 01 · 퍼니보드 사건 파일 | 히든노트</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Serif+KR:wght@700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#14110f; --panel:#1e1a17; --panel2:#272220; --line:#3a332e;
+  --ink:#efe6d8; --dim:#a69a8a; --gold:#d8a64a; --gold2:#f0c96b; --red:#c8553d; --green:#7fa36b;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans KR",system-ui,sans-serif;font-size:15px;line-height:1.6}
+button{font-family:inherit;cursor:pointer}
+.app{max-width:1180px;margin:0 auto;padding:14px}
+header.hud{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:10px}
+.brand{font-family:"Noto Serif KR",serif;font-weight:900;font-size:20px;letter-spacing:-.5px}
+.brand small{display:block;font-family:"Noto Sans KR";font-weight:400;font-size:12px;color:var(--dim);letter-spacing:0}
+.spacer{flex:1}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:6px 12px;font-size:13px;color:var(--dim)}
+.stat b{color:var(--ink);font-size:16px;margin-left:4px}
+.stat.time b{color:var(--gold2)}
+.stat.low b{color:var(--red)}
+.btn{white-space:nowrap;background:var(--panel2);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:8px 14px;font-size:14px;font-weight:500}
+.btn:hover{border-color:var(--gold)}
+.btn.primary{background:var(--gold);color:#1b140a;border-color:var(--gold);font-weight:700}
+.btn.primary:hover{background:var(--gold2)}
+.btn.danger{background:#5a2219;border-color:var(--red)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.layout{display:grid;grid-template-columns:1fr 300px;gap:12px}
+@media(max-width:900px){.layout{grid-template-columns:1fr}}
+.locs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.loc{background:var(--panel);border:1px solid var(--line);color:var(--dim);border-radius:999px;padding:6px 14px;font-size:13px}
+.loc.on{background:var(--gold);color:#1b140a;border-color:var(--gold);font-weight:700}
+.loc.locked{opacity:.55}
+.scene-wrap{background:#0d0b0a;border:1px solid var(--line);border-radius:14px;overflow:hidden;position:relative}
+.scene-wrap svg{display:block;width:100%;height:auto}
+.scene-cap{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--panel);border-top:1px solid var(--line);font-size:13px;color:var(--dim)}
+.hs{fill:transparent;cursor:pointer;transition:fill .15s, stroke .15s}
+.hs.vis:hover{fill:rgba(240,201,107,.12);stroke:var(--gold2);stroke-width:2;stroke-dasharray:6 4}
+.hs.done.vis{stroke:rgba(127,163,107,.6);stroke-width:1.5;stroke-dasharray:3 4}
+.hs.hid:hover{fill:rgba(255,255,255,.03)}
+.side{display:flex;flex-direction:column;gap:12px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px}
+.card h3{margin:0 0 8px;font-size:14px;color:var(--gold2);letter-spacing:.5px}
+.clue-list{display:flex;flex-direction:column;gap:4px;max-height:360px;overflow:auto}
+.clue-item{background:var(--panel2);border:1px solid transparent;border-radius:8px;padding:6px 9px;font-size:13px;text-align:left;color:var(--ink)}
+.clue-item:hover{border-color:var(--gold)}
+.clue-item .cat{font-size:11px;color:var(--dim);margin-right:6px}
+.clue-item.new{border-color:var(--gold2);box-shadow:0 0 0 2px rgba(240,201,107,.15)}
+.empty{color:var(--dim);font-size:13px}
+.hint{font-size:12px;color:var(--dim);margin-top:6px}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;padding:16px;z-index:50}
+.modal-bg.on{display:flex}
+.modal{background:var(--panel);border:1px solid var(--line);border-radius:16px;max-width:620px;width:100%;max-height:88vh;overflow:auto;padding:20px 22px;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+.modal h2{font-family:"Noto Serif KR",serif;margin:0 0 10px;font-size:20px}
+.modal .body{white-space:pre-line}
+.modal .actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px;flex-wrap:wrap}
+.paper{background:#efe6d3;color:#2a221a;border-radius:6px;padding:12px 14px;font-size:14px;white-space:pre-line;margin-top:8px;font-family:"Noto Sans KR"}
+.paper table{border-collapse:collapse;width:100%}
+.paper td,.paper th{border-bottom:1px solid #cbbd9f;padding:3px 6px;text-align:left;font-size:13px}
+.cost{display:inline-block;font-size:11px;color:#1b140a;background:var(--gold);border-radius:4px;padding:0 6px;margin-left:6px;font-weight:700;vertical-align:middle}
+.newtag{color:var(--gold2);font-weight:700;font-size:13px;margin-top:10px}
+.keypad{display:grid;grid-template-columns:repeat(3,64px);gap:8px;justify-content:center;margin:14px 0}
+.keypad button{height:52px;border-radius:10px;background:var(--panel2);border:1px solid var(--line);color:var(--ink);font-size:20px}
+.keypad button:hover{border-color:var(--gold)}
+.pin{display:flex;gap:10px;justify-content:center;margin-top:8px}
+.pin span{width:40px;height:50px;border-radius:8px;border:1px solid var(--line);background:#0d0b0a;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700;color:var(--gold2)}
+.pfr{width:260px;height:520px;margin:4px auto 0;border-radius:38px;border:9px solid #1c1c20;overflow:hidden;position:relative;background:#000;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+.pscr{position:absolute;inset:0;color:#fff}
+.pbg{position:absolute;inset:0;width:100%;height:100%}
+.pbg.blur{filter:blur(10px) brightness(.55);transform:scale(1.15)}
+.pnotch{position:absolute;top:8px;left:50%;transform:translateX(-50%);width:80px;height:20px;border-radius:12px;background:#000;z-index:2}
+.pbar{position:absolute;top:10px;left:18px;right:18px;display:flex;justify-content:space-between;font-size:11px;font-weight:600;z-index:1}
+.pdate{position:absolute;top:58px;width:100%;text-align:center;font-size:14px;text-shadow:0 1px 4px rgba(0,0,0,.5)}
+.pclock{position:absolute;top:74px;width:100%;text-align:center;font-size:64px;font-weight:300;letter-spacing:-1px;text-shadow:0 2px 10px rgba(0,0,0,.45)}
+.pnoti{position:absolute;top:168px;left:12px;right:12px;background:rgba(30,30,35,.55);backdrop-filter:blur(8px);border-radius:16px;padding:9px 12px;font-size:12px}
+.pnoti b{display:block;font-size:12px}
+.plock{position:absolute;bottom:34px;left:50%;transform:translateX(-50%);width:54px;height:54px;border-radius:50%;background:rgba(255,255,255,.22);border:none;color:#fff;backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center}
+.plock:hover{background:rgba(255,255,255,.35)}
+.pbottom{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);width:100px;height:4px;border-radius:2px;background:rgba(255,255,255,.7)}
+.ptitle{position:absolute;top:70px;width:100%;text-align:center;font-size:16px}
+.pdots{position:absolute;top:102px;width:100%;display:flex;justify-content:center;gap:16px}
+.pdots i{width:12px;height:12px;border-radius:50%;border:1.5px solid #fff;display:block}
+.pdots i.f{background:#fff}
+.pkeys{position:absolute;top:150px;left:0;right:0;display:grid;grid-template-columns:repeat(3,62px);gap:14px 20px;justify-content:center}
+.pkeys button{width:62px;height:62px;border-radius:50%;border:none;background:rgba(255,255,255,.18);color:#fff;font-size:24px;font-weight:300}
+.pkeys button:hover{background:rgba(255,255,255,.3)}
+.pkeys button.blank{visibility:hidden}
+.pcancel{position:absolute;bottom:26px;right:30px;background:none;border:none;color:#fff;font-size:14px}
+.lockwrap{display:flex;flex-direction:column;align-items:center;margin:10px 0 4px}
+.shackle{width:120px;height:80px;border:16px solid #9aa3a8;border-bottom:none;border-radius:60px 60px 0 0;margin-bottom:-4px;transition:transform .4s}
+.shackle.open{transform:translateY(-22px)}
+.lbody{width:200px;background:linear-gradient(#5d666b,#3e4549);border-radius:18px;padding:16px 18px;display:flex;flex-direction:column;gap:10px;box-shadow:inset 0 2px 0 rgba(255,255,255,.15),0 8px 20px rgba(0,0,0,.5)}
+.drow{display:flex;align-items:center;gap:10px}
+.ddot{width:14px;height:14px;border-radius:50%;flex:none;box-shadow:0 0 0 2px rgba(0,0,0,.3)}
+.dwheel{flex:1;height:54px;background:linear-gradient(#111 0%,#3a3a3a 20%,#d9d9d9 50%,#3a3a3a 80%,#111 100%);border-radius:6px;position:relative;overflow:hidden;cursor:ns-resize;user-select:none}
+.dwheel .num{position:absolute;left:0;right:0;text-align:center;font-weight:900;font-family:monospace}
+.dwheel .cur{top:12px;font-size:26px;color:#1a1a1a}
+.dwheel .prev{top:-10px;font-size:12px;color:#777}
+.dwheel .next{bottom:-10px;font-size:12px;color:#777}
+.darr{display:flex;flex-direction:column;gap:2px}
+.darr button{width:30px;height:24px;border:none;border-radius:5px;background:#2b3135;color:#ddd;font-size:11px}
+.darr button:hover{background:#465056}
+.calv{background:#f6f0e2;color:#2a221a;border-radius:8px;overflow:hidden;box-shadow:0 6px 18px rgba(0,0,0,.4);margin-top:6px}
+.calh{background:#b0463a;color:#fff;text-align:center;font-family:"Noto Serif KR",serif;font-weight:900;font-size:26px;padding:10px 0 8px;position:relative}
+.calh span{position:absolute;left:14px;top:16px;font-size:12px;font-weight:400;opacity:.8;font-family:"Noto Sans KR"}
+.calw,.calg{display:grid;grid-template-columns:repeat(7,1fr)}
+.calw div{text-align:center;font-size:12px;font-weight:700;padding:6px 0;border-bottom:1px solid #d8cdb7}
+.cd{min-height:62px;border-right:1px solid #e3d9c4;border-bottom:1px solid #e3d9c4;padding:4px 5px;font-size:10.5px;line-height:1.3;display:flex;flex-direction:column;gap:2px}
+.cd b{font-size:13px}
+.cd.e{background:#efe7d4}
+.stk{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;font-size:12px;transform:rotate(-8deg)}
+.shake{animation:shake .35s}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+.phone{background:#0b0b0d;border-radius:28px;border:6px solid #2b2b30;padding:16px;max-width:340px;margin:0 auto}
+.apps{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.app-btn{background:#1d1d24;border:1px solid #33333d;border-radius:14px;color:#eee;padding:14px 8px;font-size:13px}
+.app-btn:hover{border-color:var(--gold)}
+.chat{display:flex;flex-direction:column;gap:6px;font-size:13px}
+.chat .day{text-align:center;color:#8a8f99;font-size:11px;margin:6px 0}
+.chat{margin-top:8px}.chat .msg{background:#23262e;color:#e8e8e8;border-radius:10px;padding:6px 10px}
+.chat .msg b{color:#9fc4ff;font-weight:500;margin-right:6px}
+.chat .msg i{color:#8a8f99;font-style:normal;font-size:11px;margin-left:6px}
+.sus-row{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+@media(max-width:560px){.sus-row{grid-template-columns:repeat(2,1fr)}}
+.sus{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:10px 6px;text-align:center;color:var(--ink)}
+.sus.on{border-color:var(--gold);box-shadow:0 0 0 2px rgba(216,166,74,.25)}
+.sus .face{width:44px;height:44px;border-radius:50%;margin:0 auto 6px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:18px;color:#1b140a}
+.sus small{display:block;color:var(--dim);font-size:11px}
+.say{background:var(--panel2);border-left:3px solid var(--gold);border-radius:8px;padding:10px 12px;margin:8px 0;white-space:pre-line}
+.log{max-height:240px;overflow:auto}
+select{background:var(--panel2);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px;font-family:inherit;font-size:14px;width:100%}
+.q{margin:12px 0}
+.q label{display:block;font-weight:700;margin-bottom:6px}
+.opt{display:block;background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:7px 10px;margin:4px 0;cursor:pointer;font-size:14px}
+.opt input{margin-right:8px}
+.res-score{font-family:"Noto Serif KR",serif;font-size:28px;color:var(--gold2);margin:4px 0 10px}
+.ok{color:var(--green)} .ng{color:var(--red)}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--gold);color:#1b140a;font-weight:700;padding:10px 18px;border-radius:999px;opacity:0;transition:opacity .25s;pointer-events:none;z-index:60}
+.toast.on{opacity:1}
+.intro p{margin:6px 0}
+.rules{background:var(--panel2);border-radius:10px;padding:10px 14px;font-size:13.5px;margin-top:10px}
+.rules li{margin:3px 0}
+.steps{display:grid;gap:8px;margin:12px 0}
+.stp{display:flex;gap:12px;align-items:flex-start;background:var(--panel2);border-radius:10px;padding:10px 12px}
+.stp .n{flex:none;width:28px;height:28px;border-radius:50%;background:var(--gold);color:#1b140a;font-weight:900;display:flex;align-items:center;justify-content:center}
+.stp b.t{display:block}
+.stp span{font-size:13px;color:var(--dim)}
+.timebox{background:#2b2116;border:1px solid #5a4422;border-radius:10px;padding:10px 12px;font-size:13.5px}
+.timebox table{width:100%;border-collapse:collapse;margin-top:6px}
+.timebox td{padding:3px 0}
+.timebox td:last-child{text-align:right;color:var(--gold2);font-weight:700}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="hud">
+    <div class="brand"><a href="../../" style="color:var(--dim);text-decoration:none;font-family:'Noto Sans KR';font-size:12px;font-weight:700;letter-spacing:2px;display:block">← HIDDEN NOTE · NOTE 01</a>퍼니보드 사건 파일 <small>보드게임 카페의 마지막 손님</small></div>
+    <div class="spacer"></div>
+    <div class="stat time" id="stTime">남은 조사 시간<b id="tLeft">80분</b></div>
+    <div class="stat">발견한 단서<b id="cCount">0</b></div>
+    <button class="btn" id="btnHelp" title="게임 방법">? 방법</button>
+    <button class="btn" id="btnTalk">심문하기</button>
+    <button class="btn primary" id="btnAccuse">범인 지목</button>
+  </header>
+  <div class="layout">
+    <main>
+      <div class="locs" id="locs"></div>
+      <div class="scene-wrap">
+        <div id="scene"></div>
+        <div class="scene-cap"><span id="locDesc"></span><span>물건 클릭 = 조사 (2분) · 심문 3분 · 비번 오답 1분</span></div>
+      </div>
+    </main>
+    <aside class="side">
+      <div class="card">
+        <h3>수사 수첩</h3>
+        <div class="clue-list" id="clues"><div class="empty">아직 찾은 단서가 없습니다.</div></div>
+        <div class="hint">단서를 누르면 다시 볼 수 있어요. 심문할 때 증거로 제시할 수 있습니다.</div>
+      </div>
+      <div class="card">
+        <h3>사건 요약</h3>
+        <div style="font-size:13px;color:var(--dim)">어젯밤 21:30~22:20 사이, 쇼케이스 속 한정판 도금 미플 20개가 금색 물감을 칠한 가짜로 바뀌었다. 그 시간 카페에 있던 사람은 넷.<br><br>범인을 지목하고, 범행 시각과 그 근거를 제시하라.</div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<div class="modal-bg" id="mbg"><div class="modal" id="modal"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ===================== DATA ===================== */
+const TOTAL_TIME = 80;
+
+const CLUES = {
+  c_frame:{cat:'현장',title:'벽의 액자',text:'',photo:true},
+  c_calendar:{cat:'현장',title:'벽 달력',cal:true},
+  c_board:{cat:'현장',title:'화이트보드',text:'이번 주 할 일\n✔ 물티슈 주문\n✔ 젠가 블록 1개 분실 확인\n✔ 할인 이벤트 접시 정리\n☐ 화요일 서프라이즈 준비 🤫\n— 지아'},
+  c_dice:{cat:'현장',title:'할인 이벤트 접시',dice:true},
+  c_postit:{cat:'현장',title:'키보드 밑 쪽지',postit:true},
+  c_check:{cat:'기록',title:'마감 체크리스트',text:'작성: 서지아\n\n22:10 쇼케이스 잠금 확인 ✔ (자물쇠 당겨봄)\n22:15 사장님 선물 포장 완료 ✔\n22:20 출입문 잠금 ✔'},
+  c_glitter:{cat:'물증',title:'반납된 확장판 상자',text:'윤미래가 21:52에 반납한 《드래곤 바자르 확장: 사막의 시장》.\n뚜껑 모서리에 반짝이는 금색 알갱이가 묻어 있다.'},
+  c_gift:{cat:'물증',title:'포장된 생일 선물',text:'금박지로 포장된 상자. 만지자 금박 가루가 손에 묻는다.\n안에는 금색으로 칠한 드래곤 피규어와 카드 한 장.\n“생일 축하해요, 사장님! — 건우”\n피규어 받침 밑면에 작은 스티커: MG-03'},
+  c_key:{cat:'물증',title:'계산대 서랍의 열쇠',text:'서랍은 칸이 두 개다.\n왼쪽 칸: 영수증 롤 몇 개.\n오른쪽 칸: 쇼케이스 열쇠, 카드 영수증 몇 장.\n\n(열쇠를 손에 넣었다)'},
+  c_water:{cat:'현장',title:'정수기',text:'손님용 정수기. 종이컵 디스펜서가 붙어 있다. 컵이 몇 개 빠져 있다.'},
+  c_cctv:{cat:'기록',title:'입구 CCTV 출입 기록',html:`<table><tr><th>시각</th><th>기록</th></tr>
+<tr><td>17:00</td><td>서지아 출근</td></tr>
+<tr><td>18:40</td><td>박태수 입장</td></tr>
+<tr><td>19:00</td><td>손님 2명 입장</td></tr>
+<tr><td>21:20</td><td>손님 2명 퇴장</td></tr>
+<tr><td>21:30</td><td>사장 한도윤 퇴장</td></tr>
+<tr><td>21:40</td><td>최건우 입장</td></tr>
+<tr><td>21:47</td><td>최건우 퇴장</td></tr>
+<tr><td>21:50</td><td>윤미래 입장</td></tr>
+<tr><td>21:58</td><td>윤미래 퇴장</td></tr>
+<tr><td>22:05</td><td>박태수 퇴장</td></tr>
+<tr><td>22:20</td><td>서지아 퇴장, 출입문 잠금</td></tr>
+<tr><td>~ 다음 날 10:00</td><td>출입 없음</td></tr></table>`},
+  c_cctvphoto:{cat:'기록',title:'CCTV 캡처 화면',text:'18:40 박태수 — 빨간 체크 남방\n21:30 한도윤 — 회색 니트\n21:40 최건우 — 초록 작업 앞치마\n21:50 윤미래 — 베이지 코트'},
+  c_showapp:{cat:'기록',title:'쇼케이스 앱 기록',html:`<table><tr><th>시각</th><th>기록</th></tr>
+<tr><td>21:27</td><td>열림</td></tr><tr><td>21:29</td><td>닫힘</td></tr>
+<tr><td>21:31</td><td>⚠ 기기 연결 끊김</td></tr>
+<tr><td>다음 날 09:58</td><td>기기 다시 연결됨</td></tr><tr><td>다음 날 10:02</td><td>열림</td></tr></table>`},
+  c_chat:{cat:'기록',title:'단골 단톡방',html:`<div style="background:#1f2229;color:#eee;border-radius:10px;padding:10px 12px;margin:-4px -4px 6px"><div style="display:flex;justify-content:space-between;font-weight:700"><span>퍼니보드 단골방</span><span style="color:#8a8f99;font-weight:400;font-size:12px">👥 13</span></div><div style="margin-top:6px;font-size:11px;color:#aab;line-height:1.7">대화상대: 한도윤(방장) · 김하늘 · 정민석 · 이소라 · 박태수 · 윤미래 · 오세진 · 강다은 · 문준호 · 백유나 · 송지후 · 임채원 · 홍기범</div></div>`},
+  c_sms:{cat:'기록',title:'서지아의 문자',text:'사건 사흘 전, 서지아 → 한도윤\n“사장님 지난달 알바비 아직 안 들어왔어요 ㅠㅠ 이번 주도 안 되면 저 진짜 곤란해요.”\n\n한도윤: “미안 ㅠ 이번 주 안에 꼭 줄게”'},
+  c_market:{cat:'기록',title:'중고장터 캡처',text:'사장 친구가 보내준 캡처. 사건 당일 22:30 게시글.\n\n작성자 “MR_store”:\n“드래곤 바자르 초판 한정판 풀세트 시세 아시는 분? 오늘 실물 보고 왔어요.”\n\n첨부 사진: 쇼케이스 유리에 바짝 붙어서 찍은 한정판 상자. 사진 정보상 촬영 시각 21:55.'},
+  c_beepnote:{cat:'현장',title:'쇼케이스 안내문',text:'“이 쇼케이스는 문을 열면 ‘띡’ 소리가 나고, 열림·닫힘이 사장님 휴대폰 앱에 기록됩니다.”'},
+  c_fake:{cat:'물증',title:'가짜 미플 20개',text:'한정판 상자 속 미플 20개. 모두 금색을 칠한 나무 미플이다.\n세게 문지르면 금색이 아주 살짝 묻는다.'},
+  c_appraisal:{cat:'물증',title:'가짜 미플 감정 결과',text:'사장님 지인 감정사의 답장:\n\n• 칠한 지 최소 이틀은 지났다.\n• 물감: 메탈골드 MG-07\n• 바탕: 《드래곤 바자르》 일반판 정품 나무 미플'},
+  c_restroom:{cat:'현장',title:'화장실 문',text:'화장실 문을 열자 경첩에서 “끼이익—” 소리가 난다.'},
+  c_cup:{cat:'물증',title:'쓰레기통 속 종이컵',text:'쇼케이스 옆 쓰레기통. 비닐은 새것이고, 안에는 종이컵 하나뿐이다. 바닥에 물이 조금 남아 있다.'},
+  c_boxB:{cat:'물증',title:'B테이블 일반판 상자',text:'B테이블 위 《드래곤 바자르》 일반판. 미플을 세어 보니 20개. 금색 흔적은 없다.'},
+  c_sheet:{cat:'기록',title:'솔플 기록지',html:`<table><tr><th>판</th><th>시작</th><th>종료</th></tr>
+<tr><td>1판</td><td>18:50</td><td>19:40</td></tr>
+<tr><td>2판</td><td>19:45</td><td>20:40</td></tr>
+<tr><td>3판</td><td>20:45</td><td>21:41</td></tr>
+<tr><td>4판</td><td>21:47</td><td>(미완료)</td></tr></table>`},
+  c_shelf:{cat:'현장',title:'게임 선반',text:'《드래곤 바자르》 일반판 자리는 한 칸뿐. 비어 있고 “대여 중 → B테이블” 표가 꽂혀 있다.'},
+  c_tape:{cat:'현장',title:'뒤집힌 테이프 상자',text:'창고 선반 아래. 테이프 상자가 뒤집혀 있고 테이프 몇 개가 바닥에 굴러다닌다. 급하게 뒤진 흔적이다.'},
+  c_foil:{cat:'물증',title:'금박 포장지 롤',text:'금박 포장지 롤. 끝부분이 잘려 있다. 만지자 금박 가루가 손에 묻는다.'},
+  c_wall:{cat:'현장',title:'창고 벽',text:'벽을 두드리니 통통 울린다. 얇은 합판 한 장이다.'},
+  c_t_seo:{cat:'증언',title:'서지아: “띡 소리를 들었어요”',text:'“‘띡’ 소리요? 아, 들었어요! 건우 사장님 테이프 찾느라 창고에 있을 때 벽 너머에서요. 손님이 화장실 문 여는 소리인 줄 알았어요.”'},
+  c_t_choi:{cat:'증언',title:'최건우: “누가 물을 떠 갔어요”',text:'“아, 지아 씨 창고 간 사이에 손님 한 분이 정수기에서 물을 떠서 안쪽으로 걸어갔어요. 얼굴은 못 봤어요. 빨간 옷이었던 것 같은데…”'},
+  c_ledger:{cat:'기록',title:'공방 판매 장부',text:'최건우가 보여준 공방 판매 장부 (최근 일주일)\n\n7일 전 — 프라이머 1 / 카드 / 이○○\n6일 전 — MG-07 소용량 1, 세필붓 1 / 현금 / (이름 없음) 메모: “미플 칠한다고 함”\n5일 전 — MG-03 대용량 1 / 공방 작업용\n4일 전 — MG-21 레드 1 / 카드 / 김○○\n2일 전 — 바니시 1 / 현금 / (이름 없음)'},
+  c_t_park:{cat:'증언',title:'박태수: 번복',text:'“…물 한 잔 떠 간 게 죄예요? 마시면서 화장실 쪽에 잠깐 갔다 온 거예요. 아까는 기억이 안 났어요.”'},
+  c_t_yoon:{cat:'증언',title:'윤미래: 인정',text:'“…네, 사진 찍은 거 맞아요. 시세가 궁금했어요. 21시 55분쯤 유리에 붙어서 찍었는데 그때 이미 잠겨 있었고, 저는 손도 안 댔어요. 몰랐다고 한 건… 창피해서요.”'},
+};
+
+const PHOTO=`<rect width="160" height="106" fill="#9ec9e6"/><rect y="88" width="160" height="18" fill="#c9b79a"/>
+<rect x="18" y="18" width="124" height="72" fill="#7a4e33"/><rect x="34" y="24" width="92" height="17" rx="2" fill="#f0c96b"/>
+<text x="80" y="36" font-size="9" text-anchor="middle" fill="#3a2a1a" font-weight="700">FUNNY BOARD</text>
+<rect x="28" y="48" width="34" height="26" fill="#cfe3ee"/><rect x="98" y="48" width="34" height="26" fill="#cfe3ee"/><rect x="68" y="50" width="24" height="40" fill="#4a2f1f"/>
+<line x1="14" y1="12" x2="22" y2="40" stroke="#666" stroke-width=".6"/><circle cx="14" cy="10" r="6" fill="#e74c3c"/>
+<line x1="146" y1="14" x2="138" y2="40" stroke="#666" stroke-width=".6"/><circle cx="146" cy="12" r="6" fill="#3498db"/><circle cx="153" cy="22" r="5" fill="#f1c40f"/>
+${[[34,'#c0392b'],[60,'#7f8c8d'],[100,'#8e44ad'],[126,'#27ae60']].map(([x,c])=>`<circle cx="${x}" cy="66" r="6" fill="#f2d1b3"/><rect x="${x-7}" y="72" width="14" height="20" rx="4" fill="${c}"/>`).join('')}
+`;
+const PHOTO_DATE=`<text x="155" y="102" font-size="8" text-anchor="end" fill="#ff8c3a" font-family="monospace" font-weight="700">2019.04.12</text>`;
+const CHAT_HTML = `<div class="chat">
+<div class="day">7일 전</div>
+<div class="msg"><b>한도윤</b>다음 주 월요일 하루, 드래곤 바자르 초판 한정판 전시합니다!</div>
+<div class="msg"><b>김하늘</b>와 실물 처음 보겠다</div>
+<div class="msg"><b>정민석</b>그날 야근이라 ㅠㅠ</div>
+<div class="day">5일 전</div>
+<div class="msg"><b>박태수</b>요즘 새 취미 ㅋㅋ<div style="margin-top:6px;border-radius:8px;overflow:hidden;max-width:220px"><svg viewBox="0 0 160 110" style="display:block;width:100%;filter:blur(.5px) saturate(.75)">
+<rect width="160" height="110" fill="#5b4636"/><rect x="0" y="62" width="160" height="48" fill="#4a382b"/>
+<rect x="8" y="10" width="72" height="54" fill="#d9d2c3" transform="rotate(-4 44 37)"/><path d="M14 22 h50 M14 30 h44 M14 38 h52" stroke="#b9b0a0" stroke-width="2" transform="rotate(-4 44 37)"/>
+<ellipse cx="118" cy="40" rx="17" ry="6" fill="#2c2c2c"/><rect x="101" y="40" width="34" height="22" fill="#3a3a3a"/><ellipse cx="118" cy="40" rx="14" ry="4.5" fill="#a88b4a"/>
+<rect x="60" y="74" width="78" height="4" rx="2" fill="#c8a06a" transform="rotate(-18 99 76)"/><path d="M134 62 l8 -3 l-2 5 z" fill="#333"/>
+${[[30,92,'#c9a77a'],[50,94,'#c9a77a'],[72,90,'#b8964e']].map(([x,y,c])=>`<path d="M${x} ${y} m-7 0 l3 -9 a4 4 0 1 1 8 0 l3 9 z" fill="${c}"/>`).join('')}
+<circle cx="95" cy="98" r="2" fill="#a88b4a" opacity=".7"/><circle cx="102" cy="95" r="1.4" fill="#a88b4a" opacity=".6"/>
+</svg></div></div>
+<div class="msg"><b>이소라</b>오 이거 뭐예요? 귀엽다</div>
+<div class="msg"><b>정민석</b>레고?</div>
+<div class="msg"><b>박태수</b>비밀 ㅋㅋ</div>
+<div class="day">3일 전</div>
+<div class="msg"><b>김하늘</b>금요일 테라포밍 마스 하실 분~</div>
+<div class="msg"><b>이소라</b>저요저요</div>
+<div class="day">사건 당일</div>
+<div class="msg"><b>한도윤</b>오늘 전시 시작! 구경 오세요~<i>18:00</i></div>
+<div class="msg"><b>윤미래</b>오 퇴근하고 보러 갈게요!<i>18:03</i></div>
+<div class="msg"><b>이소라</b>사진 올려주세요 ㅠ<i>18:05</i></div>
+<div class="msg"><b>박태수</b>도금 미플 20개 다 들어 있는 거 맞죠?<i>18:12</i></div>
+<div class="msg"><b>한도윤</b>ㅇㅇ 꽉 채워서<i>18:13</i></div>
+<div class="msg"><b>김하늘</b>내일 사장님 생일인 거 다들 알죠? 케이크 사 갈게요<i>19:30</i></div>
+</div>`;
+CLUES.c_chat.html += CHAT_HTML;
+
+const SUSPECTS = {
+  seo:{name:'서지아',sub:'알바생 · 24',color:'#d39b8b',
+    base:'“21시 40분쯤 건우 사장님이 사장님 생일 선물을 맡기러 오셨어요. 상자 봉할 테이프가 필요하다고 해서 창고에 찾으러 갔는데 3~4분 걸렸어요. 나와 보니 건우 사장님은 계산대 앞에 그대로 계셨고요.\n21시 50분에 미래 씨가 와서 같이 반납 처리했고, 그 뒤엔 계산대에서 선물 포장했어요. 태수 씨는 22시 5분에 계산하고 나갔고, 저는 22시 10분에 쇼케이스 자물쇠 당겨서 확인하고 퇴근했어요.”',
+    ev:{
+      c_showapp:{text:'“연결 끊김이요? 와이파이가 밤마다 가끔 끊겨요. 사장님이 공유기 바꾼다고 하셨는데…”'},
+      c_wall:{text:CLUES.c_t_seo.text,add:'c_t_seo'},
+      c_fake:{text:CLUES.c_t_seo.text,add:'c_t_seo'},
+      c_beepnote:{text:CLUES.c_t_seo.text,add:'c_t_seo'},
+      c_sms:{text:'“…네, 알바비 때문에 속상했던 건 맞아요. 그래도 사장님 물건에 손대진 않아요. 저 혼자 있던 22시 넘어서 쇼케이스가 열린 기록 있어요? 없잖아요.”'},
+      c_key:{text:'“열쇠요? 저는 항상 안쪽에서 왼쪽 칸에 넣어요. 오른쪽 칸은 손님 쪽에서 닿는 칸이라 거기 넣을 일이 없어요. 계산할 때 손님이 영수증 꺼내 가는 칸이에요.”'},
+      c_check:{text:'“자물쇠만 당겨 봤어요. 잠겨 있었으니까요. 상자 안까지 열어 보진 않았어요.”'},
+      c_gift:{text:'“그 금박 가루 제 거예요. 사장님 선물 포장하느라 온몸에 묻었어요.”'},
+      c_foil:{text:'“그 포장지로 선물 쌌어요. 창고에서 테이프 찾다가 같이 들고 나왔어요.”'},
+      c_shelf:{cat:'현장',title:'게임 선반',text:'《드래곤 바자르》 일반판 자리는 한 칸뿐. 비어 있고 “대여 중 → B테이블” 표가 꽂혀 있다.'},
+  c_tape:{text:'“네, 그거 제가 뒤진 거예요. 테이프가 안 보여서 급하게 엎었어요.”'},
+      c_cup:{text:'“종이컵이요? 저는 마감 때 정수기 컵 안 썼어요. 손님 중 누가 쓴 거겠죠.”'},
+    },
+    def:'“그건 잘 모르겠어요.”'},
+  park:{name:'박태수',sub:'단골 수집가 · 38',color:'#c8553d',
+    base:'“저녁 내내 일반판으로 혼자 솔플만 했어요. 기록지 보시면 알 거예요. 자리 비운 건 22시 넘어서 계산 직전에 화장실 한 번뿐이에요. 21시 40분쯤엔 3판 끝내고 테이블에서 4판 세팅하고 있었고요.\n한정판 탐났던 건 사실이지만 남의 걸 훔칠 사람은 아니에요. 도색 같은 건 해본 적도 없어요.”',
+    ev:{
+      c_sheet:{text:'“3판 끝나고 4판 세팅하느라 시간 좀 걸린 거예요. 그게 뭐 이상해요?”'},
+      c_t_choi:{text:CLUES.c_t_park.text,add:'c_t_park'},
+      c_cup:{text:'“종이컵이 저랑 무슨 상관이에요? 그 카페에 컵 쓰는 사람이 저뿐인가요.”'},
+      c_chat:{text:'“새 취미요? 아, 그건… 레고 얘기였어요. 도색 아니에요.”'},
+      c_ledger:{text:'“현금으로 물감 산 사람이 저라는 증거 있어요? 그 공방 손님이 한둘이겠어요?”'},
+      c_appraisal:{text:'“물감 번호 같은 거 저는 몰라요.”'},
+      c_boxB:{text:'“보세요, 제가 쓴 상자 미플 다 그대로잖아요. 저는 아니에요.”'},
+      c_key:{text:'“열쇠는 손도 안 댔어요. 계산할 때 영수증 받은 것밖에 없어요.”'},
+      c_cctvphoto:{text:'“네, 그날 체크 남방 입고 왔어요. 그게 왜요?”'},
+    },
+    def:'“그게 저랑 무슨 상관이죠?”'},
+  yoon:{name:'윤미래',sub:'단골 · 31',color:'#b59ad6',
+    base:'“확장판 반납만 하고 금방 나왔어요. 쇼케이스 쪽엔 가지도 않았고요. 솔직히 그날 한정판이 카페에 있는 줄도 몰랐어요.”',
+    ev:{
+      c_chat:{text:'“…알았어요. 보고 싶어서 간 거 맞아요. 그래도 저는 아무것도 안 했어요.”'},
+      c_market:{text:CLUES.c_t_yoon.text,add:'c_t_yoon'},
+      c_cctv:{text:'“저는 21시 50분에 왔어요. 그 전엔 카페에 없었어요.”'},
+      c_glitter:{text:'“그거 제 네일 가루예요. 이번 주에 반짝이 붙였거든요.”'},
+      c_cctvphoto:{text:'“네일 예쁘죠? 금색 글리터예요.”'},
+    },
+    def:'“그건 저도 처음 들어요.”'},
+  choi:{name:'최건우',sub:'옆 공방 사장 · 45',color:'#7fa36b',
+    base:'“사장님 생일 선물로 드래곤 피규어를 칠해서 지아 씨한테 맡기러 갔어요. 상자 봉할 테이프를 기다리는 동안 계산대 앞에 서 있었고, 받자마자 나왔어요.\n저는 보드게임을 잘 몰라서 한정판이 뭔지도 몰랐어요. 그 단톡방에도 없고요.”',
+    ev:{
+      c_cup:{text:CLUES.c_t_choi.text,add:'c_t_choi'},
+      c_water:{text:CLUES.c_t_choi.text,add:'c_t_choi'},
+      c_appraisal:{text:'“MG-07이요? 저는 작업할 때 03번만 써요. 07번은 가게에서 파는 거고요. 장부 한번 보실래요?”',add:'c_ledger'},
+      c_fake:{text:'“음… 붓질이 거치네요. 저라면 이렇게는 안 칠해요.”'},
+      c_gift:{text:'“그 피규어 제가 칠한 거예요. 공방에서 늘 쓰는 물감으로요.”'},
+      c_showapp:{text:'“앱 기록 같은 건 제가 알 수가 없죠. 저는 7분 정도 계산대 앞에만 있었어요.”'},
+      c_key:{text:'“서랍이요? 저는 계산대 바깥에 서 있었어요. 안쪽 칸엔 손이 안 닿죠.”'},
+    },
+    def:'“글쎄요, 그건 제 분야가 아니라서요.”'},
+};
+
+/* Hotspot steps: {req, lockText, lockCost, cost, text, clues, puzzle, go, action} */
+const HS = [
+  // COUNTER
+  {id:'frame',loc:'counter',x:40,y:50,w:130,h:95,label:'액자',steps:[{cost:2,text:'',clues:['c_frame']}]},
+  {id:'calendar',loc:'counter',x:195,y:40,w:95,h:120,label:'달력',steps:[{cost:2,text:'',clues:['c_calendar']}]},
+  {id:'board',loc:'counter',x:325,y:35,w:220,h:120,label:'화이트보드',steps:[{cost:2,text:'직원용 화이트보드다.',clues:['c_board']}]},
+  {id:'dice',loc:'counter',x:626,y:208,w:80,h:32,label:'이벤트 접시',steps:[{cost:2,text:'계산대 끝의 작은 접시를 살펴봤다.',clues:['c_dice']}]},
+  {id:'dvr',loc:'counter',x:118,y:196,w:100,h:44,label:'CCTV 녹화기',puzzle:{len:4,ans:'1117',title:'CCTV 녹화기',prompt:'관리자 비밀번호 4자리'},steps:[{cost:3,text:'녹화기 잠금이 풀렸다. 어젯밤 기록을 돌려 봤다.',clues:['c_cctv','c_cctvphoto']}]},
+  {id:'keyboard',loc:'counter',x:226,y:214,w:90,h:24,label:'키보드',steps:[{cost:2,text:'평범한 키보드다. 키 몇 개가 닳아 있을 뿐 특별한 건 없다.',clues:[]}]},
+  {id:'postit',name:'키보드 밑',loc:'counter',x:300,y:238,w:22,h:12,hidden:true,steps:[{cost:2,text:'',clues:['c_postit']}]},
+  {id:'clip',loc:'counter',x:330,y:196,w:46,h:44,label:'마감 체크리스트',steps:[{cost:2,text:'계산대 위 클립보드에 마감 체크리스트가 끼워져 있다.',clues:['c_check']}]},
+  {id:'retbox',loc:'counter',x:384,y:200,w:86,h:40,label:'반납된 게임 상자',steps:[{cost:2,text:'어젯밤 반납된 확장판 상자를 살펴봤다.',clues:['c_glitter']}]},
+  {id:'phone',loc:'counter',x:482,y:212,w:50,h:28,label:'사장님 휴대폰',puzzle:{len:4,ans:'0412',title:'사장님 휴대폰',prompt:'잠금 비밀번호 4자리'},phone:true},
+  {id:'gift',loc:'counter',x:548,y:184,w:72,h:56,label:'포장된 선물',steps:[{cost:2,text:'금박지로 포장된 선물을 조심스럽게 열어 봤다.',clues:['c_gift']}]},
+  {id:'drawer',loc:'counter',x:500,y:300,w:160,h:46,label:'계산대 서랍',steps:[{cost:2,text:'계산대 서랍 두 칸을 모두 열어 봤다.',clues:['c_key']}]},
+  {id:'water',loc:'counter',x:636,y:94,w:70,h:92,label:'정수기',steps:[{cost:2,text:'계산대 뒤 정수기를 살펴봤다.',clues:['c_water']}]},
+  // TABLES
+  {id:'shelf',loc:'tables',x:290,y:30,w:240,h:150,label:'게임 선반',steps:[{cost:2,text:'인기 게임들이 빼곡히 꽂혀 있다. 《드래곤 바자르》 자리는 한 칸뿐이고, 지금은 비어 있다. 칸 앞에 “대여 중 → B테이블” 표가 꽂혀 있다.',clues:['c_shelf']}]},
+  {id:'window',loc:'tables',x:30,y:40,w:210,h:120,label:'창문',steps:[{cost:2,text:'창문은 안에서 잠겨 있고, 방범창도 멀쩡하다. 여기로 드나든 사람은 없다.',clues:[]}]},
+  {id:'tableA',loc:'tables',x:60,y:250,w:170,h:80,label:'A테이블',steps:[{cost:2,text:'누가 두고 간 라이터가 하나 있다. 낮 손님 물건 같다. 사건과는 관계없어 보인다.',clues:[]}]},
+  {id:'tableB',loc:'tables',x:300,y:240,w:200,h:90,label:'B테이블',steps:[{cost:2,text:'B테이블 위 일반판 상자를 열어 미플을 세어 봤다. 상자를 들자 그 밑에 종이 한 장이 깔려 있는 게 보인다.',clues:['c_boxB']}]},
+  {id:'sheet',name:'상자 밑 종이',loc:'tables',x:440,y:300,w:44,h:18,hidden:true,show:()=>stepOf('tableB')>=1,steps:[{cost:2,text:'상자 밑에 깔려 있던 종이를 꺼냈다.',clues:['c_sheet']}]},
+  {id:'tableC',loc:'tables',x:570,y:250,w:170,h:80,label:'C테이블',steps:[{cost:2,text:'무너진 젠가 블록이 흩어져 있다. 낮에 치우지 못한 것 같다.',clues:[]}]},
+  {id:'plant',name:'화분',loc:'tables',x:740,y:170,w:50,h:100,hidden:true,steps:[{cost:2,text:'흙이 말라 있다. 물을 준 지 꽤 된 것 같다.',clues:[]}]},
+  // BACK
+  {id:'storeDoor',dial:true,loc:'back',x:50,y:70,w:150,h:300,label:'창고 문',puzzle:{len:3,ans:'416',title:'창고 문 자물쇠',prompt:'번호 자물쇠 3자리 · 위에서부터 다이얼 옆에 빨강, 노랑, 파랑 점이 하나씩 칠해져 있다.'},steps:[{cost:1,text:'창고 문이 열렸다.',clues:[],go:'storage'}]},
+  {id:'sign',loc:'back',x:250,y:78,w:220,h:30,label:'쇼케이스 안내문',steps:[{cost:2,text:'쇼케이스 위 안내문을 읽었다.',clues:['c_beepnote']}]},
+  {id:'showcase',loc:'back',x:250,y:115,w:220,h:230,label:'쇼케이스',steps:[
+    {req:'c_key',lockText:'유리문이 잠겨 있다. 열쇠가 있어야 열 수 있다.',lockCost:1,cost:2,text:'열쇠로 쇼케이스를 열었다. ‘띡’ 소리가 났다. 미플을 꺼내 유리 선반 아래 칸에 늘어놓았다.',clues:['c_fake']}]},
+  {id:'meeples',loc:'back',x:268,y:300,w:184,h:34,label:'꺼내 둔 가짜 미플',show:()=>stepOf('showcase')>=1,steps:[{cost:5,text:'미플 하나를 사진과 함께 사장님 지인 감정사에게 보내고 답을 기다렸다.',clues:['c_appraisal']}]},
+  {id:'wc',loc:'back',x:520,y:70,w:150,h:300,label:'화장실 문',steps:[{cost:2,text:'화장실 문을 열어 봤다.',clues:['c_restroom']}]},
+  {id:'trash',name:'쓰레기통',loc:'back',x:700,y:310,w:48,h:62,hidden:true,steps:[{cost:2,text:'구석 쓰레기통 안을 들여다봤다.',clues:['c_cup']}]},
+  // STORAGE
+  {id:'tape',loc:'storage',x:60,y:270,w:150,h:90,label:'선반 아래',steps:[{cost:2,text:'선반 아래를 살펴봤다.',clues:['c_tape']}]},
+  {id:'foil',loc:'storage',x:250,y:180,w:110,h:70,label:'포장지 롤',steps:[{cost:2,text:'포장지 더미를 살펴봤다.',clues:['c_foil']}]},
+  {id:'wall',loc:'storage',x:520,y:50,w:240,h:320,label:'안쪽 벽',steps:[{cost:2,text:'벽을 두드려 봤다. 통통 울린다.',clues:['c_wall']}]},
+  {id:'boxes',loc:'storage',x:250,y:280,w:200,h:90,label:'재고 상자',steps:[{cost:2,text:'게임 재고 상자들이다. 전부 비닐 포장 그대로다.',clues:[]}]},
+];
+
+const PHONE_APPS = [
+  {id:'app_show',name:'쇼케이스 앱',clue:'c_showapp'},
+  {id:'app_chat',name:'단골 단톡방',clue:'c_chat'},
+  {id:'app_sms',name:'문자',clue:'c_sms'},
+  {id:'app_photo',name:'받은 캡처',clue:'c_market'},
+];
+
+const LOCS = [
+  {id:'counter',name:'입구 · 계산대',desc:'입구 쪽 계산대. 정수기는 계산대 안쪽, 서랍 바로 뒤에 있다.'},
+  {id:'tables',name:'게임 테이블',desc:'테이블 세 개와 게임 선반.'},
+  {id:'back',name:'안쪽 복도',desc:'창고 문, 쇼케이스, 화장실 문이 나란히 있다.'},
+  {id:'storage',name:'창고',desc:'선반과 재고가 쌓인 좁은 창고.',lock:'storeDoor'},
+];
+
+/* ===================== STATE ===================== */
+let S;
+function reset(){
+  S={time:TOTAL_TIME,clues:[],seen:new Set(),step:{},solved:{},apps:{},heard:{},asked:{},loc:'counter',over:false,cur:'seo'};
+  render();
+}
+const stepOf=id=>S.step[id]||0;
+const has=c=>S.clues.includes(c);
+
+/* ===================== UI HELPERS ===================== */
+const $=s=>document.querySelector(s);
+function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),1800)}
+function modal(html){$('#modal').innerHTML=html;$('#mbg').classList.add('on');$('#modal').scrollTop=0}
+function closeM(){$('#mbg').classList.remove('on')}
+$('#mbg').addEventListener('click',e=>{if(e.target.id==="mbg"&&!S.over&&!(ACC&&ACC.forced))closeM()});
+
+function spend(n){
+  if(n<=0)return;
+  S.time=Math.max(0,S.time-n);renderHud();
+}
+function checkTime(){
+  if(S.time<=0&&!S.over){setTimeout(()=>{toast('조사 시간이 끝났습니다');openAccuse(true)},400);return true}
+  return false;
+}
+function addClues(list){
+  const fresh=[];
+  list.forEach(c=>{if(!has(c)){S.clues.push(c);fresh.push(c)}});
+  renderNotebook(fresh);
+  return fresh;
+}
+function calHTML(){
+  const notes={6:'<span style="color:#2b5bb5">보드겜 모임</span>',16:'<span class="stk" style="background:#f0c96b">★</span><span style="color:#b0463a">한정판 전시!</span>',17:'<span class="stk" style="background:#f7c1cf;color:#e75480">♥</span>',21:'<span style="color:#2b5bb5">재고 입고</span>',25:'<span style="color:#7a6a55">월세</span>'};
+  let cells='',day=1;
+  for(let i=0;i<35;i++){
+    if(i<0||day>30){cells+='<div class="cd e"></div>';continue}
+    const dow=i%7;
+    cells+=`<div class="cd"><b style="color:${dow===0?'#c0392b':dow===6?'#2b5bb5':'#2a221a'}">${day}</b>${notes[day]||''}</div>`;day++;
+  }
+  return `<div class="calv"><div class="calh"><span>2026</span>11월</div><div class="calw">${['일','월','화','수','목','금','토'].map((d,i)=>`<div style="color:${i===0?'#c0392b':i===6?'#2b5bb5':'#5a4a3a'}">${d}</div>`).join('')}</div><div class="calg">${cells}</div></div>`;
+}
+function dieSVG(col,n,pip){const P={1:[[2,2]],2:[[1,1],[3,3]],3:[[1,1],[2,2],[3,3]],4:[[1,1],[3,1],[1,3],[3,3]],5:[[1,1],[3,1],[2,2],[1,3],[3,3]],6:[[1,1],[3,1],[1,2],[3,2],[1,3],[3,3]]}[n];
+ return `<svg width="64" height="64" viewBox="0 0 40 40"><rect x="2" y="2" width="36" height="36" rx="7" fill="${col}"/>${P.map(([x,y])=>`<circle cx="${x*10}" cy="${y*10}" r="3.4" fill="${pip}"/>`).join('')}</svg>`}
+function clueBody(c){const d=CLUES[c];if(d.postit)return `<div class="paper" style="background:#3a2f28;text-align:center;padding:26px"><svg width="200" height="200" viewBox="0 0 100 100" style="transform:rotate(-6deg);filter:drop-shadow(0 4px 6px rgba(0,0,0,.4))"><rect x="5" y="5" width="90" height="90" fill="#f7dc6f"/><rect x="5" y="5" width="90" height="14" fill="#f4d03f"/>
+<path d="M50 74 C 20 56, 22 34, 36 34 C 44 34, 49 40, 50 45 C 51 40, 56 34, 64 34 C 78 34, 80 56, 50 74 Z" fill="none" stroke="#c0392b" stroke-width="3" stroke-linejoin="round"/>
+<path d="M30 86 l-14 0 m0 0 l5 -4 m-5 4 l5 4" stroke="#555" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg></div>`;if(d.cal)return calHTML();if(d.dice)return `<div class="paper" style="text-align:center"><div style="font-weight:700;margin-bottom:10px">“주사위 굴려서 6 나오면 음료 10% 할인!”</div><div style="display:inline-flex;gap:12px;background:#d9cdb4;border-radius:40px;padding:14px 22px">${dieSVG('#c0392b',4,'#fff')}${dieSVG('#e1b12c',1,'#fff')}${dieSVG('#2e6fb5',6,'#fff')}</div></div>`;if(d.photo)return `<div class="paper"><svg viewBox="0 0 160 106" style="width:100%;max-width:320px;display:block;margin:0 auto 8px;border:6px solid #8a6a3a">${PHOTO}${PHOTO_DATE}</svg></div>`;return d.html?`<div class="paper">${d.html}</div>`:`<div class="paper">${esc(d.text)}</div>`}
+function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;')}
+
+/* ===================== RENDER ===================== */
+function render(){renderHud();renderLocs();renderScene();renderNotebook([])}
+function renderHud(){
+  $('#tLeft').textContent=S.time+'분';
+  $('#stTime').classList.toggle('low',S.time<=15);
+  $('#cCount').textContent=S.clues.length;
+}
+function locOpen(l){return !l.lock||S.solved[l.lock]}
+function renderLocs(){
+  $('#locs').innerHTML=LOCS.map(l=>{
+    const open=locOpen(l);
+    return `<button class="loc ${S.loc===l.id?'on':''} ${open?'':'locked'}" data-loc="${l.id}">${open?'':'🔒 '}${l.name}</button>`}).join('');
+  document.querySelectorAll('.loc').forEach(b=>b.onclick=()=>{
+    const l=LOCS.find(x=>x.id===b.dataset.loc);
+    if(!locOpen(l)){toast('잠겨 있습니다. 안쪽 복도의 창고 문을 열어야 해요.');return}
+    S.loc=l.id;renderLocs();renderScene();
+  });
+}
+function renderScene(){
+  const l=LOCS.find(x=>x.id===S.loc);
+  $('#locDesc').textContent=l.desc;
+  const hs=HS.filter(h=>h.loc===S.loc&&(!h.show||h.show()));
+  const overlays=hs.map(h=>{
+    const done=isDone(h);
+    const cls=h.hidden?'hid':'vis';
+    return `<rect class="hs ${cls} ${done?'done':''}" data-hs="${h.id}" x="${h.x}" y="${h.y}" width="${h.w}" height="${h.h}" rx="6">${h.hidden?'':`<title>${h.label}</title>`}</rect>`}).join('');
+  $('#scene').innerHTML=`<svg viewBox="0 0 800 450" xmlns="http://www.w3.org/2000/svg">${SCENES[S.loc]()}${overlays}</svg>`;
+  document.querySelectorAll('.hs').forEach(r=>r.onclick=()=>investigate(HS.find(h=>h.id===r.dataset.hs)));
+}
+function isDone(h){
+  if(h.phone)return !!S.solved[h.id];
+  return stepOf(h.id)>=h.steps.length;
+}
+function renderNotebook(fresh){
+  const el=$('#clues');
+  if(!S.clues.length){el.innerHTML='<div class="empty">아직 찾은 단서가 없습니다.</div>';return}
+  el.innerHTML=S.clues.map(c=>`<button class="clue-item ${fresh.includes(c)?'new':''}" data-c="${c}"><span class="cat">${CLUES[c].cat}</span>${CLUES[c].title}</button>`).join('');
+  el.querySelectorAll('.clue-item').forEach(b=>b.onclick=()=>{
+    const c=b.dataset.c;
+    modal(`<h2>${CLUES[c].title}</h2>${clueBody(c)}<div class="actions"><button class="btn" onclick="closeM()">닫기</button></div>`);
+  });
+  renderHud();
+}
+
+/* ===================== INVESTIGATE ===================== */
+function investigate(h){
+  if(S.over)return;
+  if(h.puzzle&&!S.solved[h.id]){if(h.phone)openPhoneLock(h);else if(h.dial)openDialLock(h);else openPad(h);return}
+  if(h.phone){openPhone();return}
+  const i=stepOf(h.id);
+  if(i>=h.steps.length){
+    // already done: show last text, free
+    const st=h.steps[h.steps.length-1];
+    if(st.go){S.loc=st.go;renderLocs();renderScene();return}
+    const cl=h.steps.flatMap(s=>s.clues);
+    modal(`<h2>${h.name||h.label}</h2><div class="body">이미 조사한 곳이다.</div>${cl.map(clueBody).join('')}<div class="actions"><button class="btn" onclick="closeM()">닫기</button></div>`);
+    return;
+  }
+  const st=h.steps[i];
+  if(st.req&&!has(st.req)){
+    spend(st.lockCost||0);
+    modal(`<h2>${h.name||h.label}</h2><div class="body">${st.lockText}</div><div class="actions"><button class="btn" onclick="closeM()">닫기</button></div>`);
+    checkTime();return;
+  }
+  spend(st.cost);
+  S.step[h.id]=i+1;
+  if(st.go){closeM();S.loc=st.go;renderLocs();renderScene();toast(st.text);checkTime();return}
+  const fresh=addClues(st.clues);
+  modal(`<h2>${h.name||h.label}</h2><div class="body">${st.text}</div>${st.clues.map(clueBody).join('')}${fresh.length?`<div class="newtag">새 단서 ${fresh.length}개를 수첩에 적었다.</div>`:''}<div class="actions"><button class="btn primary" onclick="closeM()">확인</button></div>`);
+  renderScene();checkTime();
+}
+
+/* ===================== KEYPAD ===================== */
+let pad={h:null,val:''};
+function openPad(h){
+  pad={h,val:''};
+  modal(`<h2>${h.puzzle.title}</h2><div class="body" style="color:var(--dim);font-size:13px">${h.puzzle.prompt}<br>틀릴 때마다 1분이 지나갑니다.</div>
+  <div class="pin" id="pin">${'<span></span>'.repeat(h.puzzle.len)}</div>
+  <div class="keypad">${[1,2,3,4,5,6,7,8,9].map(n=>`<button data-k="${n}">${n}</button>`).join('')}<button data-k="del">⌫</button><button data-k="0">0</button><button data-k="ok" style="color:var(--gold2)">OK</button></div>
+  <div class="actions"><button class="btn" onclick="closeM()">그만두기</button></div>`);
+  document.querySelectorAll('.keypad button').forEach(b=>b.onclick=()=>padKey(b.dataset.k));
+}
+function padKey(k){
+  const L=pad.h.puzzle.len;
+  if(k==='del')pad.val=pad.val.slice(0,-1);
+  else if(k==='ok'){submitPad();return}
+  else if(pad.val.length<L)pad.val+=k;
+  document.querySelectorAll('#pin span').forEach((s,i)=>s.textContent=pad.val[i]||'');
+  if(pad.val.length===L)setTimeout(submitPad,150);
+}
+function submitPad(){
+  const h=pad.h;if(pad.val.length<h.puzzle.len)return;
+  if(pad.val===h.puzzle.ans){
+    S.solved[h.id]=true;toast('잠금 해제!');
+    if(h.phone){renderScene();openPhone();return}
+    renderLocs();investigate(h);
+  }else{
+    spend(1);const p=$('#pin');p.classList.remove('shake');void p.offsetWidth;p.classList.add('shake');
+    pad.val='';document.querySelectorAll('#pin span').forEach(s=>s.textContent='');
+    if(checkTime())return;
+  }
+}
+
+/* ===================== DIAL LOCK ===================== */
+let dial=[0,0,0];
+function openDialLock(h){
+  pad={h,val:''};dial=[0,0,0];
+  const cols=['#c0392b','#e1b12c','#2e6fb5'];
+  modal(`<h2>${h.puzzle.title}</h2>
+  <div class="lockwrap" id="lockwrap"><div class="shackle" id="shackle"></div><div class="lbody">
+  ${cols.map((c,i)=>`<div class="drow"><span class="ddot" style="background:${c}"></span><div class="dwheel" data-i="${i}" id="dw${i}"></div><div class="darr"><button data-i="${i}" data-d="1">▲</button><button data-i="${i}" data-d="-1">▼</button></div></div>`).join('')}
+  </div></div>
+  <div class="actions"><button class="btn" onclick="closeM()">그만두기</button><button class="btn primary" id="pull">당겨서 열기</button></div>`);
+  drawDial();
+  document.querySelectorAll('.darr button').forEach(b=>b.onclick=()=>{const i=+b.dataset.i;dial[i]=(dial[i]+ +b.dataset.d+10)%10;drawDial()});
+  document.querySelectorAll('.dwheel').forEach(w=>w.addEventListener('wheel',e=>{e.preventDefault();const i=+w.dataset.i;dial[i]=(dial[i]+(e.deltaY<0?1:-1)+10)%10;drawDial()},{passive:false}));
+  $('#pull').onclick=pullLock;
+}
+function drawDial(){dial.forEach((v,i)=>{$('#dw'+i).innerHTML=`<div class="num prev">${(v+1)%10}</div><div class="num cur">${v}</div><div class="num next">${(v+9)%10}</div>`})}
+function pullLock(){
+  const h=pad.h;
+  if(dial.join('')===h.puzzle.ans){$('#shackle').classList.add('open');S.solved[h.id]=true;setTimeout(()=>{toast('자물쇠가 열렸다!');renderLocs();investigate(h)},500)}
+  else{spend(1);toast('꿈쩍도 하지 않는다 (1분 경과)');const w=$('#lockwrap');w.classList.remove('shake');void w.offsetWidth;w.classList.add('shake');checkTime()}
+}
+
+/* ===================== PHONE ===================== */
+const LOCK_ICON='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>';
+function phoneBar(){return '<div class="pnotch"></div><div class="pbar"><span>10:07</span><span>▂▄▆ 46%</span></div>'}
+function openPhoneLock(h){
+  pad={h,val:''};
+  modal(`<h2>사장님 휴대폰</h2><div class="pfr" id="pfr"></div><div class="actions"><button class="btn" onclick="closeM()">내려놓기</button></div>`);
+  lockScreen();
+}
+function lockScreen(){
+  $('#pfr').innerHTML=`<div class="pscr"><svg class="pbg" viewBox="0 -150 160 320" preserveAspectRatio="xMidYMid slice"><rect y="-150" width="160" height="160" fill="#9ec9e6"/>${PHOTO}<rect y="100" width="160" height="70" fill="#c9b79a"/></svg>${phoneBar()}
+  <div class="pdate">11월 17일 화요일</div><div class="pclock">10:07</div>
+  <div class="pnoti"><b>단골방</b>새 메시지 6개</div>
+  <button class="plock" id="plock">${LOCK_ICON}</button><div class="pbottom"></div></div>`;
+  $('#plock').onclick=pinScreen;
+}
+function pinScreen(){
+  pad.val='';
+  $('#pfr').innerHTML=`<div class="pscr"><svg class="pbg blur" viewBox="0 -150 160 320" preserveAspectRatio="xMidYMid slice"><rect y="-150" width="160" height="160" fill="#9ec9e6"/>${PHOTO}<rect y="100" width="160" height="70" fill="#c9b79a"/></svg>${phoneBar()}
+  <div class="ptitle">암호 입력</div><div class="pdots" id="pdots">${'<i></i>'.repeat(4)}</div>
+  <div class="pkeys">${[1,2,3,4,5,6,7,8,9].map(n=>`<button data-k="${n}">${n}</button>`).join('')}<button class="blank"></button><button data-k="0">0</button><button data-k="del" style="font-size:16px">⌫</button></div>
+  <button class="pcancel" id="pcancel">취소</button></div>`;
+  document.querySelectorAll('.pkeys button[data-k]').forEach(b=>b.onclick=()=>phoneKey(b.dataset.k));
+  $('#pcancel').onclick=lockScreen;
+}
+function phoneKey(k){
+  if(k==='del')pad.val=pad.val.slice(0,-1);else if(pad.val.length<4)pad.val+=k;
+  document.querySelectorAll('#pdots i').forEach((d,i)=>d.classList.toggle('f',i<pad.val.length));
+  if(pad.val.length===4)setTimeout(()=>{
+    if(pad.val===pad.h.puzzle.ans){S.solved[pad.h.id]=true;toast('잠금 해제!');renderScene();openPhone()}
+    else{spend(1);toast('암호가 틀렸다 (1분 경과)');const d=$('#pdots');d.classList.remove('shake');void d.offsetWidth;d.classList.add('shake');pad.val='';document.querySelectorAll('#pdots i').forEach(x=>x.classList.remove('f'));checkTime()}
+  },180);
+}
+function openPhone(){
+  modal(`<h2>사장님 휴대폰</h2><div class="phone"><div style="text-align:center;color:#888;font-size:12px;margin-bottom:10px">앱을 처음 열 때마다 2분</div><div class="apps">${PHONE_APPS.map(a=>`<button class="app-btn" data-a="${a.id}">${a.name}${S.apps[a.id]?' ✓':''}</button>`).join('')}</div></div><div class="actions"><button class="btn" onclick="closeM()">닫기</button></div>`);
+  document.querySelectorAll('.app-btn').forEach(b=>b.onclick=()=>openApp(PHONE_APPS.find(a=>a.id===b.dataset.a)));
+}
+function openApp(a){
+  let freshTxt='';
+  if(!S.apps[a.id]){S.apps[a.id]=true;spend(2);const f=addClues([a.clue]);if(f.length)freshTxt='<div class="newtag">새 단서를 수첩에 적었다.</div>'}
+  modal(`<h2>${a.name}</h2>${clueBody(a.clue)}${freshTxt}<div class="actions"><button class="btn" id="backPhone">← 휴대폰</button><button class="btn primary" onclick="closeM()">닫기</button></div>`);
+  $('#backPhone').onclick=openPhone;renderScene();checkTime();
+}
+
+/* ===================== INTERROGATION ===================== */
+function openTalk(){
+  if(S.over)return;
+  const k=S.cur,s=SUSPECTS[k];
+  const log=(S.asked[k]||[]).map(x=>`<div class="say"><div style="font-size:12px;color:var(--dim)">${x.q}</div>${esc(x.a)}</div>`).join('');
+  modal(`<h2>심문</h2>
+  <div class="sus-row">${Object.entries(SUSPECTS).map(([id,v])=>`<button class="sus ${id===k?'on':''}" data-s="${id}"><div class="face" style="background:${v.color}">${v.name[0]}</div>${v.name}<small>${v.sub}</small></button>`).join('')}</div>
+  ${S.heard[k]?`<div class="say"><div style="font-size:12px;color:var(--dim)">처음 진술</div>${esc(s.base)}</div>`:`<button class="btn primary" id="hear">${s.name}의 진술 듣기 <span class="cost">3분</span></button>`}
+  <div class="log">${log}</div>
+  ${S.heard[k]?`<div style="margin-top:12px"><div style="font-size:13px;color:var(--dim);margin-bottom:6px">수첩의 단서를 증거로 제시하기 <span class="cost">3분</span></div>
+   <div style="display:flex;gap:8px"><select id="evSel">${S.clues.length?S.clues.map(c=>`<option value="${c}">${CLUES[c].title}</option>`).join(''):'<option value="">(단서 없음)</option>'}</select><button class="btn primary" id="evBtn" ${S.clues.length?'':'disabled'}>제시</button></div></div>`:''}
+  <div class="actions"><button class="btn" onclick="closeM()">닫기</button></div>`);
+  document.querySelectorAll('.sus').forEach(b=>b.onclick=()=>{S.cur=b.dataset.s;openTalk()});
+  const hb=$('#hear');if(hb)hb.onclick=()=>{S.heard[k]=true;spend(3);openTalk();checkTime()};
+  const eb=$('#evBtn');if(eb)eb.onclick=()=>present(k,$('#evSel').value);
+}
+function present(k,c){
+  if(!c)return;
+  S.asked[k]=S.asked[k]||[];
+  if(S.asked[k].some(x=>x.c===c)){toast('이미 보여준 증거입니다');return}
+  spend(3);
+  const s=SUSPECTS[k],r=s.ev[c];
+  let a=r?r.text:s.def;
+  S.asked[k].push({c,q:`제시: ${CLUES[c].title}`,a});
+  if(r&&r.add){const f=addClues([r.add]);if(f.length)toast('새 단서: '+CLUES[r.add].title)}
+  openTalk();checkTime();
+}
+
+/* ===================== ACCUSE ===================== */
+/* 단계별 지목: 보기 없이 플레이어가 직접 고르고 입력 */
+const KEY_EVIDENCE=['c_t_choi','c_t_park','c_sheet','c_ledger','c_chat','c_cctvphoto','c_cup'];
+let ACC={};
+function openAccuse(forced){
+  if(S.over)return;
+  ACC={forced:!!forced,who:null,hh:'',mm:'',ev:[]};
+  accStep1();
+}
+function accHead(n,t){return `<div style="font-size:12px;color:var(--gold2);font-weight:700;letter-spacing:1px">STEP ${n} / 3</div><h2 style="margin-top:2px">${t}</h2>`}
+function accCancel(){return ACC.forced?'':'<button class="btn" onclick="closeM()">조사 계속하기</button>'}
+function accStep1(){
+  modal(`${ACC.forced?'<div class="hint" style="color:var(--red);margin:0 0 6px">조사 시간이 끝났습니다. 지금 결론을 내려야 합니다.</div>':''}${accHead(1,'범인은 누구인가?')}
+  <div class="hint" style="margin:0 0 10px">한 단계씩 확정하면 되돌릴 수 없습니다.</div>
+  <div class="sus-row">${Object.entries(SUSPECTS).map(([id,v])=>`<button class="sus" data-s="${id}"><div class="face" style="background:${v.color}">${v.name[0]}</div>${v.name}<small>${v.sub}</small></button>`).join('')}</div>
+  <div class="actions">${accCancel()}<button class="btn primary" id="n1" disabled>확정</button></div>`);
+  document.querySelectorAll('.sus').forEach(b=>b.onclick=()=>{ACC.who=b.dataset.s;document.querySelectorAll('.sus').forEach(x=>x.classList.toggle('on',x===b));$('#n1').disabled=false});
+  $('#n1').onclick=accStep2;
+}
+function accStep2(){
+  const hs=['21','22'].map(h=>`<option>${h}</option>`).join('');
+  const ms=Array.from({length:60},(_,i)=>`<option>${String(i).padStart(2,'0')}</option>`).join('');
+  modal(`${accHead(2,'쇼케이스가 열린 시각은?')}
+  <div class="hint" style="margin:0 0 12px">가장 그럴듯한 시각을 분 단위로 적으세요.</div>
+  <div style="display:flex;gap:8px;align-items:center;justify-content:center;font-size:28px;font-weight:700">
+   <select id="hh" style="width:90px;font-size:22px"><option value="">--</option>${hs}</select>:<select id="mm" style="width:90px;font-size:22px"><option value="">--</option>${ms}</select></div>
+  <div class="actions">${accCancel()}<button class="btn primary" id="n2" disabled>확정</button></div>`);
+  const chk=()=>{$('#n2').disabled=!($('#hh').value&&$('#mm').value)};
+  $('#hh').onchange=chk;$('#mm').onchange=chk;
+  $('#n2').onclick=()=>{ACC.hh=$('#hh').value;ACC.mm=$('#mm').value;accStep3()};
+}
+function accStep3(){
+  const list=S.clues.length?S.clues.map(c=>`<label class="opt"><input type="checkbox" value="${c}"><span class="cat" style="font-size:11px;color:var(--dim);margin-right:6px">${CLUES[c].cat}</span>${CLUES[c].title}</label>`).join(''):'<div class="empty">수첩에 단서가 없습니다.</div>';
+  modal(`${accHead(3,'지목의 근거')}
+  <div class="hint" style="margin:0 0 10px">${SUSPECTS[ACC.who].name}이(가) 범인이라는 근거가 되는 단서를 수첩에서 <b>최대 3개</b> 고르세요.</div>
+  <div style="max-height:46vh;overflow:auto">${list}</div>
+  <div class="actions">${accCancel()}<button class="btn danger" id="n3">최종 제출</button></div>`);
+  const boxes=[...document.querySelectorAll('#modal input[type=checkbox]')];
+  boxes.forEach(b=>b.onchange=()=>{const on=boxes.filter(x=>x.checked);if(on.length>3){b.checked=false;toast('최대 3개까지 고를 수 있어요')}});
+  $('#n3').onclick=()=>{ACC.ev=boxes.filter(x=>x.checked).map(x=>x.value);result()};
+}
+function result(){
+  S.over=true;
+  const total=Object.keys(CLUES).length;
+  const okWho=ACC.who==='park';
+  const t=+ACC.hh*60+ +ACC.mm, okTime=t>=21*60+40&&t<=21*60+47;
+  const good=ACC.ev.filter(c=>KEY_EVIDENCE.includes(c));
+  const okEv=okWho&&good.length>=2;
+  const pts=(okWho?1:0)+(okTime?1:0)+(okEv?1:0);
+  const grade=pts===3?'완전 해결':okWho&&pts===2?'거의 해결':okWho?'범인은 맞혔지만…':'미해결';
+  const line=(ok,label,mine,right)=>`<div style="margin:8px 0"><b>${label}</b><br><span class="${ok?'ok':'ng'}">${ok?'✔':'✘'} ${mine}</span>${ok?'':`<br><span style="color:var(--dim)">정답: ${right}</span>`}</div>`;
+  const evTxt=ACC.ev.length?ACC.ev.map(c=>`${KEY_EVIDENCE.includes(c)&&okWho?'●':'○'} ${CLUES[c].title}`).join('<br>'):'(고른 단서 없음)';
+  const rows=line(okWho,'STEP 1 · 범인',SUSPECTS[ACC.who].name,'박태수')
+   +line(okTime,'STEP 2 · 쇼케이스가 열린 시각',`${ACC.hh}:${ACC.mm}`,'21:40 ~ 21:47 사이')
+   +`<div style="margin:8px 0"><b>STEP 3 · 지목의 근거</b><br><span class="${okEv?'ok':'ng'}">${okEv?'✔ 근거가 탄탄합니다':'✘ 근거가 부족합니다'}</span><div style="font-size:13px;margin-top:4px">${evTxt}</div><div class="hint">● 박태수를 가리키는 단서 · ○ 직접 관련 없는 단서</div></div>`;
+  modal(`<h2>사건 결과</h2><div class="res-score">${grade} · ${pts}/3</div>
+  <div style="color:var(--dim);font-size:13px">사용한 시간 ${TOTAL_TIME-S.time}분 · 찾은 단서 ${S.clues.length}/${total}</div>
+  ${rows}
+  <details style="margin-top:14px"><summary style="cursor:pointer;color:var(--gold2);font-weight:700">사건의 전말 보기</summary>
+  <div class="paper">${esc(`범인은 박태수.
+
+일주일 전 단톡방 공지로 전시 날짜를 알게 된 박태수는 이튿날 옆 공방에서 메탈골드 MG-07을 현금으로 샀다(공방 장부). 집에 있던 자기 일반판 미플 20개를 서툴게 칠했고, 단톡방에 “새 취미”라며 칠하던 책상 사진까지 올렸다. 당일 18:12에는 미플이 정말 20개인지 확인했다.
+
+21:41, 3판을 끝낸 그는 서지아가 테이프를 찾으러 창고에 들어간 틈을 노렸다. 정수기에 물을 뜨는 척 계산대 안으로 들어가 서랍 왼쪽 칸의 열쇠를 집었고, 쇼케이스를 열어 바꿔치기한 뒤 다시 잠갔다. 쇼케이스 앱은 21:31부터 와이파이가 끊겨 아무것도 기록하지 못했다. 창고 안의 서지아는 얇은 합판 벽 너머로 ‘띡’ 소리를 들었지만 화장실 문 소리로 착각했다. 화장실 문은 ‘끼이익’ 소리가 난다. 다 마신 종이컵은 쇼케이스 옆 쓰레기통에 버렸다. 21:47에 자리로 돌아와 4판을 시작했다.
+
+열쇠는 22:05 계산할 때 영수증을 받으며 손님 쪽 오른쪽 칸에 슬쩍 돌려놓았다. 늘 안쪽에서 왼쪽 칸에 넣는 서지아라면 그렇게 두지 않는다(서지아 진술). 카페의 일반판은 B테이블의 한 개뿐이고 미플이 그대로였으니(선반·B테이블), 가짜는 밖에서 만들어 온 것이다. 진짜 미플은 백팩에 넣어 나갔다.
+
+범행 시각을 좁히는 법: 쇼케이스 앱은 21:31부터 끊겨 있어 쓸모없다. 대신 서지아가 ‘띡’ 소리를 들은 건 최건우의 테이프를 찾으러 창고에 있을 때다. 최건우가 카페에 있던 시간은 CCTV상 21:40~21:47이고, 박태수의 기록지도 21:41~21:47이 비어 있다.
+
+함정들:
+• 서지아: 알바비 갈등과 금박 가루가 있지만, ‘띡’ 소리가 났을 때 창고 안에 있었다(최건우 진술: 지아 씨가 창고에 간 사이). 열쇠도 손님 쪽 오른쪽 칸에 둘 이유가 없다. 금박은 선물 포장지에서 나왔다.
+• 윤미래: 거짓말을 했지만 범행이 끝난 뒤인 21:50에 왔다. 21:55에 사진만 찍었다. 글리터는 네일 장식이다.
+• 최건우: 물감 전문가지만 그가 쓰는 건 MG-03이다. 가짜는 서툰 붓질에 MG-07이다. 단톡방 멤버가 아니라 전시 날짜를 미리 알 수 없었다.
+• 금색 흔적은 함정이다. 서지아의 금박, 윤미래의 글리터, 최건우의 MG-03은 모두 출처가 따로 있다.`)}</div></details>
+  <div class="actions"><button class="btn primary" id="again">처음부터 다시</button></div>`);
+  $('#again').onclick=()=>{closeM();reset();showIntro()};
+}
+
+/* ===================== SCENES (SVG) ===================== */
+const SCENES={
+counter:()=>`
+<defs><linearGradient id="wall1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3b2f28"/><stop offset="1" stop-color="#2a221d"/></linearGradient>
+<linearGradient id="wood" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6b4a2f"/><stop offset="1" stop-color="#4a321f"/></linearGradient></defs>
+<rect width="800" height="450" fill="url(#wall1)"/>
+<rect y="370" width="800" height="80" fill="#1d1714"/>
+<!-- frame -->
+<rect x="45" y="55" width="120" height="85" fill="#8a6a3a" rx="3"/><svg x="53" y="63" width="104" height="69" viewBox="0 0 160 106" preserveAspectRatio="none">${PHOTO}${PHOTO_DATE}</svg>
+<!-- calendar -->
+<rect x="200" y="45" width="85" height="110" fill="#efe6d3" rx="3"/><rect x="200" y="45" width="85" height="22" fill="#b0463a" rx="3"/>
+<text x="242" y="61" font-size="11" text-anchor="middle" fill="#fff" font-weight="700">11월</text>
+${Array.from({length:30},(_,i)=>`<rect x="${204+(i%7)*11.2}" y="${73+Math.floor(i/7)*15.5}" width="9.5" height="13" fill="${i===15?'#f0c96b':i===16?'#f7c1cf':'#d8cdb7'}"/>`).join('')}
+<!-- whiteboard -->
+<rect x="330" y="40" width="210" height="110" fill="#e9eef0" rx="4" stroke="#9aa" stroke-width="3"/>
+<text x="345" y="62" font-size="12" fill="#2b5bb5" font-weight="700">이번 주 할 일</text>
+${['✔ 물티슈 주문','✔ 젠가 1개 분실','✔ 이벤트 접시 정리','☐ 화요일 서프라이즈'].map((t,i)=>`<text x="345" y="${80+i*15}" font-size="10" fill="#2b5bb5">${t}</text>`).join('')}
+<text x="490" y="140" font-size="10" fill="#c0392b">— 지아</text>
+<!-- water dispenser (behind counter) -->
+<rect x="640" y="118" width="50" height="120" fill="#cfd8dc" rx="6"/><rect x="647" y="98" width="36" height="28" fill="#7fb3d5" rx="10" opacity=".8"/><rect x="654" y="160" width="22" height="18" fill="#455a64"/><rect x="692" y="135" width="9" height="55" fill="#eceff1"/>
+<!-- counter -->
+<rect x="90" y="240" width="620" height="135" fill="url(#wood)"/><rect x="80" y="232" width="640" height="14" fill="#7d5a3a"/>
+<rect x="500" y="300" width="160" height="46" fill="#5a3d26" stroke="#2e1f13" stroke-width="2"/>
+<line x1="580" y1="300" x2="580" y2="346" stroke="#2e1f13" stroke-width="2"/>
+<circle cx="540" cy="323" r="4" fill="#c9a24a"/><circle cx="620" cy="323" r="4" fill="#c9a24a"/>
+<!-- DVR -->
+<rect x="122" y="205" width="92" height="28" fill="#1b1b1b" rx="3"/><circle cx="135" cy="219" r="3" fill="#e74c3c"><animate attributeName="opacity" values="1;.2;1" dur="1.4s" repeatCount="indefinite"/></circle>
+<text x="175" y="223" font-size="9" fill="#888" text-anchor="middle">DVR</text>
+<!-- keyboard + postit sliver -->
+<rect x="304" y="241" width="14" height="5" fill="#f4d03f"/>
+<rect x="228" y="218" width="86" height="18" fill="#2d2d2d" rx="3"/>
+${Array.from({length:12},(_,i)=>`<rect x="${232+i*6.8}" y="222" width="5" height="4" fill="#555"/>`).join('')}
+<!-- clipboard -->
+<rect x="335" y="198" width="38" height="40" fill="#8d6e63" rx="3"/><rect x="340" y="205" width="28" height="30" fill="#fff"/><rect x="346" y="195" width="16" height="7" fill="#bdbdbd"/>
+<!-- return box -->
+<rect x="388" y="206" width="78" height="32" fill="#2e6b5e"/><text x="427" y="226" font-size="9" fill="#e0d6b8" text-anchor="middle">사막의 시장</text>
+<!-- phone -->
+<rect x="486" y="222" width="42" height="16" fill="#111" rx="4"/><rect x="489" y="225" width="36" height="10" fill="#22303c" rx="2"/>
+<!-- dice tray -->
+<ellipse cx="666" cy="234" rx="36" ry="7" fill="#d9cdb4"/>
+<rect x="644" y="218" width="12" height="12" rx="2" fill="#c0392b"/><rect x="660" y="218" width="12" height="12" rx="2" fill="#e1b12c"/><rect x="676" y="218" width="12" height="12" rx="2" fill="#2e6fb5"/>
+<!-- gift -->
+<rect x="552" y="194" width="64" height="44" fill="#c9a24a"/><rect x="580" y="194" width="8" height="44" fill="#a33"/><rect x="552" y="212" width="64" height="8" fill="#a33"/>
+<path d="M584 194 q-14 -16 -18 -2 M584 194 q14 -16 18 -2" stroke="#a33" stroke-width="4" fill="none"/>
+`,
+tables:()=>`
+<rect width="800" height="450" fill="#2e2621"/><rect y="340" width="800" height="110" fill="#1f1915"/>
+<!-- window -->
+<rect x="35" y="45" width="200" height="110" fill="#14202b" stroke="#5d4a3a" stroke-width="6"/><line x1="135" y1="45" x2="135" y2="155" stroke="#5d4a3a" stroke-width="4"/>
+${[60,90,120].map(y=>`<line x1="35" y1="${y}" x2="235" y2="${y}" stroke="#3a3a3a" stroke-width="2"/>`).join('')}
+<circle cx="190" cy="80" r="10" fill="#e8e0c0" opacity=".6"/>
+<!-- shelf -->
+<rect x="295" y="35" width="230" height="140" fill="#4a3424"/>
+${[0,1,2].map(r=>Array.from({length:9},(_,i)=>`<rect x="${302+i*24.5}" y="${42+r*45}" width="20" height="38" fill="hsl(${(i*47+r*90)%360},35%,${38+((i+r)%3)*6}%)"/>`).join('')).join('')}
+<!-- tables -->
+<ellipse cx="145" cy="300" rx="85" ry="30" fill="#6b4a2f"/><rect x="138" y="315" width="14" height="50" fill="#4a321f"/>
+<rect x="130" y="288" width="14" height="8" fill="#e67e22"/>
+<ellipse cx="400" cy="295" rx="100" ry="34" fill="#6b4a2f"/><rect x="393" y="312" width="14" height="55" fill="#4a321f"/>
+<rect x="360" y="262" width="72" height="28" fill="#2c4a7a"/><text x="396" y="280" font-size="9" fill="#f0c96b" text-anchor="middle">DRAGON BAZAAR</text>
+<rect x="444" y="303" width="34" height="9" fill="#efe6d3" transform="rotate(-4 461 307)"/>
+<circle cx="335" cy="296" r="4" fill="#e74c3c"/><circle cx="348" cy="300" r="4" fill="#3498db"/><circle cx="455" cy="288" r="4" fill="#2ecc71"/>
+<ellipse cx="655" cy="300" rx="85" ry="30" fill="#6b4a2f"/><rect x="648" y="315" width="14" height="50" fill="#4a321f"/>
+${[0,1,2,3,4].map(i=>`<rect x="${620+i*13}" y="${282+(i%2)*6}" width="18" height="6" fill="#d9b382" transform="rotate(${i*17-30} ${628+i*13} 285)"/>`).join('')}
+<!-- plant -->
+<rect x="752" y="230" width="30" height="38" fill="#6d4c41"/><path d="M767 230 q-20 -40 -5 -60 M767 230 q10 -50 20 -45 M767 230 q-2 -30 -18 -30" stroke="#4e7a3a" stroke-width="5" fill="none"/>
+<text x="140" y="345" font-size="11" fill="#a69a8a" text-anchor="middle">A</text><text x="400" y="345" font-size="11" fill="#a69a8a" text-anchor="middle">B</text><text x="655" y="345" font-size="11" fill="#a69a8a" text-anchor="middle">C</text>
+`,
+back:()=>`
+<rect width="800" height="450" fill="#2a2420"/><rect y="370" width="800" height="80" fill="#1a1512"/>
+<!-- storage door -->
+<rect x="55" y="75" width="140" height="295" fill="#5a4636" stroke="#2e2219" stroke-width="4"/>
+<rect x="158" y="206" width="26" height="40" fill="#888" rx="3"/>${['#c0392b','#e1b12c','#2e6fb5'].map((c,i)=>`<rect x="162" y="${210+i*12}" width="14" height="9" fill="#333"/><circle cx="180" cy="${214.5+i*12}" r="2.5" fill="${c}"/>`).join('')}
+<text x="125" y="110" font-size="12" fill="#c8b8a0" text-anchor="middle">창고</text>
+<!-- sign -->
+<rect x="255" y="82" width="210" height="22" fill="#efe6d3" rx="3"/><text x="360" y="97" font-size="10" fill="#3a2a1a" text-anchor="middle">⚠ 쇼케이스 이용 안내</text>
+<!-- showcase -->
+<rect x="255" y="118" width="210" height="225" fill="#1a2a30" stroke="#9fb3bb" stroke-width="3"/>
+<rect x="262" y="125" width="196" height="211" fill="rgba(160,200,220,.12)"/>
+<line x1="262" y1="230" x2="458" y2="230" stroke="#9fb3bb" stroke-width="2"/>
+<rect x="315" y="185" width="90" height="42" fill="#3b1f4a"/><text x="360" y="205" font-size="9" fill="#f0c96b" text-anchor="middle">DRAGON BAZAAR</text><text x="360" y="218" font-size="8" fill="#f0c96b" text-anchor="middle">LIMITED</text>
+<rect x="440" y="225" width="12" height="14" fill="#c9a24a"/>
+<path d="M275 135 l30 60" stroke="rgba(255,255,255,.15)" stroke-width="6"/>
+${stepOf('showcase')>=1?Array.from({length:20},(_,i)=>`<path d="M${276+i*8.6} 328 l3 -9 l3 0 l3 9 z" fill="#d8a64a"/>`).join(''):''}
+<!-- WC door -->
+<rect x="525" y="75" width="140" height="295" fill="#4c5a5e" stroke="#2a3133" stroke-width="4"/>
+<circle cx="545" cy="225" r="6" fill="#bbb"/><text x="595" y="110" font-size="16" fill="#dfe6e8" text-anchor="middle" font-weight="700">WC</text>
+<!-- trash -->
+<path d="M705 318 h38 l-5 52 h-28 z" fill="#2b2b2b"/><rect x="702" y="312" width="44" height="7" fill="#3a3a3a"/>
+<rect x="717" y="306" width="10" height="9" fill="#e8e8e8" opacity=".8"/>
+<!-- pillar shadow -->
+<rect x="0" y="0" width="30" height="450" fill="#1c1714"/>
+`,
+storage:()=>`
+<rect width="800" height="450" fill="#231d19"/><rect y="370" width="800" height="80" fill="#17120f"/>
+<!-- shelves -->
+<rect x="50" y="60" width="180" height="300" fill="#3e2e22"/>${[100,170,240].map(y=>`<rect x="50" y="${y}" width="180" height="8" fill="#5a4332"/>`).join('')}
+${[0,1,2].map(r=>Array.from({length:4},(_,i)=>`<rect x="${58+i*42}" y="${64+r*70}" width="36" height="34" fill="hsl(${30+i*20},25%,${30+r*5}%)"/>`).join('')).join('')}
+<!-- tape box flipped -->
+<rect x="80" y="300" width="90" height="45" fill="#a07c4f" transform="rotate(12 125 322)"/>
+<circle cx="190" cy="352" r="12" fill="none" stroke="#c9b48a" stroke-width="6"/><circle cx="72" cy="358" r="10" fill="none" stroke="#c9b48a" stroke-width="5"/>
+<!-- foil roll -->
+<rect x="258" y="200" width="96" height="30" rx="15" fill="#d8a64a"/><ellipse cx="258" cy="215" rx="8" ry="15" fill="#f0c96b"/>
+<path d="M354 215 l10 25 l-30 0 z" fill="#e8c56a" opacity=".8"/>
+<!-- stock boxes -->
+<rect x="255" y="290" width="90" height="70" fill="#5d4b3a"/><rect x="350" y="300" width="95" height="60" fill="#6a5644"/>
+<!-- plywood wall -->
+<rect x="525" y="55" width="230" height="315" fill="#8a6f4e"/>${Array.from({length:7},(_,i)=>`<line x1="525" y1="${85+i*42}" x2="755" y2="${88+i*42}" stroke="#7a5f40" stroke-width="2"/>`).join('')}
+<text x="640" y="215" font-size="11" fill="#5a452e" text-anchor="middle">(벽 너머: 안쪽 복도)</text>
+<!-- bulb -->
+<line x1="400" y1="0" x2="400" y2="40" stroke="#555" stroke-width="2"/><circle cx="400" cy="48" r="10" fill="#f6e3a1"/>
+`};
+
+/* ===================== INTRO ===================== */
+function showIntro(){
+  modal(`<div class="intro"><h2>퍼니보드 사건 파일<br><span style="font-size:15px;color:var(--dim)">보드게임 카페의 마지막 손님</span></h2>
+  <p>보드게임 카페 「퍼니보드」의 사장 한도윤은 《드래곤 바자르》 초판 한정판을 딱 하루 카페에 전시했다. 이 판에만 들어 있는 도금 미플 20개는 시세만 수백만 원이다.</p>
+  <p>다음 날 아침, 사장이 미플을 집어 들자 손끝에 금색이 묻어났다. <b>20개 전부 금색 물감을 칠한 가짜였다.</b> 쇼케이스는 잠겨 있었고 부서진 곳도 없었다.</p>
+  <p>그날 밤 21:30~22:20 사이 카페에 있었던 사람은 넷. 당신은 사장의 부탁을 받고 카페를 조사한다.</p>
+  <div class="actions"><button class="btn primary" id="toHow">게임 방법 보기 →</button></div></div>`);
+  $('#toHow').onclick=showHow;
+}
+function showHow(){
+  modal(`<h2>게임 방법</h2>
+  <div style="font-size:14px">목표는 하나예요. <b>누가, 언제, 어떻게 바꿔치기했는지</b> 밝히는 것.</div>
+  <div class="steps">
+   <div class="stp"><div class="n">1</div><div><b class="t">현장 둘러보기</b><span>위쪽 탭으로 장소를 옮기고, 그림 속 물건을 클릭해 조사해요. 찾은 단서는 오른쪽 <b>수사 수첩</b>에 모여요. 눈에 잘 안 띄는 곳도 있어요.</span></div></div>
+   <div class="stp"><div class="n">2</div><div><b class="t">잠긴 것 풀기</b><span>휴대폰, 녹화기, 창고는 비밀번호가 있어요. 답의 힌트는 현장 어딘가에 숨어 있어요.</span></div></div>
+   <div class="stp"><div class="n">3</div><div><b class="t">심문하기</b><span>위쪽 <b>심문하기</b> 버튼 → 사람 선택 → 진술 듣기. 그다음 수첩의 단서를 보여주면 새로운 이야기를 털어놓기도 해요.</span></div></div>
+   <div class="stp"><div class="n">4</div><div><b class="t">범인 지목</b><span>준비되면 <b>범인 지목</b> 버튼. 범인 선택 → 범행 시각 입력 → 근거 단서 제출, 세 단계를 마치면 결과와 사건의 전말이 나와요.</span></div></div>
+  </div>
+  <div class="timebox"><b>⏱ 조사 시간 80분</b> <span style="color:var(--dim)">(실제 시간이 아니라, 행동할 때마다 줄어드는 게임 속 시간)</span>
+   <table><tr><td>물건 하나 조사</td><td>2분</td></tr><tr><td>진술 듣기 · 증거 보여주기</td><td>3분</td></tr><tr><td>비밀번호 틀림</td><td>1분</td></tr><tr><td>장소 이동 · 수첩 다시 보기</td><td>무료</td></tr></table>
+   <div style="margin-top:6px;color:var(--dim)">전부 조사할 시간은 없어요. 0분이 되면 바로 범인을 지목해야 해요.</div></div>
+  <div class="actions"><button class="btn primary" onclick="closeM()">조사 시작</button></div>`);
+}
+function _unused(){
+
+}
+
+$('#btnTalk').onclick=openTalk;
+$('#btnHelp').onclick=showHow;
+$('#btnAccuse').onclick=()=>openAccuse(false);
+reset();showIntro();
+</script>
+</body>
+</html>
