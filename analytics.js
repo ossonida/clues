@@ -20,6 +20,7 @@ const SCHEMA = {
   // 사건 진행
   case_intro_viewed: {},
   case_started: {},
+  case_resumed: {clue_count: int(0, 200), minutes_used: int(0, 999)},
   help_opened: {},
   location_opened: {location: id, minutes_used: int(0, 999)},
   hotspot_checked: {hotspot: id, location: id, outcome: {in: ['found', 'nothing_new', 'blocked', 'revisit']}, step: int(0, 20), minutes_used: int(0, 999)},

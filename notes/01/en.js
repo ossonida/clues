@@ -84,6 +84,7 @@ ui: {
   calNotes: {6: 'Game night', 16: 'Display day!', 21: 'Restock', 25: 'Rent'},
   diceSign: '“Roll a 6 and get 10% off your drink!”',
   toMain: 'Back to the case archive →',
+  resumed: 'Picking up where you left off',
   wbTitle: 'This week',
   wbItems: ['✔ Order wet wipes', '✔ Jenga block missing', '✔ Tidy dice tray', '☐ Tuesday surprise'],
   wbSign: '— Jia',

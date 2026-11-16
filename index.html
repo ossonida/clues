@@ -57,9 +57,9 @@ tr.off td.t{font-family:"Nanum Pen Script",cursive;font-size:20px;color:#8f877a}
 td a{text-decoration:none;border-bottom:1px solid var(--rule)}
 td a:hover{border-color:var(--ink)}
 th,td{white-space:nowrap}
-td:nth-child(2){white-space:normal}
+td:nth-child(2){white-space:normal;word-break:keep-all;min-width:7em}
 tr.off td.t{white-space:nowrap}
-td.lv{font-size:13px}
+td.lv,td.g{font-size:13px}
 td.lv .dots{color:var(--stamp);letter-spacing:1px;font-size:11px}
 td.rv{width:34%;max-width:0}
 .rv-open{all:unset;cursor:pointer;display:flex;align-items:baseline;gap:8px;width:100%}
@@ -79,7 +79,7 @@ td.rv{width:34%;max-width:0}
 .rv-form button:disabled{opacity:.5;cursor:wait}
 .rv-msg{margin:6px 0 0;font-size:12px;color:var(--dim)}
 .rv-msg.err{color:var(--stamp)}
-@media(max-width:640px){th:nth-child(4),td:nth-child(4),th:nth-child(5),td:nth-child(5){display:none}.rv-panel td{display:table-cell}td.rv{width:auto}}
+@media(max-width:640px){th:nth-child(5),td:nth-child(5),th:nth-child(6),td:nth-child(6){display:none}.rv-panel td{display:table-cell}td.rv{width:auto}}
 
 .langsw button{font:inherit;background:none;border:none;padding:0 0 0 8px;color:var(--dim);cursor:pointer}
 .langsw button+button{margin-left:8px;border-left:1px solid var(--rule)}
@@ -105,6 +105,7 @@ footer{margin:60px 0 0;padding:16px 0 40px;border-top:1px solid var(--rule);colo
         <h2 data-en-html="The Funny Board<br>Case">퍼니보드<br>사건 파일</h2>
         <div class="sub" data-en="Last Customers at the Board Game Café">보드게임 카페의 마지막 손님</div>
         <dl class="fields">
+          <div><dt data-en="Genre">장르</dt><dd data-en="Cozy mystery">코지 미스터리</dd></div>
           <div><dt data-en="Crime">사건 종류</dt><dd data-en="Swap">바꿔치기</dd></div>
           <div><dt data-en="Difficulty">난이도</dt><dd data-en="●●○○○ Easy">●●○○○ 쉬움</dd></div>
           <div><dt data-en="Suspects">용의자</dt><dd>4<span data-en="">명</span></dd></div>
@@ -134,11 +135,11 @@ footer{margin:60px 0 0;padding:16px 0 40px;border-top:1px solid var(--rule);colo
     <section class="ledger">
       <h3 data-en="CASE LOG">사건 대장</h3>
       <table>
-        <thead><tr><th data-en="No.">번호</th><th data-en="Case">사건명</th><th data-en="Difficulty">난이도</th><th data-en="Players">인원</th><th data-en="Time">시간</th><th data-en="One-line reviews">한줄 후기</th></tr></thead>
+        <thead><tr><th data-en="No.">번호</th><th data-en="Case">사건명</th><th data-en="Genre">장르</th><th data-en="Difficulty">난이도</th><th data-en="Players">인원</th><th data-en="Time">시간</th><th data-en="One-line reviews">한줄 후기</th></tr></thead>
         <tbody>
-          <tr><td class="n">NOTE 01</td><td><a href="notes/01/" data-en="The Funny Board Case">퍼니보드 사건 파일</a></td><td class="lv" title="2/5"><span class="dots">●●○○○</span> <span data-en="Easy">쉬움</span></td><td data-en="1+">1인~</td><td data-en="60–90 min">60~90분</td>
+          <tr><td class="n">NOTE 01</td><td><a href="notes/01/" data-en="The Funny Board Case">퍼니보드 사건 파일</a></td><td class="g" data-en="Cozy mystery">코지 미스터리</td><td class="lv" title="2/5"><span class="dots">●●○○○</span> <span data-en="Easy">쉬움</span></td><td data-en="1+">1인~</td><td data-en="60–90 min">60~90분</td>
             <td class="rv"><button class="rv-open" data-note="note01" aria-expanded="false"><span class="rv-last"></span><span class="rv-n"></span></button></td></tr>
-          <tr class="rv-panel" id="rv-note01" hidden><td colspan="6">
+          <tr class="rv-panel" id="rv-note01" hidden><td colspan="7">
             <ul class="rv-list"></ul>
             <form class="rv-form" data-note="note01">
               <input name="text" maxlength="80" required placeholder="스포일러 없이 한 줄로 (80자)" data-en-ph="One line, no spoilers (80 characters)" autocomplete="off">
@@ -146,7 +147,7 @@ footer{margin:60px 0 0;padding:16px 0 40px;border-top:1px solid var(--rule);colo
             </form>
             <p class="rv-msg" data-en="You need to sign in with Google to post. One line per person per case. Posting again replaces your old one.">후기를 적으려면 Google 로그인이 필요해요. 한 사건에 한 사람당 한 줄이고, 다시 적으면 고쳐집니다.</p>
           </td></tr>
-          <tr class="off"><td class="n">NOTE 02</td><td class="t" data-en="in progress…">조사 중…</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
+          <tr class="off"><td class="n">NOTE 02</td><td class="t" data-en="in progress…">조사 중…</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
         </tbody>
       </table>
     </section>

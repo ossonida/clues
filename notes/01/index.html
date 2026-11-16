@@ -480,14 +480,34 @@ const stepOf=id=>S.step[id]||0;
 const used=()=>TOTAL_TIME-S.time;
 const playMin=()=>S.startedAt?Math.round((Date.now()-S.startedAt)/60000):0;
 function tried(h,ok){S.tries[h.id]=(S.tries[h.id]||0)+1;hn('puzzle_tried',{puzzle:h.id,outcome:ok?'solved':'wrong',attempt:S.tries[h.id],minutes_used:used()})}
-addEventListener('pagehide',()=>{if(S.over||S.leftSent)return;S.leftSent=true;hn('case_left',{stage:!S.startedAt?'intro':ACC.active?'accusing':'investigating',location:S.loc,clue_count:S.clues.length,minutes_used:used(),play_minutes:playMin()},true)});
+/* 진행 저장: 새로고침해도 이어서 풀 수 있게 이 브라우저에 저장한다. 사건을 끝내면 지운다. */
+const SAVE_KEY='hn.'+document.documentElement.dataset.note+'.save.v1';
+function save(){
+  try{
+    if(!S)return;
+    if(S.over||!S.startedAt){if(S.over)localStorage.removeItem(SAVE_KEY);return}
+    const {seen,leftSent,...rest}=S;
+    localStorage.setItem(SAVE_KEY,JSON.stringify({...rest,seen:[...seen]}));
+  }catch{}
+}
+function restore(){
+  try{
+    const d=JSON.parse(localStorage.getItem(SAVE_KEY)||'null');
+    if(!d||d.over||!d.startedAt||typeof d.time!=='number')return false;
+    S={...d,seen:new Set(d.seen||[]),tries:d.tries||{},leftSent:false};
+    if(!LOCS.some(l=>l.id===S.loc&&locOpen(l)))S.loc='counter';
+    render();return true;
+  }catch{return false}
+}
+addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')save()});
+addEventListener('pagehide',()=>{save();if(S.over||S.leftSent)return;S.leftSent=true;hn('case_left',{stage:!S.startedAt?'intro':ACC.active?'accusing':'investigating',location:S.loc,clue_count:S.clues.length,minutes_used:used(),play_minutes:playMin()},true)});
 const has=c=>S.clues.includes(c);
 
 /* ===================== UI HELPERS ===================== */
 const $=s=>document.querySelector(s);
 function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),1800)}
 function modal(html){$('#modal').innerHTML=html;$('#mbg').classList.add('on');$('#modal').scrollTop=0}
-function closeM(){$('#mbg').classList.remove('on');if(ACC.active&&!S.over){ACC.active=false;hn('accuse_cancelled',{step:ACC.step})}}
+function closeM(){$('#mbg').classList.remove('on');save();if(ACC.active&&!S.over){ACC.active=false;hn('accuse_cancelled',{step:ACC.step})}}
 $('#mbg').addEventListener('click',e=>{if(e.target.id==="mbg"&&!S.over&&!(ACC&&ACC.forced))closeM()});
 
 function spend(n){
@@ -525,6 +545,7 @@ function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;')}
 /* ===================== RENDER ===================== */
 function render(){renderHud();renderLocs();renderScene();renderNotebook([])}
 function renderHud(){
+  save();
   $('#tLeft').textContent=t('min',S.time+'분',S.time);
   $('#stTime').classList.toggle('low',S.time<=15);
   $('#cCount').textContent=S.clues.length;
@@ -542,6 +563,7 @@ function renderLocs(){
   });
 }
 function renderScene(){
+  save();
   const l=LOCS.find(x=>x.id===S.loc);
   $('#locDesc').textContent=l.desc;
   const hs=HS.filter(h=>h.loc===S.loc&&(!h.show||h.show()));
@@ -771,7 +793,7 @@ function accStep3(){
   $('#n3').onclick=()=>{ACC.ev=boxes.filter(x=>x.checked).map(x=>x.value);result()};
 }
 function result(){
-  S.over=true;ACC.active=false;
+  S.over=true;ACC.active=false;save();
   const total=Object.keys(CLUES).length;
   const okWho=ACC.who==='park';
   const tm=+ACC.hh*60+ +ACC.mm, okTime=tm>=21*60+40&&tm<=21*60+47;
@@ -997,7 +1019,11 @@ document.querySelectorAll('.langsw button').forEach(b=>{b.classList.toggle('on',
 $('#btnTalk').onclick=openTalk;
 $('#btnHelp').onclick=()=>{hn('help_opened');showHow()};
 $('#btnAccuse').onclick=()=>openAccuse(false);
-reset();showIntro();
+if(restore()){
+  hn('case_resumed',{clue_count:S.clues.length,minutes_used:used()});
+  toast(t('resumed','지난번에 조사하던 곳부터 이어서 합니다'));
+  checkTime();
+}else{reset();showIntro()}
 </script>
 </body>
 </html>

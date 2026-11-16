@@ -23,6 +23,7 @@
 | `language_changed` | 언어 전환 | `to` (ko / en) |
 | `case_intro_viewed` | 사건 페이지 도착, 도입부 표시 | — |
 | `case_started` | "조사 시작" 누름 | — |
+| `case_resumed` | 새로고침·재방문 시 저장된 진행을 이어서 시작 (`case_left`는 새로고침 때도 찍힘) | `clue_count`, `minutes_used` |
 | `help_opened` | 게임 방법 다시 보기 | — |
 | `location_opened` | 장소 이동 | `location`, `minutes_used` |
 | `hotspot_checked` | 물건 조사 | `hotspot`, `location`, `outcome` (found / nothing_new / blocked / revisit), `step`, `minutes_used` |
