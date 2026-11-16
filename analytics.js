@@ -14,8 +14,7 @@ const common = {note, lang: {in: ['ko', 'en']}};
 const SCHEMA = {
   // 메인
   case_link_clicked: {place: {in: ['folder', 'ledger']}},
-  review_opened: {},
-  review_submitted: {outcome: {in: ['saved', 'login_cancelled', 'failed']}},
+  recommend_clicked: {action: {in: ['add', 'remove']}},
   language_changed: {to: {in: ['ko', 'en']}},
   // 사건 진행
   case_intro_viewed: {},

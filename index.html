@@ -26,13 +26,10 @@ a{color:inherit}
 .pad{position:relative;max-width:980px;min-height:100vh;margin:0 auto;background-color:var(--pad);
   background-image:linear-gradient(90deg,transparent calc(var(--ml) - 5px),var(--margin) calc(var(--ml) - 5px),var(--margin) calc(var(--ml) - 4px),transparent calc(var(--ml) - 4px),transparent var(--ml),var(--margin) var(--ml),var(--margin) calc(var(--ml) + 1px),transparent calc(var(--ml) + 1px)),
     repeating-linear-gradient(transparent 0 calc(var(--lh) - 1px),var(--line) calc(var(--lh) - 1px) var(--lh));
-  background-position:0 0,0 6px;box-shadow:0 30px 60px -20px rgba(0,0,0,.6),0 0 0 1px rgba(0,0,0,.08)}
+  background-position:0 0,0 46px;box-shadow:0 30px 60px -20px rgba(0,0,0,.6),0 0 0 1px rgba(0,0,0,.08)}
 .pad>*:not(.binding){padding-left:calc(var(--ml) + 22px);padding-right:28px}
 @media(max-width:640px){.pad>*:not(.binding){padding-left:calc(var(--ml) + 12px);padding-right:14px}}
-/* 줄에 글자를 맞추는 구역: 자기 위치에서 줄을 다시 긋는다 (header는 여백선까지) */
-.ruled{background-color:var(--pad);background-image:repeating-linear-gradient(transparent 0 calc(var(--lh) - 1px),var(--line) calc(var(--lh) - 1px) var(--lh))}
-header.ruled{background-image:linear-gradient(90deg,transparent calc(var(--ml) - 5px),var(--margin) calc(var(--ml) - 5px),var(--margin) calc(var(--ml) - 4px),transparent calc(var(--ml) - 4px),transparent var(--ml),var(--margin) var(--ml),var(--margin) calc(var(--ml) + 1px),transparent calc(var(--ml) + 1px)),
-  repeating-linear-gradient(transparent 0 calc(var(--lh) - 1px),var(--line) calc(var(--lh) - 1px) var(--lh))}
+/* 줄 맞춤: .align 구역은 스크립트가 패드 줄 간격(32px)에 맞춰 위치를 조정한다 */
 
 .binding{height:46px;display:flex;justify-content:space-between;align-items:center;padding:0 18px 0 calc(var(--ml) + 22px);
   background:linear-gradient(#8a2420,#6a1916 70%,#5a1412);color:#f3d9c9;font-family:var(--mono);font-size:12px;letter-spacing:2px;
@@ -95,25 +92,13 @@ td a:hover{color:var(--stamp)}
 td:nth-child(2){word-break:keep-all}
 td.lv,td.g{font-size:13px}
 td.lv .dots{color:var(--stamp);letter-spacing:1px;font-size:11px}
-td.rv{width:34%;max-width:0}
-.rv-open{all:unset;cursor:pointer;display:flex;align-items:baseline;gap:8px;width:100%}
-.rv-last{flex:1;min-width:0;font-family:var(--hand);font-size:21px;line-height:1.1;color:var(--pen);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.rv-n{flex:none;font-family:var(--mono);font-size:12px;border-bottom:1px solid var(--ink)}
-.rv-open:hover .rv-n,.rv-open[aria-expanded="true"] .rv-n{color:var(--stamp);border-color:var(--stamp)}
-.rv-panel td{height:auto;white-space:normal;vertical-align:top;padding:8px 0 16px}
-.rv-box{background:var(--card);padding:12px 14px 14px;box-shadow:0 1px 1px rgba(0,0,0,.1),0 10px 20px -14px rgba(40,30,0,.5);transform:rotate(-.4deg)}
-.rv-list{list-style:none;margin:0 0 10px;padding:0;max-height:260px;overflow:auto}
-.rv-list li{display:flex;gap:10px;align-items:baseline;border-bottom:1px dashed var(--rule);padding:3px 0}
-.rv-list q{flex:1;quotes:none;font-family:var(--hand);font-size:21px;line-height:1.25;color:var(--pen)}
-.rv-list small{font-family:var(--mono);font-size:11px;color:var(--dim);white-space:nowrap}
-.rv-list .none{font-size:13px;color:var(--dim)}
-.rv-form{display:flex;gap:6px}
-.rv-form input{flex:1;min-width:0;font:inherit;font-size:15px;padding:7px 9px;border:1.5px solid var(--ink);border-radius:0;background:#fff;color:var(--ink)}
-.rv-form button{font-family:var(--mono);font-weight:700;font-size:14px;padding:0 16px;border:1.5px solid var(--ink);border-radius:0;background:var(--ink);color:#fffdf4;cursor:pointer}
-.rv-form button:hover{background:var(--stamp);border-color:var(--stamp)}
-.rv-form button:disabled{opacity:.5;cursor:wait}
-.rv-msg{margin:6px 0 0;font-size:12px;color:var(--dim)}
-.rv-msg.err{color:var(--stamp)}
+td.rc{width:1%}
+.rec{font:inherit;font-family:var(--mono);font-size:13px;display:inline-flex;align-items:center;gap:6px;background:none;border:1.5px solid var(--stamp);color:var(--stamp);padding:1px 9px;cursor:pointer;transform:rotate(-2deg);transition:transform .15s}
+.rec:hover{transform:rotate(0) scale(1.04)}
+.rec .ico{font-size:14px;line-height:1}
+.rec b{font-weight:700;min-width:1ch}
+.rec[aria-pressed="true"]{background:var(--stamp);color:#fffdf4}
+.rec:disabled{opacity:.6;cursor:wait}
 @media(max-width:640px){th:nth-child(5),td:nth-child(5),th:nth-child(6),td:nth-child(6){display:none}td.rv{width:auto}}
 
 footer{padding-top:var(--lh);padding-bottom:var(--lh);font-family:var(--hand);font-size:20px;line-height:var(--lh);color:var(--dim)}
@@ -122,7 +107,7 @@ footer{padding-top:var(--lh);padding-bottom:var(--lh);font-family:var(--hand);fo
 <body>
 <div class="pad">
   <div class="binding"><span>HIDDEN NOTE</span><span class="langsw"><button data-l="ko">한국어</button><button data-l="en">English</button></span></div>
-  <header class="ruled">
+  <header>
     <h1><span data-en="Hidden Note">히든노트</span><em>Vol. 1</em></h1>
     <p class="lead" data-en="A mystery game where you search the scene yourself and catch the culprit. It runs right in your browser, and each case takes about an hour. Fine to play solo, but it's more fun with a friend looking over your shoulder.">직접 현장을 뒤져서 범인을 찾는 추리 게임이에요. 설치 없이 브라우저에서 바로 할 수 있고, 사건 하나에 한 시간 남짓이면 됩니다. 혼자 해도 되지만 친구랑 같이 보면서 풀면 훨씬 재밌어요.</p>
     <p class="scribble" data-en="↳ keep a scrap of paper handy">↳ 메모지 한 장 옆에 두고 시작하세요</p>
@@ -168,29 +153,21 @@ footer{padding-top:var(--lh);padding-bottom:var(--lh);font-family:var(--hand);fo
       </div>
     </section>
 
-    <section class="ledger ruled">
+    <section class="ledger align">
       <h3><span data-en="Case log">사건 대장</span></h3>
       <div class="tbl">
       <table>
-        <thead><tr><th data-en="No.">번호</th><th data-en="Case">사건명</th><th data-en="Genre">장르</th><th data-en="Difficulty">난이도</th><th data-en="Players">인원</th><th data-en="Time">시간</th><th data-en="One-line reviews">한줄 후기</th></tr></thead>
+        <thead><tr><th data-en="No.">번호</th><th data-en="Case">사건명</th><th data-en="Genre">장르</th><th data-en="Difficulty">난이도</th><th data-en="Players">인원</th><th data-en="Time">시간</th><th data-en="Recommend">추천</th></tr></thead>
         <tbody>
           <tr><td class="n">NOTE 01</td><td><a href="notes/01/" data-en="The Funny Board Case">퍼니보드 사건 파일</a></td><td class="g" data-en="Cozy mystery">코지 미스터리</td><td class="lv" title="2/5"><span class="dots">●●○○○</span> <span data-en="Easy">쉬움</span></td><td data-en="1+">1인~</td><td data-en="60–90 min">60~90분</td>
-            <td class="rv"><button class="rv-open" data-note="note01" aria-expanded="false"><span class="rv-last"></span><span class="rv-n"></span></button></td></tr>
-          <tr class="rv-panel" id="rv-note01" hidden><td colspan="7">
-            <div class="rv-box"><ul class="rv-list"></ul>
-            <form class="rv-form" data-note="note01">
-              <input name="text" maxlength="80" required placeholder="스포일러 없이 한 줄로 (80자)" data-en-ph="One line, no spoilers (80 characters)" autocomplete="off">
-              <button type="submit" data-en="Post">적기</button>
-            </form>
-            <p class="rv-msg" data-en="You need to sign in with Google to post. One line per person per case. Posting again replaces your old one.">후기를 적으려면 Google 로그인이 필요해요. 한 사건에 한 사람당 한 줄이고, 다시 적으면 고쳐집니다.</p></div>
-          </td></tr>
+            <td class="rc"><button class="rec" data-note="note01" aria-pressed="false"><span class="ico">★</span><span class="lbl">추천</span><b>·</b></button></td></tr>
           <tr class="off"><td class="n">NOTE 02</td><td class="t" data-en="in progress…">조사 중…</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
         </tbody>
       </table>
       </div>
     </section>
   </main>
-  <footer><div data-en="Hidden Note">히든노트 · Hidden Note</div></footer>
+  <footer class="align"><div data-en="Hidden Note">히든노트 · Hidden Note</div></footer>
 </div>
 <script>
 // 영어: data-en / data-en-html / data-en-ph 값으로 바꾼다.
@@ -201,11 +178,23 @@ if(window.HN_LANG==='en'){
   document.querySelectorAll('[data-en-html]').forEach(e=>e.innerHTML=e.dataset.enHtml);
   document.querySelectorAll('[data-en-ph]').forEach(e=>e.placeholder=e.dataset.enPh);
 }
+// 줄 맞춤: 패드 줄은 제본 아래(46px)부터 32px 간격. .align 구역의 윗변을 그 간격에 맞춘다.
+function alignRules(){
+  const pad=document.querySelector('.pad'),LH=32,TOP=46;
+  document.querySelectorAll('.align').forEach(el=>{
+    el.style.marginTop='0px';
+    const y=el.getBoundingClientRect().top-pad.getBoundingClientRect().top-TOP;
+    const r=((y%LH)+LH)%LH;
+    el.style.marginTop=(r?LH-r:0)+'px';
+  });
+}
+alignRules();addEventListener('resize',alignRules);addEventListener('load',alignRules);
+if(document.fonts)document.fonts.ready.then(alignRules);
 document.querySelectorAll('.langsw button').forEach(b=>{b.classList.toggle('on',b.dataset.l===window.HN_LANG);b.onclick=()=>{if(b.dataset.l!==window.HN_LANG)hnSetLang(b.dataset.l)}});
 </script>
 <script type="module">
-// 한줄 후기: 스코어카운터와 같은 Firebase 프로젝트의 clueReviews 컬렉션.
-// 문서 id = `${note}_${uid}` → 한 사람이 사건마다 한 줄, 다시 적으면 덮어씀.
+// 추천: 스코어카운터 Firebase 프로젝트의 clueLikes/{note} 문서에 count 하나. 로그인 없이 누르고, 다시 누르면 취소.
+// 누른 기록은 이 브라우저(localStorage)에만 남긴다. 규칙상 한 번에 +1/-1만 바뀐다.
 const firebaseConfig = {
   apiKey: "AIzaSyDKYbgVzDYBrdlXgIkIWASoIIpc9B_IkTc",
   authDomain: "score-1948e.firebaseapp.com",
@@ -214,78 +203,43 @@ const firebaseConfig = {
 };
 const base = 'https://www.gstatic.com/firebasejs/12.4.0/';
 const EN = window.HN_LANG === 'en';
-const M = EN ? {none:'No reviews yet', count:n=>`✎ ${n} ${n===1?'review':'reviews'}`, write:'✎ Write one', first:'Be the first to leave one.', loadFail:"Couldn't load reviews", saving:'Posting…', saved:'Posted. Thanks!', closed:'The sign-in window was closed.', failed:"Couldn't post that. Please try again in a bit."}
-  : {none:'아직 후기가 없어요', count:n=>`✎ ${n}줄`, write:'✎ 남기기', first:'첫 번째 후기를 남겨 주세요.', loadFail:'후기를 불러오지 못했어요', saving:'적는 중…', saved:'수첩에 적었어요. 고마워요!', closed:'로그인 창이 닫혔어요.', failed:'저장하지 못했어요. 잠시 후 다시 시도해 주세요.'};
+const L = EN ? {on:'Recommended', off:'Recommend', fail:"Couldn't save that. Try again in a bit."} : {on:'추천함', off:'추천', fail:'저장하지 못했어요. 잠시 후 다시 눌러 주세요.'};
 let fb;
 async function connect(){
   if(!fb) fb = (async()=>{
     const [app, store] = await Promise.all([import(base+'firebase-app.js'), import(base+'firebase-firestore.js')]);
     const firebase = app.initializeApp(firebaseConfig, 'clues');
-    return {firebase, store, db: store.getFirestore(firebase)};
+    return {store, db: store.getFirestore(firebase)};
   })().catch(e=>{fb=null;throw e});
   return fb;
 }
-async function user(){
-  const c = await connect();
-  if(!c.auth){
-    const auth = await import(base+'firebase-auth.js');
-    c.auth = auth; c.session = auth.getAuth(c.firebase);
-    await c.session.authStateReady();
-  }
-  if(!c.session.currentUser) await c.auth.signInWithPopup(c.session, new c.auth.GoogleAuthProvider());
-  return c.session.currentUser;
+const mine = note => { try { return localStorage.getItem('hn.rec.'+note) === '1'; } catch { return false; } };
+const setMine = (note, on) => { try { on ? localStorage.setItem('hn.rec.'+note, '1') : localStorage.removeItem('hn.rec.'+note); } catch {} };
+function paint(btn, count){
+  const on = mine(btn.dataset.note);
+  btn.setAttribute('aria-pressed', on);
+  btn.querySelector('.lbl').textContent = on ? L.on : L.off;
+  if(count !== undefined) btn.querySelector('b').textContent = count;
 }
-const esc = s => s.replace(/[&<>"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
-const fmt = t => { const d = t?.toDate?.(); return d ? (EN ? d.toLocaleDateString('en-US',{month:'short',day:'numeric'}) : `${d.getMonth()+1}/${d.getDate()}`) : ''; };
-const cache = {};
-async function load(note){
-  const c = await connect();
-  const snap = await c.store.getDocs(c.store.query(c.store.collection(c.db,'clueReviews'), c.store.where('note','==',note), c.store.limit(200)));
-  cache[note] = snap.docs.map(d=>d.data()).sort((a,b)=>(b.createdAt?.toMillis?.()||0)-(a.createdAt?.toMillis?.()||0));
-  render(note);
-}
-function render(note){
-  const list = cache[note] || [];
-  const btn = document.querySelector(`.rv-open[data-note="${note}"]`);
-  btn.querySelector('.rv-last').textContent = list[0] ? `“${list[0].text}”` : M.none;
-  btn.querySelector('.rv-n').textContent = list.length ? M.count(list.length) : M.write;
-  document.querySelector(`#rv-${note} .rv-list`).innerHTML = list.length
-    ? list.map(r=>`<li><q>${esc(r.text)}</q><small>${fmt(r.createdAt)}</small></li>`).join('')
-    : `<li class="none">${M.first}</li>`;
-}
-document.querySelectorAll('a[href^="notes/"]').forEach(a=>a.addEventListener('click',()=>{
-  hn('case_link_clicked', {note: 'note'+a.getAttribute('href').match(/notes\/(\d+)/)[1], place: a.classList.contains('case') ? 'folder' : 'ledger'}, true);
-}));
-document.querySelectorAll('.rv-open').forEach(btn=>{
+document.querySelectorAll('.rec').forEach(async btn=>{
   const note = btn.dataset.note;
-  btn.querySelector('.rv-last').textContent = M.none; btn.querySelector('.rv-n').textContent = M.write;
-  load(note).catch(()=>{ btn.querySelector('.rv-last').textContent = M.loadFail; });
-  btn.onclick = ()=>{
-    const panel = document.getElementById('rv-'+note), open = panel.hidden;
-    panel.hidden = !open; btn.setAttribute('aria-expanded', open);
-    if(open){ panel.querySelector('input').focus(); hn('review_opened', {note}); }
-  };
-});
-document.querySelectorAll('.rv-form').forEach(form=>{
-  const note = form.dataset.note, msg = form.nextElementSibling, submit = form.querySelector('button');
-  form.onsubmit = async e=>{
-    e.preventDefault();
-    const text = form.text.value.trim().replace(/\s+/g,' ');
-    if(!text) return;
-    submit.disabled = true; msg.className = 'rv-msg'; msg.textContent = M.saving;
+  paint(btn);
+  try{
+    const c = await connect();
+    const snap = await c.store.getDoc(c.store.doc(c.db, 'clueLikes', note));
+    paint(btn, snap.exists() ? Math.max(0, snap.data().count|0) : 0);
+  }catch{ btn.querySelector('b').textContent = '·'; }
+  btn.onclick = async ()=>{
+    const on = !mine(note), b = btn.querySelector('b'), before = parseInt(b.textContent) || 0;
+    setMine(note, on); paint(btn, Math.max(0, before + (on ? 1 : -1)));
+    btn.disabled = true;
+    hn('recommend_clicked', {note, action: on ? 'add' : 'remove'});
     try{
-      const u = await user(), c = await connect();
-      await c.store.setDoc(c.store.doc(c.db,'clueReviews',`${note}_${u.uid}`), {note, text, uid:u.uid, createdAt:c.store.serverTimestamp()});
-      form.reset(); msg.textContent = M.saved;
-      hn('review_submitted', {note, outcome:'saved'});
-      await load(note);
+      const c = await connect();
+      await c.store.setDoc(c.store.doc(c.db, 'clueLikes', note), {count: c.store.increment(on ? 1 : -1)}, {merge: true});
     }catch(err){
-      const cancelled = err?.code === 'auth/popup-closed-by-user' || err?.code === 'auth/cancelled-popup-request';
-      hn('review_submitted', {note, outcome: cancelled ? 'login_cancelled' : 'failed'});
-      msg.className = 'rv-msg err';
-      msg.textContent = cancelled ? M.closed : M.failed;
-      console.error(err);
-    }finally{ submit.disabled = false; }
+      setMine(note, !on); paint(btn, before); btn.title = L.fail; console.error(err);
+    }finally{ btn.disabled = false; }
   };
 });
 </script>

@@ -18,8 +18,7 @@
 | 이벤트 | 언제 | 파라미터 |
 | --- | --- | --- |
 | `case_link_clicked` | 메인에서 사건 열기 | `place` (folder / ledger) |
-| `review_opened` | 한줄 후기 펼침 | — |
-| `review_submitted` | 후기 적기 결과 | `outcome` (saved / login_cancelled / failed) |
+| `recommend_clicked` | 사건 대장의 추천 버튼 | `action` (add / remove) |
 | `language_changed` | 언어 전환 | `to` (ko / en) |
 | `case_intro_viewed` | 사건 페이지 도착, 도입부 표시 | — |
 | `case_started` | "조사 시작" 누름 | — |
@@ -46,9 +45,9 @@
 
 **관리 → 맞춤 정의**에 등록해야 보고서·탐색에서 파라미터를 쓸 수 있습니다(등록한 날부터 집계).
 
-- 맞춤 측정기준(이벤트 범위): `note`, `lang`, `place`, `outcome`, `location`, `hotspot`, `clue`, `source`, `puzzle`, `app`, `suspect`, `stage`, `grade`, `accused`, `culprit_correct`, `time_correct`, `evidence_correct`, `forced`
+- 맞춤 측정기준(이벤트 범위): `note`, `lang`, `place`, `outcome`, `action`, `location`, `hotspot`, `clue`, `source`, `puzzle`, `app`, `suspect`, `stage`, `grade`, `accused`, `culprit_correct`, `time_correct`, `evidence_correct`, `forced`
 - 맞춤 측정항목(이벤트 범위): `minutes_used`(분), `play_minutes`(분), `clue_count`, `clue_total`, `points`, `attempt`, `step`, `evidence_count`
-- **관리 → 이벤트 → 주요 이벤트**로 표시: `case_started`, `case_finished`, `review_submitted`
+- **관리 → 이벤트 → 주요 이벤트**로 표시: `case_started`, `case_finished`, `recommend_clicked`
 
 ## 보면 좋은 탐색 보고서
 
