@@ -11,111 +11,129 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Nanum+Gothic+Coding:wght@400;700&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
 <style>
-:root{--paper:#ece6d8;--sheet:#f6f2e8;--ink:#1f1c18;--dim:#6b6358;--rule:#c9bfa9;--stamp:#a3312a;--pen:#27479a;--folder:#d6b97c}
+:root{
+  --desk:#34302b;--pad:#fbf2a6;--line:#a9c3e0;--margin:rgba(214,69,65,.55);--lh:32px;--ml:76px;
+  --card:#fffdf4;--ink:#1f1c18;--dim:#6b6358;--rule:#c9bfa9;--stamp:#a3312a;--pen:#24418f;--sheet:#fffdf4;
+  --mono:"Nanum Gothic Coding",monospace;--serif:"Nanum Myeongjo",serif;--hand:"Nanum Pen Script",cursive;
+}
+@media(max-width:640px){:root{--ml:34px}}
 *{box-sizing:border-box}
-html,body{margin:0;background:var(--paper);color:var(--ink);font-family:"Nanum Myeongjo",serif;line-height:1.65}
-body{background-image:radial-gradient(rgba(0,0,0,.035) 1px,transparent 1px);background-size:3px 3px}
+html,body{margin:0}
+body{background:var(--desk);color:var(--ink);font-family:var(--serif);line-height:1.65;padding:0 0 48px}
 a{color:inherit}
-.wrap{max-width:860px;margin:0 auto;padding:0 20px}
-.mono{font-family:"Nanum Gothic Coding",monospace}
 
-header{padding:56px 0 28px}
-.top{display:flex;justify-content:space-between;align-items:baseline;border-bottom:3px double var(--ink);padding-bottom:6px;font-family:"Nanum Gothic Coding",monospace;font-size:12px;color:var(--dim)}
-h1{font-weight:800;font-size:clamp(46px,9vw,84px);line-height:1;margin:26px 0 0;letter-spacing:-2px}
-h1 em{font-style:normal;font-family:"Nanum Gothic Coding",monospace;font-weight:400;font-size:.22em;letter-spacing:0;vertical-align:top;margin-left:10px;color:var(--dim)}
-.lead{font-size:17px;max-width:520px;margin:18px 0 0}
-.scribble{font-family:"Nanum Pen Script",cursive;color:var(--pen);font-size:24px;line-height:1.2;margin:14px 0 0;transform:rotate(-1.5deg);display:inline-block}
+/* 리갈패드 한 장 */
+.pad{position:relative;max-width:980px;min-height:100vh;margin:0 auto;background-color:var(--pad);
+  background-image:linear-gradient(90deg,transparent calc(var(--ml) - 5px),var(--margin) calc(var(--ml) - 5px),var(--margin) calc(var(--ml) - 4px),transparent calc(var(--ml) - 4px),transparent var(--ml),var(--margin) var(--ml),var(--margin) calc(var(--ml) + 1px),transparent calc(var(--ml) + 1px)),
+    repeating-linear-gradient(transparent 0 calc(var(--lh) - 1px),var(--line) calc(var(--lh) - 1px) var(--lh));
+  background-position:0 0,0 6px;box-shadow:0 30px 60px -20px rgba(0,0,0,.6),0 0 0 1px rgba(0,0,0,.08)}
+.pad>*:not(.binding){padding-left:calc(var(--ml) + 22px);padding-right:28px}
+@media(max-width:640px){.pad>*:not(.binding){padding-left:calc(var(--ml) + 12px);padding-right:14px}}
+/* 줄에 글자를 맞추는 구역: 자기 위치에서 줄을 다시 긋는다 (header는 여백선까지) */
+.ruled{background-color:var(--pad);background-image:repeating-linear-gradient(transparent 0 calc(var(--lh) - 1px),var(--line) calc(var(--lh) - 1px) var(--lh))}
+header.ruled{background-image:linear-gradient(90deg,transparent calc(var(--ml) - 5px),var(--margin) calc(var(--ml) - 5px),var(--margin) calc(var(--ml) - 4px),transparent calc(var(--ml) - 4px),transparent var(--ml),var(--margin) var(--ml),var(--margin) calc(var(--ml) + 1px),transparent calc(var(--ml) + 1px)),
+  repeating-linear-gradient(transparent 0 calc(var(--lh) - 1px),var(--line) calc(var(--lh) - 1px) var(--lh))}
 
-.case{display:grid;grid-template-columns:1fr 250px;gap:28px;align-items:start;margin:28px 0 0;text-decoration:none;color:inherit;position:relative}
-@media(max-width:680px){.case{grid-template-columns:1fr}}
-.folder{position:relative;background:var(--folder);padding:26px 24px 22px;box-shadow:0 1px 0 rgba(0,0,0,.15),0 10px 24px -14px rgba(60,40,10,.55)}
-.folder::before{content:"";position:absolute;top:-16px;left:0;width:150px;height:17px;background:var(--folder);clip-path:polygon(0 100%,8% 0,92% 0,100% 100%)}
-.folder .tab{position:absolute;top:-13px;left:18px;font-family:"Nanum Gothic Coding",monospace;font-size:11px;font-weight:700;letter-spacing:1px}
-.folder h2{font-size:30px;font-weight:800;margin:0;line-height:1.25;letter-spacing:-.5px}
-.folder .sub{font-size:16px;margin-top:4px}
-.fields{margin:18px 0 0;font-family:"Nanum Gothic Coding",monospace;font-size:13px;border-top:1px solid rgba(0,0,0,.25)}
-.fields div{display:flex;border-bottom:1px solid rgba(0,0,0,.25);padding:5px 0}
-.fields dt{width:88px;color:#5a4a2c}
+.binding{height:46px;display:flex;justify-content:space-between;align-items:center;padding:0 18px 0 calc(var(--ml) + 22px);
+  background:linear-gradient(#8a2420,#6a1916 70%,#5a1412);color:#f3d9c9;font-family:var(--mono);font-size:12px;letter-spacing:2px;
+  box-shadow:0 3px 0 rgba(0,0,0,.12)}
+.binding::after{content:"";position:absolute;left:0;right:0;top:52px;border-top:1px dashed rgba(0,0,0,.18)}
+@media(max-width:640px){.binding{padding-left:calc(var(--ml) + 12px)}}
+.langsw{letter-spacing:0}
+.langsw button{font:inherit;background:none;border:none;padding:0 0 0 8px;color:#e0b8a8;cursor:pointer}
+.langsw button+button{margin-left:8px;border-left:1px solid rgba(255,255,255,.3)}
+.langsw button.on{color:#fff;font-weight:700;text-decoration:underline;text-underline-offset:3px}
+
+header{padding-top:calc(var(--lh) * 2);padding-bottom:var(--lh)}
+h1{font-family:var(--hand);font-weight:400;font-size:clamp(60px,15vw,88px);line-height:calc(var(--lh) * 3);margin:0;letter-spacing:-1px;color:var(--ink)}
+h1 span{background:linear-gradient(transparent 62%,rgba(214,69,65,.28) 62% 86%,transparent 86%)}
+h1 em{font-style:normal;font-family:var(--mono);font-size:13px;letter-spacing:0;vertical-align:top;margin-left:10px;color:var(--dim);line-height:1}
+.lead{font-family:var(--hand);font-size:25px;line-height:var(--lh);color:var(--pen);max-width:600px;margin:0;padding-top:4px}
+.scribble{font-family:var(--hand);font-size:23px;line-height:var(--lh);color:var(--stamp);margin:var(--lh) 0 0;padding-top:4px}
+
+/* 패드 위에 올려 둔 사건 노트 */
+.notes{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:34px;align-items:start;padding-top:12px;padding-bottom:40px}
+@media(max-width:760px){.notes{grid-template-columns:1fr}}
+.note{position:relative;display:block;text-decoration:none;color:inherit;background:var(--card);padding:30px 26px 24px;
+  transform:rotate(-1.2deg);box-shadow:0 1px 1px rgba(0,0,0,.12),0 14px 26px -14px rgba(40,30,0,.55);transition:transform .2s,box-shadow .2s}
+a.note:hover{transform:rotate(0) translateY(-3px);box-shadow:0 1px 1px rgba(0,0,0,.12),0 22px 34px -16px rgba(40,30,0,.6)}
+.note::before{content:"";position:absolute;left:0;right:0;top:52px;border-top:1.5px solid rgba(214,69,65,.5)}
+.tape{position:absolute;top:-13px;left:36%;width:96px;height:26px;background:rgba(255,255,255,.55);border:1px solid rgba(0,0,0,.04);transform:rotate(-3deg);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.note .no{font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:1.5px;color:var(--stamp)}
+.note h2{font-size:28px;font-weight:800;margin:14px 0 0;line-height:1.2;letter-spacing:-.5px;max-width:calc(100% - 150px)}
+.note .sub{font-size:15px;margin-top:22px;color:#3d3830}
+.fields{margin:12px 0 0;font-family:var(--mono);font-size:13px;max-width:calc(100% - 20px)}
+.fields div{display:flex;border-bottom:1px dotted #cfc6b0;padding:4px 0}
+.fields dt{width:88px;color:var(--dim)}
 .fields dd{margin:0}
-.stamp{position:absolute;right:18px;top:20px;border:3px solid var(--stamp);color:var(--stamp);font-family:"Nanum Gothic Coding",monospace;font-weight:700;font-size:15px;letter-spacing:3px;padding:2px 10px;transform:rotate(8deg);opacity:.82;mix-blend-mode:multiply}
-.open{display:inline-block;margin-top:18px;font-family:"Nanum Gothic Coding",monospace;font-weight:700;font-size:14px;border-bottom:2px solid var(--ink);padding-bottom:1px}
-.case:hover .open{color:var(--stamp);border-color:var(--stamp)}
-.photo{background:#fff;padding:10px 10px 34px;transform:rotate(2.2deg);box-shadow:0 8px 20px -10px rgba(0,0,0,.5);position:relative;margin-top:10px;transition:transform .2s}
-.case:hover .photo{transform:rotate(.6deg)}
-.photo svg{display:block;width:100%;height:auto}
-.photo .cap{position:absolute;left:12px;bottom:6px;font-family:"Nanum Pen Script",cursive;font-size:20px;color:#333}
-.photo::after{content:"";position:absolute;top:-12px;left:50%;width:84px;height:24px;margin-left:-42px;background:rgba(240,230,200,.75);transform:rotate(-4deg);box-shadow:0 1px 2px rgba(0,0,0,.1)}
+.stamp{position:absolute;right:22px;bottom:28px;border:3px solid var(--stamp);color:var(--stamp);font-family:var(--mono);font-weight:700;font-size:15px;letter-spacing:3px;padding:2px 10px;transform:rotate(-9deg);opacity:.8;mix-blend-mode:multiply}
+.open{display:inline-block;margin-top:18px;font-family:var(--mono);font-weight:700;font-size:14px;border-bottom:2px solid var(--ink);padding-bottom:1px}
+a.note:hover .open{color:var(--stamp);border-color:var(--stamp)}
+.photo{position:absolute;top:-18px;right:-14px;width:150px;background:#fff;padding:7px 7px 26px;transform:rotate(5deg);box-shadow:0 6px 14px -6px rgba(0,0,0,.5)}
+.photo svg:not(.clip){display:block;width:100%;height:auto}
+.photo .cap{position:absolute;left:8px;right:4px;bottom:3px;font-family:var(--hand);font-size:16px;line-height:1.2;color:#333;white-space:nowrap;overflow:hidden}
+.clip{position:absolute;top:-16px;left:22px;width:16px;height:48px;z-index:2}
+@media(max-width:480px){.photo{width:112px;right:-8px}.note h2{max-width:calc(100% - 100px);font-size:24px}}
+.note.blank{background:#fde98a;transform:rotate(2deg);padding:22px 22px 26px;min-height:190px;box-shadow:0 1px 1px rgba(0,0,0,.1),0 10px 20px -12px rgba(40,30,0,.5)}
+.note.blank::before{display:none}
+.note.blank .no{color:#8a7a3a}
+.note.blank p{font-family:var(--hand);font-size:26px;line-height:1.3;color:#8a7a3a;margin:18px 0 0}
 
-.ledger{margin:56px 0 0}
-.ledger h3{font-family:"Nanum Gothic Coding",monospace;font-size:13px;font-weight:700;letter-spacing:2px;margin:0 0 8px}
-table{width:100%;border-collapse:collapse;font-size:14px;background:var(--sheet)}
-th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--rule)}
-th{font-family:"Nanum Gothic Coding",monospace;font-weight:400;font-size:12px;color:var(--dim);border-bottom:1.5px solid var(--ink)}
-td.n{font-family:"Nanum Gothic Coding",monospace;font-size:12px;font-weight:700;white-space:nowrap;width:80px}
-tr.off td{color:#a39a8a}
-tr.off td.t{font-family:"Nanum Pen Script",cursive;font-size:20px;color:#8f877a}
-td a{text-decoration:none;border-bottom:1px solid var(--rule)}
-td a:hover{border-color:var(--ink)}
-th,td{white-space:nowrap}
-td:nth-child(2){white-space:normal;word-break:keep-all;min-width:7em}
-tr.off td.t{white-space:nowrap}
+/* 패드에 직접 적은 사건 대장 */
+.ledger{padding-top:var(--lh);padding-bottom:var(--lh)}
+.ledger h3{font-family:var(--hand);font-weight:400;font-size:30px;line-height:var(--lh);margin:0 0 var(--lh);color:var(--ink)}
+.ledger h3 span{background:linear-gradient(transparent 60%,rgba(214,69,65,.28) 60% 88%,transparent 88%)}
+.tbl{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{text-align:left;padding:0 10px 0 0;height:var(--lh);line-height:1.2;vertical-align:bottom;padding-bottom:5px;white-space:nowrap}
+th{font-family:var(--mono);font-weight:700;font-size:11.5px;color:var(--dim)}
+td.n{font-family:var(--mono);font-size:12px;font-weight:700;width:76px}
+tr.off td{color:#9c916a}
+tr.off td.t{font-family:var(--hand);font-size:21px}
+td a{text-decoration:none;font-weight:700}
+td a:hover{color:var(--stamp)}
+td:nth-child(2){word-break:keep-all}
 td.lv,td.g{font-size:13px}
 td.lv .dots{color:var(--stamp);letter-spacing:1px;font-size:11px}
 td.rv{width:34%;max-width:0}
 .rv-open{all:unset;cursor:pointer;display:flex;align-items:baseline;gap:8px;width:100%}
-.rv-last{flex:1;min-width:0;font-family:"Nanum Pen Script",cursive;font-size:20px;line-height:1.1;color:var(--pen);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.rv-n{flex:none;font-family:"Nanum Gothic Coding",monospace;font-size:12px;border-bottom:1px solid var(--ink)}
+.rv-last{flex:1;min-width:0;font-family:var(--hand);font-size:21px;line-height:1.1;color:var(--pen);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rv-n{flex:none;font-family:var(--mono);font-size:12px;border-bottom:1px solid var(--ink)}
 .rv-open:hover .rv-n,.rv-open[aria-expanded="true"] .rv-n{color:var(--stamp);border-color:var(--stamp)}
-.rv-panel td{background:#fffdf6;padding:12px 14px 14px;border-bottom:1.5px solid var(--ink)}
+.rv-panel td{height:auto;white-space:normal;vertical-align:top;padding:8px 0 16px}
+.rv-box{background:var(--card);padding:12px 14px 14px;box-shadow:0 1px 1px rgba(0,0,0,.1),0 10px 20px -14px rgba(40,30,0,.5);transform:rotate(-.4deg)}
 .rv-list{list-style:none;margin:0 0 10px;padding:0;max-height:260px;overflow:auto}
 .rv-list li{display:flex;gap:10px;align-items:baseline;border-bottom:1px dashed var(--rule);padding:3px 0}
-.rv-list q{flex:1;quotes:none;font-family:"Nanum Pen Script",cursive;font-size:21px;line-height:1.25;color:var(--pen)}
-.rv-list small{font-family:"Nanum Gothic Coding",monospace;font-size:11px;color:var(--dim);white-space:nowrap}
+.rv-list q{flex:1;quotes:none;font-family:var(--hand);font-size:21px;line-height:1.25;color:var(--pen)}
+.rv-list small{font-family:var(--mono);font-size:11px;color:var(--dim);white-space:nowrap}
 .rv-list .none{font-size:13px;color:var(--dim)}
 .rv-form{display:flex;gap:6px}
 .rv-form input{flex:1;min-width:0;font:inherit;font-size:15px;padding:7px 9px;border:1.5px solid var(--ink);border-radius:0;background:#fff;color:var(--ink)}
-.rv-form button{font-family:"Nanum Gothic Coding",monospace;font-weight:700;font-size:14px;padding:0 16px;border:1.5px solid var(--ink);border-radius:0;background:var(--ink);color:var(--sheet);cursor:pointer}
+.rv-form button{font-family:var(--mono);font-weight:700;font-size:14px;padding:0 16px;border:1.5px solid var(--ink);border-radius:0;background:var(--ink);color:#fffdf4;cursor:pointer}
 .rv-form button:hover{background:var(--stamp);border-color:var(--stamp)}
 .rv-form button:disabled{opacity:.5;cursor:wait}
 .rv-msg{margin:6px 0 0;font-size:12px;color:var(--dim)}
 .rv-msg.err{color:var(--stamp)}
-@media(max-width:640px){th:nth-child(5),td:nth-child(5),th:nth-child(6),td:nth-child(6){display:none}.rv-panel td{display:table-cell}td.rv{width:auto}}
+@media(max-width:640px){th:nth-child(5),td:nth-child(5),th:nth-child(6),td:nth-child(6){display:none}td.rv{width:auto}}
 
-.langsw button{font:inherit;background:none;border:none;padding:0 0 0 8px;color:var(--dim);cursor:pointer}
-.langsw button+button{margin-left:8px;border-left:1px solid var(--rule)}
-.langsw button.on{color:var(--ink);font-weight:700;text-decoration:underline;text-underline-offset:3px}
-footer{margin:60px 0 0;padding:16px 0 40px;border-top:1px solid var(--rule);color:var(--dim);font-family:"Nanum Gothic Coding",monospace;font-size:12px}
+footer{padding-top:var(--lh);padding-bottom:var(--lh);font-family:var(--hand);font-size:20px;line-height:var(--lh);color:var(--dim)}
 </style>
 </head>
 <body>
-<header>
-  <div class="wrap">
-    <div class="top"><span>HIDDEN NOTE</span><span class="langsw"><button data-l="ko">한국어</button><button data-l="en">English</button></span></div>
+<div class="pad">
+  <div class="binding"><span>HIDDEN NOTE</span><span class="langsw"><button data-l="ko">한국어</button><button data-l="en">English</button></span></div>
+  <header class="ruled">
     <h1><span data-en="Hidden Note">히든노트</span><em>Vol. 1</em></h1>
     <p class="lead" data-en="A mystery game where you search the scene yourself and catch the culprit. It runs right in your browser, and each case takes about an hour. Fine to play solo, but it's more fun with a friend looking over your shoulder.">직접 현장을 뒤져서 범인을 찾는 추리 게임이에요. 설치 없이 브라우저에서 바로 할 수 있고, 사건 하나에 한 시간 남짓이면 됩니다. 혼자 해도 되지만 친구랑 같이 보면서 풀면 훨씬 재밌어요.</p>
-    <span class="scribble" data-en="↳ keep a scrap of paper handy">↳ 메모지 한 장 옆에 두고 시작하세요</span>
-  </div>
-</header>
-<main>
-  <div class="wrap">
-    <a class="case" href="notes/01/">
-      <div class="folder">
-        <span class="tab">NOTE 01</span>
-        <div class="stamp" data-en="UNSOLVED">미해결</div>
-        <h2 data-en-html="The Funny Board<br>Case">퍼니보드<br>사건 파일</h2>
-        <div class="sub" data-en="Last Customers at the Board Game Café">보드게임 카페의 마지막 손님</div>
-        <dl class="fields">
-          <div><dt data-en="Genre">장르</dt><dd data-en="Cozy mystery">코지 미스터리</dd></div>
-          <div><dt data-en="Crime">사건 종류</dt><dd data-en="Swap">바꿔치기</dd></div>
-          <div><dt data-en="Difficulty">난이도</dt><dd data-en="●●○○○ Easy">●●○○○ 쉬움</dd></div>
-          <div><dt data-en="Suspects">용의자</dt><dd>4<span data-en="">명</span></dd></div>
-          <div><dt data-en="Players">인원</dt><dd data-en="1+">1인 이상</dd></div>
-          <div><dt data-en="Play time">소요 시간</dt><dd data-en="60–90 min">60~90분</dd></div>
-        </dl>
-        <span class="open" data-en="Open the case file →">사건 파일 열기 →</span>
-      </div>
-      <div class="photo">
-        <svg viewBox="0 0 320 240" aria-hidden="true">
+    <p class="scribble" data-en="↳ keep a scrap of paper handy">↳ 메모지 한 장 옆에 두고 시작하세요</p>
+  </header>
+  <main>
+    <section class="notes">
+      <a class="note" href="notes/01/">
+        <span class="tape"></span>
+        <div class="photo">
+          <svg class="clip" viewBox="0 0 16 48" aria-hidden="true"><path d="M11 14 V38 a4 4 0 0 1 -8 0 V8 a5.5 5.5 0 0 1 11 0 V34 a2.5 2.5 0 0 1 -5 0 V14" fill="none" stroke="#8d969c" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <svg viewBox="0 0 320 240" aria-hidden="true">
           <rect width="320" height="240" fill="#2a2420"/>
           <rect x="95" y="40" width="130" height="160" fill="#1a2a30" stroke="#9fb3bb" stroke-width="3"/>
           <rect x="101" y="46" width="118" height="148" fill="rgba(160,200,220,.12)"/>
@@ -128,32 +146,52 @@ footer{margin:60px 0 0;padding:16px 0 40px;border-top:1px solid var(--rule);colo
           <path d="M110 60 l20 40" stroke="rgba(255,255,255,.12)" stroke-width="6"/>
           <ellipse cx="160" cy="182" rx="56" ry="18" fill="none" stroke="#e04b3a" stroke-width="2.5" transform="rotate(-4 160 182)"/>
         </svg>
-        <span class="cap" data-en="the showcase, after 21:30">쇼케이스, 21:30 이후</span>
+          <span class="cap" data-en="the showcase, after 21:30">쇼케이스, 21:30 이후</span>
+        </div>
+        <span class="no">NOTE 01</span>
+        <h2 data-en-html="The Funny Board<br>Case">퍼니보드<br>사건 파일</h2>
+        <div class="sub" data-en="Last Customers at the Board Game Café">보드게임 카페의 마지막 손님</div>
+        <dl class="fields">
+          <div><dt data-en="Genre">장르</dt><dd data-en="Cozy mystery">코지 미스터리</dd></div>
+          <div><dt data-en="Crime">사건 종류</dt><dd data-en="Swap">바꿔치기</dd></div>
+          <div><dt data-en="Difficulty">난이도</dt><dd data-en="●●○○○ Easy">●●○○○ 쉬움</dd></div>
+          <div><dt data-en="Suspects">용의자</dt><dd>4<span data-en="">명</span></dd></div>
+          <div><dt data-en="Players">인원</dt><dd data-en="1+">1인 이상</dd></div>
+          <div><dt data-en="Play time">소요 시간</dt><dd data-en="60–90 min">60~90분</dd></div>
+        </dl>
+        <span class="open" data-en="Open the case file →">사건 파일 열기 →</span>
+        <div class="stamp" data-en="UNSOLVED">미해결</div>
+      </a>
+      <div class="note blank" aria-hidden="true">
+        <span class="no">NOTE 02</span>
+        <p data-en="Still working on this one…">다음 사건은 아직 조사 중…</p>
       </div>
-    </a>
+    </section>
 
-    <section class="ledger">
-      <h3 data-en="CASE LOG">사건 대장</h3>
+    <section class="ledger ruled">
+      <h3><span data-en="Case log">사건 대장</span></h3>
+      <div class="tbl">
       <table>
         <thead><tr><th data-en="No.">번호</th><th data-en="Case">사건명</th><th data-en="Genre">장르</th><th data-en="Difficulty">난이도</th><th data-en="Players">인원</th><th data-en="Time">시간</th><th data-en="One-line reviews">한줄 후기</th></tr></thead>
         <tbody>
           <tr><td class="n">NOTE 01</td><td><a href="notes/01/" data-en="The Funny Board Case">퍼니보드 사건 파일</a></td><td class="g" data-en="Cozy mystery">코지 미스터리</td><td class="lv" title="2/5"><span class="dots">●●○○○</span> <span data-en="Easy">쉬움</span></td><td data-en="1+">1인~</td><td data-en="60–90 min">60~90분</td>
             <td class="rv"><button class="rv-open" data-note="note01" aria-expanded="false"><span class="rv-last"></span><span class="rv-n"></span></button></td></tr>
           <tr class="rv-panel" id="rv-note01" hidden><td colspan="7">
-            <ul class="rv-list"></ul>
+            <div class="rv-box"><ul class="rv-list"></ul>
             <form class="rv-form" data-note="note01">
               <input name="text" maxlength="80" required placeholder="스포일러 없이 한 줄로 (80자)" data-en-ph="One line, no spoilers (80 characters)" autocomplete="off">
               <button type="submit" data-en="Post">적기</button>
             </form>
-            <p class="rv-msg" data-en="You need to sign in with Google to post. One line per person per case. Posting again replaces your old one.">후기를 적으려면 Google 로그인이 필요해요. 한 사건에 한 사람당 한 줄이고, 다시 적으면 고쳐집니다.</p>
+            <p class="rv-msg" data-en="You need to sign in with Google to post. One line per person per case. Posting again replaces your old one.">후기를 적으려면 Google 로그인이 필요해요. 한 사건에 한 사람당 한 줄이고, 다시 적으면 고쳐집니다.</p></div>
           </td></tr>
           <tr class="off"><td class="n">NOTE 02</td><td class="t" data-en="in progress…">조사 중…</td><td>—</td><td>—</td><td>—</td><td>—</td><td>—</td></tr>
         </tbody>
       </table>
+      </div>
     </section>
-  </div>
-</main>
-<footer><div class="wrap" data-en="Hidden Note">히든노트 · Hidden Note</div></footer>
+  </main>
+  <footer><div data-en="Hidden Note">히든노트 · Hidden Note</div></footer>
+</div>
 <script>
 // 영어: data-en / data-en-html / data-en-ph 값으로 바꾼다.
 if(window.HN_LANG==='en'){
