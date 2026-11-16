@@ -6,86 +6,112 @@
 <title>히든노트 · Hidden Note</title>
 <meta name="description" content="히든노트 — 브라우저에서 바로 플레이하는 추리 사건 파일 시리즈">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Serif+KR:wght@700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Nanum+Gothic+Coding:wght@400;700&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#14110f;--panel:#1e1a17;--panel2:#272220;--line:#3a332e;--ink:#efe6d8;--dim:#a69a8a;--gold:#d8a64a;--gold2:#f0c96b;--red:#c8553d}
+:root{--paper:#ece6d8;--sheet:#f6f2e8;--ink:#1f1c18;--dim:#6b6358;--rule:#c9bfa9;--stamp:#a3312a;--pen:#27479a;--folder:#d6b97c}
 *{box-sizing:border-box}
-html,body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans KR",system-ui,sans-serif;line-height:1.6}
+html,body{margin:0;background:var(--paper);color:var(--ink);font-family:"Nanum Myeongjo",serif;line-height:1.65}
+body{background-image:radial-gradient(rgba(0,0,0,.035) 1px,transparent 1px);background-size:3px 3px}
 a{color:inherit}
-.wrap{max-width:980px;margin:0 auto;padding:0 20px}
-header{padding:72px 0 40px;border-bottom:1px solid var(--line);background:radial-gradient(ellipse at 50% 0%,rgba(216,166,74,.12),transparent 60%)}
-.eyebrow{font-size:12px;letter-spacing:4px;color:var(--gold2);font-weight:700}
-h1{font-family:"Noto Serif KR",serif;font-weight:900;font-size:clamp(40px,7vw,68px);margin:8px 0 6px;letter-spacing:-1px}
-h1 span{color:var(--gold2)}
-.lead{color:var(--dim);font-size:16px;max-width:560px}
-.how{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
-.how div{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:13px;color:var(--dim)}
-main{padding:40px 0 70px}
-h2{font-family:"Noto Serif KR",serif;font-size:22px;margin:0 0 16px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
-.note{position:relative;display:block;text-decoration:none;background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden;transition:transform .15s,border-color .15s}
-.note:hover{transform:translateY(-3px);border-color:var(--gold)}
-.cover{height:150px;background:#0d0b0a;position:relative;overflow:hidden}
-.cover svg{width:100%;height:100%;display:block}
-.num{position:absolute;top:12px;left:12px;background:var(--gold);color:#1b140a;font-weight:900;font-size:12px;letter-spacing:2px;padding:3px 10px;border-radius:4px}
-.body{padding:14px 16px 16px}
-.title{font-family:"Noto Serif KR",serif;font-weight:900;font-size:19px}
-.sub{color:var(--dim);font-size:13px;margin-top:2px}
-.meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
-.meta span{font-size:12px;background:var(--panel2);border-radius:6px;padding:2px 8px;color:var(--dim)}
-.play{margin-top:14px;font-weight:700;color:var(--gold2);font-size:14px}
-.note.soon{opacity:.55;pointer-events:none}
-.note.soon .cover{display:flex;align-items:center;justify-content:center;font-family:"Noto Serif KR",serif;font-size:44px;color:#3a332e}
-footer{border-top:1px solid var(--line);padding:24px 0 40px;color:var(--dim);font-size:13px}
+.wrap{max-width:860px;margin:0 auto;padding:0 20px}
+.mono{font-family:"Nanum Gothic Coding",monospace}
+
+header{padding:56px 0 28px}
+.top{display:flex;justify-content:space-between;align-items:baseline;border-bottom:3px double var(--ink);padding-bottom:6px;font-family:"Nanum Gothic Coding",monospace;font-size:12px;color:var(--dim)}
+h1{font-weight:800;font-size:clamp(46px,9vw,84px);line-height:1;margin:26px 0 0;letter-spacing:-2px}
+h1 em{font-style:normal;font-family:"Nanum Gothic Coding",monospace;font-weight:400;font-size:.22em;letter-spacing:0;vertical-align:top;margin-left:10px;color:var(--dim)}
+.lead{font-size:17px;max-width:520px;margin:18px 0 0}
+.scribble{font-family:"Nanum Pen Script",cursive;color:var(--pen);font-size:24px;line-height:1.2;margin:14px 0 0;transform:rotate(-1.5deg);display:inline-block}
+
+.case{display:grid;grid-template-columns:1fr 250px;gap:28px;align-items:start;margin:28px 0 0;text-decoration:none;color:inherit;position:relative}
+@media(max-width:680px){.case{grid-template-columns:1fr}}
+.folder{position:relative;background:var(--folder);padding:26px 24px 22px;box-shadow:0 1px 0 rgba(0,0,0,.15),0 10px 24px -14px rgba(60,40,10,.55)}
+.folder::before{content:"";position:absolute;top:-16px;left:0;width:150px;height:17px;background:var(--folder);clip-path:polygon(0 100%,8% 0,92% 0,100% 100%)}
+.folder .tab{position:absolute;top:-13px;left:18px;font-family:"Nanum Gothic Coding",monospace;font-size:11px;font-weight:700;letter-spacing:1px}
+.folder h2{font-size:30px;font-weight:800;margin:0;line-height:1.25;letter-spacing:-.5px}
+.folder .sub{font-size:16px;margin-top:4px}
+.fields{margin:18px 0 0;font-family:"Nanum Gothic Coding",monospace;font-size:13px;border-top:1px solid rgba(0,0,0,.25)}
+.fields div{display:flex;border-bottom:1px solid rgba(0,0,0,.25);padding:5px 0}
+.fields dt{width:88px;color:#5a4a2c}
+.fields dd{margin:0}
+.stamp{position:absolute;right:18px;top:20px;border:3px solid var(--stamp);color:var(--stamp);font-family:"Nanum Gothic Coding",monospace;font-weight:700;font-size:15px;letter-spacing:3px;padding:2px 10px;transform:rotate(8deg);opacity:.82;mix-blend-mode:multiply}
+.open{display:inline-block;margin-top:18px;font-family:"Nanum Gothic Coding",monospace;font-weight:700;font-size:14px;border-bottom:2px solid var(--ink);padding-bottom:1px}
+.case:hover .open{color:var(--stamp);border-color:var(--stamp)}
+.photo{background:#fff;padding:10px 10px 34px;transform:rotate(2.2deg);box-shadow:0 8px 20px -10px rgba(0,0,0,.5);position:relative;margin-top:10px;transition:transform .2s}
+.case:hover .photo{transform:rotate(.6deg)}
+.photo svg{display:block;width:100%;height:auto}
+.photo .cap{position:absolute;left:12px;bottom:6px;font-family:"Nanum Pen Script",cursive;font-size:20px;color:#333}
+.photo::after{content:"";position:absolute;top:-12px;left:50%;width:84px;height:24px;margin-left:-42px;background:rgba(240,230,200,.75);transform:rotate(-4deg);box-shadow:0 1px 2px rgba(0,0,0,.1)}
+
+.ledger{margin:56px 0 0}
+.ledger h3{font-family:"Nanum Gothic Coding",monospace;font-size:13px;font-weight:700;letter-spacing:2px;margin:0 0 8px}
+table{width:100%;border-collapse:collapse;font-size:14px;background:var(--sheet)}
+th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--rule)}
+th{font-family:"Nanum Gothic Coding",monospace;font-weight:400;font-size:12px;color:var(--dim);border-bottom:1.5px solid var(--ink)}
+td.n{font-family:"Nanum Gothic Coding",monospace;width:56px}
+tr.off td{color:#a39a8a}
+tr.off td.t{font-family:"Nanum Pen Script",cursive;font-size:20px;color:#8f877a}
+td a{text-decoration:none;border-bottom:1px solid var(--rule)}
+td a:hover{border-color:var(--ink)}
+
+footer{margin:60px 0 0;padding:16px 0 40px;border-top:1px solid var(--rule);color:var(--dim);font-family:"Nanum Gothic Coding",monospace;font-size:12px}
 </style>
 </head>
 <body>
 <header>
   <div class="wrap">
-    <div class="eyebrow">HIDDEN NOTE</div>
-    <h1>히든<span>노트</span></h1>
-    <p class="lead">현장을 뒤지고, 잠긴 것을 풀고, 증거를 들이밀어라. 브라우저에서 바로 플레이하는 추리 사건 파일 시리즈입니다.</p>
-    <div class="how"><div>1인 이상</div><div>설치 없이 브라우저로</div><div>사건마다 한 번 풀기</div></div>
+    <div class="top"><span>HIDDEN NOTE</span><span>사건 파일 보관함</span></div>
+    <h1>히든노트<em>Vol. 1</em></h1>
+    <p class="lead">현장을 뒤지고, 잠긴 걸 열고, 증거를 들이미세요. 설치할 건 없고 브라우저만 있으면 됩니다. 혼자 해도 되고, 여럿이 화면 하나 놓고 머리를 맞대도 됩니다.</p>
+    <span class="scribble">↳ 한 사건은 한 번만 풀 수 있어요. 메모해 두세요!</span>
   </div>
 </header>
 <main>
   <div class="wrap">
-    <h2>사건 파일</h2>
-    <div class="grid">
-      <a class="note" href="notes/01/">
-        <div class="cover">
-          <svg viewBox="0 0 320 150" preserveAspectRatio="xMidYMid slice">
-            <rect width="320" height="150" fill="#2a2420"/>
-            <rect x="95" y="20" width="130" height="120" fill="#1a2a30" stroke="#9fb3bb" stroke-width="3"/>
-            <rect x="101" y="26" width="118" height="108" fill="rgba(160,200,220,.12)"/>
-            <rect x="125" y="62" width="70" height="32" fill="#3b1f4a"/>
-            <text x="160" y="82" font-size="8" fill="#f0c96b" text-anchor="middle" font-family="sans-serif">DRAGON BAZAAR</text>
-            <g fill="#d8a64a">
-              <path d="M112 128 l3 -9 l3 0 l3 9 z"/><path d="M124 128 l3 -9 l3 0 l3 9 z"/><path d="M136 128 l3 -9 l3 0 l3 9 z"/>
-              <path d="M178 128 l3 -9 l3 0 l3 9 z"/><path d="M190 128 l3 -9 l3 0 l3 9 z"/>
-            </g>
-            <path d="M110 40 l20 40" stroke="rgba(255,255,255,.12)" stroke-width="6"/>
-            <circle cx="60" cy="75" r="40" fill="none" stroke="#c8553d" stroke-width="2" stroke-dasharray="4 5" opacity=".5"/>
-          </svg>
-          <div class="num">NOTE 01</div>
-        </div>
-        <div class="body">
-          <div class="title">퍼니보드 사건 파일</div>
-          <div class="sub">보드게임 카페의 마지막 손님</div>
-          <div class="meta"><span>1인~</span><span>60~90분</span><span>용의자 4명</span><span>바꿔치기 사건</span></div>
-          <div class="play">사건 파일 열기 →</div>
-        </div>
-      </a>
-      <div class="note soon">
-        <div class="cover">?</div>
-        <div class="body">
-          <div class="title">NOTE 02</div>
-          <div class="sub">준비 중</div>
-        </div>
+    <a class="case" href="notes/01/">
+      <div class="folder">
+        <span class="tab">NOTE 01</span>
+        <div class="stamp">미해결</div>
+        <h2>퍼니보드<br>사건 파일</h2>
+        <div class="sub">보드게임 카페의 마지막 손님</div>
+        <dl class="fields">
+          <div><dt>사건 종류</dt><dd>바꿔치기</dd></div>
+          <div><dt>용의자</dt><dd>4명</dd></div>
+          <div><dt>인원</dt><dd>1인 이상</dd></div>
+          <div><dt>소요 시간</dt><dd>60~90분</dd></div>
+        </dl>
+        <span class="open">사건 파일 열기 →</span>
       </div>
-    </div>
+      <div class="photo">
+        <svg viewBox="0 0 320 240" aria-hidden="true">
+          <rect width="320" height="240" fill="#2a2420"/>
+          <rect x="95" y="40" width="130" height="160" fill="#1a2a30" stroke="#9fb3bb" stroke-width="3"/>
+          <rect x="101" y="46" width="118" height="148" fill="rgba(160,200,220,.12)"/>
+          <rect x="125" y="100" width="70" height="32" fill="#3b1f4a"/>
+          <text x="160" y="120" font-size="8" fill="#e8c46a" text-anchor="middle" font-family="sans-serif">DRAGON BAZAAR</text>
+          <g fill="#d8a64a">
+            <path d="M112 186 l3 -9 l3 0 l3 9 z"/><path d="M124 186 l3 -9 l3 0 l3 9 z"/><path d="M136 186 l3 -9 l3 0 l3 9 z"/>
+            <path d="M178 186 l3 -9 l3 0 l3 9 z"/><path d="M190 186 l3 -9 l3 0 l3 9 z"/>
+          </g>
+          <path d="M110 60 l20 40" stroke="rgba(255,255,255,.12)" stroke-width="6"/>
+          <ellipse cx="160" cy="182" rx="56" ry="18" fill="none" stroke="#e04b3a" stroke-width="2.5" transform="rotate(-4 160 182)"/>
+        </svg>
+        <span class="cap">쇼케이스, 21:30 이후</span>
+      </div>
+    </a>
+
+    <section class="ledger">
+      <h3>사건 대장</h3>
+      <table>
+        <thead><tr><th>번호</th><th>사건명</th><th>인원</th><th>시간</th></tr></thead>
+        <tbody>
+          <tr><td class="n">01</td><td><a href="notes/01/">퍼니보드 사건 파일</a></td><td>1인~</td><td>60~90분</td></tr>
+          <tr class="off"><td class="n">02</td><td class="t">조사 중…</td><td>—</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </section>
   </div>
 </main>
-<footer><div class="wrap">© 히든노트 · Hidden Note</div></footer>
+<footer><div class="wrap">히든노트 · Hidden Note</div></footer>
 </body>
 </html>
