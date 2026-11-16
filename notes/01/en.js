@@ -83,6 +83,7 @@ ui: {
   calDays: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
   calNotes: {6: 'Game night', 16: 'Display day!', 21: 'Restock', 25: 'Rent'},
   diceSign: '“Roll a 6 and get 10% off your drink!”',
+  toMain: 'Back to the case archive →',
   wbTitle: 'This week',
   wbItems: ['✔ Order wet wipes', '✔ Jenga block missing', '✔ Tidy dice tray', '☐ Tuesday surprise'],
   wbSign: '— Jia',
