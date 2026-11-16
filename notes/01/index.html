@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Note 01 · 퍼니보드 사건 파일 | 히든노트</title>
+<script src="../../lang.js"></script>
+<script src="en.js"></script>
 <script>window.hn=window.hn||function(){(hn.q=hn.q||[]).push(arguments)}</script>
 <script type="module" src="../../analytics.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -27,6 +29,10 @@ header.hud{display:flex;align-items:flex-end;gap:10px 18px;flex-wrap:wrap;border
 .brand .back:hover{color:var(--ink)}
 .brand small{display:block;font-family:var(--serif);font-weight:400;font-size:14px;color:var(--dim);letter-spacing:0}
 .spacer{flex:1}
+.langsw{display:flex;font-family:var(--mono);font-size:12px;align-self:flex-start}
+.langsw button{background:none;border:none;padding:2px 6px;color:var(--dim)}
+.langsw button+button{border-left:1px solid var(--rule)}
+.langsw button.on{color:var(--ink);font-weight:700;text-decoration:underline;text-underline-offset:3px}
 .stat{font-family:var(--mono);font-size:12px;color:var(--dim);display:flex;flex-direction:column;line-height:1.3;padding:0 4px}
 .stat b{color:var(--ink);font-size:20px;font-weight:700;border-bottom:1px solid var(--ink);min-width:62px}
 .stat.time b{color:var(--ink)}
@@ -199,31 +205,32 @@ details summary{font-family:var(--mono)}
 <body>
 <div class="app">
   <header class="hud">
-    <div class="brand"><a class="back" href="../../">← 사건 파일 보관함 / NOTE 01</a>퍼니보드 사건 파일 <small>보드게임 카페의 마지막 손님</small></div>
+    <div class="brand"><a class="back" href="../../" data-t="back">← 사건 파일 보관함 / NOTE 01</a><span data-t="title">퍼니보드 사건 파일</span> <small data-t="subtitle">보드게임 카페의 마지막 손님</small></div>
     <div class="spacer"></div>
-    <div class="stat time" id="stTime">남은 조사 시간<b id="tLeft">80분</b></div>
-    <div class="stat">발견한 단서<b id="cCount">0</b></div>
-    <button class="btn" id="btnHelp" title="게임 방법">방법</button>
-    <button class="btn" id="btnTalk">심문하기</button>
-    <button class="btn primary" id="btnAccuse">범인 지목</button>
+    <div class="langsw"><button data-l="ko">한국어</button><button data-l="en">English</button></div>
+    <div class="stat time" id="stTime"><span data-t="timeLeft">남은 조사 시간</span><b id="tLeft">80분</b></div>
+    <div class="stat"><span data-t="cluesFound">발견한 단서</span><b id="cCount">0</b></div>
+    <button class="btn" id="btnHelp" title="게임 방법" data-t="help">방법</button>
+    <button class="btn" id="btnTalk" data-t="talk">심문하기</button>
+    <button class="btn primary" id="btnAccuse" data-t="accuse">범인 지목</button>
   </header>
   <div class="layout">
     <main>
       <div class="locs" id="locs"></div>
       <div class="scene-wrap">
         <div id="scene"></div>
-        <div class="scene-cap"><span id="locDesc"></span><span>물건 클릭 = 조사 (2분) · 심문 3분 · 비번 오답 1분</span></div>
+        <div class="scene-cap"><span id="locDesc"></span><span data-t="sceneHint">물건 클릭 = 조사 (2분) · 심문 3분 · 비번 오답 1분</span></div>
       </div>
     </main>
     <aside class="side">
       <div class="card">
-        <h3>수사 수첩</h3>
-        <div class="clue-list" id="clues"><div class="empty">아직 찾은 단서가 없습니다.</div></div>
-        <div class="hint">단서를 누르면 다시 볼 수 있어요. 심문할 때 증거로 제시할 수 있습니다.</div>
+        <h3 data-t="notebook">수사 수첩</h3>
+        <div class="clue-list" id="clues"></div>
+        <div class="hint" data-t="notebookHint">단서를 누르면 다시 볼 수 있어요. 심문할 때 증거로 제시할 수 있습니다.</div>
       </div>
       <div class="card">
-        <h3>사건 개요</h3>
-        <div style="font-size:14px;font-family:var(--serif)">어젯밤 21:30~22:20 사이, 쇼케이스 속 한정판 도금 미플 20개가 금색 물감을 칠한 가짜로 바뀌었다. 그 시간 카페에 있던 사람은 넷.<br><br>범인을 지목하고, 범행 시각과 그 근거를 제시하라.</div>
+        <h3 data-t="summaryTitle">사건 개요</h3>
+        <div style="font-size:14px;font-family:var(--serif)" data-t-html="summary">어젯밤 21:30~22:20 사이, 쇼케이스 속 한정판 도금 미플 20개가 금색 물감을 칠한 가짜로 바뀌었다. 그 시간 카페에 있던 사람은 넷.<br><br>범인을 지목하고, 범행 시각과 그 근거를 제시하라.</div>
       </div>
     </aside>
   </div>
@@ -233,6 +240,11 @@ details summary{font-family:var(--mono)}
 <div class="toast" id="toast"></div>
 
 <script>
+/* ===================== LANGUAGE ===================== */
+// 한국어는 코드에 그대로 두고, 영어일 때만 en.js(HN_EN)에서 같은 키를 찾아 쓴다.
+const LANG=window.HN_LANG==='en'&&window.HN_EN?'en':'ko', EN=window.HN_EN||{};
+function t(key,ko,...args){if(LANG!=='en')return ko;const v=EN.ui[key];return v===undefined?ko:typeof v==='function'?v(...args):v}
+
 /* ===================== DATA ===================== */
 const TOTAL_TIME = 80;
 
@@ -438,6 +450,25 @@ const LOCS = [
   {id:'storage',name:'창고',desc:'선반과 재고가 쌓인 좁은 창고.',lock:'storeDoor'},
 ];
 
+if(LANG==='en'){
+  for(const [k,v] of Object.entries(EN.clues))Object.assign(CLUES[k],v);
+  for(const c of Object.values(CLUES))c.cat=EN.cats[c.cat]||c.cat;
+  let chat=CHAT_HTML;
+  for(const [a,b] of Object.entries(EN.chat.lines))chat=chat.split('>'+a+'<').join('>'+b+'<');
+  for(const [a,b] of Object.entries(EN.chat.names))chat=chat.split('<b>'+a+'</b>').join('<b>'+b+'</b>');
+  for(const [a,b] of Object.entries(EN.chat.days))chat=chat.split('"day">'+a+'<').join('"day">'+b+'<');
+  CLUES.c_chat.html=EN.chatHeader+chat;
+  for(const [k,v] of Object.entries(EN.suspects)){const s=SUSPECTS[k];s.name=v.name;s.sub=v.sub;s.base=v.base;s.def=v.def;
+    for(const [c,e] of Object.entries(s.ev)){if(v.ev[c])e.text=v.ev[c];else if(e.add)e.text=CLUES[e.add].text}}
+  for(const h of HS){const v=EN.hs[h.id];if(!v)continue;if(v.label)h.label=v.label;if(v.name)h.name=v.name;if(v.puzzle)Object.assign(h.puzzle,v.puzzle);
+    (v.steps||[]).forEach((st,i)=>{if(typeof st==='string')h.steps[i].text=st;else Object.assign(h.steps[i],st)})}
+  for(const a of PHONE_APPS)a.name=EN.apps[a.id]||a.name;
+  for(const l of LOCS)Object.assign(l,EN.locs[l.id]||{});
+  document.title=EN.ui.docTitle;
+  document.querySelectorAll('[data-t]').forEach(e=>e.textContent=t(e.dataset.t,e.textContent));
+  document.querySelectorAll('[data-t-html]').forEach(e=>e.innerHTML=t(e.dataset.tHtml,e.innerHTML));
+}
+
 /* ===================== STATE ===================== */
 let S;
 function reset(){
@@ -464,7 +495,7 @@ function spend(n){
   S.time=Math.max(0,S.time-n);renderHud();
 }
 function checkTime(){
-  if(S.time<=0&&!S.over){hn('time_ran_out',{clue_count:S.clues.length});setTimeout(()=>{toast('조사 시간이 끝났습니다');openAccuse(true)},400);return true}
+  if(S.time<=0&&!S.over){hn('time_ran_out',{clue_count:S.clues.length});setTimeout(()=>{toast(t('timeUp','조사 시간이 끝났습니다'));openAccuse(true)},400);return true}
   return false;
 }
 function addClues(list,source='scene'){
@@ -474,26 +505,27 @@ function addClues(list,source='scene'){
   return fresh;
 }
 function calHTML(){
-  const notes={6:'<span style="color:#2b5bb5">보드겜 모임</span>',16:'<span class="stk" style="background:#f0c96b">★</span><span style="color:#b0463a">한정판 전시!</span>',17:'<span class="stk" style="background:#f7c1cf;color:#e75480">♥</span>',21:'<span style="color:#2b5bb5">재고 입고</span>',25:'<span style="color:#7a6a55">월세</span>'};
+  const CN=t('calNotes',{6:'보드겜 모임',16:'한정판 전시!',21:'재고 입고',25:'월세'});
+  const notes={6:`<span style="color:#2b5bb5">${CN[6]}</span>`,16:`<span class="stk" style="background:#f0c96b">★</span><span style="color:#b0463a">${CN[16]}</span>`,17:'<span class="stk" style="background:#f7c1cf;color:#e75480">♥</span>',21:`<span style="color:#2b5bb5">${CN[21]}</span>`,25:`<span style="color:#7a6a55">${CN[25]}</span>`};
   let cells='',day=1;
   for(let i=0;i<35;i++){
     if(i<0||day>30){cells+='<div class="cd e"></div>';continue}
     const dow=i%7;
     cells+=`<div class="cd"><b style="color:${dow===0?'#c0392b':dow===6?'#2b5bb5':'#2a221a'}">${day}</b>${notes[day]||''}</div>`;day++;
   }
-  return `<div class="calv"><div class="calh"><span>2026</span>11월</div><div class="calw">${['일','월','화','수','목','금','토'].map((d,i)=>`<div style="color:${i===0?'#c0392b':i===6?'#2b5bb5':'#5a4a3a'}">${d}</div>`).join('')}</div><div class="calg">${cells}</div></div>`;
+  return `<div class="calv"><div class="calh"><span>2026</span>${t('calMonth','11월')}</div><div class="calw">${t('calDays',['일','월','화','수','목','금','토']).map((d,i)=>`<div style="color:${i===0?'#c0392b':i===6?'#2b5bb5':'#5a4a3a'}">${d}</div>`).join('')}</div><div class="calg">${cells}</div></div>`;
 }
 function dieSVG(col,n,pip){const P={1:[[2,2]],2:[[1,1],[3,3]],3:[[1,1],[2,2],[3,3]],4:[[1,1],[3,1],[1,3],[3,3]],5:[[1,1],[3,1],[2,2],[1,3],[3,3]],6:[[1,1],[3,1],[1,2],[3,2],[1,3],[3,3]]}[n];
  return `<svg width="64" height="64" viewBox="0 0 40 40"><rect x="2" y="2" width="36" height="36" rx="7" fill="${col}"/>${P.map(([x,y])=>`<circle cx="${x*10}" cy="${y*10}" r="3.4" fill="${pip}"/>`).join('')}</svg>`}
 function clueBody(c){const d=CLUES[c];if(d.postit)return `<div class="paper" style="background:#3a2f28;text-align:center;padding:26px"><svg width="200" height="200" viewBox="0 0 100 100" style="transform:rotate(-6deg);filter:drop-shadow(0 4px 6px rgba(0,0,0,.4))"><rect x="5" y="5" width="90" height="90" fill="#f7dc6f"/><rect x="5" y="5" width="90" height="14" fill="#f4d03f"/>
 <path d="M50 74 C 20 56, 22 34, 36 34 C 44 34, 49 40, 50 45 C 51 40, 56 34, 64 34 C 78 34, 80 56, 50 74 Z" fill="none" stroke="#c0392b" stroke-width="3" stroke-linejoin="round"/>
-<path d="M30 86 l-14 0 m0 0 l5 -4 m-5 4 l5 4" stroke="#555" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg></div>`;if(d.cal)return calHTML();if(d.dice)return `<div class="paper" style="text-align:center"><div style="font-weight:700;margin-bottom:10px">“주사위 굴려서 6 나오면 음료 10% 할인!”</div><div style="display:inline-flex;gap:12px;background:#d9cdb4;border-radius:40px;padding:14px 22px">${dieSVG('#c0392b',4,'#fff')}${dieSVG('#e1b12c',1,'#fff')}${dieSVG('#2e6fb5',6,'#fff')}</div></div>`;if(d.photo)return `<div class="paper"><svg viewBox="0 0 160 106" style="width:100%;max-width:320px;display:block;margin:0 auto 8px;border:6px solid #8a6a3a">${PHOTO}${PHOTO_DATE}</svg></div>`;return d.html?`<div class="paper">${d.html}</div>`:`<div class="paper">${esc(d.text)}</div>`}
+<path d="M30 86 l-14 0 m0 0 l5 -4 m-5 4 l5 4" stroke="#555" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg></div>`;if(d.cal)return calHTML();if(d.dice)return `<div class="paper" style="text-align:center"><div style="font-weight:700;margin-bottom:10px">${t('diceSign','“주사위 굴려서 6 나오면 음료 10% 할인!”')}</div><div style="display:inline-flex;gap:12px;background:#d9cdb4;border-radius:40px;padding:14px 22px">${dieSVG('#c0392b',4,'#fff')}${dieSVG('#e1b12c',1,'#fff')}${dieSVG('#2e6fb5',6,'#fff')}</div></div>`;if(d.photo)return `<div class="paper"><svg viewBox="0 0 160 106" style="width:100%;max-width:320px;display:block;margin:0 auto 8px;border:6px solid #8a6a3a">${PHOTO}${PHOTO_DATE}</svg></div>`;return d.html?`<div class="paper">${d.html}</div>`:`<div class="paper">${esc(d.text)}</div>`}
 function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;')}
 
 /* ===================== RENDER ===================== */
 function render(){renderHud();renderLocs();renderScene();renderNotebook([])}
 function renderHud(){
-  $('#tLeft').textContent=S.time+'분';
+  $('#tLeft').textContent=t('min',S.time+'분',S.time);
   $('#stTime').classList.toggle('low',S.time<=15);
   $('#cCount').textContent=S.clues.length;
 }
@@ -504,7 +536,7 @@ function renderLocs(){
     return `<button class="loc ${S.loc===l.id?'on':''} ${open?'':'locked'}" data-loc="${l.id}">${open?'':'🔒 '}${l.name}</button>`}).join('');
   document.querySelectorAll('.loc').forEach(b=>b.onclick=()=>{
     const l=LOCS.find(x=>x.id===b.dataset.loc);
-    if(!locOpen(l)){toast('잠겨 있습니다. 안쪽 복도의 창고 문을 열어야 해요.');return}
+    if(!locOpen(l)){toast(t('lockedLoc','잠겨 있습니다. 안쪽 복도의 창고 문을 열어야 해요.'));return}
     if(S.loc!==l.id)hn('location_opened',{location:l.id,minutes_used:used()});
     S.loc=l.id;renderLocs();renderScene();
   });
@@ -526,11 +558,11 @@ function isDone(h){
 }
 function renderNotebook(fresh){
   const el=$('#clues');
-  if(!S.clues.length){el.innerHTML='<div class="empty">아직 찾은 단서가 없습니다.</div>';return}
+  if(!S.clues.length){el.innerHTML=`<div class="empty">${t('noClues','아직 찾은 단서가 없습니다.')}</div>`;return}
   el.innerHTML=S.clues.map(c=>`<button class="clue-item ${fresh.includes(c)?'new':''}" data-c="${c}"><span class="cat">${CLUES[c].cat}</span>${CLUES[c].title}</button>`).join('');
   el.querySelectorAll('.clue-item').forEach(b=>b.onclick=()=>{
     const c=b.dataset.c;
-    modal(`<h2>${CLUES[c].title}</h2>${clueBody(c)}<div class="actions"><button class="btn" onclick="closeM()">닫기</button></div>`);
+    modal(`<h2>${CLUES[c].title}</h2>${clueBody(c)}<div class="actions"><button class="btn" onclick="closeM()">${t('close','닫기')}</button></div>`);
   });
   renderHud();
 }
@@ -547,14 +579,14 @@ function investigate(h){
     if(st.go){S.loc=st.go;renderLocs();renderScene();return}
     hn('hotspot_checked',{hotspot:h.id,location:h.loc,outcome:'revisit',step:i,minutes_used:used()});
     const cl=h.steps.flatMap(s=>s.clues);
-    modal(`<h2>${h.name||h.label}</h2><div class="body">이미 조사한 곳이다.</div>${cl.map(clueBody).join('')}<div class="actions"><button class="btn" onclick="closeM()">닫기</button></div>`);
+    modal(`<h2>${h.name||h.label}</h2><div class="body">${t('already','이미 조사한 곳이다.')}</div>${cl.map(clueBody).join('')}<div class="actions"><button class="btn" onclick="closeM()">${t('close','닫기')}</button></div>`);
     return;
   }
   const st=h.steps[i];
   if(st.req&&!has(st.req)){
     spend(st.lockCost||0);
     hn('hotspot_checked',{hotspot:h.id,location:h.loc,outcome:'blocked',step:i+1,minutes_used:used()});
-    modal(`<h2>${h.name||h.label}</h2><div class="body">${st.lockText}</div><div class="actions"><button class="btn" onclick="closeM()">닫기</button></div>`);
+    modal(`<h2>${h.name||h.label}</h2><div class="body">${st.lockText}</div><div class="actions"><button class="btn" onclick="closeM()">${t('close','닫기')}</button></div>`);
     checkTime();return;
   }
   spend(st.cost);
@@ -562,7 +594,7 @@ function investigate(h){
   if(st.go){closeM();hn('hotspot_checked',{hotspot:h.id,location:h.loc,outcome:'nothing_new',step:i+1,minutes_used:used()});hn('location_opened',{location:st.go,minutes_used:used()});S.loc=st.go;renderLocs();renderScene();toast(st.text);checkTime();return}
   const fresh=addClues(st.clues);
   hn('hotspot_checked',{hotspot:h.id,location:h.loc,outcome:fresh.length?'found':'nothing_new',step:i+1,minutes_used:used()});
-  modal(`<h2>${h.name||h.label}</h2><div class="body">${st.text}</div>${st.clues.map(clueBody).join('')}${fresh.length?`<div class="newtag">새 단서 ${fresh.length}개를 수첩에 적었다.</div>`:''}<div class="actions"><button class="btn primary" onclick="closeM()">확인</button></div>`);
+  modal(`<h2>${h.name||h.label}</h2><div class="body">${st.text}</div>${st.clues.map(clueBody).join('')}${fresh.length?`<div class="newtag">${t('newClues',`새 단서 ${fresh.length}개를 수첩에 적었다.`,fresh.length)}</div>`:''}<div class="actions"><button class="btn primary" onclick="closeM()">${t('ok','확인')}</button></div>`);
   renderScene();checkTime();
 }
 
@@ -570,10 +602,10 @@ function investigate(h){
 let pad={h:null,val:''};
 function openPad(h){
   pad={h,val:''};
-  modal(`<h2>${h.puzzle.title}</h2><div class="body" style="color:var(--dim);font-size:13px">${h.puzzle.prompt}<br>틀릴 때마다 1분이 지나갑니다.</div>
+  modal(`<h2>${h.puzzle.title}</h2><div class="body" style="color:var(--dim);font-size:13px">${h.puzzle.prompt}<br>${t('wrongCost','틀릴 때마다 1분이 지나갑니다.')}</div>
   <div class="pin" id="pin">${'<span></span>'.repeat(h.puzzle.len)}</div>
   <div class="keypad">${[1,2,3,4,5,6,7,8,9].map(n=>`<button data-k="${n}">${n}</button>`).join('')}<button data-k="del">⌫</button><button data-k="0">0</button><button data-k="ok" style="color:var(--gold2)">OK</button></div>
-  <div class="actions"><button class="btn" onclick="closeM()">그만두기</button></div>`);
+  <div class="actions"><button class="btn" onclick="closeM()">${t('giveUp','그만두기')}</button></div>`);
   document.querySelectorAll('.keypad button').forEach(b=>b.onclick=()=>padKey(b.dataset.k));
 }
 function padKey(k){
@@ -588,7 +620,7 @@ function submitPad(){
   const h=pad.h;if(pad.val.length<h.puzzle.len)return;
   tried(h,pad.val===h.puzzle.ans);
   if(pad.val===h.puzzle.ans){
-    S.solved[h.id]=true;toast('잠금 해제!');
+    S.solved[h.id]=true;toast(t('unlocked','잠금 해제!'));
     if(h.phone){renderScene();openPhone();return}
     renderLocs();investigate(h);
   }else{
@@ -607,7 +639,7 @@ function openDialLock(h){
   <div class="lockwrap" id="lockwrap"><div class="shackle" id="shackle"></div><div class="lbody">
   ${cols.map((c,i)=>`<div class="drow"><span class="ddot" style="background:${c}"></span><div class="dwheel" data-i="${i}" id="dw${i}"></div><div class="darr"><button data-i="${i}" data-d="1">▲</button><button data-i="${i}" data-d="-1">▼</button></div></div>`).join('')}
   </div></div>
-  <div class="actions"><button class="btn" onclick="closeM()">그만두기</button><button class="btn primary" id="pull">당겨서 열기</button></div>`);
+  <div class="actions"><button class="btn" onclick="closeM()">${t('giveUp','그만두기')}</button><button class="btn primary" id="pull">${t('pull','당겨서 열기')}</button></div>`);
   drawDial();
   document.querySelectorAll('.darr button').forEach(b=>b.onclick=()=>{const i=+b.dataset.i;dial[i]=(dial[i]+ +b.dataset.d+10)%10;drawDial()});
   document.querySelectorAll('.dwheel').forEach(w=>w.addEventListener('wheel',e=>{e.preventDefault();const i=+w.dataset.i;dial[i]=(dial[i]+(e.deltaY<0?1:-1)+10)%10;drawDial()},{passive:false}));
@@ -617,8 +649,8 @@ function drawDial(){dial.forEach((v,i)=>{$('#dw'+i).innerHTML=`<div class="num p
 function pullLock(){
   const h=pad.h;
   tried(h,dial.join('')===h.puzzle.ans);
-  if(dial.join('')===h.puzzle.ans){$('#shackle').classList.add('open');S.solved[h.id]=true;setTimeout(()=>{toast('자물쇠가 열렸다!');renderLocs();investigate(h)},500)}
-  else{spend(1);toast('꿈쩍도 하지 않는다 (1분 경과)');const w=$('#lockwrap');w.classList.remove('shake');void w.offsetWidth;w.classList.add('shake');checkTime()}
+  if(dial.join('')===h.puzzle.ans){$('#shackle').classList.add('open');S.solved[h.id]=true;setTimeout(()=>{toast(t('lockOpened','자물쇠가 열렸다!'));renderLocs();investigate(h)},500)}
+  else{spend(1);toast(t('lockStuck','꿈쩍도 하지 않는다 (1분 경과)'));const w=$('#lockwrap');w.classList.remove('shake');void w.offsetWidth;w.classList.add('shake');checkTime()}
 }
 
 /* ===================== PHONE ===================== */
@@ -626,22 +658,22 @@ const LOCK_ICON='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" str
 function phoneBar(){return '<div class="pnotch"></div><div class="pbar"><span>10:07</span><span>▂▄▆ 46%</span></div>'}
 function openPhoneLock(h){
   pad={h,val:''};
-  modal(`<h2>사장님 휴대폰</h2><div class="pfr" id="pfr"></div><div class="actions"><button class="btn" onclick="closeM()">내려놓기</button></div>`);
+  modal(`<h2>${t('ownerPhone','사장님 휴대폰')}</h2><div class="pfr" id="pfr"></div><div class="actions"><button class="btn" onclick="closeM()">${t('putDown','내려놓기')}</button></div>`);
   lockScreen();
 }
 function lockScreen(){
   $('#pfr').innerHTML=`<div class="pscr"><svg class="pbg" viewBox="0 -150 160 320" preserveAspectRatio="xMidYMid slice"><rect y="-150" width="160" height="160" fill="#9ec9e6"/>${PHOTO}<rect y="100" width="160" height="70" fill="#c9b79a"/></svg>${phoneBar()}
-  <div class="pdate">11월 17일 화요일</div><div class="pclock">10:07</div>
-  <div class="pnoti"><b>단골방</b>새 메시지 6개</div>
+  <div class="pdate">${t('phoneDate','11월 17일 화요일')}</div><div class="pclock">10:07</div>
+  <div class="pnoti"><b>${t('notiFrom','단골방')}</b>${t('notiText','새 메시지 6개')}</div>
   <button class="plock" id="plock">${LOCK_ICON}</button><div class="pbottom"></div></div>`;
   $('#plock').onclick=pinScreen;
 }
 function pinScreen(){
   pad.val='';
   $('#pfr').innerHTML=`<div class="pscr"><svg class="pbg blur" viewBox="0 -150 160 320" preserveAspectRatio="xMidYMid slice"><rect y="-150" width="160" height="160" fill="#9ec9e6"/>${PHOTO}<rect y="100" width="160" height="70" fill="#c9b79a"/></svg>${phoneBar()}
-  <div class="ptitle">암호 입력</div><div class="pdots" id="pdots">${'<i></i>'.repeat(4)}</div>
+  <div class="ptitle">${t('enterCode','암호 입력')}</div><div class="pdots" id="pdots">${'<i></i>'.repeat(4)}</div>
   <div class="pkeys">${[1,2,3,4,5,6,7,8,9].map(n=>`<button data-k="${n}">${n}</button>`).join('')}<button class="blank"></button><button data-k="0">0</button><button data-k="del" style="font-size:16px">⌫</button></div>
-  <button class="pcancel" id="pcancel">취소</button></div>`;
+  <button class="pcancel" id="pcancel">${t('cancel','취소')}</button></div>`;
   document.querySelectorAll('.pkeys button[data-k]').forEach(b=>b.onclick=()=>phoneKey(b.dataset.k));
   $('#pcancel').onclick=lockScreen;
 }
@@ -650,18 +682,18 @@ function phoneKey(k){
   document.querySelectorAll('#pdots i').forEach((d,i)=>d.classList.toggle('f',i<pad.val.length));
   if(pad.val.length===4)setTimeout(()=>{
     tried(pad.h,pad.val===pad.h.puzzle.ans);
-    if(pad.val===pad.h.puzzle.ans){S.solved[pad.h.id]=true;toast('잠금 해제!');renderScene();openPhone()}
-    else{spend(1);toast('암호가 틀렸다 (1분 경과)');const d=$('#pdots');d.classList.remove('shake');void d.offsetWidth;d.classList.add('shake');pad.val='';document.querySelectorAll('#pdots i').forEach(x=>x.classList.remove('f'));checkTime()}
+    if(pad.val===pad.h.puzzle.ans){S.solved[pad.h.id]=true;toast(t('unlocked','잠금 해제!'));renderScene();openPhone()}
+    else{spend(1);toast(t('wrongCode','암호가 틀렸다 (1분 경과)'));const d=$('#pdots');d.classList.remove('shake');void d.offsetWidth;d.classList.add('shake');pad.val='';document.querySelectorAll('#pdots i').forEach(x=>x.classList.remove('f'));checkTime()}
   },180);
 }
 function openPhone(){
-  modal(`<h2>사장님 휴대폰</h2><div class="phone"><div style="text-align:center;color:#888;font-size:12px;margin-bottom:10px">앱을 처음 열 때마다 2분</div><div class="apps">${PHONE_APPS.map(a=>`<button class="app-btn" data-a="${a.id}">${a.name}${S.apps[a.id]?' ✓':''}</button>`).join('')}</div></div><div class="actions"><button class="btn" onclick="closeM()">닫기</button></div>`);
+  modal(`<h2>${t('ownerPhone','사장님 휴대폰')}</h2><div class="phone"><div style="text-align:center;color:#888;font-size:12px;margin-bottom:10px">${t('appCost','앱을 처음 열 때마다 2분')}</div><div class="apps">${PHONE_APPS.map(a=>`<button class="app-btn" data-a="${a.id}">${a.name}${S.apps[a.id]?' ✓':''}</button>`).join('')}</div></div><div class="actions"><button class="btn" onclick="closeM()">${t('close','닫기')}</button></div>`);
   document.querySelectorAll('.app-btn').forEach(b=>b.onclick=()=>openApp(PHONE_APPS.find(a=>a.id===b.dataset.a)));
 }
 function openApp(a){
   let freshTxt='';
-  if(!S.apps[a.id]){S.apps[a.id]=true;spend(2);hn('phone_app_opened',{app:a.id,minutes_used:used()});const f=addClues([a.clue],'phone');if(f.length)freshTxt='<div class="newtag">새 단서를 수첩에 적었다.</div>'}
-  modal(`<h2>${a.name}</h2>${clueBody(a.clue)}${freshTxt}<div class="actions"><button class="btn" id="backPhone">← 휴대폰</button><button class="btn primary" onclick="closeM()">닫기</button></div>`);
+  if(!S.apps[a.id]){S.apps[a.id]=true;spend(2);hn('phone_app_opened',{app:a.id,minutes_used:used()});const f=addClues([a.clue],'phone');if(f.length)freshTxt=`<div class="newtag">${t('newClue','새 단서를 수첩에 적었다.')}</div>`}
+  modal(`<h2>${a.name}</h2>${clueBody(a.clue)}${freshTxt}<div class="actions"><button class="btn" id="backPhone">${t('backPhone','← 휴대폰')}</button><button class="btn primary" onclick="closeM()">${t('close','닫기')}</button></div>`);
   $('#backPhone').onclick=openPhone;renderScene();checkTime();
 }
 
@@ -670,13 +702,13 @@ function openTalk(){
   if(S.over)return;
   const k=S.cur,s=SUSPECTS[k];
   const log=(S.asked[k]||[]).map(x=>`<div class="say"><div style="font-size:12px;color:var(--dim)">${x.q}</div>${esc(x.a)}</div>`).join('');
-  modal(`<h2>심문</h2>
+  modal(`<h2>${t('interview','심문')}</h2>
   <div class="sus-row">${Object.entries(SUSPECTS).map(([id,v])=>`<button class="sus ${id===k?'on':''}" data-s="${id}"><div class="face" style="background:${v.color}">${v.name[0]}</div>${v.name}<small>${v.sub}</small></button>`).join('')}</div>
-  ${S.heard[k]?`<div class="say"><div style="font-size:12px;color:var(--dim)">처음 진술</div>${esc(s.base)}</div>`:`<button class="btn primary" id="hear">${s.name}의 진술 듣기 <span class="cost">3분</span></button>`}
+  ${S.heard[k]?`<div class="say"><div style="font-size:12px;color:var(--dim)">${t('firstStatement','처음 진술')}</div>${esc(s.base)}</div>`:`<button class="btn primary" id="hear">${t('hear',`${s.name}의 진술 듣기`,s.name)} <span class="cost">${t('cost','3분',3)}</span></button>`}
   <div class="log">${log}</div>
-  ${S.heard[k]?`<div style="margin-top:12px"><div style="font-size:13px;color:var(--dim);margin-bottom:6px">수첩의 단서를 증거로 제시하기 <span class="cost">3분</span></div>
-   <div style="display:flex;gap:8px"><select id="evSel">${S.clues.length?S.clues.map(c=>`<option value="${c}">${CLUES[c].title}</option>`).join(''):'<option value="">(단서 없음)</option>'}</select><button class="btn primary" id="evBtn" ${S.clues.length?'':'disabled'}>제시</button></div></div>`:''}
-  <div class="actions"><button class="btn" onclick="closeM()">닫기</button></div>`);
+  ${S.heard[k]?`<div style="margin-top:12px"><div style="font-size:13px;color:var(--dim);margin-bottom:6px">${t('showEv','수첩의 단서를 증거로 제시하기')} <span class="cost">${t('cost','3분',3)}</span></div>
+   <div style="display:flex;gap:8px"><select id="evSel">${S.clues.length?S.clues.map(c=>`<option value="${c}">${CLUES[c].title}</option>`).join(''):`<option value="">${t('noCluesOpt','(단서 없음)')}</option>`}</select><button class="btn primary" id="evBtn" ${S.clues.length?'':'disabled'}>${t('present','제시')}</button></div></div>`:''}
+  <div class="actions"><button class="btn" onclick="closeM()">${t('close','닫기')}</button></div>`);
   document.querySelectorAll('.sus').forEach(b=>b.onclick=()=>{S.cur=b.dataset.s;openTalk()});
   const hb=$('#hear');if(hb)hb.onclick=()=>{S.heard[k]=true;spend(3);hn('statement_heard',{suspect:k,minutes_used:used()});openTalk();checkTime()};
   const eb=$('#evBtn');if(eb)eb.onclick=()=>present(k,$('#evSel').value);
@@ -684,12 +716,12 @@ function openTalk(){
 function present(k,c){
   if(!c)return;
   S.asked[k]=S.asked[k]||[];
-  if(S.asked[k].some(x=>x.c===c)){toast('이미 보여준 증거입니다');return}
+  if(S.asked[k].some(x=>x.c===c)){toast(t('alreadyShown','이미 보여준 증거입니다'));return}
   spend(3);
   const s=SUSPECTS[k],r=s.ev[c];
   let a=r?r.text:s.def;
-  S.asked[k].push({c,q:`제시: ${CLUES[c].title}`,a});
-  let f=[];if(r&&r.add){f=addClues([r.add],'interrogation');if(f.length)toast('새 단서: '+CLUES[r.add].title)}
+  S.asked[k].push({c,q:t('shown',`제시: ${CLUES[c].title}`,CLUES[c].title),a});
+  let f=[];if(r&&r.add){f=addClues([r.add],'interrogation');if(f.length)toast(t('newClueToast','새 단서: '+CLUES[r.add].title,CLUES[r.add].title))}
   hn('evidence_shown',{suspect:k,clue:c,outcome:f.length?'new_clue':r?'reaction':'no_reaction',minutes_used:used()});
   openTalk();checkTime();
 }
@@ -705,12 +737,12 @@ function openAccuse(forced){
   accStep1();
 }
 function accHead(n,t){return `<div style="font-size:12px;color:var(--gold2);font-weight:700;letter-spacing:1px">STEP ${n} / 3</div><h2 style="margin-top:2px">${t}</h2>`}
-function accCancel(){return ACC.forced?'':'<button class="btn" onclick="closeM()">조사 계속하기</button>'}
+function accCancel(){return ACC.forced?'':`<button class="btn" onclick="closeM()">${t('keepInvestigating','조사 계속하기')}</button>`}
 function accStep1(){
-  modal(`${ACC.forced?'<div class="hint" style="color:var(--red);margin:0 0 6px">조사 시간이 끝났습니다. 지금 결론을 내려야 합니다.</div>':''}${accHead(1,'범인은 누구인가?')}
-  <div class="hint" style="margin:0 0 10px">한 단계씩 확정하면 되돌릴 수 없습니다.</div>
+  modal(`${ACC.forced?'<div class="hint" style="color:var(--red);margin:0 0 6px">'+t('forcedMsg','조사 시간이 끝났습니다. 지금 결론을 내려야 합니다.')+'</div>':''}${accHead(1,t('q1','범인은 누구인가?'))}
+  <div class="hint" style="margin:0 0 10px">${t('noUndo','한 단계씩 확정하면 되돌릴 수 없습니다.')}</div>
   <div class="sus-row">${Object.entries(SUSPECTS).map(([id,v])=>`<button class="sus" data-s="${id}"><div class="face" style="background:${v.color}">${v.name[0]}</div>${v.name}<small>${v.sub}</small></button>`).join('')}</div>
-  <div class="actions">${accCancel()}<button class="btn primary" id="n1" disabled>확정</button></div>`);
+  <div class="actions">${accCancel()}<button class="btn primary" id="n1" disabled>${t('confirm','확정')}</button></div>`);
   document.querySelectorAll('.sus').forEach(b=>b.onclick=()=>{ACC.who=b.dataset.s;document.querySelectorAll('.sus').forEach(x=>x.classList.toggle('on',x===b));$('#n1').disabled=false});
   $('#n1').onclick=accStep2;
 }
@@ -718,48 +750,49 @@ function accStep2(){
   ACC.step=2;
   const hs=['21','22'].map(h=>`<option>${h}</option>`).join('');
   const ms=Array.from({length:60},(_,i)=>`<option>${String(i).padStart(2,'0')}</option>`).join('');
-  modal(`${accHead(2,'쇼케이스가 열린 시각은?')}
-  <div class="hint" style="margin:0 0 12px">가장 그럴듯한 시각을 분 단위로 적으세요.</div>
+  modal(`${accHead(2,t('q2','쇼케이스가 열린 시각은?'))}
+  <div class="hint" style="margin:0 0 12px">${t('q2hint','가장 그럴듯한 시각을 분 단위로 적으세요.')}</div>
   <div style="display:flex;gap:8px;align-items:center;justify-content:center;font-size:28px;font-weight:700">
    <select id="hh" style="width:90px;font-size:22px"><option value="">--</option>${hs}</select>:<select id="mm" style="width:90px;font-size:22px"><option value="">--</option>${ms}</select></div>
-  <div class="actions">${accCancel()}<button class="btn primary" id="n2" disabled>확정</button></div>`);
+  <div class="actions">${accCancel()}<button class="btn primary" id="n2" disabled>${t('confirm','확정')}</button></div>`);
   const chk=()=>{$('#n2').disabled=!($('#hh').value&&$('#mm').value)};
   $('#hh').onchange=chk;$('#mm').onchange=chk;
   $('#n2').onclick=()=>{ACC.hh=$('#hh').value;ACC.mm=$('#mm').value;accStep3()};
 }
 function accStep3(){
   ACC.step=3;
-  const list=S.clues.length?S.clues.map(c=>`<label class="opt"><input type="checkbox" value="${c}"><span class="cat" style="font-size:11px;color:var(--dim);margin-right:6px">${CLUES[c].cat}</span>${CLUES[c].title}</label>`).join(''):'<div class="empty">수첩에 단서가 없습니다.</div>';
-  modal(`${accHead(3,'지목의 근거')}
-  <div class="hint" style="margin:0 0 10px">${SUSPECTS[ACC.who].name}이(가) 범인이라는 근거가 되는 단서를 수첩에서 <b>최대 3개</b> 고르세요.</div>
+  const list=S.clues.length?S.clues.map(c=>`<label class="opt"><input type="checkbox" value="${c}"><span class="cat" style="font-size:11px;color:var(--dim);margin-right:6px">${CLUES[c].cat}</span>${CLUES[c].title}</label>`).join(''):`<div class="empty">${t('emptyNotebook','수첩에 단서가 없습니다.')}</div>`;
+  modal(`${accHead(3,t('q3','지목의 근거'))}
+  <div class="hint" style="margin:0 0 10px">${t('q3hint',`${SUSPECTS[ACC.who].name}이(가) 범인이라는 근거가 되는 단서를 수첩에서 <b>최대 3개</b> 고르세요.`,SUSPECTS[ACC.who].name)}</div>
   <div style="max-height:46vh;overflow:auto">${list}</div>
-  <div class="actions">${accCancel()}<button class="btn danger" id="n3">최종 제출</button></div>`);
+  <div class="actions">${accCancel()}<button class="btn danger" id="n3">${t('submit','최종 제출')}</button></div>`);
   const boxes=[...document.querySelectorAll('#modal input[type=checkbox]')];
-  boxes.forEach(b=>b.onchange=()=>{const on=boxes.filter(x=>x.checked);if(on.length>3){b.checked=false;toast('최대 3개까지 고를 수 있어요')}});
+  boxes.forEach(b=>b.onchange=()=>{const on=boxes.filter(x=>x.checked);if(on.length>3){b.checked=false;toast(t('max3','최대 3개까지 고를 수 있어요'))}});
   $('#n3').onclick=()=>{ACC.ev=boxes.filter(x=>x.checked).map(x=>x.value);result()};
 }
 function result(){
   S.over=true;ACC.active=false;
   const total=Object.keys(CLUES).length;
   const okWho=ACC.who==='park';
-  const t=+ACC.hh*60+ +ACC.mm, okTime=t>=21*60+40&&t<=21*60+47;
+  const tm=+ACC.hh*60+ +ACC.mm, okTime=tm>=21*60+40&&tm<=21*60+47;
   const good=ACC.ev.filter(c=>KEY_EVIDENCE.includes(c));
   const okEv=okWho&&good.length>=2;
   const pts=(okWho?1:0)+(okTime?1:0)+(okEv?1:0);
-  const grade=pts===3?'완전 해결':okWho&&pts===2?'거의 해결':okWho?'범인은 맞혔지만…':'미해결';
+  const G=t('grades',['완전 해결','거의 해결','범인은 맞혔지만…','미해결']);
+  const grade=pts===3?G[0]:okWho&&pts===2?G[1]:okWho?G[2]:G[3];
   hn('case_finished',{grade:pts===3?'solved':okWho&&pts===2?'almost':okWho?'culprit_only':'unsolved',points:pts,accused:ACC.who,
     culprit_correct:okWho?'yes':'no',time_correct:okTime?'yes':'no',evidence_correct:okEv?'yes':'no',evidence_count:ACC.ev.length,
     forced:ACC.forced?'yes':'no',clue_count:S.clues.length,clue_total:total,minutes_used:used(),play_minutes:playMin()});
-  const line=(ok,label,mine,right)=>`<div style="margin:8px 0"><b>${label}</b><br><span class="${ok?'ok':'ng'}">${ok?'✔':'✘'} ${mine}</span>${ok?'':`<br><span style="color:var(--dim)">정답: ${right}</span>`}</div>`;
-  const evTxt=ACC.ev.length?ACC.ev.map(c=>`${KEY_EVIDENCE.includes(c)&&okWho?'●':'○'} ${CLUES[c].title}`).join('<br>'):'(고른 단서 없음)';
-  const rows=line(okWho,'STEP 1 · 범인',SUSPECTS[ACC.who].name,'박태수')
-   +line(okTime,'STEP 2 · 쇼케이스가 열린 시각',`${ACC.hh}:${ACC.mm}`,'21:40 ~ 21:47 사이')
-   +`<div style="margin:8px 0"><b>STEP 3 · 지목의 근거</b><br><span class="${okEv?'ok':'ng'}">${okEv?'✔ 근거가 탄탄합니다':'✘ 근거가 부족합니다'}</span><div style="font-size:13px;margin-top:4px">${evTxt}</div><div class="hint">● 박태수를 가리키는 단서 · ○ 직접 관련 없는 단서</div></div>`;
-  modal(`<h2>사건 결과</h2><div class="res-score">${grade} · ${pts}/3</div>
-  <div style="color:var(--dim);font-size:13px">사용한 시간 ${TOTAL_TIME-S.time}분 · 찾은 단서 ${S.clues.length}/${total}</div>
+  const line=(ok,label,mine,right)=>`<div style="margin:8px 0"><b>${label}</b><br><span class="${ok?'ok':'ng'}">${ok?'✔':'✘'} ${mine}</span>${ok?'':`<br><span style="color:var(--dim)">${t('answer','정답: ')}${right}</span>`}</div>`;
+  const evTxt=ACC.ev.length?ACC.ev.map(c=>`${KEY_EVIDENCE.includes(c)&&okWho?'●':'○'} ${CLUES[c].title}`).join('<br>'):t('noneChosen','(고른 단서 없음)');
+  const rows=line(okWho,t('s1','STEP 1 · 범인'),SUSPECTS[ACC.who].name,SUSPECTS.park.name)
+   +line(okTime,t('s2','STEP 2 · 쇼케이스가 열린 시각'),`${ACC.hh}:${ACC.mm}`,t('s2ans','21:40 ~ 21:47 사이'))
+   +`<div style="margin:8px 0"><b>${t('s3','STEP 3 · 지목의 근거')}</b><br><span class="${okEv?'ok':'ng'}">${okEv?t('evGood','✔ 근거가 탄탄합니다'):t('evBad','✘ 근거가 부족합니다')}</span><div style="font-size:13px;margin-top:4px">${evTxt}</div><div class="hint">${t('evLegend','● 박태수를 가리키는 단서 · ○ 직접 관련 없는 단서')}</div></div>`;
+  modal(`<h2>${t('result','사건 결과')}</h2><div class="res-score">${grade} · ${pts}/3</div>
+  <div style="color:var(--dim);font-size:13px">${t('usedLine',`사용한 시간 ${TOTAL_TIME-S.time}분 · 찾은 단서 ${S.clues.length}/${total}`,TOTAL_TIME-S.time,S.clues.length,total)}</div>
   ${rows}
-  <details style="margin-top:14px"><summary style="cursor:pointer;color:var(--gold2);font-weight:700">사건의 전말 보기</summary>
-  <div class="paper">${esc(`범인은 박태수.
+  <details style="margin-top:14px"><summary style="cursor:pointer;color:var(--gold2);font-weight:700">${t('reveal','사건의 전말 보기')}</summary>
+  <div class="paper">${esc(t('story',`범인은 박태수.
 
 일주일 전 단톡방 공지로 전시 날짜를 알게 된 박태수는 이튿날 옆 공방에서 메탈골드 MG-07을 현금으로 샀다(공방 장부). 집에 있던 자기 일반판 미플 20개를 서툴게 칠했고, 단톡방에 “새 취미”라며 칠하던 책상 사진까지 올렸다. 당일 18:12에는 미플이 정말 20개인지 확인했다.
 
@@ -773,8 +806,8 @@ function result(){
 • 서지아: 알바비 갈등과 금박 가루가 있지만, ‘띡’ 소리가 났을 때 창고 안에 있었다(최건우 진술: 지아 씨가 창고에 간 사이). 열쇠도 손님 쪽 오른쪽 칸에 둘 이유가 없다. 금박은 선물 포장지에서 나왔다.
 • 윤미래: 거짓말을 했지만 범행이 끝난 뒤인 21:50에 왔다. 21:55에 사진만 찍었다. 글리터는 네일 장식이다.
 • 최건우: 물감 전문가지만 그가 쓰는 건 MG-03이다. 가짜는 서툰 붓질에 MG-07이다. 단톡방 멤버가 아니라 전시 날짜를 미리 알 수 없었다.
-• 금색 흔적은 함정이다. 서지아의 금박, 윤미래의 글리터, 최건우의 MG-03은 모두 출처가 따로 있다.`)}</div></details>
-  <div class="actions"><button class="btn primary" id="again">처음부터 다시</button></div>`);
+• 금색 흔적은 함정이다. 서지아의 금박, 윤미래의 글리터, 최건우의 MG-03은 모두 출처가 따로 있다.`))}</div></details>
+  <div class="actions"><button class="btn primary" id="again">${t('again','처음부터 다시')}</button></div>`);
   $('#again').onclick=()=>{hn('case_restarted');closeM();reset();showIntro()};
 }
 
@@ -789,13 +822,13 @@ counter:()=>`
 <rect x="45" y="55" width="120" height="85" fill="#8a6a3a" rx="3"/><svg x="53" y="63" width="104" height="69" viewBox="0 0 160 106" preserveAspectRatio="none">${PHOTO}${PHOTO_DATE}</svg>
 <!-- calendar -->
 <rect x="200" y="45" width="85" height="110" fill="#efe6d3" rx="3"/><rect x="200" y="45" width="85" height="22" fill="#b0463a" rx="3"/>
-<text x="242" y="61" font-size="11" text-anchor="middle" fill="#fff" font-weight="700">11월</text>
+<text x="242" y="61" font-size="11" text-anchor="middle" fill="#fff" font-weight="700">${t('calMonth','11월')}</text>
 ${Array.from({length:30},(_,i)=>`<rect x="${204+(i%7)*11.2}" y="${73+Math.floor(i/7)*15.5}" width="9.5" height="13" fill="${i===15?'#f0c96b':i===16?'#f7c1cf':'#d8cdb7'}"/>`).join('')}
 <!-- whiteboard -->
 <rect x="330" y="40" width="210" height="110" fill="#e9eef0" rx="4" stroke="#9aa" stroke-width="3"/>
-<text x="345" y="62" font-size="12" fill="#2b5bb5" font-weight="700">이번 주 할 일</text>
-${['✔ 물티슈 주문','✔ 젠가 1개 분실','✔ 이벤트 접시 정리','☐ 화요일 서프라이즈'].map((t,i)=>`<text x="345" y="${80+i*15}" font-size="10" fill="#2b5bb5">${t}</text>`).join('')}
-<text x="490" y="140" font-size="10" fill="#c0392b">— 지아</text>
+<text x="345" y="62" font-size="12" fill="#2b5bb5" font-weight="700">${t('wbTitle','이번 주 할 일')}</text>
+${t('wbItems',['✔ 물티슈 주문','✔ 젠가 1개 분실','✔ 이벤트 접시 정리','☐ 화요일 서프라이즈']).map((t,i)=>`<text x="345" y="${80+i*15}" font-size="10" fill="#2b5bb5">${t}</text>`).join('')}
+<text x="490" y="140" font-size="10" fill="#c0392b">${t('wbSign','— 지아')}</text>
 <!-- water dispenser (behind counter) -->
 <rect x="640" y="118" width="50" height="120" fill="#cfd8dc" rx="6"/><rect x="647" y="98" width="36" height="28" fill="#7fb3d5" rx="10" opacity=".8"/><rect x="654" y="160" width="22" height="18" fill="#455a64"/><rect x="692" y="135" width="9" height="55" fill="#eceff1"/>
 <!-- counter -->
@@ -813,7 +846,7 @@ ${Array.from({length:12},(_,i)=>`<rect x="${232+i*6.8}" y="222" width="5" height
 <!-- clipboard -->
 <rect x="335" y="198" width="38" height="40" fill="#8d6e63" rx="3"/><rect x="340" y="205" width="28" height="30" fill="#fff"/><rect x="346" y="195" width="16" height="7" fill="#bdbdbd"/>
 <!-- return box -->
-<rect x="388" y="206" width="78" height="32" fill="#2e6b5e"/><text x="427" y="226" font-size="9" fill="#e0d6b8" text-anchor="middle">사막의 시장</text>
+<rect x="388" y="206" width="78" height="32" fill="#2e6b5e"/><text x="427" y="226" font-size="9" fill="#e0d6b8" text-anchor="middle">${t('expansionBox','사막의 시장')}</text>
 <!-- phone -->
 <rect x="486" y="222" width="42" height="16" fill="#111" rx="4"/><rect x="489" y="225" width="36" height="10" fill="#22303c" rx="2"/>
 <!-- dice tray -->
@@ -850,9 +883,9 @@ back:()=>`
 <!-- storage door -->
 <rect x="55" y="75" width="140" height="295" fill="#5a4636" stroke="#2e2219" stroke-width="4"/>
 <rect x="158" y="206" width="26" height="40" fill="#888" rx="3"/>${['#c0392b','#e1b12c','#2e6fb5'].map((c,i)=>`<rect x="162" y="${210+i*12}" width="14" height="9" fill="#333"/><circle cx="180" cy="${214.5+i*12}" r="2.5" fill="${c}"/>`).join('')}
-<text x="125" y="110" font-size="12" fill="#c8b8a0" text-anchor="middle">창고</text>
+<text x="125" y="110" font-size="12" fill="#c8b8a0" text-anchor="middle">${t('storeroom','창고')}</text>
 <!-- sign -->
-<rect x="255" y="82" width="210" height="22" fill="#efe6d3" rx="3"/><text x="360" y="97" font-size="10" fill="#3a2a1a" text-anchor="middle">⚠ 쇼케이스 이용 안내</text>
+<rect x="255" y="82" width="210" height="22" fill="#efe6d3" rx="3"/><text x="360" y="97" font-size="10" fill="#3a2a1a" text-anchor="middle">${t('showcaseSign','⚠ 쇼케이스 이용 안내')}</text>
 <!-- showcase -->
 <rect x="255" y="118" width="210" height="225" fill="#1a2a30" stroke="#9fb3bb" stroke-width="3"/>
 <rect x="262" y="125" width="196" height="211" fill="rgba(160,200,220,.12)"/>
@@ -885,7 +918,7 @@ ${[0,1,2].map(r=>Array.from({length:4},(_,i)=>`<rect x="${58+i*42}" y="${64+r*70
 <rect x="255" y="290" width="90" height="70" fill="#5d4b3a"/><rect x="350" y="300" width="95" height="60" fill="#6a5644"/>
 <!-- plywood wall -->
 <rect x="525" y="55" width="230" height="315" fill="#8a6f4e"/>${Array.from({length:7},(_,i)=>`<line x1="525" y1="${85+i*42}" x2="755" y2="${88+i*42}" stroke="#7a5f40" stroke-width="2"/>`).join('')}
-<text x="640" y="215" font-size="11" fill="#5a452e" text-anchor="middle">(벽 너머: 안쪽 복도)</text>
+<text x="640" y="215" font-size="11" fill="#5a452e" text-anchor="middle">${t('wallNote','(벽 너머: 안쪽 복도)')}</text>
 <!-- bulb -->
 <line x1="400" y1="0" x2="400" y2="40" stroke="#555" stroke-width="2"/><circle cx="400" cy="48" r="10" fill="#f6e3a1"/>
 `};
@@ -893,16 +926,20 @@ ${[0,1,2].map(r=>Array.from({length:4},(_,i)=>`<rect x="${58+i*42}" y="${64+r*70
 /* ===================== INTRO ===================== */
 function showIntro(){
   hn('case_intro_viewed');
-  modal(`<div class="intro"><h2>퍼니보드 사건 파일<br><span style="font-size:15px;color:var(--dim)">보드게임 카페의 마지막 손님</span></h2>
-  <p>보드게임 카페 「퍼니보드」의 사장 한도윤은 《드래곤 바자르》 초판 한정판을 딱 하루 카페에 전시했다. 이 판에만 들어 있는 도금 미플 20개는 시세만 수백만 원이다.</p>
+  modal(`<div class="intro"><h2>${t('title','퍼니보드 사건 파일')}<br><span style="font-size:15px;color:var(--dim)">${t('subtitle','보드게임 카페의 마지막 손님')}</span></h2>
+  ${t('intro',`  <p>보드게임 카페 「퍼니보드」의 사장 한도윤은 《드래곤 바자르》 초판 한정판을 딱 하루 카페에 전시했다. 이 판에만 들어 있는 도금 미플 20개는 시세만 수백만 원이다.</p>
   <p>다음 날 아침, 사장이 미플을 집어 들자 손끝에 금색이 묻어났다. <b>20개 전부 금색 물감을 칠한 가짜였다.</b> 쇼케이스는 잠겨 있었고 부서진 곳도 없었다.</p>
-  <p>그날 밤 21:30~22:20 사이 카페에 있었던 사람은 넷. 당신은 사장의 부탁을 받고 카페를 조사한다.</p>
-  <div class="actions"><button class="btn primary" id="toHow">게임 방법 보기 →</button></div></div>`);
+  <p>그날 밤 21:30~22:20 사이 카페에 있었던 사람은 넷. 당신은 사장의 부탁을 받고 카페를 조사한다.</p>`)}
+  <div class="actions"><button class="btn primary" id="toHow">${t('toHow','게임 방법 보기 →')}</button></div></div>`);
   $('#toHow').onclick=showHow;
 }
 function showHow(){
-  modal(`<h2>게임 방법</h2>
-  <div style="font-size:14px">목표는 하나예요. <b>누가, 언제, 어떻게 바꿔치기했는지</b> 밝히는 것.</div>
+  modal(`<h2>${t('howTitle','게임 방법')}</h2>
+  ${LANG==='en'?`  <div style="font-size:14px">${EN.ui.howGoal}</div>
+  <div class="steps">${EN.ui.howSteps.map(([a,b],i)=>`<div class="stp"><div class="n">${i+1}</div><div><b class="t">${a}</b><span>${b}</span></div></div>`).join('')}</div>
+  <div class="timebox">${EN.ui.howTime}
+   <table>${EN.ui.howCosts.map(([a,b])=>`<tr><td>${a}</td><td>${b}</td></tr>`).join('')}</table>
+   <div style="margin-top:6px;color:var(--dim)">${EN.ui.howNote}</div></div>`:`  <div style="font-size:14px">목표는 하나예요. <b>누가, 언제, 어떻게 바꿔치기했는지</b> 밝히는 것.</div>
   <div class="steps">
    <div class="stp"><div class="n">1</div><div><b class="t">현장 둘러보기</b><span>위쪽 탭으로 장소를 옮기고, 그림 속 물건을 클릭해 조사해요. 찾은 단서는 오른쪽 <b>수사 수첩</b>에 모여요. 눈에 잘 안 띄는 곳도 있어요.</span></div></div>
    <div class="stp"><div class="n">2</div><div><b class="t">잠긴 것 풀기</b><span>휴대폰, 녹화기, 창고는 비밀번호가 있어요. 답의 힌트는 현장 어딘가에 숨어 있어요.</span></div></div>
@@ -911,14 +948,15 @@ function showHow(){
   </div>
   <div class="timebox"><b>⏱ 조사 시간 80분</b> <span style="color:var(--dim)">(실제 시간이 아니라, 행동할 때마다 줄어드는 게임 속 시간)</span>
    <table><tr><td>물건 하나 조사</td><td>2분</td></tr><tr><td>진술 듣기 · 증거 보여주기</td><td>3분</td></tr><tr><td>비밀번호 틀림</td><td>1분</td></tr><tr><td>장소 이동 · 수첩 다시 보기</td><td>무료</td></tr></table>
-   <div style="margin-top:6px;color:var(--dim)">전부 조사할 시간은 없어요. 0분이 되면 바로 범인을 지목해야 해요.</div></div>
-  <div class="actions"><button class="btn primary" id="startCase">${S.startedAt?'계속 조사하기':'조사 시작'}</button></div>`);
+   <div style="margin-top:6px;color:var(--dim)">전부 조사할 시간은 없어요. 0분이 되면 바로 범인을 지목해야 해요.</div></div>`}
+  <div class="actions"><button class="btn primary" id="startCase">${S.startedAt?t('resume','계속 조사하기'):t('start','조사 시작')}</button></div>`);
   $('#startCase').onclick=()=>{if(!S.startedAt){S.startedAt=Date.now();hn('case_started')}closeM()};
 }
 function _unused(){
 
 }
 
+document.querySelectorAll('.langsw button').forEach(b=>{b.classList.toggle('on',b.dataset.l===LANG);b.onclick=()=>{if(b.dataset.l!==LANG)hnSetLang(b.dataset.l)}});
 $('#btnTalk').onclick=openTalk;
 $('#btnHelp').onclick=()=>{hn('help_opened');showHow()};
 $('#btnAccuse').onclick=()=>openAccuse(false);
