@@ -91,9 +91,11 @@ ui: {
   storeroom: 'Storeroom',
   showcaseSign: '⚠ About this showcase',
   wallNote: '(other side: back hallway)',
-  intro: `<p>Doyun Han, who owns the Funny Board café, put a first-edition limited set of <i>Dragon Bazaar</i> on display for one day only. The 20 gold-plated meeples that come in that edition are worth thousands of dollars on their own.</p>
-  <p>The next morning, he picked one up and gold came off on his fingers. <b>All 20 were fakes, painted gold.</b> The showcase was still locked, and nothing was broken.</p>
-  <p>Four people were in the café that night between 21:30 and 22:20. The owner has asked you to look into it.</p>`,
+  intro: `<p>10:02 a.m., November 17. Doyun Han's birthday. The first thing the owner of the Funny Board café did when he got in was open the showcase. Yesterday, for one day only, it had held a first-edition limited set of <i>Dragon Bazaar</i>, and he wanted it safely back home.</p>
+  <p>He picked up one of the gold-plated meeples, and gold came off on his thumb. He rubbed it. More came off. Same with the next one, and the one after that. <b>All twenty were plain wooden meeples with a coat of gold paint.</b> The real ones, worth thousands on their own, were gone.</p>
+  <p>The showcase was locked. Not a scratch on the glass or the lock.</p>
+  <p>From 21:30, when he left last night, until 22:20, when the doors were locked, four people were in the café: his part-timer, two regulars, and the guy who runs the shop next door. He knows every one of them.</p>
+  <p class="say">"If I call the police, the whole neighborhood's going to hear about it. Can you just quietly look into this? We open at 11:30."</p>`,
   howGoal: 'There\'s one goal: figure out <b>who swapped the meeples, when, and how</b>.',
   howSteps: [
     ['Search the café', 'Use the tabs at the top to move between rooms, and click things in the picture to search them. Anything you find goes into your <b>Notebook</b> on the right. Some things are easy to miss.'],
