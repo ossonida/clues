@@ -297,7 +297,7 @@ const ROOM_NAME={duty:'숙직실',office:'교무실',class:'교실',store:'창�
 
 // ── 상태 ──────────────────────────────
 const fresh=()=>({v:'cover',open:0,solved:{},hints:{},wrong:{},ms:0,started:false,done:false,
-  rooms:{duty:true,office:false,class:false,store:false,music:false,bell:false,hall:false},tools:{key:false,torch:false,pencil:false,eraser:false},torch:false,held:null,rubbed:false,seatClean:false,cab:[0,0,0],drawer:false,next:''});
+  rooms:{duty:true,office:false,class:false,store:false,music:false,bell:false,hall:false},tools:{key:false,torch:false,pencil:false,eraser:false},torch:false,held:null,rubbed:false,seatClean:false,cab:[0,0,0],drawer:false});
 let S=fresh();
 try{const d=JSON.parse(localStorage.getItem(SAVE_KEY)||'null');if(d)S={...fresh(),...d,rooms:{...fresh().rooms,...(d.rooms||{})},tools:{...fresh().tools,...(d.tools||{})}}}catch{}
 const save=()=>{try{localStorage.setItem(SAVE_KEY,JSON.stringify(S))}catch{}};
@@ -679,7 +679,6 @@ function pageCover(){
 function pageEnd(){
   const h=hintTotal(),ansHints=Object.values(S.hints).filter(n=>n>=3).length;
   const grade=h===0?'숙직 교사':ansHints===0?'순찰 대원':'비 피한 손님';
-  const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   return `<article class="log turn result">
     <p class="big">쇠사슬 풀리는 소리.</p>
     <div class="seal">${grade}</div>
@@ -691,9 +690,6 @@ function pageEnd(){
     <p>현관 유리문 너머로 등불이 흔들린다. 우비를 걸친 노인이 숨을 몰아쉬며 서 있다. 등불을 들어 얼굴을 비춰 보더니, 한참 말이 없다.</p>
     <div class="paper" style="font-family:var(--hand);font-size:24px;line-height:1.4;color:var(--pen);background:#fffdf4;border-left:3px solid #6b604a;padding:10px 14px;max-width:540px">“애들이 다 온 줄 알았지.”</div>
     <p>한봉수 씨는 학교가 문을 닫은 뒤로도 스물일곱 해 동안 밤마다 종탑에 올라 시작종을 쳤다. 작별 인사 없이 떠난 은수가 언젠가 그 소리를 듣고 찾아올까 봐. 숙직 일지는 오늘 밤에도 이어진다. 맨 아래 비고 칸이 비어 있다.</p>
-    ${S.next
-      ?`<p style="font-family:var(--hand);font-size:26px">“${esc(S.next)}” <span style="font-family:var(--mono);font-size:12.5px;color:var(--dim)">— 은수에게</span></p>`
-      :`<form class="pw" id="nextf" style="margin-top:6px"><input id="nextIn" maxlength="40" placeholder="은수에게 한 줄" aria-label="은수에게 남길 한 줄" style="flex:1;min-width:200px;width:auto"><button class="btn">남기기</button></form><div style="font-family:var(--mono);font-size:12.5px;color:var(--dim)">이 브라우저에만 남아요.</div>`}
     <div class="row"><button class="btn" id="again">처음부터 다시</button><a class="btn primary" href="../../" style="text-decoration:none">사건 대장으로</a></div>
   </article>`;
 }
@@ -735,7 +731,6 @@ function render(anim){
   }
   if(S.v==='end'){
     $('#again').onclick=()=>{if(confirm('처음부터 다시 할까요? 지금 기록은 지워져요.')){S=fresh();save();render(true)}};
-    const nf=$('#nextf');if(nf)nf.onsubmit=e=>{e.preventDefault();const v=$('#nextIn').value.trim();if(!v)return;S.next=v;save();render(false)};
   }
   renderTools();applyTorch();
 }
