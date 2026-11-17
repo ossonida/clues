@@ -805,10 +805,13 @@ function accStep3(){
   boxes.forEach(b=>b.onchange=()=>{const on=boxes.filter(x=>x.checked);if(on.length>3){b.checked=false;toast(t('max3','최대 3개까지 고를 수 있어요'))}});
   $('#n3').onclick=()=>{ACC.ev=boxes.filter(x=>x.checked).map(x=>x.value);result()};
 }
+// 사건 대장에 보일 내 기록 (hn.clear.noteNN). 범인을 맞혀야 깬 것으로 친다
+function record(ms,ok=true){try{const k='hn.clear.note01',p=JSON.parse(localStorage.getItem(k)||'{}');localStorage.setItem(k,JSON.stringify({ok:ok||!!p.ok,best:ok?Math.min(p.best||Infinity,ms):p.best||null,last:ms,at:Date.now()}))}catch{}}
 function result(){
   S.over=true;ACC.active=false;save();
   const total=Object.keys(CLUES).length;
   const okWho=ACC.who==='park';
+  record(S.startedAt?Date.now()-S.startedAt:0,okWho);
   const tm=+ACC.hh*60+ +ACC.mm, okTime=tm>=21*60+40&&tm<=21*60+47;
   const good=ACC.ev.filter(c=>KEY_EVIDENCE.includes(c));
   const okEv=okWho&&good.length>=2;

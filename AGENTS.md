@@ -25,7 +25,8 @@ fonts/              공통 글꼴 (fonts.css → heejoy.css, kkakdugi.css, 각 �
 
 - 로컬 서버: `python -m http.server 8779` (Claude 미리보기는 `.claude/launch.json`의 `clues`). 파일을 바로 열면 폰트·모듈이 막힐 수 있으니 서버로 연다.
 - 화면을 바꾸면 미리보기에서 직접 확인한다: 콘솔 오류, 처음부터 끝까지 한 번 플레이, 모바일 375px 폭에서 가로 스크롤 없음.
-- 진행 저장은 localStorage에 남는다. 테스트 전에 해당 사건의 키를 지운다 (`hn.note02.v2`, `hn.note03.v2`, `hn.note01.save.v1`).
+- 진행 저장은 localStorage에 남는다. 테스트 전에 해당 사건의 키를 지운다 (`hn.note02.v2`, `hn.note03.v2`, `hn.note04.v4`, `hn.note01.save.v1`).
+- 사건을 끝내면 각 노트가 `hn.clear.noteNN`(`{ok, best, last}`, ms)에 기록을 남기고, 메인 사건 대장의 "내 기록" 칸이 그걸 읽는다. 새 노트도 끝나는 자리에서 `record(ms, ok)`를 부르고 `index.html`의 `SAVES`에 저장 키를 추가한다.
 
 ## 코드 규칙
 

@@ -11,7 +11,7 @@
 :root{
   --desk:#34302b;--pad:#fbf2a6;--pline:#a9c3e0;--margin:rgba(214,69,65,.55);--lh:32px;--ml:56px;--binding:#7a1e1b;
   --sheet:#fffdf4;--ink:#1f1c18;--dim:#6b6358;--rule:#cfc5b0;--stamp:#a3312a;
-  --blue:#27479a;--pencil:#4a4a4f;--red:#c23a2e;--green:#2b7a52;
+  --blue:#1d4fc4;--pencil:#4a4a4f;--red:#d63a12;--green:#13963c;
   --nl:34px;--nm:64px;--hs:clamp(20px,5.4vw,27px);
   --mono:"Kkakdugi Drafting",monospace;--serif:"LevelUp",serif;--hand:"HEEJOY",cursive;
 }
@@ -134,7 +134,7 @@ header.hud{display:flex;align-items:flex-end;gap:10px 18px;flex-wrap:wrap;margin
 .nav button:hover{color:var(--ink);border-color:var(--ink)}
 
 .green{color:var(--green)}
-.tiny{font-size:.62em;display:inline-block;transform:rotate(-6deg);margin-left:.3em}
+.tiny{font-size:.9em;font-weight:700;display:inline-block;transform:rotate(-6deg);margin-left:.3em}
 .ln.right{text-align:right}
 
 /* 소지품 */
@@ -165,7 +165,7 @@ header.hud{display:flex;align-items:flex-end;gap:10px 18px;flex-wrap:wrap;margin
 .sheet.lit{background-color:#fffef9;box-shadow:0 0 0 1px rgba(255,240,180,.6),0 0 60px 10px rgba(255,236,160,.55),0 16px 30px -14px rgba(40,30,0,.55)}
 .back{position:absolute;left:calc(var(--nm) + 14px);right:26px;font-family:var(--hand);font-size:calc(var(--hs) * 1.1);line-height:var(--nl);color:rgba(60,60,70,.5);transform:scaleX(-1);opacity:0;transition:opacity .6s;pointer-events:none;user-select:none;filter:blur(.3px)}
 .back svg{display:block;width:120px;height:120px;margin:6px 0 0 10px;opacity:.85}
-.back .green{color:rgba(43,122,82,.6)}
+.back .green{color:rgba(19,150,60,.8)}
 .sheet.lit .back{opacity:1}
 
 /* 6장: 찢긴 조각 */
@@ -287,6 +287,8 @@ function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('on');
 const norm=s=>s.replace(/[\s.,!?·'"~:\-]/g,'').toLowerCase();
 function lev(a,b){const d=[...Array(b.length+1).keys()];for(let i=1;i<=a.length;i++){let p=d[0];d[0]=i;for(let j=1;j<=b.length;j++){const t=d[j];d[j]=Math.min(d[j]+1,d[j-1]+1,p+(a[i-1]===b[j-1]?0:1));p=t}}return d[b.length]}
 const sameDigits=(a,b)=>[...a].sort().join('')===[...b].sort().join('');
+// 사건 대장에 보일 내 기록 (hn.clear.noteNN: 깼는지, 가장 빠른 시간, 마지막 시간)
+function record(ms,ok=true){try{const k='hn.clear.note02',p=JSON.parse(localStorage.getItem(k)||'{}');localStorage.setItem(k,JSON.stringify({ok:ok||!!p.ok,best:ok?Math.min(p.best||Infinity,ms):p.best||null,last:ms,at:Date.now()}))}catch{}}
 function gain(tool,msg){if(S.tools[tool])return;S.tools[tool]=true;NEWTOOL=tool;save();toast(msg)}
 
 // ── 탭 · 소지품 ──────────────────────────────
@@ -301,7 +303,7 @@ function renderTabs(){
 function renderTools(){
   const el=$('#tools'),usable=S.started&&S.p>0&&S.p<END;
   if(!usable){el.innerHTML='';return}
-  const items=[['pencil','✏️ 연필',true],['bm','🔖 책갈피',S.tools.bm],['lamp','💡 스탠드',S.tools.lamp]].filter(t=>t[2]);
+  const items=[['pencil','✏️ 연필',true],['eraser','🧽 지우개',true],['bm','🔖 책갈피',S.tools.bm],['lamp','💡 스탠드',S.tools.lamp]].filter(t=>t[2]);
   el.innerHTML='<span>소지품</span>'+items.map(([id,label])=>
     `<button class="tool${TOOL===id?' on':''}${id==='lamp'&&S.light?' lit':''}${NEWTOOL===id?' new':''}" data-t="${id}" aria-pressed="${id==='lamp'?S.light:TOOL===id}">${label}</button>`).join('');
   NEWTOOL=null;
@@ -312,7 +314,8 @@ function renderTools(){
     applyTool();
   });
 }
-function go(i){if(!canOpen(i))return;S.p=i;save();render(true);scrollTo({top:0,behavior:'smooth'})}
+// 장을 넘기면 들고 있던 연필·책갈피는 내려놓고 스탠드도 끈다 (책갈피는 그 장 제자리로)
+function go(i){if(!canOpen(i))return;if(i!==S.p){TOOL=null;S.light=false;delete BM[S.p]}S.p=i;save();render(true);scrollTo({top:0,behavior:'smooth'})}
 
 // ── 페이지 내용 ──────────────────────────────
 const L=(cls,html,no)=>`<p class="ln ${cls}">${no?`<span class="no">${no}</span>`:''}${html}</p>`;
@@ -341,12 +344,12 @@ function page1(){
     ${L('','')}
     ${L('red','↳ 맞춤법 두 개 고쳐 둠. — 서진')}
     <svg class="doodle" style="right:18px;top:calc(var(--nl) * 8 + 2px);width:58px;height:46px" viewBox="0 0 58 46" aria-hidden="true">
-      <g fill="none" stroke="#27479a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <g fill="none" stroke="#1d4fc4" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
         <path d="M10 40 C 6 24, 12 14, 22 14 C 34 14, 40 24, 36 40 Z"/><path d="M14 18 L13 6 L21 13"/><path d="M30 13 L37 6 L36 18"/>
         <circle cx="19" cy="25" r="1.3"/><circle cx="29" cy="25" r="1.3"/><path d="M22 30 Q24 32 26 30"/><path d="M36 36 C 46 36, 52 30, 50 22"/>
       </g>
     </svg>
-    <span class="doodle green" style="right:10px;top:calc(var(--nl) * 9 + 14px);font-family:var(--hand);font-size:15px;transform:rotate(-8deg)">윤</span>
+    <span class="doodle green" style="right:10px;top:calc(var(--nl) * 9 + 6px);font-family:var(--hand);font-size:24px;font-weight:700;transform:rotate(-8deg)">윤</span>
   </article>${answerRow(1)}`;
 }
 
@@ -404,14 +407,14 @@ function page5(){
     ${L('pencil','선생님한테 말했더니 웃기만 하심.')}
     ${L('pencil','내 암호는 뒷장에 그려 둠.')}
     ${L('','')}${L('','')}${L('','')}${L('','')}${L('','')}
-    <div class="back" style="top:calc(var(--nl) * 6 + 2px)" aria-hidden="true">멈춘 시각 = 내 암호
+    <div class="back" style="top:calc(var(--nl) * 6 + 2px)" aria-hidden="true">멈춘 시계
       <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" fill="none" stroke="rgb(60,60,70)" stroke-width="2"/>
         <g stroke="rgb(60,60,70)" stroke-width="2" stroke-linecap="round">${ticks}</g>
         <text x="50" y="25" font-size="11" text-anchor="middle" fill="rgb(60,60,70)" font-family="sans-serif">12</text>
         <line x1="50" y1="50" x2="26.1" y2="47.9" stroke="rgb(60,60,70)" stroke-width="4" stroke-linecap="round"/>
         <line x1="50" y1="50" x2="81.2" y2="32" stroke="rgb(60,60,70)" stroke-width="2.5" stroke-linecap="round"/>
         <circle cx="50" cy="50" r="2.5" fill="rgb(60,60,70)"/></svg>
-      <span class="green" style="position:absolute;right:8px;bottom:-30px;font-size:.7em">님</span>
+      <span class="green" style="position:absolute;right:8px;bottom:-34px;font-size:1em;font-weight:700">님</span>
     </div>
   </article>${answerRow(5)}`;
 }
@@ -519,7 +522,7 @@ function setupSheet(){
 function applyTool(){
   const sh=$('#page .sheet');
   if(sh){
-    sh.classList.toggle('pencil-on',TOOL==='pencil');
+    sh.classList.toggle('pencil-on',TOOL==='pencil'||TOOL==='eraser');
     const bm=sh.querySelector('.bm');
     if(TOOL==='bm'&&!bm)showBm(sh);
     if(TOOL!=='bm'&&bm)bm.remove();
@@ -552,7 +555,7 @@ function bindLock(){
   $('#lock').querySelectorAll('.dial button').forEach(b=>b.onclick=()=>{const i=+b.dataset.i;S.lock[i]=(S.lock[i]+(+b.dataset.d)+10)%10;b.parentNode.querySelector('b').textContent=S.lock[i];save()});
   $('#pull').onclick=()=>{
     const code=S.lock.join(''),m=$('#lockMsg'),ans=PAGES[7].code;
-    if(code===ans){S.done=true;S.p=END;save();toast('철컥!');render(true);return}
+    if(code===ans){S.done=true;S.p=END;TOOL=null;S.light=false;save();record(S.ms);toast('철컥!');render(true);return}
     S.wrong[7]=(S.wrong[7]||0)+1;save();
     m.textContent=code==='9173'?'작년 번호로는 안 열린다. 정말 바뀌었나 보다.':sameDigits(code,ans)?'숫자는 맞는 것 같은데… 순서가 아닌가?':'꿈쩍도 안 한다.';
     $('#lock').classList.remove('shake');void $('#lock').offsetWidth;$('#lock').classList.add('shake');
@@ -633,7 +636,9 @@ async function initRub(sh,cv){
       if(hit)textCells.add(r*cols+c)}
   }
   const R=15;
-  function dab(x0,y0,x1,y1){
+  // er: 지우개면 칠한 흑연을 걷어 낸다
+  function dab(x0,y0,x1,y1,er){
+    if(er){ctx.globalCompositeOperation='destination-out';ctx.globalAlpha=1;ctx.strokeStyle='#000';ctx.lineWidth=R*2.2;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(x0,y0);ctx.lineTo(x1,y1);ctx.stroke();return}
     ctx.globalCompositeOperation='source-over';ctx.globalAlpha=.42;ctx.strokeStyle=pat;ctx.lineWidth=R*2;ctx.lineCap='round';
     ctx.beginPath();ctx.moveTo(x0,y0);ctx.lineTo(x1,y1);ctx.stroke();
     const n=Math.max(1,Math.ceil(Math.hypot(x1-x0,y1-y0)/6));
@@ -648,13 +653,13 @@ async function initRub(sh,cv){
   }
   const strokes=STROKES[p]||(STROKES[p]=[]);
   if(box&&S.rubbed){for(let y=box.y+box.h*.12;y<box.y+box.h*.9;y+=R*1.1)dab(box.x+box.w*.06,y,box.x+box.w*.94,y+4)}
-  strokes.forEach(s=>{for(let i=1;i<s.length;i++)dab(s[i-1][0]*W,s[i-1][1]*H,s[i][0]*W,s[i][1]*H)});
+  strokes.forEach(s=>{for(let i=0;i<s.length;i++){const a=s[Math.max(0,i-1)];dab(a[0]*W,a[1]*H,s[i][0]*W,s[i][1]*H,s.er)}});
   punch();
   let last=null,cur=null;
   const pos=e=>{const b=cv.getBoundingClientRect();return[e.clientX-b.left,e.clientY-b.top]};
-  cv.onpointerdown=e=>{cv.setPointerCapture(e.pointerId);last=pos(e);cur=[[last[0]/W,last[1]/H]];strokes.push(cur);dab(...last,...last);punch()};
-  cv.onpointermove=e=>{if(!last)return;const q=pos(e);dab(...last,...q);punch();cur.push([q[0]/W,q[1]/H]);last=q};
-  cv.onpointerup=cv.onpointercancel=()=>{last=null;progress()};
+  cv.onpointerdown=e=>{cv.setPointerCapture(e.pointerId);last=pos(e);cur=[[last[0]/W,last[1]/H]];cur.er=TOOL==='eraser';strokes.push(cur);dab(...last,...last,cur.er);if(!cur.er)punch()};
+  cv.onpointermove=e=>{if(!last)return;const q=pos(e);dab(...last,...q,cur.er);if(!cur.er)punch();cur.push([q[0]/W,q[1]/H]);last=q};
+  cv.onpointerup=cv.onpointercancel=()=>{last=null;if(!cur.er)progress()};
 }
 let lastW=innerWidth;
 addEventListener('resize',()=>{if(innerWidth===lastW)return;lastW=innerWidth;for(const k in BM)delete BM[k];render(false)});
