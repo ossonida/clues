@@ -12,6 +12,7 @@ ANALYTICS.md        이벤트 설계 문서
 notes/NN/index.html 사건 하나 = HTML 파일 하나 (CSS·JS 모두 인라인)
 notes/NN/PLAN.md    그 사건의 기획안 (이야기, 장 구성, 정답, 정할 것)
 notes/01/en.js      Note 01 영어 문구 (한국어는 index.html 안에 그대로)
+fonts/              공통 글꼴 (fonts.css → heejoy.css, kkakdugi.css, 각 폴더에 WOFF2 조각과 OFL.txt)
 ```
 
 | 사건 | 장르 | 상태 |
@@ -28,8 +29,12 @@ notes/01/en.js      Note 01 영어 문구 (한국어는 index.html 안에 그대
 
 ## 코드 규칙
 
-- 사건 페이지는 **단일 HTML**. 외부 의존은 Google Fonts(나눔명조·나눔고딕·나눔고딕코딩·나눔손글씨 펜)와 메인의 Firebase 정도만. 빌드 도구·프레임워크를 들이지 않는다.
-- 공통 틀: 리갈패드 바탕(`.app`, 빨간 제본, 파란 줄), 손글씨는 `Nanum Pen Script`. 새 사건도 이 틀을 따르고 사건마다 색만 바꾼다.
+- 사건 페이지는 **단일 HTML**. 외부 의존은 글꼴(아래)과 메인의 Firebase 정도만. 빌드 도구·프레임워크를 들이지 않는다.
+- 글꼴은 모두 SIL OFL 1.1. 페이지마다 `fonts/fonts.css`(직접 올린 WOFF2 조각)와 jsDelivr의 레벨업체 CSS를 불러온다.
+  - `--hand` 손글씨: 히조이체 `HEEJOY` (`fonts/heejoy/`, Regular만, size-adjust 80%로 예전 나눔손글씨 펜 크기에 맞춤)
+  - `--serif` 제목·명조 자리: 레벨업체 `LevelUp` (`cdn.jsdelivr.net/gh/hada0127/hada-type-levelup@v2026.10.21/css/levelup-subset.css`)
+  - `--mono`와 본문 고딕 자리: 깍두기 도면체 `Kkakdugi Drafting` (`fonts/kkakdugi/`, Regular·Bold)
+- 공통 틀: 리갈패드 바탕(`.app`, 빨간 제본, 파란 줄), 손글씨는 `HEEJOY`. 새 사건도 이 틀을 따르고 사건마다 색만 바꾼다.
 - 방탈출 노트(02, 03)는 같은 뼈대를 쓴다: `PAGES` 배열(ans / alt / near / say / hints), `S` 상태 + `save()`, 탭, 힌트 포스트잇 모달, 결과 도장. 새 노트는 03을 복사해서 시작한다.
 - 저장 키는 `hn.noteNN.vN`. 저장 구조가 바뀌면 버전을 올린다.
 - 분석을 붙이는 사건은 `<html data-note="noteNN">`, `lang.js`·`analytics.js`를 불러오고 `hn('이벤트', {...})`만 쓴다. 새 이벤트는 `analytics.js` 스키마와 `ANALYTICS.md`에 같이 추가한다. 입력한 글은 절대 보내지 않는다.
