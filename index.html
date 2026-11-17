@@ -336,7 +336,7 @@ if(document.fonts)document.fonts.ready.then(alignRules);
 // 내 기록: 사건을 끝내면 각 노트가 hn.clear.noteNN에 남긴다. 아직 안 끝났으면 진행 저장을 보고 "하는 중".
 (function(){
   const en=window.HN_LANG==='en';
-  const SAVES={note01:'hn.note01.save.v1',note02:'hn.note02.v2',note03:'hn.note03.v2',note04:'hn.note04.v4'/* NOTE 05는 메인 공개 때 복원: ,note05:'hn.note05.v3' */};
+  const SAVES={note01:'hn.note01.save.v1',note02:'hn.note02.v2',note03:'hn.note03.v2',note04:'hn.note04.v4'/* NOTE 05는 메인 공개 때 복원: ,note05:'hn.note05.v4' */};
   const fmt=ms=>{const s=Math.round(ms/1000),h=Math.floor(s/3600),m=Math.floor(s/60)%60;return h?`${h}:${String(m).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`:`${m}:${String(s%60).padStart(2,'0')}`};
   const get=k=>{try{return JSON.parse(localStorage.getItem(k)||'null')}catch{return null}};
   document.querySelectorAll('td.me').forEach(td=>{
