@@ -139,8 +139,8 @@ header.hud{display:flex;align-items:flex-end;gap:10px 18px;flex-wrap:wrap;margin
 .plan .rm.fresh rect{animation:glow 1.2s 3}
 @keyframes glow{50%{fill:#fff8d6;stroke:#ffd76a}}
 .plan .hall{fill:#25313b;stroke:#7d95a3;stroke-width:1.5}
-.plan .lbl{font-size:13px;font-weight:700;fill:#d9e2e6;text-anchor:middle}
-.plan .sub{font-size:10px;fill:#93a6b2;text-anchor:middle}
+.plan .lbl{font-size:15px;font-weight:700;fill:#d9e2e6;text-anchor:middle}
+.plan .sub{font-size:13px;fill:#93a6b2;text-anchor:middle}
 .plan .legend{font-family:var(--mono);font-size:11.5px;color:#93a6b2;margin-top:6px}
 
 /* 방 */
@@ -157,12 +157,13 @@ header.hud{display:flex;align-items:flex-end;gap:10px 18px;flex-wrap:wrap;margin
 .room .nav button:hover{color:#fff;border-color:#fff}
 
 /* 출석부 */
-.roll{width:100%;border-collapse:collapse;font-size:12px;font-family:var(--mono);background:#fffdf4;margin:4px 0 8px}
+.roll{width:100%;border-collapse:collapse;font-size:12px;table-layout:auto;font-family:var(--mono);background:#fffdf4;margin:4px 0 8px}
 .roll th,.roll td{border:1px solid #b8ad92;padding:3px 0;text-align:center;min-width:18px}
 .roll th{background:#efe6cc;font-weight:400;color:#6b604a}
 .roll td.nm{font-family:"Nanum Gothic",sans-serif;font-weight:700;white-space:nowrap;padding:3px 6px;text-align:left}
 .roll td.x{color:#a3312a;font-weight:700}
 .roll td.l{color:#27479a}
+@media(max-width:560px){.roll{font-size:9.5px;letter-spacing:-.3px}.roll th,.roll td{min-width:0;padding:2px 0}.roll td.nm{padding:2px 2px;font-size:10px}}
 .rollwrap{overflow-x:auto}
 .legendline{font-size:12.5px;color:var(--dim)}
 
@@ -272,21 +273,21 @@ const PAGES=[
    say:{'난로':'그건 이상 없던 줄이다.','책상':'책상은 아이들도 뒤진다고 했다.','풍금':'그건 이상 있던 일. 숨긴 곳은 따로 있다.','종탑':'그건 이상 있던 곳. 숨긴 곳은 따로 있다.'},
    hints:['“이상 있음”이라고 적힌 줄만 다시 보세요.','이상 있는 줄의 비고, 그 첫 글자를 위에서부터 차례로 읽어 보세요.','시·계·뒤 → 정답: 시계뒤. 배치도에서 숙직실 벽시계를 살펴보세요.']},
   {tab:'2장', code:'316',
-   hints:['캐비닛은 교무실에 있어요. 숙직실의 교무실 쪽문은 1장에서 찾은 열쇠꾸러미로 열려요.','교무실 출석부에서 1·2·3번 아이의 결석(/) 표시를 번호 순서대로 세어 보세요. 지각(△)은 세지 않아요.','동민 3 · 미래 1 · 은수 6 → 캐비닛 번호 316']},
+   hints:['캐비닛은 교무실에 있어요. 번호를 적어 둔 메모가 교무실 어딘가에 있어요.','교감 선생님 책상 메모: "애들 이번 달 쉰 날". 출석부에서 동·미·은 각자의 결석(/)을 세어 보세요. 지각(△)은 쉰 날이 아니에요.','동민 3 · 미래 1 · 은수 6 → 캐비닛 번호 316']},
   {tab:'3장', q:'확인란', ans:'종탑', alt:['종','종루','뒤뜰종탑','종탑이요','뒤뜰의종탑','종치는탑'],
    near:['탑','뒤뜰','종각'],
-   say:{'철봉':'그건 1번 자리 창밖이다.','운동장':'그건 1번 자리 창밖이다.','게시판':'그건 2번 자리에서 보이는 거다.','복도':'그건 2번 자리에서 보이는 거다.','은수':'은수 자리에서 보이는 걸 적자.','창가뒷자리':'자리 말고, 그 창밖에 보이는 것.','3번':'자리 말고, 그 창밖에 보이는 것.'},
+   say:{'은수자리에서창밖을봐':'칠판이 시킨 대로, 창밖에 뭐가 보이는지 직접 가서 보자.','창밖':'창밖에 뭐가 보이는지 직접 가서 보자.','창밖을봐':'창밖에 뭐가 보이는지 직접 가서 보자.','은수자리':'그 자리에서 창밖에 뭐가 보이는지 보자.','철봉':'그건 1번 자리 창밖이다.','운동장':'그건 1번 자리 창밖이다.','게시판':'그건 2번 자리에서 보이는 거다.','복도':'그건 2번 자리에서 보이는 거다.','은수':'은수 자리에서 보이는 걸 적자.','창가뒷자리':'자리 말고, 그 창밖에 보이는 것.','3번':'자리 말고, 그 창밖에 보이는 것.'},
    hints:['정전이라 일지가 안 보여요. 교무실 캐비닛에서 꺼낸 손전등을 켜 보세요.','일지에 나온 교실 칠판을 손전등으로 직접 보세요. 은수가 몇 번인지는 교무실 출석부, 몇 번 자리가 어디인지는 교탁 자리표에 있어요.','은수는 3번, 창가 뒷자리. 그 책상에서 창밖을 보면 → 정답: 종탑']},
   {tab:'4장', q:'확인란', ans:'아이들', alt:['애들','아이들셋','애들셋','학생들','동민미래은수','동민이미래은수','동민이미래은수','김동민박미래이은수','우리셋','세명','셋','아이들이'],
    near:['동민','미래','은수','동민미래','아이'],
-   say:{'귀신':'귀신이 서랍에 쪽지를 남기진 않는다.','한봉수':'아저씨는 듣기만 했다.','봉수':'아저씨는 듣기만 했다.'},
+   say:{'은수':'은수 혼자가 아니다. 쪽지를 다시 보자.','동민':'동민이 혼자가 아니다. 쪽지를 다시 보자.','미래':'미래 혼자가 아니다. 쪽지를 다시 보자.','귀신':'귀신이 서랍에 쪽지를 남기진 않는다.','한봉수':'아저씨는 듣기만 했다.','봉수':'아저씨는 듣기만 했다.'},
    hints:['일지 21:00 줄을 보세요. 음악실 열쇠는 창고에 있고, 열쇠꾸러미에 「창고」 열쇠가 있어요.','음악실 풍금에서 ★ 그려진 건반이 1이에요. 거기서부터 오른쪽으로 세어 5·3·3·4·2·2를 차례로 눌러 보세요.','★이 3번째 건반이니 7·5·5·6·4·4번째 건반. 열린 서랍의 쪽지를 읽으면 → 정답: 아이들']},
   {tab:'5장', q:'확인란', ans:'2026', alt:['2026년','이천이십육','이천이십육년','26년','26'],
    near:['2025','2027'],
-   say:{'1999':'1999년 2월 28일은 일요일이었다. 맨 위 기록을 보자.','1999년':'1999년 2월 28일은 일요일이었다. 맨 위 기록을 보자.','2020':'2020년은 2월 29일이 있었다. 그해 2월 28일은 금요일.','2020년':'2020년은 2월 29일이 있었다. 그해 2월 28일은 금요일.','2015':'그해면 문 닫은 지 열여섯 해째다.','2009':'그해면 문 닫은 지 열 해째다.','1998':'문 닫기 전이다.'},
-   hints:['아래쪽 기록에는 연도가 비어 있어요. 요일과 "문 닫은 지 스물 몇 해째"를 함께 보세요.','폐교는 1999년 → 스물 몇 해째면 2019~2028년. 그중 2월 28일이 토요일이고 다음 날이 3월 1일인 해는?','2020년은 윤년이라 2월 28일이 금요일. 2026년 2월 28일이 토요일. 정답: 2026']},
+   say:{'1999':'1999년 2월 28일은 일요일이었다. 맨 위 기록을 보자.','1999년':'1999년 2월 28일은 일요일이었다. 맨 위 기록을 보자.','2020':'2020년은 2월 29일이 있었다. 그해 2월 28일은 금요일.','2020년':'2020년은 2월 29일이 있었다. 그해 2월 28일은 금요일.','2015':'동창회보다 앞이다.','2009':'동창회보다 앞이다.','2019':'그해 2월 28일은 동창회 날, 목요일이었다.','2037':'아직 오지 않은 해다.','1998':'문 닫기 전이다.'},
+   hints:['아래쪽 기록에는 연도가 비어 있어요. 일지가 말하는 "동창회 하던 날"이 언제였는지 현관에서 찾아보세요.','동창회는 2019년 2월 28일. 그 뒤로 2월 28일이 토요일이고 다음 날이 3월 1일(일)인 해를 찾으세요. 아직 오지 않은 해는 빼요.','2020년은 윤년이라 2월 28일이 금요일. 2021~2025년도 아니고, 2026년 2월 28일이 토요일. 정답: 2026']},
   {tab:'6장', code:'4-2-3',
-   hints:['종탑 벽의 타종 규칙판과, 음악실 풍금 서랍에서 나온 아이들 쪽지를 함께 보세요.','쪽지: 동민 = 모임종, 미래 = 끝종, 은수 = 시작종. 출석 번호는 1 동민, 2 미래, 3 은수. 규칙판에서 종마다 몇 번 치는지 보세요.','모임 4번 → 끝 2번 → 시작 3번. 종 줄을 4번, 2번, 3번 끊어서 당기세요.']},
+   hints:['종탑 벽의 타종 규칙판, 음악실 서랍의 아이들 쪽지, 교무실 출석부를 함께 보세요.','은수 신호는 쪽지에 없어요. 봉수 아저씨가 밤마다 혼자 치는 종이 무엇인지 일지에서 보세요. 순서는 출석 번호(1 동민, 2 미래, 3 은수)대로.','동민 모임종 4번 → 미래 끝종 2번 → 은수 시작종 3번. 종 줄을 4번, 2번, 3번 끊어서 당기세요.']},
 ];
 const ROOM_NAME={duty:'숙직실',office:'교무실',class:'교실',store:'창고',music:'음악실',bell:'종탑',hall:'현관'};
 
@@ -302,7 +303,13 @@ let NEWTOOL=null,NEWROOM=null;
 const fmt=ms=>{const s=Math.floor(ms/1000);return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`};
 const hintTotal=()=>Object.values(S.hints).reduce((a,b)=>a+b,0);
 const wrongTotal=()=>Object.values(S.wrong).reduce((a,b)=>a+b,0);
-const frontier=()=>Math.min(S.open,LAST);   // 지금 풀어야 할 장 (힌트는 늘 이 장)
+const frontier=()=>Math.min(S.open,LAST);   // 지금 풀어야 할 장
+// 힌트: 보고 있는 장이나 방에 걸린 장이 열려 있고 아직 못 풀었으면 그 장, 아니면 지금 풀어야 할 장
+const ROOM_PAGE={office:2,class:3,store:4,music:4,bell:6};
+function hintPage(){
+  const v=S.v,p=v[0]==='p'?+v.slice(1):ROOM_PAGE[v];
+  return p&&p<=S.open&&!S.solved[p]?p:frontier();
+}
 function renderStats(){$('#time').textContent=fmt(S.ms);$('#hintCount').textContent=hintTotal();$('#btnHint').disabled=!S.started||S.done}
 let tick=0;
 setInterval(()=>{if(S.started&&!S.done&&!document.hidden){S.ms+=1000;renderStats();if(++tick%5===0)save()}},1000);
@@ -343,7 +350,7 @@ function renderTools(){
     else{S.torch=!S.torch;save();renderTools();applyTorch()}
   });
 }
-function go(v){if(!canView(v))return;S.v=v;save();render(true);scrollTo({top:0,behavior:'smooth'})}
+function go(v){if(!canView(v))return;S.v=v;if(isRoom(v))S.here=v;save();render(true);scrollTo({top:0,behavior:'smooth'})}
 
 // ── 일지 ──────────────────────────────
 // [시각, 장소, 이상 유무(true=이상 있음), 비고]
@@ -373,16 +380,16 @@ function page1(){
     ['01:00','복도',true,'계속 발소리가 따라옴. 젖은 발자국 셋'],
     ['01:00','현관',false,'빗장 확인'],
     ['03:00','종탑',true,'뒤뜰 종 줄이 혼자 흔들림'],
-  ],'눈이 많이 와서 애들 하교가 늦었다.')+answerRow(1);
+  ],'열쇠꾸러미는 애들 손 안 타게 딴 데 숨김. 잊어버릴까 봐 오늘 기록에 몰래 적어 둠.')+answerRow(1);
 }
 function page2(){
   return logSheet('1999년 2월 23일 (화)','흐림',[
     ['21:00','숙직실',false,''],
-    ['21:00','교무실',true,'캐비닛 번호를 교감 선생님이 또 바꿔 놓고 가심. 애들 보면 안다나'],
+    ['21:00','교무실',true,'캐비닛 번호를 교감 선생님이 또 바꿔 놓고 가심. 손전등이 그 안에 있는데. 적어 둔 데가 있다나'],
     ['23:00','교실',true,'불이 켜져 있음. 가 보니 꺼짐. 문은 잠겨 있었다'],
     ['01:00','복도',false,''],
     ['03:00','종탑',true,'종이 한 번 울림'],
-  ],'이번 달은 애들이 유난히 많이 빠졌다. 은수 어머니 전화. 전학 서류 이야기.')+answerRow(2);
+  ],'은수 어머니 전화. 전학 서류 이야기.')+answerRow(2);
 }
 function page3(){
   return logSheet('1999년 2월 24일 (수)','눈 · 정전',[
@@ -390,7 +397,7 @@ function page3(){
     ['23:00','교실',true,'불도 안 들어오는데 웃음소리. 가 보니 아무도 없음. 칠판에 뭐라고 써 있었는데 어두워서 못 읽음'],
     ['01:00','교실',true,'다시 가 보니 칠판이 지워져 있음'],
     ['03:00','종탑',false,''],
-  ],'',!S.solved[3])+answerRow(3);
+  ],'내일 날 밝으면 칠판에 뭐라고 썼는지 꼭 볼 것.',!S.solved[3])+answerRow(3);
 }
 function page4(){
   return logSheet('1999년 2월 25일 (목)','맑음',[
@@ -398,7 +405,7 @@ function page4(){
     ['23:00','음악실',true,'또 풍금 소리. 매일 같은 노래, 같은 여섯 음. 가 보니 아무도 없음'],
     ['01:00','음악실',true,'풍금 위 작은 서랍이 안 열림. 열쇠 구멍도 없다'],
     ['03:00','종탑',true,'시작종이 세 번 울림'],
-  ],'누가 치는지 알 것도 같다.')+answerRow(4);
+  ],'풍금도 종도 누가 하는지 알 것도 같다. 서랍 속에 뭐가 있는지 보면 확실해지겠지.')+answerRow(4);
 }
 function page5(){
   return `<article class="log turn">
@@ -410,7 +417,7 @@ function page5(){
     <div class="blank">— 몇 장이 비어 있다 —</div>
     ${logDay('<span class="yr"></span>년 2월 28일 (토)','눈',[
       ['21:00','종탑',false,'시작종 세 번 침. 아무도 안 옴'],
-    ],'문 닫은 지 스물 몇 해째인지 이제 세지도 않는다.','fresh')}
+    ],'동창회 하던 날에도 아무도 안 왔다. 그 뒤로 몇 해인지 이제 세지도 않는다.','fresh')}
     ${logDay('<span class="yr"></span>년 3월 1일 (일)','맑음',[
       ['21:00','종탑',false,'시작종 세 번 침. 아무도 안 옴'],
     ],'','fresh')}
@@ -430,7 +437,9 @@ function page6(){
 }
 function answerRow(p){
   const nav=`<div class="nav"><button data-go="${p===1?'cover':'p'+(p-1)}">← 앞 장</button><button data-go="map">배치도 보기 →</button>${S.solved[p]&&p<LAST?`<button data-go="p${p+1}">다음 장 →</button>`:''}</div>`;
-  const pg=PAGES[p];
+  return answerBox(p,PAGES[p],nav);
+}
+function answerBox(p,pg,nav){
   if(S.solved[p])return `<div class="pw"><label>${pg.q||(p===2?'캐비닛 번호':'친 종')}:</label><span class="done">${S.solved[p]}</span></div>${nav}`;
   if(pg.code)return nav;
   return `<form class="pw" id="pw" autocomplete="off"><label for="ans">${pg.q}:</label><input id="ans" maxlength="20" spellcheck="false"><button class="btn primary">적기</button><div class="msg" id="msg"></div></form>${nav}`;
@@ -449,7 +458,7 @@ function pageMap(){
     return `<g class="rm ${open?'open':'locked'}${NEWROOM===id?' fresh':''}" data-r="${id}" role="button" tabindex="0" aria-label="${nm}${open?'':' (잠김)'}">
       <rect x="${x}" y="${y}" width="${w}" height="${h}" rx="2"/>
       <text class="lbl" x="${x+w/2}" y="${y+h/2+(h>50?0:4)}">${open?'':'🔒 '}${nm}</text>
-      ${id==='duty'?`<text class="sub" x="${x+w/2}" y="${y+h/2+18}">지금 여기</text>`:''}
+      ${id===(S.here||'duty')?`<text class="sub" x="${x+w/2}" y="${y+h/2+(h>50?20:16)}">지금 여기</text>`:''}
     </g>`};
   NEWROOM=null;
   return `<section class="plan turn">
@@ -497,7 +506,7 @@ const ROOMS={
     things:()=>[
       ['roll','📒','출석부',()=>({t:'출석부 · 1999년 2월 · 복식 학급',h:rollTable()})],
       ['notice','📄','벽의 공문',()=>({t:'공문',h:'<div class="paper"><b>은하분교장 본교 통합 안내</b><br>학생 수 감소에 따라 은하분교장은 <b>1999년 2월 28일</b>자로 본교에 통합됩니다. 재학생 3명은 3월 2일부터 본교로 등교합니다.</div>'})],
-      ['photo','🖼️','교감 선생님 책상',()=>({t:'교감 선생님 책상',h:'<p>먼지 앉은 커피 잔. 액자 속 사진에는 아이 셋이 종탑 앞에서 웃고 있다.</p><p>사진 뒤에 색연필 글씨: <span class="crayon">우리 셋 · 98년 가을</span></p>'})],
+      ['photo','🖼️','교감 선생님 책상',()=>({t:'교감 선생님 책상',h:'<p>먼지 앉은 커피 잔. 액자 속 사진에는 아이 셋이 종탑 앞에서 웃고 있다.</p><p>사진 뒤에 색연필 글씨: <span class="crayon">우리 셋 · 98년 가을</span></p><p>모니터 옆에 붙은 메모지: <span class="hand">캐비닛 새 번호 — 애들 이번 달 쉰 날 (안 잊게!)</span></p>'})],
     ],
     after:()=>cabinet()},
   store:{desc:'걸레 냄새가 나는 좁은 창고. 부서진 걸상이 쌓여 있고, 벽에 작은 철제 열쇠함이 달려 있다.',
@@ -526,6 +535,7 @@ const ROOMS={
   hall:{desc:'신발장이 늘어선 현관. 유리문 너머로 빗소리가 들린다.',
     things:()=>[
       ['door','🚪','현관 유리문',()=>({t:'현관 유리문',h:'<p>바깥 손잡이에 쇠사슬이 감겨 있다. 안에서는 풀 수 없다.</p>'})],
+      ['board','📌','현관 게시판',()=>({t:'현관 게시판',h:'<p>빛바랜 안내문 한 장만 압정에 꽂혀 있다.</p><div class="paper"><b>은하분교 폐교 20주년 동창 모임</b><br>2019년 2월 28일 (목) 오후 2시 · 옛 교실에서<br>— 졸업생 여러분을 기다립니다</div><p>귀퉁이에 검은 볼펜으로 작게: <span class="hand">아무도 안 옴</span></p>'})],
       ['shoes','👟','신발장',()=>({t:'신발장',h:'<p>칸마다 이름표. 「김동민」 「박미래」 「이은수」. 은수 칸에만 실내화가 그대로 있다.</p>'})],
     ]},
   class:{dark:true,desc:'복식 학급 교실. 책상이 셋뿐이다. 창으로 빗물이 흘러내린다.',
@@ -576,7 +586,7 @@ const STAR=2,TUNE=[5,3,3,4,2,2].map(n=>STAR+n-1);
 let played=[];
 function kidsNote(){
   return `<p>서랍 안에 접힌 공책 종이 한 장.</p>
-  <div class="paper" style="font-family:var(--hand);font-size:22px;line-height:1.45;color:var(--crayon)">봉수 아저씨 미안해요.<br>풍금도 불도 종도 우리가 그랬어요.<br>귀신 나오는 학교면 안 없앨까 봐서요.<br><br>우리 신호<br>동민 — 모임종<br>미래 — 끝종<br>은수 — 시작종<br>다 모이면 차례로!</div>
+  <div class="paper" style="font-family:var(--hand);font-size:22px;line-height:1.45;color:var(--crayon)">봉수 아저씨 미안해요.<br>풍금도 불도 종도 우리가 그랬어요.<br>귀신 나오는 학교면 안 없앨까 봐서요.<br><br>우리 신호<br>미래 — 끝종<br>동민 — 모임종<br>은수 — 비밀! (아저씨는 알지?)<br>다 모이면 번호 순서대로!</div>
   <p>그 아래 검은 볼펜으로 한 줄. <span class="hand">알고 있었다. — 봉수</span></p>`;
 }
 function organ(){
@@ -635,7 +645,7 @@ function finish(){
 function pageCover(){
   return `<section class="cover turn">
     <div class="label"><h2>숙직 일지</h2><div>은하국민학교 은하분교장</div><div class="who">숙직자: 한봉수</div></div>
-    <p class="story">비 오는 밤, 캠핑장으로 고칠 폐교를 보러 왔다가 숙직실에서 비를 피했다. 바람에 문이 쾅 닫히더니, 밖에서 빗장이 걸리는 소리가 났다. 창에는 쇠창살.<br>책상 위에는 표지가 눅눅한 일지 한 권. 첫 장에 이렇게 적혀 있다.</p>
+    <p class="story">비 오는 밤, 캠핑장으로 고칠 폐교를 보러 왔다가 숙직실에서 비를 피했다. 바람에 문이 쾅 닫히더니, 밖에서 빗장이 걸리는 소리가 났다. 창에는 쇠창살. 교무실로 통하는 쪽문이 하나 더 있지만 그것도 잠겨 있다.<br>책상 위에는 표지가 눅눅한 일지 한 권. 첫 장에 이렇게 적혀 있다.</p>
     <div class="rules">매일 밤 9시부터 두 시간마다 순찰하고 이상 유무를 적을 것.</div>
     <button class="btn go" id="start">${S.started?'이어서 펼치기':'일지 펼치기'}</button>
     <div class="proto">시제품 · 진행 상황은 이 브라우저에 저장돼요</div>
@@ -682,6 +692,7 @@ function render(anim){
   const f=$('#pw');if(f)f.onsubmit=e=>{e.preventDefault();check(+S.v.slice(1))};
   if(S.v==='map')pg.querySelectorAll('.rm').forEach(g=>{
     const enter=()=>{const r=g.dataset.r;
+      if(!S.rooms[r]&&r==='store'&&S.tools.key&&S.open<4){toast('창고 열쇠가 맞긴 한데, 지금 창고에 볼 일은 없다.');return}
       if(!S.rooms[r]&&r==='store'&&S.rooms.hall&&S.tools.key){openRoom('store','열쇠꾸러미의 「창고」 열쇠로 창고 문을 열었다.');render(false);return}
       if(S.rooms[r])go(r);else toast(`${ROOM_NAME[r]}. 잠겨 있다.`)};
     g.onclick=enter;g.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();enter()}}});
@@ -740,7 +751,7 @@ function showM(title,html){
   $('#mbg').classList.add('on');$('#mclose').onclick=closeM;
 }
 function openHint(){
-  const p=frontier(),pg=PAGES[p];if(!pg||!pg.hints||S.done)return;
+  const p=hintPage(),pg=PAGES[p];if(!pg||!pg.hints||S.done)return;
   const got=S.hints[p]||0;
   $('#modal').innerHTML=`<h2>${pg.tab} 힌트</h2><div class="sub">지금 풀고 있는 장의 힌트예요. 한 장씩 떼어 볼 수 있고, 세 번째 장엔 정답이 있어요.</div>
     <div class="posts">${pg.hints.map((h,i)=>i<got?`<div class="post"><small>포스트잇 ${i+1}</small>${h}</div>`
