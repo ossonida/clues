@@ -202,6 +202,10 @@ header.hud{display:flex;align-items:flex-end;gap:10px 18px;flex-wrap:wrap;margin
 .paper .verso{margin-top:10px;padding-top:8px;border-top:1px dashed #b6ab95;font-family:var(--hand);font-size:1.15em;color:#2a2422}
 .viewer{display:block;width:100%;max-width:470px;margin:10px auto 0;background:#e8e0ca;border:6px solid #2b2622}
 .crank .fr{animation:fr .16s linear infinite;opacity:0}
+@keyframes sweep{0%{transform:translate(620px,200px);opacity:0}12%{opacity:.85}62%{transform:translate(326px,270px);opacity:.85}85%{transform:translate(326px,270px);opacity:.85}100%{transform:translate(326px,270px);opacity:0}}
+@keyframes sweepStill{0%{opacity:0}20%,80%{opacity:.85}100%{opacity:0}}
+.sweep{animation:sweep 4.2s ease-in-out both;mix-blend-mode:screen}
+@media (prefers-reduced-motion:reduce){.sweep{animation:sweepStill 4.2s both;transform:translate(326px,270px)}}
 @keyframes fr{0%,24%{opacity:1}25%,100%{opacity:0}}
 @media (prefers-reduced-motion:reduce){.crank .fr{animation:none;opacity:.6}}
 </style>
@@ -271,6 +275,10 @@ const W=()=>S.w[pageNo()];
 const power=()=>!!S.w[3].brk[4];
 // 어두운 방: 손전등 둘레만 보인다. 창고는 매점 차단기(3번)를 올리면, 영사실은 전기가 들어오면, 객석은 영사기가 돌면 밝다
 // 끝마무리: 문단속 표 1~3번. 4번(걸쇠)은 나가면서 한다
+// 6장 대표 장면 시간. STILL 전까지 호출등·릴이 멈춘다. 다시 그려도 애니메이션이 이어지게 남은 시간으로 지연을 준다
+const SWEEP=4200;let STILL=0;
+const sweepSvg=()=>{const left=STILL-performance.now();if(left<=0)return '';
+  return `<rect x="96" y="14" width="348" height="120" fill="#1f1619" opacity=".45" pointer-events="none"/><g class="sweep" style="animation-delay:${-((SWEEP-left)/1000).toFixed(2)}s" pointer-events="none"><circle r="74" fill="url(#swg)"/></g>`};
 const SHUT=['영사기 끄기','호출등 끄기','차단기는 로비만 남기기'];
 const shut=()=>[!S.w[5].run,S.w[6].call===false,S.w[3].brk.join('')==='10000000'];
 const dark=p=>p===3?!S.w[3].brk[2]:p===5?!power():p===6?!(S.w[5].run&&power()):true;
@@ -491,7 +499,7 @@ const SC={
     const glow=on&&w.call!==false?`<g data-t="signal" data-glow="1"><rect x="452" y="30" width="78" height="50" rx="5" fill="#151215" stroke="#5a5254" stroke-width="2"/><path d="M462 30 Q440 0 420 12" stroke="#3a3436" stroke-width="2" fill="none"/>
       <g id="play" opacity=".15"><path d="M466 44 L484 55 L466 66 Z" fill="#7fd6ff"/></g>
       <g id="bulb" opacity=".15"><circle cx="508" cy="55" r="15" fill="#ffd257" opacity=".35"/><circle cx="508" cy="55" r="9" fill="#ffd257"/></g></g>`:'';
-    return {base,glow};
+    return {base,glow:glow+(on?sweepSvg():'')};
   },
   7:w=>{
     const up=w.pulled,all=up.length===4;
@@ -538,7 +546,7 @@ const itemSvg=([id,x,y])=>`<g class="item" data-item="${id}" transform="translat
 function sceneSvg(p){
   const w=S.w[p],D=SC[p](w),dk=dark(p),tor=!!S.bag.torch;
   return `<svg id="scene" class="scene${dk&&tor?' dk':''}${S.hold?' h-'+S.hold:''}" viewBox="0 0 ${SW} ${SH}" role="img" aria-label="${ROOM[p]}">
-    <defs><radialGradient id="tg"><stop offset="0" stop-color="#000"/><stop offset=".55" stop-color="#000"/><stop offset="1" stop-color="#fff"/></radialGradient>
+    <defs><radialGradient id="swg"><stop offset="0" stop-color="#fff8dc" stop-opacity=".9"/><stop offset=".55" stop-color="#fff2c0" stop-opacity=".45"/><stop offset="1" stop-color="#fff2c0" stop-opacity="0"/></radialGradient><radialGradient id="tg"><stop offset="0" stop-color="#000"/><stop offset=".55" stop-color="#000"/><stop offset="1" stop-color="#fff"/></radialGradient>
     <mask id="tm" maskUnits="userSpaceOnUse" x="0" y="0" width="${SW}" height="${SH}"><rect width="${SW}" height="${SH}" fill="#fff"/>${tor?`<circle id="tc" cx="${TX}" cy="${TY}" r="118" fill="url(#tg)"/>`:''}</mask></defs>
     ${D.base}
     ${dk?`<rect width="${SW}" height="${SH}" fill="#040406" opacity=".96" mask="url(#tm)" pointer-events="none"/>`:''}
@@ -775,7 +783,9 @@ const ACT={
   seat:b=>{const w=W(),r=+b.dataset.r,s=+b.dataset.s,k=r*12+s-1;
     if(r===5&&s===3){toast('스프링이 나가서 내려앉은 의자다. 누가 앉았다 간 게 아니다.');return}
     if(w.fold.includes(k))return;w.fold.push(k);
-    if(r===4&&s===7){S.bag.skey=true;NEWSLOT='skey';save();refresh();toast('의자를 젖히자 밑판에 열쇠 하나가 테이프로 붙어 있다. 「무대 뒤」.');return}
+    if(r===4&&s===7){S.bag.skey=true;NEWSLOT='skey';STILL=performance.now()+SWEEP;save();refresh();toast('의자를 젖히자 밑판에 열쇠 하나가 테이프로 붙어 있다. 「무대 뒤」.');
+      setTimeout(()=>{if(S.v==='p6')refresh()},SWEEP+50);
+      setTimeout(()=>toast('스크린이 멈칫했다. 둥근 불빛 하나가 객석을 훑고 지나가 이 자리에서 멈췄다. 손전등을 쥔 손을 내려다보았다. 불빛은 바닥을 향해 있었다.'),2600);return}
     save();refresh();
     toast(r===6&&s===5?'의자 밑에 1998년 영화표 반쪽이 끼어 있다. 여기는 아닌가 보다. 신호를 어디서부터 읽었더라?'
       :r===9&&s===7?'의자 밑에 말라붙은 껌 종이뿐이다. 줄을 어느 쪽부터 셌더라?'
@@ -850,6 +860,7 @@ function bindDev(){
 // ── 6장 호출등: ▶, 짧게 ×5, 쉼, 길게, 짧게 ×2, 긴 쉼 (11초마다 되풀이) ──
 const ON=[[1.6,1.9],[2.3,2.6],[3.0,3.3],[3.7,4.0],[4.4,4.7],[6.0,7.2],[7.6,7.9],[8.3,8.6]];
 setInterval(()=>{const b=document.getElementById('bulb');if(!b)return;const t=(performance.now()/1000)%11;
+  if(performance.now()<STILL){b.setAttribute('opacity',.15);const pl=document.getElementById('play');if(pl)pl.setAttribute('opacity',.15);return}
   b.setAttribute('opacity',ON.some(([a,z])=>t>=a&&t<z)?1:.15);const pl=document.getElementById('play');if(pl)pl.setAttribute('opacity',t<.8?1:.15)},50);
 
 // ── 탭 · 소지품 ──────────────────────────────
@@ -920,7 +931,8 @@ function pageEnd(){
     <div class="seal">${grade}</div>
     <dl><div><dt>걸린 시간</dt><dd>${fmt(S.ms)}</dd></div><div><dt>힌트</dt><dd>${h}장</dd></div></dl>
     <p>골목으로 나와 걸쇠를 걸었다. 돌아보니 로비 전광판 하나만 켜져 있었다. 표에 적힌 그대로다. 비는 그쳐 있었다.</p>
-    <p>집에 와서 휴대폰을 충전했다. 남은 영상은 로비 바닥을 찍다 끊긴 4초짜리 하나였다.</p>
+    <p>집에 와서 휴대폰을 충전했다. 남은 영상은 로비 바닥을 찍다 끊긴 4초짜리 하나였다. 셋째 초쯤, 둥근 불빛 하나가 바닥을 천천히 쓸고 지나간다. 객석에서 본 것과 같은 크기, 같은 빛이다.</p>
+    <p>그때 내 손에는 아직 손전등이 없었다.</p>
     <p>다음 날 아침, 동네 단톡방에 글이 올라왔다. 「어젯밤에도 극장에 귀신불 봤다는 사람 있음. 마지막까지 있네.」</p>
     <p>창밖에서 굴착기가 별빛극장 간판을 뜯고 있었다.</p>
     <div class="row"><button class="btn" id="again">처음부터 다시</button><a class="btn primary" href="../../" style="text-decoration:none">사건 대장으로</a></div>
