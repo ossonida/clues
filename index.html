@@ -77,6 +77,9 @@ a.note:hover .open{color:var(--stamp);border-color:var(--stamp)}
 .note.n3{transform:rotate(-.7deg)}
 .note.n3 h2{max-width:calc(100% - 120px)}
 .note.n3 .photo{width:124px}
+.note.n4{transform:rotate(1deg)}
+.note.n4 h2{max-width:calc(100% - 120px)}
+.note.n4 .photo{width:124px}
 .note.blank{background:#fde98a;transform:rotate(2deg);padding:22px 22px 26px;min-height:190px;box-shadow:0 1px 1px rgba(0,0,0,.1),0 10px 20px -12px rgba(40,30,0,.5)}
 .note.blank::before{display:none}
 .note.blank .no{color:#8a7a3a}
@@ -209,6 +212,41 @@ footer{padding-top:var(--lh);padding-bottom:var(--lh);font-family:var(--hand);fo
         <span class="open" data-en="Open the log →">일지 펼치기 →</span>
         <div class="stamp" data-en="ON DUTY">숙직 중</div>
       </a>
+      <a class="note n4" href="notes/04/">
+        <span class="tape"></span>
+        <div class="photo">
+          <svg class="clip" viewBox="0 0 16 48" aria-hidden="true"><path d="M11 14 V38 a4 4 0 0 1 -8 0 V8 a5.5 5.5 0 0 1 11 0 V34 a2.5 2.5 0 0 1 -5 0 V14" fill="none" stroke="#8d969c" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <svg viewBox="0 0 320 240" aria-hidden="true">
+            <defs><pattern id="n4grid" width="12" height="12" patternUnits="userSpaceOnUse"><path d="M12 0 H0 V12" fill="none" stroke="#b9d8bd" stroke-width="1"/></pattern></defs>
+            <rect width="320" height="240" fill="#3f6b52"/>
+            <rect x="64" y="30" width="190" height="180" fill="#fbfdf5" transform="rotate(-4 159 120)"/>
+            <rect x="64" y="30" width="190" height="180" fill="url(#n4grid)" transform="rotate(-4 159 120)"/>
+            <g fill="none" stroke="#4a4a4a" stroke-width="3" stroke-linecap="round" transform="rotate(-4 159 120)">
+              <path d="M128 112 C120 82 124 66 131 68 C138 70 139 92 137 110"/><path d="M146 110 C146 88 152 70 159 73 C166 77 157 98 152 112"/>
+              <ellipse cx="141" cy="124" rx="20" ry="16"/><ellipse cx="141" cy="162" rx="18" ry="20"/>
+              <circle cx="134" cy="122" r="2" fill="#4a4a4a"/><circle cx="148" cy="122" r="2" fill="#4a4a4a"/>
+            </g>
+            <g fill="none" stroke="#2a4fb0" stroke-width="3" stroke-linecap="round" transform="rotate(-4 159 120)">
+              <circle cx="212" cy="88" r="16"/><path d="M224 100 L240 116"/>
+              <path d="M196 160 L206 178 L224 150"/>
+            </g>
+            <rect x="214" y="176" width="78" height="12" rx="2" fill="#e8b84a" transform="rotate(-24 253 182)"/>
+            <path d="M290 158 l14 -2 l-10 11 z" fill="#d9cfb2" transform="rotate(-24 253 182)"/>
+          </svg>
+          <span class="cap" data-en="margin doodles, 2009">연습장 귀퉁이 낙서</span>
+        </div>
+        <span class="no">NOTE 04</span>
+        <h2 data-en-html="The Doodle<br>Notebook">깡총이<br>연습장</h2>
+        <div class="sub" data-en="A rabbit doodle, crossing the notebook page by page">연습장 귀퉁이 토끼 낙서, 한 장씩 건너가기</div>
+        <dl class="fields">
+          <div><dt data-en="Genre">장르</dt><dd data-en="Escape room">방탈출</dd></div>
+          <div><dt data-en="Difficulty">난이도</dt><dd data-en="●●○○○ Easy">●●○○○ 쉬움</dd></div>
+          <div><dt data-en="Players">인원</dt><dd data-en="1+">1인 이상</dd></div>
+          <div><dt data-en="Play time">소요 시간</dt><dd data-en="10–15 min · Prototype · Korean only">10~15분 · 시제품</dd></div>
+        </dl>
+        <span class="open" data-en="Open the notebook →">연습장 펼치기 →</span>
+        <div class="stamp" data-en="DRAFT">시제품</div>
+      </a>
     </section>
 
     <section class="ledger align">
@@ -223,6 +261,8 @@ footer{padding-top:var(--lh);padding-bottom:var(--lh);font-family:var(--hand);fo
             <td class="rc"><button class="rec" data-note="note02" aria-pressed="false"><span class="ico">★</span><span class="lbl">추천</span><b>·</b></button></td></tr>
           <tr><td class="n">NOTE 03</td><td><a href="notes/03/" data-en="The Night-Duty Log">은하분교 숙직 일지</a></td><td class="g" data-en="Escape room">방탈출</td><td class="lv" title="3/5"><span class="dots">●●●○○</span> <span data-en="Medium">보통</span></td><td data-en="1+">1인~</td><td data-en="30–40 min">30~40분</td>
             <td class="rc"><button class="rec" data-note="note03" aria-pressed="false"><span class="ico">★</span><span class="lbl">추천</span><b>·</b></button></td></tr>
+          <tr><td class="n">NOTE 04</td><td><a href="notes/04/" data-en="The Doodle Notebook">깡총이 연습장</a></td><td class="g" data-en="Escape room">방탈출</td><td class="lv" title="2/5"><span class="dots">●●○○○</span> <span data-en="Easy">쉬움</span></td><td data-en="1+">1인~</td><td data-en="10–15 min">10~15분</td>
+            <td class="rc"><button class="rec" data-note="note04" aria-pressed="false"><span class="ico">★</span><span class="lbl">추천</span><b>·</b></button></td></tr>
         </tbody>
       </table>
       </div>
@@ -275,7 +315,7 @@ async function connect(){
   return fb;
 }
 // 화면에 보이는 추천 수의 기본값. 실제 누른 수(Firestore count)에 더해서 보여 준다. DB에는 안 쓴다.
-const SEED = {note03: 47, note01: 39, note02: 32};
+const SEED = {note03: 47, note01: 39, note04: 35, note02: 32};
 const mine = note => { try { return localStorage.getItem('hn.rec.'+note) === '1'; } catch { return false; } };
 const setMine = (note, on) => { try { on ? localStorage.setItem('hn.rec.'+note, '1') : localStorage.removeItem('hn.rec.'+note); } catch {} };
 function paint(btn, count){
