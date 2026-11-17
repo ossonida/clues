@@ -273,11 +273,11 @@ const PAGES=[
    say:{'난로':'그건 이상 없던 줄이다.','책상':'책상은 아이들도 뒤진다고 했다.','풍금':'그건 이상 있던 일. 숨긴 곳은 따로 있다.','종탑':'그건 이상 있던 곳. 숨긴 곳은 따로 있다.'},
    hints:['“이상 있음”이라고 적힌 줄만 다시 보세요.','이상 있는 줄의 비고, 그 첫 글자를 위에서부터 차례로 읽어 보세요.','시·계·뒤 → 정답: 시계뒤. 배치도에서 숙직실 벽시계를 살펴보세요.']},
   {tab:'2장', code:'316',
-   hints:['캐비닛은 교무실에 있어요. 번호를 적어 둔 메모가 교무실 어딘가에 있어요.','교감 선생님 책상 메모: "애들 이번 달 쉰 날". 출석부에서 동·미·은 각자의 결석(/)을 세어 보세요. 지각(△)은 쉰 날이 아니에요.','동민 3 · 미래 1 · 은수 6 → 캐비닛 번호 316']},
+   hints:['캐비닛은 교무실에 있어요. 번호를 적어 둔 메모가 교무실 메모지 묶음에 있었는데, 그 장은 뜯겨 나갔어요. 숙직실 책상도 다시 보세요.','숙직실에서 챙긴 연필을 소지품에서 눌러 든 채로 메모지 묶음을 누르면 눌린 글씨 "애들 이번 달 쉰 날"이 떠올라요. 출석부에서 동·미·은 각자의 결석(/)을 세어 보세요. 지각(△)은 쉰 날이 아니에요.','동민 3 · 미래 1 · 은수 6 → 캐비닛 번호 316']},
   {tab:'3장', q:'확인란', ans:'종탑', alt:['종','종루','뒤뜰종탑','종탑이요','뒤뜰의종탑','종치는탑'],
    near:['탑','뒤뜰','종각'],
    say:{'은수자리에서창밖을봐':'칠판이 시킨 대로, 창밖에 뭐가 보이는지 직접 가서 보자.','창밖':'창밖에 뭐가 보이는지 직접 가서 보자.','창밖을봐':'창밖에 뭐가 보이는지 직접 가서 보자.','은수자리':'그 자리에서 창밖에 뭐가 보이는지 보자.','철봉':'그건 1번 자리 창밖이다.','운동장':'그건 1번 자리 창밖이다.','게시판':'그건 2번 자리에서 보이는 거다.','복도':'그건 2번 자리에서 보이는 거다.','은수':'은수 자리에서 보이는 걸 적자.','창가뒷자리':'자리 말고, 그 창밖에 보이는 것.','3번':'자리 말고, 그 창밖에 보이는 것.'},
-   hints:['정전이라 일지가 안 보여요. 교무실 캐비닛에서 꺼낸 손전등을 켜 보세요.','일지에 나온 교실 칠판을 손전등으로 직접 보세요. 은수가 몇 번인지는 교무실 출석부, 몇 번 자리가 어디인지는 교탁 자리표에 있어요.','은수는 3번, 창가 뒷자리. 그 책상에서 창밖을 보면 → 정답: 종탑']},
+   hints:['정전이라 일지가 안 보여요. 교무실 캐비닛에서 꺼낸 손전등을 켜 보세요.','일지에 나온 교실 칠판을 손전등으로 직접 보세요. 은수가 몇 번인지는 교무실 출석부, 몇 번 자리가 어디인지는 교탁 자리표에 있어요. 자리표는 연필 낙서로 덮여 있으니 교무실 담임 책상에서 챙긴 지우개를 든 채로 누르세요.','은수는 3번, 창가 뒷자리. 그 책상에서 창밖을 보면 → 정답: 종탑']},
   {tab:'4장', q:'확인란', ans:'아이들', alt:['애들','아이들셋','애들셋','학생들','동민미래은수','동민이미래은수','동민이미래은수','김동민박미래이은수','우리셋','세명','셋','아이들이'],
    near:['동민','미래','은수','동민미래','아이'],
    say:{'은수':'은수 혼자가 아니다. 쪽지를 다시 보자.','동민':'동민이 혼자가 아니다. 쪽지를 다시 보자.','미래':'미래 혼자가 아니다. 쪽지를 다시 보자.','귀신':'귀신이 서랍에 쪽지를 남기진 않는다.','한봉수':'아저씨는 듣기만 했다.','봉수':'아저씨는 듣기만 했다.'},
@@ -293,7 +293,7 @@ const ROOM_NAME={duty:'숙직실',office:'교무실',class:'교실',store:'창�
 
 // ── 상태 ──────────────────────────────
 const fresh=()=>({v:'cover',open:0,solved:{},hints:{},wrong:{},ms:0,started:false,done:false,
-  rooms:{duty:true,office:false,class:false,store:false,music:false,bell:false,hall:false},tools:{key:false,torch:false},torch:false,cab:[0,0,0],drawer:false,next:''});
+  rooms:{duty:true,office:false,class:false,store:false,music:false,bell:false,hall:false},tools:{key:false,torch:false,pencil:false,eraser:false},torch:false,held:null,rubbed:false,seatClean:false,cab:[0,0,0],drawer:false,next:''});
 let S=fresh();
 try{const d=JSON.parse(localStorage.getItem(SAVE_KEY)||'null');if(d)S={...fresh(),...d,rooms:{...fresh().rooms,...(d.rooms||{})},tools:{...fresh().tools,...(d.tools||{})}}}catch{}
 const save=()=>{try{localStorage.setItem(SAVE_KEY,JSON.stringify(S))}catch{}};
@@ -341,13 +341,18 @@ function renderTabs(){
 function renderTools(){
   const el=$('#tools');
   if(!S.started||S.v==='cover'||S.v==='end'){el.innerHTML='';return}
-  const items=[['key','🔑 열쇠꾸러미',S.tools.key],['torch',S.torch?'🔦 손전등 켜짐':'🔦 손전등',S.tools.torch]].filter(t=>t[2]);
+  // 연필·지우개는 눌러서 손에 든다 (든 채로 물건을 누르면 그 위에 쓴다)
+  const items=[['key','🔑 열쇠꾸러미',S.tools.key],['torch',S.torch?'🔦 손전등 켜짐':'🔦 손전등',S.tools.torch],
+    ['pencil',S.held==='pencil'?'✏️ 연필 든 채':'✏️ 연필',S.tools.pencil],['eraser',S.held==='eraser'?'🧽 지우개 든 채':'🧽 지우개',S.tools.eraser]].filter(t=>t[2]);
+  const on=id=>id==='torch'?S.torch:S.held===id;
   el.innerHTML=items.length?'<span>소지품</span>'+items.map(([id,label])=>
-    `<button class="tool${id==='torch'&&S.torch?' lit':''}${NEWTOOL===id?' new':''}" data-t="${id}"${id==='torch'?` aria-pressed="${S.torch}"`:''}>${label}</button>`).join(''):'';
+    `<button class="tool${on(id)?' lit':''}${NEWTOOL===id?' new':''}" data-t="${id}"${id!=='key'?` aria-pressed="${on(id)}"`:''}>${label}</button>`).join(''):'';
   NEWTOOL=null;
   el.querySelectorAll('.tool').forEach(b=>b.onclick=()=>{
-    if(b.dataset.t==='key')toast('열쇠꾸러미: 「숙직실」 「교무실」 「창고」 표가 붙은 열쇠 세 개.');
-    else{S.torch=!S.torch;save();renderTools();applyTorch()}
+    const t=b.dataset.t;
+    if(t==='key')toast('열쇠꾸러미: 「숙직실」 「교무실」 「창고」 표가 붙은 열쇠 세 개.');
+    else if(t==='torch'){S.torch=!S.torch;save();renderTools();applyTorch()}
+    else{S.held=S.held===t?null:t;save();renderTools()}
   });
 }
 function go(v){if(!canView(v))return;S.v=v;if(isRoom(v))S.here=v;save();render(true);scrollTo({top:0,behavior:'smooth'})}
@@ -499,14 +504,24 @@ const ROOMS={
           return {t:'교무실 쪽문',h:'<p>열쇠꾸러미의 「교무실」 열쇠가 맞는다. 철컥, 쪽문이 열렸다.</p>'}}
         return {t:'교무실 쪽문',h:'<p>교무실로 통하는 쪽문. 잠겨 있다. 열쇠 구멍이 있다.</p>'}}],
       ['door','🚧','복도 쪽 문',()=>({t:'복도 쪽 문',h:'<p>밖에서 빗장이 걸렸다. 어깨로 밀어 봐도 꿈쩍도 안 한다.</p>'})],
-      ['desk','🗄️','책상',()=>({t:'책상',h:'<p>일지가 놓여 있던 책상. 서랍에는 볼펜 두 자루와 1999년 달력.</p><p>달력 2월 28일에 빨간 동그라미가 쳐져 있다. 옆에 작게 <span class="hand">마지막 날</span>.</p>'})],
+      ['desk','🗄️','책상',()=>{
+        const first=!S.tools.pencil;if(first)gain('pencil','책상 서랍에서 몽당연필을 챙겼다.');
+        return {t:'책상',h:`<p>일지가 놓여 있던 책상. 서랍에는 1999년 달력${first?'과 <b>몽당연필</b> 한 자루. 연필은 챙겼다':''}.</p><p>달력 2월 28일에 빨간 동그라미가 쳐져 있다. 옆에 작게 <span class="hand">마지막 날</span>.</p>`}}],
       ['stove','🔥','석유난로',()=>({t:'석유난로',h:'<p>기름통이 비었다. 그런데 난로 위가 아직 미지근하다.</p>'})],
     ]},
   office:{desc:'책상 네 개 가운데 하나만 정리돼 있다. 벽에는 공문 한 장이 압정으로 꽂혀 있고, 구석에 회색 철제 캐비닛이 서 있다.',
     things:()=>[
       ['roll','📒','출석부',()=>({t:'출석부 · 1999년 2월 · 복식 학급',h:rollTable()})],
       ['notice','📄','벽의 공문',()=>({t:'공문',h:'<div class="paper"><b>은하분교장 본교 통합 안내</b><br>학생 수 감소에 따라 은하분교장은 <b>1999년 2월 28일</b>자로 본교에 통합됩니다. 재학생 3명은 3월 2일부터 본교로 등교합니다.</div>'})],
-      ['photo','🖼️','교감 선생님 책상',()=>({t:'교감 선생님 책상',h:'<p>먼지 앉은 커피 잔. 액자 속 사진에는 아이 셋이 종탑 앞에서 웃고 있다.</p><p>사진 뒤에 색연필 글씨: <span class="crayon">우리 셋 · 98년 가을</span></p><p>모니터 옆에 붙은 메모지: <span class="hand">캐비닛 새 번호 — 애들 이번 달 쉰 날 (안 잊게!)</span></p>'})],
+      ['photo','🖼️','교감 선생님 책상',()=>({t:'교감 선생님 책상',h:'<p>먼지 앉은 커피 잔. 액자 속 사진에는 아이 셋이 종탑 앞에서 웃고 있다.</p><p>사진 뒤에 색연필 글씨: <span class="crayon">우리 셋 · 98년 가을</span></p><p>모니터 옆에 메모지 묶음이 있다.</p>'})],
+      // 맨 윗장은 뜯겨 나갔다. 연필로 아랫장을 살살 칠하면 눌린 글씨가 하얗게 떠오른다
+      ['pad','📝','메모지 묶음',()=>{
+        if(!S.rubbed&&S.held==='pencil'){S.rubbed=true;save()}
+        if(S.rubbed)return {t:'메모지 묶음',h:'<p>연필로 살살 칠하자 눌린 자국이 하얗게 떠오른다.</p><div class="paper" style="background:#5d5d63;color:#f4f1e8;font-family:var(--hand);font-size:24px;line-height:1.4">캐비닛 새 번호 — 애들 이번 달 쉰 날 (안 잊게!)</div>'};
+        return {t:'메모지 묶음',h:'<p>맨 윗장이 뜯겨 나갔다. 남은 장은 비어 있는데, 비스듬히 보니 볼펜으로 꾹 눌러 쓴 자국이 패어 있다.</p>'}}],
+      ['tdesk','🗂️','담임 선생님 책상',()=>{
+        const first=!S.tools.eraser;if(first)gain('eraser','서랍에서 지우개를 챙겼다.');
+        return {t:'담임 선생님 책상',h:`<p>채점하다 만 받아쓰기 시험지 세 장. 빨간 색연필 동그라미.</p><p>서랍에는 분필 몇 토막${first?'과 <b>지우개</b> 하나. 지우개는 챙겼다':''}.</p>`}}],
     ],
     after:()=>cabinet()},
   store:{desc:'걸레 냄새가 나는 좁은 창고. 부서진 걸상이 쌓여 있고, 벽에 작은 철제 열쇠함이 달려 있다.',
@@ -541,8 +556,12 @@ const ROOMS={
   class:{dark:true,desc:'복식 학급 교실. 책상이 셋뿐이다. 창으로 빗물이 흘러내린다.',
     things:()=>[
       ['board','🟩','칠판',()=>({t:'칠판',h:'<p>지운 자국 사이로 희미한 분필 글씨가 남아 있다. 손전등을 비스듬히 대니 겨우 읽힌다.</p><div class="faint">은수 자리에서 창밖을 봐</div>'})],
-      ['podium','📋','교탁',()=>({t:'교탁 위 자리표',h:`<p>교탁 위에 자리표가 테이프로 붙어 있다. 이름 없이 번호만.</p>
-        <div class="seats"><div class="front">칠판 · 교탁</div><div class="win">창문</div><b>1</b><b>2</b><b>3</b><i></i></div>`})],
+      // 아이들이 연필로 박박 덧칠해 놓은 자리표. 지우개로 지워야 번호가 보인다
+      ['podium','📋','교탁',()=>{
+        if(!S.seatClean&&S.held==='eraser'){S.seatClean=true;save()}
+        const n=S.seatClean?['1','2','3']:['▒','▒','▒'];
+        return {t:'교탁 위 자리표',h:`<p>${S.seatClean?'연필 낙서를 지우자 번호가 드러난다. 이름 없이 번호만.':'교탁 위에 자리표가 테이프로 붙어 있다. 누가 연필로 박박 덧칠해서 칸마다 시꺼멓다. 귀퉁이에 작게 <span class="crayon">비밀!</span>'}</p>
+        <div class="seats"><div class="front">칠판 · 교탁</div><div class="win">창문</div><b>${n[0]}</b><b>${n[1]}</b><b>${n[2]}</b><i></i></div>`}}],
       ['d1','🪑','창가 앞 책상',()=>({t:'창가 앞 책상',h:'<p>창밖으로 운동장 철봉이 보인다. 빗물이 고였다.</p>'})],
       ['d2','🪑','복도 쪽 책상',()=>({t:'복도 쪽 책상',h:'<p>창이 멀다. 고개를 돌리면 복도 게시판만 보인다.</p>'})],
       ['d3','🪑','창가 뒤 책상',()=>({t:'창가 뒤 책상',h:'<p>창밖, 뒤뜰 너머로 <b>종탑</b>이 검게 서 있다.</p><p>책상 귀퉁이에 색연필로 그린 작은 종 그림.</p>'})],
