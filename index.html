@@ -103,6 +103,10 @@ td:nth-child(2){word-break:keep-all}
 td.lv,td.g{font-size:13px}
 td.lv .dots{color:var(--stamp);letter-spacing:1px;font-size:11px}
 td.rc{width:1%}
+td.me{font-family:var(--mono);font-size:12.5px;color:var(--dim)}
+td.me .ok{color:#2b7a52;font-weight:700}
+td.me .ng{color:var(--stamp);font-weight:700}
+td.me .ing{color:#8a6d1f}
 .rec{font:inherit;font-family:var(--mono);font-size:13px;display:inline-flex;align-items:center;gap:6px;background:none;border:1.5px solid var(--stamp);color:var(--stamp);padding:1px 9px;cursor:pointer;transform:rotate(-2deg);transition:transform .15s}
 .rec:hover{transform:rotate(0) scale(1.04)}
 .rec .ico{font-size:14px;line-height:1}
@@ -241,9 +245,9 @@ footer{padding-top:var(--lh);padding-bottom:var(--lh);font-family:var(--hand);fo
         <div class="sub" data-en="A rabbit doodle, crossing the notebook page by page">연습장 귀퉁이 토끼 낙서, 한 장씩 건너가기</div>
         <dl class="fields">
           <div><dt data-en="Genre">장르</dt><dd data-en="Escape room">방탈출</dd></div>
-          <div><dt data-en="Difficulty">난이도</dt><dd data-en="●●○○○ Easy">●●○○○ 쉬움</dd></div>
+          <div><dt data-en="Difficulty">난이도</dt><dd data-en="●●●○○ Medium">●●●○○ 보통</dd></div>
           <div><dt data-en="Players">인원</dt><dd data-en="1+">1인 이상</dd></div>
-          <div><dt data-en="Play time">소요 시간</dt><dd data-en="10–15 min · Prototype · Korean only">10~15분 · 시제품</dd></div>
+          <div><dt data-en="Play time">소요 시간</dt><dd data-en="25–35 min · Korean only">25~35분</dd></div>
         </dl>
         <span class="open" data-en="Open the notebook →">연습장 펼치기 →</span>
         <div class="stamp" data-en="DRAFT">시제품</div>
@@ -254,16 +258,16 @@ footer{padding-top:var(--lh);padding-bottom:var(--lh);font-family:var(--hand);fo
       <h3><span data-en="Case log">사건 대장</span></h3>
       <div class="tbl">
       <table>
-        <thead><tr><th data-en="No.">번호</th><th data-en="Case">사건명</th><th data-en="Genre">장르</th><th data-en="Difficulty">난이도</th><th data-en="Players">인원</th><th data-en="Time">시간</th><th data-en="Recommend">추천</th></tr></thead>
+        <thead><tr><th data-en="No.">번호</th><th data-en="Case">사건명</th><th data-en="Genre">장르</th><th data-en="Difficulty">난이도</th><th data-en="Players">인원</th><th data-en="Time">시간</th><th data-en="My record">내 기록</th><th data-en="Recommend">추천</th></tr></thead>
         <tbody>
           <tr><td class="n">NOTE 01</td><td><a href="notes/01/" data-en="The Funny Board Case">퍼니보드 사건 파일</a></td><td class="g" data-en="Cozy mystery">코지 미스터리</td><td class="lv" title="2/5"><span class="dots">●●○○○</span> <span data-en="Easy">쉬움</span></td><td data-en="1+">1인~</td><td data-en="60–90 min">60~90분</td>
-            <td class="rc"><button class="rec" data-note="note01" aria-pressed="false"><span class="ico">★</span><span class="lbl">추천</span><b>·</b></button></td></tr>
+            <td class="me" data-rec="note01">—</td><td class="rc"><button class="rec" data-note="note01" aria-pressed="false"><span class="ico">★</span><span class="lbl">추천</span><b>·</b></button></td></tr>
           <tr><td class="n">NOTE 02</td><td><a href="notes/02/" data-en="The Club Diary">문예부 교환일기</a></td><td class="g" data-en="Escape room">방탈출</td><td class="lv" title="2/5"><span class="dots">●●○○○</span> <span data-en="Easy">쉬움</span></td><td data-en="1+">1인~</td><td data-en="20–30 min">20~30분</td>
-            <td class="rc"><button class="rec" data-note="note02" aria-pressed="false"><span class="ico">★</span><span class="lbl">추천</span><b>·</b></button></td></tr>
+            <td class="me" data-rec="note02">—</td><td class="rc"><button class="rec" data-note="note02" aria-pressed="false"><span class="ico">★</span><span class="lbl">추천</span><b>·</b></button></td></tr>
           <tr><td class="n">NOTE 03</td><td><a href="notes/03/" data-en="The Night-Duty Log">은하분교 숙직 일지</a></td><td class="g" data-en="Escape room">방탈출</td><td class="lv" title="3/5"><span class="dots">●●●○○</span> <span data-en="Medium">보통</span></td><td data-en="1+">1인~</td><td data-en="30–40 min">30~40분</td>
-            <td class="rc"><button class="rec" data-note="note03" aria-pressed="false"><span class="ico">★</span><span class="lbl">추천</span><b>·</b></button></td></tr>
-          <tr><td class="n">NOTE 04</td><td><a href="notes/04/" data-en="The Doodle Notebook">깡총이 연습장</a></td><td class="g" data-en="Escape room">방탈출</td><td class="lv" title="2/5"><span class="dots">●●○○○</span> <span data-en="Easy">쉬움</span></td><td data-en="1+">1인~</td><td data-en="10–15 min">10~15분</td>
-            <td class="rc"><button class="rec" data-note="note04" aria-pressed="false"><span class="ico">★</span><span class="lbl">추천</span><b>·</b></button></td></tr>
+            <td class="me" data-rec="note03">—</td><td class="rc"><button class="rec" data-note="note03" aria-pressed="false"><span class="ico">★</span><span class="lbl">추천</span><b>·</b></button></td></tr>
+          <tr><td class="n">NOTE 04</td><td><a href="notes/04/" data-en="The Doodle Notebook">깡총이 연습장</a></td><td class="g" data-en="Escape room">방탈출</td><td class="lv" title="3/5"><span class="dots">●●●○○</span> <span data-en="Medium">보통</span></td><td data-en="1+">1인~</td><td data-en="25–35 min">25~35분</td>
+            <td class="me" data-rec="note04">—</td><td class="rc"><button class="rec" data-note="note04" aria-pressed="false"><span class="ico">★</span><span class="lbl">추천</span><b>·</b></button></td></tr>
         </tbody>
       </table>
       </div>
@@ -292,6 +296,21 @@ function alignRules(){
 }
 alignRules();addEventListener('resize',alignRules);addEventListener('load',alignRules);
 if(document.fonts)document.fonts.ready.then(alignRules);
+// 내 기록: 사건을 끝내면 각 노트가 hn.clear.noteNN에 남긴다. 아직 안 끝났으면 진행 저장을 보고 "하는 중".
+(function(){
+  const en=window.HN_LANG==='en';
+  const SAVES={note01:'hn.note01.save.v1',note02:'hn.note02.v2',note03:'hn.note03.v2',note04:'hn.note04.v4'};
+  const fmt=ms=>{const s=Math.round(ms/1000),h=Math.floor(s/3600),m=Math.floor(s/60)%60;return h?`${h}:${String(m).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`:`${m}:${String(s%60).padStart(2,'0')}`};
+  const get=k=>{try{return JSON.parse(localStorage.getItem(k)||'null')}catch{return null}};
+  document.querySelectorAll('td.me').forEach(td=>{
+    const n=td.dataset.rec,r=get('hn.clear.'+n),s=get(SAVES[n]);
+    const playing=s&&(s.startedAt||(s.started&&!s.done));
+    if(r&&r.ok)td.innerHTML=`<span class="ok">✓ ${en?'Cleared':'깸'}</span> ${r.best!=null?fmt(r.best):''}`;
+    else if(r)td.innerHTML=`<span class="ng">✗ ${en?'Failed':'못 깸'}</span> ${r.last!=null?fmt(r.last):''}`;
+    if(playing&&!(r&&r.ok))td.innerHTML=`<span class="ing">${en?'In progress':'하는 중'}</span> ${s.ms?fmt(s.ms):''}`;
+    else if(playing)td.title=en?'Replaying':'다시 하는 중';
+  });
+})();
 document.querySelectorAll('.langsw button').forEach(b=>{b.classList.toggle('on',b.dataset.l===window.HN_LANG);b.onclick=()=>{if(b.dataset.l!==window.HN_LANG)hnSetLang(b.dataset.l)}});
 </script>
 <script type="module">

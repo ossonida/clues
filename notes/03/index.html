@@ -654,8 +654,10 @@ function bindRope(){
     },1500);
   };
 }
+// 사건 대장에 보일 내 기록 (hn.clear.noteNN: 깼는지, 가장 빠른 시간, 마지막 시간)
+function record(ms,ok=true){try{const k='hn.clear.note03',p=JSON.parse(localStorage.getItem(k)||'{}');localStorage.setItem(k,JSON.stringify({ok:ok||!!p.ok,best:ok?Math.min(p.best||Infinity,ms):p.best||null,last:ms,at:Date.now()}))}catch{}}
 function finish(){
-  S.solved[6]='4-2-3';S.done=true;S.open=LAST;save();
+  S.solved[6]='4-2-3';S.done=true;S.open=LAST;save();record(S.ms);
   $('#ropeMsg').textContent='종소리가 멎자, 빗속에서 불빛 하나가 다가온다.';
   $('#pullRope').disabled=true;
   setTimeout(()=>{S.v='end';save();render(true)},2200);

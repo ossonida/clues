@@ -78,6 +78,8 @@ header.hud{display:flex;align-items:flex-end;gap:10px 18px;flex-wrap:wrap;margin
 .fold.ready path:nth-child(2){fill:#fff3a0;stroke:#e0b100;stroke-width:3}
 .drop{animation:drop 2s linear infinite}
 @keyframes drop{from{transform:translateY(-10px);opacity:0}15%{opacity:1}to{transform:translateY(130px);opacity:.2}}
+.route{stroke-dasharray:1;stroke-dashoffset:1;animation:route 1.3s linear forwards}
+@keyframes route{to{stroke-dashoffset:0}}
 .ink-fade{transition:opacity .7s;opacity:0}
 #wall.fade{transition:opacity .9s;opacity:0}
 .pop{animation:popin .5s cubic-bezier(.3,1.6,.6,1)}
@@ -149,7 +151,7 @@ header.hud{display:flex;align-items:flex-end;gap:10px 18px;flex-wrap:wrap;margin
 <!-- 낙서 모양. 크레용으로 칠한 것처럼 색을 넣고, 테두리는 연필 -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
-    <filter id="rough" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency=".03" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="2.4"/></filter>
+    <filter id="rough" filterUnits="userSpaceOnUse" x="-20" y="-20" width="640" height="400"><feTurbulence type="fractalNoise" baseFrequency=".03" numOctaves="2" seed="4"/><feDisplacementMap in="SourceGraphic" scale="2.4"/></filter>
     <!-- 크레용 결: 칠한 면에 잔구멍을 내고 가장자리를 흔든다 -->
     <filter id="crayon" x="-5%" y="-5%" width="110%" height="110%">
       <feTurbulence type="fractalNoise" baseFrequency=".85" numOctaves="2" seed="2" result="n"/>
@@ -189,7 +191,7 @@ header.hud{display:flex;align-items:flex-end;gap:10px 18px;flex-wrap:wrap;margin
     <div class="brand">
       <a class="back" href="../../">← 사건 대장 / NOTE 04</a>
       <span class="t">깡총이 연습장</span>
-      <small>노트 방탈출 · 시제품 (1~3장)</small>
+      <small>노트 방탈출 · 1~6장</small>
     </div>
     <div class="spacer"></div>
     <div class="stat"><span>걸린 시간</span><b id="time">0:00</b></div>
@@ -206,7 +208,7 @@ header.hud{display:flex;align-items:flex-end;gap:10px 18px;flex-wrap:wrap;margin
 <script>
 const $=s=>document.querySelector(s);
 const SAVE_KEY='hn.note04.v4';
-const PLAY_LAST=3;   // 시제품은 3장까지
+const PLAY_LAST=6;
 const SW=600,SH=360,GY=300;   // 장면 크기, 땅 높이
 
 const ORDER=['pencil','eraser','lens','umbrella','ladder','key','star'];
@@ -215,8 +217,9 @@ const josa=(w,a,b)=>{const c=w.charCodeAt(w.length-1)-0xac00;return w+(c>=0&&c<1
 
 // ── 상태 ──────────────────────────────
 // w[장]: 깡총이 위치(seg, x)와 그 장에서 바뀐 것
-const fresh=()=>({v:'cover',open:0,clear:{},hints:{},ms:0,started:false,done:false,bag:{},hold:null,
-  w:{1:{shook:false,half:false,shade:false,bridge:false},2:{ladder:false,erased:false,rub:[],plank:false},3:{big:{},umb:false,placed:false,rub:[],scrub:false}}});
+const fresh=()=>({v:'cover',open:0,clear:{},hints:{},ms:0,started:false,done:false,bag:{},used:{},hold:null,
+  w:{1:{shook:false,half:false,shade:false,bridge:false},2:{ladder:false,erased:false,rub:[],plank:false},3:{big:{},umb:false,placed:false,rub:[],scrub:false},
+    4:{found:false,unblue:false,traced:false,rub:[],done:false},5:{unlock:false,dial:[0,0,0,0],open:false},6:{star:false,read:false,door:false,opened:false}}});
 let S=fresh();
 try{const d=JSON.parse(localStorage.getItem(SAVE_KEY)||'null');if(d)S={...fresh(),...d,w:{...fresh().w,...(d.w||{})}}}catch{}
 const save=()=>{try{localStorage.setItem(SAVE_KEY,JSON.stringify(S))}catch{}};
@@ -275,10 +278,77 @@ const LV={
     reach:(id,w)=>BIG[id]&&BIG[id].x>206&&!w.umb?RAIN:null,
     guides:()=>[],
     hints:['비구름 밑은 젖어서 못 지나가요. 위에 지호가 그린 숨은그림찾기를 보세요. 바닥에 돋보기가 있어요.','돋보기를 들고 작은 우산을 누르면 커져요. 우산을 들고 비구름을 누르면 펼쳐져요. 목록의 사다리는 파란 볼펜으로 칠한 곳 밑에 있어요.','2장 지우개로 칠한 곳을 문지르고, 돋보기로 사다리를 키워 주우세요. 사다리를 들고 책 더미를 누른 뒤 귀퉁이를 누르세요.']},
+  4:{date:'2009. 3. 13. (금)',
+    say:['지호 생일이 다음 주다. 뭐 줄지 사다리타기로 정하기로 했다. 내 줄은 꼭 깡총이 집 그림으로 가야 한다. 지호가 그거 갖고 싶댔으니까.','그런데 지호가 가운데를 찢어서 꼬깃꼬깃 뭉쳐 버렸다. 원래 내가 연필로 그은 줄이 거기 있었는데.'],
+    pos:()=>[52,GY],
+    clear:w=>w.done,why:w=>!w.found?'사다리타기 가운데가 찢겨 나갔다.':'서하 줄이 아직 깡총이 집 그림에 안 닿는다.',
+    items:()=>[],reach:()=>null,
+    guides:w=>w.found&&!w.traced?[{id:'rung',pts:line(COLS[1],R_PEN,COLS[2],R_PEN,12),done:w=>{w.traced=true},msg:'흐리던 연필 줄을 다시 또렷하게 그었다.'}]:[],
+    tap:(id,w)=>{
+      if(!id.startsWith('run'))return null;
+      const c=+id[3],R=route(c,w);ROUTE=R;
+      if(R.end==null)return `${NAMES[c]} 줄이 가운데 찢긴 데서 뚝 끊겼다.`;
+      if(c===0&&R.end===3){w.done=true;return '서하 줄 → 깡총이 집 그림! 지호 생일 선물이 정해졌다.'}
+      if(c===0&&!w.unblue)return `서하 줄 → ${RES[R.end]}?! 가운데 파란 볼펜 줄이 수상하다.`;
+      if(c===0)return `서하 줄 → ${RES[R.end]}. 원래 이렇게 안 나왔는데… 내 연필 줄이 흐려졌나?`;
+      if(c===1&&R.end===0&&!w.unblue)return '지호 줄 → 떡볶이. 지호가 떡볶이 먹고 싶어서 줄을 바꿨구나!';
+      return `${NAMES[c]} 줄 → ${RES[R.end]}.`},
+    hints:['찢겨 나간 가운데 조각은 종이 구석에 콩알만 하게 뭉쳐 있어요. 3장 돋보기를 쓰세요.','이름을 누르면 그 줄을 따라 내려가요. 서하 줄이 엉뚱한 데로 가는 건 지호가 파란 볼펜으로 몰래 그은 줄 때문이에요.','지우개로 파란 줄을 지우고, 흐린 연필 점선을 연필로 그은 뒤 서하를 누르세요. 깡총이 집 그림에 닿으면 귀퉁이를 누르세요.']},
+  5:{date:'2009. 4. 3. (금)',
+    say:['지호가 다음 주에 이사 간대. 나만 몰랐다.','지호가 마지막으로 보물상자를 그려 주고 갔다. 자물쇠까지 달아서. 열쇠는 벌써 줬대. 언제?'],
+    pos:()=>[70,GY],
+    clear:w=>w.open,why:w=>!w.unlock?'보물상자에 자물쇠가 걸려 있다.':'다이얼 번호가 안 맞는다.',
+    items:()=>[],reach:()=>null,guides:()=>[],
+    tap:(id,w)=>{
+      if(id==='lock'){
+        if(w.unlock)return null;
+        if(S.hold==='key'){w.unlock=true;delete S.bag.key;S.used.key=true;S.hold=null;return '열쇠를 돌리자 자물쇠가 툭 풀렸다. 덮개 밑에 번호 다이얼이 있다.'}
+        return S.bag.key?'자물쇠가 단단히 잠겨 있다.':'자물쇠가 단단히 잠겨 있다. 열쇠가 있어야겠다.'}
+      if(id[0]==='d'&&w.unlock&&!w.open){
+        const i=+id[1];w.dial[i]=(w.dial[i]+1)%10;const code=w.dial.join('');
+        if(code==='0304'){w.open=true;return '찰칵! 보물상자가 열렸다. 안에 접힌 종이가 들어 있다.'}
+        return {'0302':'그날은 서하가 아무 말도 못 한 날이다.','0306':'그날은 지호 이름을 안 날이다. 인사는 그 전에 했다.','0403':'그건 오늘이다.','0313':'그날은 사다리타기 한 날이다.'}[code]||'';
+      }
+      return null},
+    hints:['자물쇠 열쇠는 3장 지호 숨은그림 속에 있었어요. 돋보기로 키워서 주우세요.','열쇠를 들고 자물쇠를 누르면 다이얼이 나와요. 상자 아래 아주 작은 글씨를 돋보기로 읽어 보세요.','"우리가 처음 인사한 날"은 지호가 "안녕!" 하고 쓴 2장, 3월 4일이에요. 다이얼을 0 3 0 4로 맞추세요.']},
+  6:{date:'2009. 4. 3. (금) 뒷장',
+    say:['지호가 그려 두고 간 깡총이 집. "문은 네가 그려."','지호는 오늘 갔다. 나는 결국 아무 말도 못 했다.'],
+    pos:w=>w.opened?[276,GY]:[80,GY],
+    clear:w=>w.opened,why:w=>!w.star?'집이 깜깜하다.':!w.door?'문이 들어갈 자리가 텅 비어 있다.':'문이 꼭 닫혀 있다.',
+    items:()=>[],reach:()=>null,
+    guides:w=>[...(!w.door?[{id:'door',pts:DOOR,done:w=>{w.door=true},msg:w.read?'문을 그렸다. 문에 흐린 점선 글씨가 떠올랐다.':'문을 그렸다! 그런데 꼭 닫혀서 안 열린다.'}]:[]),
+      ...(w.door&&w.read&&!w.opened?[{id:'hello',pts:HELLO.flat(),tol:11,done:w=>{w.opened=true},msg:'문에 "안녕"이라고 썼다. 문이 활짝 열렸다!'}]:[])],
+    tap:(id,w)=>{
+      if(id!=='starspot'||w.star)return null;
+      if(S.hold==='star'){w.star=true;delete S.bag.star;S.used.star=true;S.hold=null;return '지붕 꼭대기에 별을 달았다. 창에 불이 켜졌다!'}
+      return S.bag.star?'지붕 꼭대기에 별 모양 점선이 있다.':'지붕 꼭대기에 별 모양 점선이 있다. 별이 있어야겠다.'},
+    hints:['지붕 꼭대기 점선에는 3장 숨은그림 속 별이 들어가요. 문 자리 점선도 있어요.','별을 들고 지붕 점선을 누르면 창에 불이 켜져요. 돋보기로 창 속 작은 글씨를 읽고, 연필로 문 점선을 그으세요.','문에 나타난 "안녕" 점선을 연필로 따라 쓰면 문이 열려요. 그다음 귀퉁이를 누르세요.']},
 };
+// 4장 사다리타기: 세로줄 x, 이름, 결과. 가로줄은 [y, 왼쪽 줄 번호]
+const COLS=[150,260,370,480],NAMES=['서하','지호','깡총이','선생님'],RES=['떡볶이','꽝','딱지','깡총이 집 그림'];
+const LT=72,LB=262,TEAR=[146,206],R_BLUE=162,R_PEN=186,BALL=[34,40];
+const RUNGS=[[96,0],[124,2],[226,0],[246,2]];
+let ROUTE=null;
+function route(c,w){
+  const rs=[...RUNGS,...(w.found&&!w.unblue?[[R_BLUE,0]]:[]),...(w.found&&w.traced?[[R_PEN,1]]:[])].sort((a,b)=>a[0]-b[0]);
+  const pts=[[COLS[c],LT]];
+  for(const [y,l] of rs){
+    if(!w.found&&y>TEAR[0]){pts.push([COLS[c],TEAR[0]]);return {c0:c,pts,end:null}}
+    if(l===c){pts.push([COLS[c],y],[COLS[c+1],y]);c++}
+    else if(l===c-1){pts.push([COLS[c],y],[COLS[c-1],y]);c--}
+  }
+  if(!w.found){pts.push([COLS[c],TEAR[0]]);return {pts,end:null}}
+  pts.push([COLS[c],LB]);return {pts,end:c};
+}
+// 6장 문 점선과 "안녕" 점선 (획마다 점 목록)
+const ring=(cx,cy,r,n)=>Array.from({length:n+1},(_,i)=>[cx+r*Math.cos(i/n*2*Math.PI-Math.PI/2),cy+r*Math.sin(i/n*2*Math.PI-Math.PI/2)]);
+const DOOR=[...line(236,GY,236,170,8),...line(236,170,316,170,6).slice(1),...line(316,170,316,GY,8).slice(1)];
+const HELLO=[ring(262,198,11,12),line(290,180,290,214,6),line(290,197,302,197,3),line(258,224,258,238,3),line(258,238,300,238,6),
+  line(252,252,252,268,3),line(252,268,272,268,4),line(298,250,298,284,6),line(284,260,298,260,3),line(284,272,298,272,3),ring(274,288,8,10)];
 // 지우개로 문지르는 볼펜 낙서 칸. 70%를 지우면 key가 true가 된다
 const ZONE={2:{x:276,y:96,w:136,h:GY-96+34,key:'erased',sw:7.5,n:14,msg:'볼펜 벽이 다 지워졌다. 밑에 파란 글씨가 있었다. 그런데 종이가 찢어져 있다.'},
-  3:{x:280,y:40,w:42,h:38,key:'scrub',sw:3.5,n:3,msg:'박박 칠한 볼펜을 지웠더니 밑에 작은 사다리가 숨어 있었다.'}};
+  3:{x:280,y:40,w:42,h:38,key:'scrub',sw:3.5,n:3,msg:'박박 칠한 볼펜을 지웠더니 밑에 작은 사다리가 숨어 있었다.'},
+  4:{x:150,y:R_BLUE-10,w:110,h:20,key:'unblue',need:w=>w.found,msg:'지호가 몰래 그은 파란 줄을 지웠다.'}};
 const RAIN='비구름 너머다. 깡총이는 연필 그림이라 젖으면 번진다!';
 // 3장 숨은그림: 작은 낙서 자리(t)와, 돋보기로 누르면 떨어지는 땅 위 자리(x)
 // 땅 위 자리는 깡총이(시작 x=70, 우산 밑 x=264)와 서로 겹치지 않게 둔다
@@ -309,7 +379,7 @@ function renderBag(){
   $('#bag').querySelectorAll('.slot.has').forEach(b=>b.onclick=()=>{S.hold=S.hold===b.dataset.b?null:b.dataset.b;save();renderBag();syncHold()});
 }
 function wiggleHeld(){const b=S.hold&&$(`.slot[data-b="${S.hold}"]`);if(!b)return;b.classList.remove('no');void b.offsetWidth;b.classList.add('no')}
-function go(v){if(!canView(v)||busy)return;S.v=v;save();render(true);scrollTo({top:0,behavior:'smooth'})}
+function go(v){if(!canView(v)||busy)return;if(v!==S.v)ROUTE=null;S.v=v;save();render(true);scrollTo({top:0,behavior:'smooth'})}
 
 // ── 그림 ──────────────────────────────
 const C=(s,attrs='')=>`<g filter="url(#crayon)" ${attrs}>${s}</g>`;   // 크레용으로 칠한 면
@@ -407,6 +477,57 @@ function art3(w){
     ${tuft(70)}${tuft(150)}${tuft(560)}${flower(530,GY-24,'#f78fb3')}`;
 }
 
+const pen=(pts,c='#4a4a4a',sw=3.4,extra='')=>`<path d="M${pts.map(p=>p.join(' ')).join(' L')}" stroke="${c}" stroke-width="${sw}" fill="none" stroke-linecap="round" stroke-linejoin="round" filter="url(#rough)" ${extra}/>`;
+function art4(w){
+  const X=c=>COLS[c],[t0,t1]=TEAR;
+  const names=NAMES.map((n,c)=>`<g data-tap="run${c}" style="cursor:pointer"><rect x="${X(c)-46}" y="22" width="92" height="44" fill="rgba(0,0,0,0)"/>
+    ${C(`<rect x="${X(c)-38}" y="28" width="76" height="34" rx="8" fill="${['#ffd6e0','#cfe0ff','#fff1a8','#d8f0c8'][c]}"/>`)}
+    <text x="${X(c)}" y="54" font-size="24" text-anchor="middle" fill="${c===1?'var(--blue)':'#3b3b3b'}">${n}</text></g>`).join('');
+  const vert=COLS.map(x=>w.found?pen([[x,LT],[x,LB]]):pen([[x,LT],[x,t0]])+pen([[x,t1],[x,LB]])).join('');
+  const rungs=RUNGS.map(([y,l])=>pen([[X(l),y],[X(l+1),y]])).join('');
+  const gap=w.found?`<g class="pop" style="transform-origin:315px 176px"><path d="M126 ${t0} L506 ${t0} M126 ${t1} L506 ${t1}" stroke="#c9c2a8" stroke-width="1.6" stroke-dasharray="7 5"/><path d="M200 ${t0+8} l30 22 M420 ${t0+30} l26 -18" stroke="#ddd6bf" stroke-width="1.4"/></g>`
+    :`${C(`<path d="M120 ${t0} L160 ${t0+8} L210 ${t0-4} L260 ${t0+6} L320 ${t0-3} L380 ${t0+7} L440 ${t0-2} L512 ${t0+5} L512 ${t1} L450 ${t1+6} L390 ${t1-4} L330 ${t1+5} L270 ${t1-3} L200 ${t1+6} L120 ${t1-2} Z" fill="#d9dccb"/>`)}
+      <path d="M120 ${t0} L160 ${t0+8} L210 ${t0-4} L260 ${t0+6} L320 ${t0-3} L380 ${t0+7} L440 ${t0-2} L512 ${t0+5} M512 ${t1} L450 ${t1+6} L390 ${t1-4} L330 ${t1+5} L270 ${t1-3} L200 ${t1+6} L120 ${t1-2}" stroke="#3b3b3b" stroke-width="2.4" fill="none" filter="url(#rough)"/>`;
+  const blue=w.found&&!w.unblue?`<mask id="em" maskUnits="userSpaceOnUse" x="0" y="0" width="${SW}" height="${SH}"><rect width="${SW}" height="${SH}" fill="#fff"/><g id="emH">${w.rub.map(([a,b])=>`<circle cx="${a}" cy="${b}" r="${RUB_R}" fill="#000"/>`).join('')}</g></mask>
+    <g id="wall" mask="url(#em)">${pen([[X(0),R_BLUE],[X(1),R_BLUE]],'var(--blue)',6)}<text x="${X(0)+30}" y="${R_BLUE-8}" font-size="15" fill="var(--blue)">ㅋㅋ</text></g>`:'';
+  const pencilRung=w.found?(w.traced?pen([[X(1),R_PEN],[X(2),R_PEN]]):`<g opacity=".55">${dotted(line(X(1),R_PEN,X(2),R_PEN,12))}</g>`):'';
+  const res=RES.map((r,c)=>`<text x="${X(c)}" y="${LB+30}" font-size="${c===3?17:21}" text-anchor="middle" fill="#3b3b3b">${r}</text>`).join('');
+  const hit=ROUTE&&ROUTE.end!=null?`<ellipse cx="${X(ROUTE.end)}" cy="${LB+24}" rx="${ROUTE.end===3?62:40}" ry="20" fill="none" stroke="#ff6b4a" stroke-width="3.5" filter="url(#rough)"/>`:'';
+  const path=ROUTE?`<path class="route" pathLength="1" d="M${ROUTE.pts.map(p=>p.join(' ')).join(' L')}" stroke="#ff6b4a" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".8"/>`:'';
+  const ball=w.found?'':`<g><circle cx="${BALL[0]}" cy="${BALL[1]}" r="5" fill="#f4f1e4" stroke="#3b3b3b" stroke-width="1.2"/><path d="M${BALL[0]-3} ${BALL[1]-1} l3 2 l2 -3 M${BALL[0]-1} ${BALL[1]+3} l3 -1" stroke="#3b3b3b" stroke-width=".8" fill="none"/></g>`;
+  return `${ground(0,108)}${tuft(20)}${tuft(92)}${gap}${vert}${rungs}${blue}${pencilRung}${names}${res}${path}${hit}${ball}`;
+}
+function art5(w){
+  const dial=w.unlock?w.dial.map((d,i)=>`<g data-tap="d${i}" style="cursor:pointer"><rect x="${252+i*36}" y="222" width="30" height="40" rx="4" fill="#fffdf0" stroke="#3b3b3b" stroke-width="2.4"/><text x="${267+i*36}" y="253" font-size="28" text-anchor="middle" fill="#3b3b3b">${d}</text></g>`).join(''):'';
+  const flap=w.unlock?'':`<g data-tap="lock" style="cursor:pointer">${C(`<rect x="244" y="214" width="152" height="56" rx="6" fill="#b5803f"/>`)}<rect x="244" y="214" width="152" height="56" rx="6" fill="none" stroke="#3b3b3b" stroke-width="2.6" filter="url(#rough)"/>
+    <path d="M308 236 V226 a12 12 0 0 1 24 0 V236" stroke="#3b3b3b" stroke-width="4" fill="none"/>${C(`<rect x="300" y="234" width="40" height="32" rx="5" fill="#f2c14e"/>`)}<rect x="300" y="234" width="40" height="32" rx="5" fill="none" stroke="#3b3b3b" stroke-width="2.6"/><circle cx="320" cy="248" r="4" fill="#3b3b3b"/><path d="M320 250 v8" stroke="#3b3b3b" stroke-width="3"/></g>`;
+  const lid=w.open?`<g class="pop" style="transform-origin:320px 170px">${C(`<path d="M226 150 L414 150 L404 104 L236 104 Z" fill="#d29455"/>`)}<path d="M226 150 L414 150 L404 104 L236 104 Z" fill="none" stroke="#3b3b3b" stroke-width="2.6" filter="url(#rough)"/></g>
+      <g class="pop" style="transform-origin:320px 190px">${C(`<rect x="262" y="158" width="116" height="44" fill="#fffef6" transform="rotate(-4 320 180)"/>`)}<rect x="262" y="158" width="116" height="44" fill="none" stroke="var(--blue)" stroke-width="2" transform="rotate(-4 320 180)"/><text x="320" y="186" font-size="16" text-anchor="middle" fill="var(--blue)" transform="rotate(-4 320 180)">깡총이 집 → 뒷장</text></g>`
+    :`${C(`<path d="M222 178 L418 178 L418 154 Q320 124 222 154 Z" fill="#d29455"/>`)}<path d="M222 178 L418 178 L418 154 Q320 124 222 154 Z" fill="none" stroke="#3b3b3b" stroke-width="2.6" filter="url(#rough)"/>`;
+  return `${cloud(500,60,.8)}${ground()}${tuft(30)}${tuft(560)}${flower(540,GY-24,'#a78bfa')}
+    ${C(`<rect x="226" y="178" width="188" height="${GY-178}" fill="#c98a4b"/>`)}<rect x="226" y="178" width="188" height="${GY-178}" fill="none" stroke="#3b3b3b" stroke-width="2.8" filter="url(#rough)"/>
+    <path d="M226 200 H414" stroke="#8a5a2b" stroke-width="2"/>
+    ${lid}${dial}${flap}
+    <text x="320" y="${GY-8}" font-size="6.4" text-anchor="middle" fill="var(--blue)">번호는 우리가 처음 인사한 날 (월일 네 자리) — 지호</text>
+    <text x="250" y="132" font-size="22" fill="var(--blue)" transform="rotate(-6 250 132)">${w.open?'':'보물상자! 열지 마시오'}</text>`;
+}
+function art6(w){
+  const star=w.star?`<g class="pop" style="transform-origin:316px 46px"><use href="#d-star" x="290" y="20" width="52" height="52"/></g>`
+    :`<g data-tap="starspot" style="cursor:pointer"><rect x="284" y="16" width="64" height="60" fill="rgba(0,0,0,0)"/><path d="M316 22 L323 39 L341 40 L327 51 L332 68 L316 58 L300 68 L305 51 L291 40 L309 39 Z" stroke="#7d7d7d" stroke-width="3" stroke-dasharray="1 7" stroke-linecap="round" fill="none"/></g>`;
+  const win=`${C(`<rect x="342" y="184" width="50" height="46" fill="${w.star?'#ffe27a':'#3d4a66'}"/>`)}<rect x="342" y="184" width="50" height="46" fill="none" stroke="var(--blue)" stroke-width="2.6" filter="url(#rough)"/><path d="M367 184 V230 M342 207 H392" stroke="var(--blue)" stroke-width="2"/>
+    ${w.star?`<text x="367" y="200" font-size="4.6" text-anchor="middle" fill="var(--blue)">서하야, 처음에</text><text x="367" y="206" font-size="4.6" text-anchor="middle" fill="var(--blue)">하고 싶었던 말</text><text x="367" y="221" font-size="4.6" text-anchor="middle" fill="var(--blue)">문에 써 줘.</text>`:''}`;
+  const door=w.opened?`<g class="pop" style="transform-origin:236px 235px">${C(`<rect x="236" y="170" width="80" height="${GY-170}" fill="#3a2a1c"/>`)}<path d="M236 170 L206 182 L206 ${GY+8} L236 ${GY}" fill="#c98a4b" stroke="#3b3b3b" stroke-width="2.6" filter="url(#rough)"/></g>`
+    :w.door?`${C(`<rect x="236" y="170" width="80" height="${GY-170}" fill="#e0a868"/>`)}<rect x="236" y="170" width="80" height="${GY-170}" fill="none" stroke="#4a4a4a" stroke-width="4" filter="url(#rough)"/><circle cx="304" cy="238" r="4" fill="#3b3b3b"/>`
+    :dotted(DOOR);
+  const hello=w.door&&w.read&&!w.opened?HELLO.map(s=>`<path d="M${s.map(p=>p.join(' ')).join(' L')}" stroke="#6b5a3a" stroke-width="3" stroke-dasharray="1 6" stroke-linecap="round" fill="none"/>`).join(''):'';
+  const wrote=w.opened?`<text x="276" y="160" font-size="26" text-anchor="middle" fill="#4a4a4a">안녕</text>`:'';
+  return `${sun(76,60)}${ground()}${tuft(140)}${tuft(470)}${flower(470,GY-24,'#f78fb3')}${flower(520,GY-24,'#ffd84a')}
+    ${C(`<rect x="210" y="130" width="212" height="${GY-130}" fill="#fff4dc"/>`)}<rect x="210" y="130" width="212" height="${GY-130}" fill="none" stroke="var(--blue)" stroke-width="3" filter="url(#rough)"/>
+    ${C(`<path d="M196 134 L316 70 L436 134 Z" fill="#7fb3e8"/>`)}<path d="M196 134 L316 70 L436 134 Z" fill="none" stroke="var(--blue)" stroke-width="3" filter="url(#rough)"/>
+    <text x="336" y="164" font-size="16" fill="var(--blue)">깡총이 집</text>
+    ${star}${win}${door}${hello}${wrote}`;
+}
+
 // ── 장면 ──────────────────────────────
 const LR=58,LZ=3;
 function itemG([id,x,y]){
@@ -422,10 +543,10 @@ function kcG(p,w){
 }
 function scene(p){
   const L=LV[p],w=S.w[p];
-  const items=L.items(w).filter(([id])=>!S.bag[id]&&!(id==='ladder'&&w.placed)&&!(id==='umbrella'&&w.umb));
+  const items=L.items(w).filter(([id])=>!S.bag[id]&&!S.used[id]&&!(id==='ladder'&&w.placed)&&!(id==='umbrella'&&w.umb));
   const out=`<svg class="scene" id="scene" viewBox="0 0 ${SW} ${SH}" role="img" aria-label="${p}장 낙서">
     <defs><clipPath id="lc"><circle id="lcC" r="${LR}" cx="-999" cy="-999"/></clipPath></defs>
-    <g id="scn">${[null,art1,art2,art3][p](w)}${kcG(p,w)}${items.map(itemG).join('')}${fold(L.clear(w))}</g>
+    <g id="scn">${[null,art1,art2,art3,art4,art5,art6][p](w)}${kcG(p,w)}${items.map(itemG).join('')}${fold(L.clear(w))}</g>
     <g id="ink"></g>
     <g id="lens" style="display:none" pointer-events="none">
       <g clip-path="url(#lc)"><circle id="lbg" r="${LR}" fill="#fbfdf5"/><g id="lz"><use href="#scn"/></g></g>
@@ -445,11 +566,13 @@ function pageLevel(p){
 }
 
 // ── 넘기기 ──────────────────────────────
+// 사건 대장에 보일 내 기록 (hn.clear.noteNN: 깼는지, 가장 빠른 시간, 마지막 시간)
+function record(ms,ok=true){try{const k='hn.clear.note04',p=JSON.parse(localStorage.getItem(k)||'{}');localStorage.setItem(k,JSON.stringify({ok:ok||!!p.ok,best:ok?Math.min(p.best||Infinity,ms):p.best||null,last:ms,at:Date.now()}))}catch{}}
 // 길이 다 열리면 귀퉁이가 반짝인다. 누르면 깡총이가 종이 밖으로 뛰어나가고 다음 장이 열린다
 function turnPage(){
   const p=pageNo(),w=W(),L=LV[p];
   if(!L.clear(w)){toast(L.why(w));return}
-  S.clear[p]=true;S.open=Math.max(S.open,p+1);if(p>=PLAY_LAST)S.done=true;save();
+  S.clear[p]=true;S.open=Math.max(S.open,p+1);if(p>=PLAY_LAST&&!S.done){S.done=true;S.hold=null;record(S.ms)}save();
   busy=true;toast(p>=PLAY_LAST?'깡총이가 귀퉁이를 넘어간다!':`${p+1}장으로 깡총!`);
   // transform 속성이 있는 #kc 대신 안쪽 g를 움직인다 (속성 위에 CSS를 얹으면 브라우저마다 순간이동함)
   const kc=$('#kc');if(kc)kc.firstElementChild.animate([{transform:'translate(0,0)'},{transform:'translate(40px,-40px)'},{transform:'translate(160px,0)',opacity:0}],{duration:700,easing:'ease-in',fill:'forwards'});
@@ -490,7 +613,7 @@ function endStroke(){
   if(len<14){g&&g.remove();return false}
   for(const gd of LV[p].guides(w)){
     const c=cover[gd.id]||(cover[gd.id]=new Set());
-    gd.pts.forEach((q,i)=>{if(pts.some(s=>Math.hypot(s[0]-q[0],s[1]-q[1])<20))c.add(i)});
+    gd.pts.forEach((q,i)=>{if(pts.some(s=>Math.hypot(s[0]-q[0],s[1]-q[1])<(gd.tol||20)))c.add(i)});
     if(c.size/gd.pts.length>=.8){const u=update(gd.msg);gd.done(w);delete cover[gd.id];u();return true}
   }
   if(g){g.classList.add('ink-fade');setTimeout(()=>g.remove(),800)}
@@ -499,7 +622,7 @@ function endStroke(){
 }
 // 지우개: 장마다 정해진 볼펜 칸(ZONE)만 지워진다. 칸의 70%를 지우면 다 걷힌다
 let rubbing=false;
-const zoneNow=()=>{const p=pageNo(),Z=ZONE[p];return Z&&!S.w[p][Z.key]?Z:null};
+const zoneNow=()=>{const p=pageNo(),Z=ZONE[p],w=S.w[p];return Z&&!w[Z.key]&&(!Z.need||Z.need(w))?Z:null};
 const inZone=(Z,pt)=>pt.x>=Z.x-8&&pt.x<=Z.x+Z.w+8&&pt.y>=Z.y-8&&pt.y<=Z.y+Z.h+8;
 function rub(pt){
   const Z=zoneNow(),w=W();if(!Z||!inZone(Z,pt))return;
@@ -517,7 +640,7 @@ function rub(pt){
 function tapThing(id){
   const p=pageNo(),L=LV[p];if(!L.tap)return false;
   const u=update(),m=L.tap(id,W());if(m==null)return false;
-  u();toast(m);return true;
+  u();if(m)toast(m);return true;
 }
 function onTap(pt,el){
   if(busy)return;
@@ -528,6 +651,15 @@ function onTap(pt,el){
     if(k==='ladder'&&!w.scrub){toast('볼펜으로 박박 칠해져서 하나도 안 보인다.');return}
     if(k){w.big[k]=true;NEW_DROP=k;save();render(false);toast(`작은 ${josa(NAME[k],'이','가')} 커다랗게 튀어나왔다!`);return}
   }
+  // 4장: 콩알만 한 종이 뭉치를 키우면 찢겨 나간 가운데 조각이 제자리로
+  if(p===4&&!w.found&&Math.hypot(pt.x-BALL[0],pt.y-BALL[1])<20){
+    if(h!=='lens'){toast('콩알만 한 종이 뭉치. 너무 작아서 뭔지 모르겠다.');return}
+    const u=update('종이 뭉치가 커다래졌다. 펴 보니 찢겨 나간 가운데 조각! 제자리에 붙였다.');w.found=true;u();return}
+  // 6장: 불 켜진 창 속 깨알 글씨
+  if(p===6&&pt.x>=338&&pt.x<=396&&pt.y>=180&&pt.y<=234){
+    if(!w.star){toast('창이 깜깜하다.');return}
+    if(h!=='lens'){toast('창 속에 깨알 같은 글씨가 있다.');return}
+    const u=update(w.door?'창 속 글씨: "서하야, 처음에 하고 싶었던 말 문에 써 줘." 문에 흐린 점선 글씨가 떠올랐다.':'창 속 글씨: "서하야, 처음에 하고 싶었던 말 문에 써 줘."');w.read=true;u();return}
   // 우산: 비구름 밑에 펼쳐 둔다
   if(h==='umbrella'&&p===3&&!w.umb&&pt.x>=180&&pt.x<=350&&pt.y>=100&&pt.y<=GY+10){
     const u=update('비구름 밑에 우산을 펼쳤다. 깡총이가 우산 밑으로 쏙.');w.umb=true;delete S.bag.umbrella;S.hold=null;u();return}
@@ -580,23 +712,23 @@ function pageCover(){
     <div class="rules">깡총이 집은 다음에 그려 줄게. 문도.</div>
     <p class="story">그 “다음”은 오지 않았다. 연습장 맨 뒷장 어딘가에 그리다 만 집이 있다는 것만 안다. 종이 귀퉁이까지 가면 다음 장으로 넘어갈 수 있다. 그런데 이 연습장, 낙서투성이다.</p>
     <button class="btn go" id="start">${S.started?'이어서 펼치기':'연습장 펼치기'}</button>
-    <div class="proto">시제품 · 1~3장 · 진행 상황은 이 브라우저에 저장돼요</div>
+    <div class="proto">1~6장 · 진행 상황은 이 브라우저에 저장돼요</div>
   </section>`;
 }
 function pageEnd(){
   const h=hintTotal(),ansHints=Object.values(S.hints).filter(n=>n>=3).length;
   const grade=h===0?'짝꿍':ansHints===0?'낙서 친구':'전학생';
   return `<article class="sheet turn result">
-    <p class="big">토요일, 미끄럼틀 밑.</p>
+    <p class="big">안녕.</p>
     <div class="seal">${grade}</div>
     <dl>
       <div><dt>걸린 시간</dt><dd>${fmt(S.ms)}</dd></div>
       <div><dt>힌트</dt><dd>${h}장</dd></div>
     </dl>
-    <p>지호 숨은그림찾기 맨 아래, 돋보기로나 보이는 글씨가 있었다. 그날 서하는 연습장 맨 아래에 작게 적었다.</p>
-    <p class="note">토요일에 미끄럼틀 밑에서 지호 만나기로 함! 깡총이도 데려가야지.</p>
-    <p>깡총이 필통에는 아직 쓸 데를 모르는 낙서가 남아 있다. 열쇠와 별.</p>
-    <div class="later">시제품은 여기까지예요. 4~6장(찢어진 사다리타기, 지호의 보물상자, 깡총이 집)은 만드는 중이에요.</div>
+    <p>깡총이는 17년 만에 제 집 문을 열고 들어갔다.</p>
+    <p>지호는 처음부터 이사 날짜를 알고 있었다. 그래서 3월 한 달 내내 서하 연습장에 낙서를 보탰다. 볼펜 벽 밑의 첫 인사, 숨은그림 속 열쇠와 별, 몰래 바꾼 사다리타기 줄. 마지막 날에는 연습장 맨 뒷장에 깡총이 집을 그려 두고, 문만 비워 두었다.</p>
+    <p>전학 첫날 서하가 짝한테 하고 싶었지만 못 한 말. 마지막 날에도 끝내 입 밖으로 못 낸 말. 서하는 그 말을 깡총이 집 문에 썼다.</p>
+    <p class="note">안녕, 지호야. 깡총이 집 문은 내가 그렸어.</p>
     <div class="row"><button class="btn" id="again">처음부터 다시</button><a class="btn primary" href="../../" style="text-decoration:none">사건 대장으로</a></div>
   </article>`;
 }
