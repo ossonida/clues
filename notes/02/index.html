@@ -52,7 +52,7 @@ header.hud{display:flex;align-items:flex-end;gap:10px 18px;flex-wrap:wrap;margin
 .tab:disabled{background:#e4dcc4;color:#9a8f76;font-weight:400;cursor:not-allowed;opacity:.8}
 
 /* 교환일기 한 장 */
-.sheet{position:relative;max-width:640px;background-color:var(--sheet);padding:var(--nl) 26px calc(var(--nl) * 1.5) calc(var(--nm) + 14px);
+.sheet{position:relative;max-width:640px;user-select:none;-webkit-user-select:none;background-color:var(--sheet);padding:var(--nl) 26px calc(var(--nl) * 1.5) calc(var(--nm) + 14px);
   background-image:linear-gradient(90deg,transparent calc(var(--nm) - 1px),rgba(214,69,65,.6) calc(var(--nm) - 1px),rgba(214,69,65,.6) var(--nm),transparent var(--nm)),
     repeating-linear-gradient(transparent 0 calc(var(--nl) - 1px),#c9d6ea calc(var(--nl) - 1px) var(--nl));
   box-shadow:0 1px 1px rgba(0,0,0,.12),0 16px 30px -14px rgba(40,30,0,.55);overflow:hidden}
@@ -69,9 +69,8 @@ header.hud{display:flex;align-items:flex-end;gap:10px 18px;flex-wrap:wrap;margin
 .fix i{position:absolute;left:.05em;top:-.62em;font-style:normal;color:var(--red);font-size:.86em;transform:rotate(-8deg)}
 .doodle{position:absolute;pointer-events:none}
 
-/* 연필 문지르기 */
-.rub{position:relative;height:calc(var(--nl) * 5);margin-left:calc(-1 * var(--nm) + 8px)}
-.rub canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:crosshair}
+/* 2장: 눌린 자국이 있는 빈 줄 */
+.rub{height:calc(var(--nl) * 5)}
 
 /* 접힌 모서리 */
 .corner{position:absolute;right:0;bottom:0;width:74px;height:74px;border:none;padding:0;background:linear-gradient(135deg,transparent 50%,#e8e0c8 50%,#d9cfb2 100%);
@@ -137,41 +136,47 @@ header.hud{display:flex;align-items:flex-end;gap:10px 18px;flex-wrap:wrap;margin
 .tiny{font-size:.62em;display:inline-block;transform:rotate(-6deg);margin-left:.3em}
 .ln.right{text-align:right}
 
-/* 4장: 글자판 + 구멍 뚫린 책갈피 */
-.gwrap{width:100%}
-.grille{position:relative;width:calc(var(--c) * 7);height:calc(var(--c) * 11);margin-top:6px}
-.grid{display:grid;grid-template-columns:repeat(7,var(--c));grid-auto-rows:var(--c);background:#fffdf4;outline:1.5px solid #9fb3cf;font-family:var(--hand);font-size:calc(var(--c) * .62);color:var(--blue);user-select:none}
-.grid span{display:flex;align-items:center;justify-content:center;border-right:1px dotted #c9d6ea;border-bottom:1px dotted #c9d6ea}
-.grid span.star{color:var(--green);font-size:calc(var(--c) * .55)}
-.bm{position:absolute;width:calc(var(--c) * 4);height:calc(var(--c) * 4);display:grid;grid-template-columns:repeat(4,1fr);touch-action:none;cursor:grab;filter:drop-shadow(0 5px 6px rgba(0,0,0,.35));transition:left .12s,top .12s;z-index:2;user-select:none}
-.bm.drag{transition:none;cursor:grabbing}
-.bm i{background:#e6d2a5;position:relative}
-.bm i.h{background:transparent;box-shadow:inset 0 0 0 2px rgba(122,90,40,.7)}
-.bm i.s::before{content:"★";position:absolute;left:2px;top:-1px;font-size:11px;font-style:normal;color:#7a5a28}
-.bm .lbl{position:absolute;right:6px;bottom:3px;font-family:var(--hand);font-size:17px;color:#7a5a28;pointer-events:none}
+/* 소지품 */
+.tools{display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-family:var(--mono);font-size:12px;color:var(--dim)}
+.tool{border:1.5px solid var(--ink);background:#fffdf4;padding:6px 10px;font-size:13px;font-weight:700;border-radius:2px}
+.tool:hover{background:#f3ead0}
+.tool.on{background:var(--ink);color:var(--sheet)}
+.tool.lit{background:#ffe680;border-color:#c9a04a}
+.tool.new{animation:pop .5s 4}
+@keyframes pop{50%{transform:scale(1.18) rotate(-3deg)}}
 
-/* 5장: 불빛에 비추기 */
+/* 연필: 장 전체를 덮는 캔버스. 연필을 골랐을 때만 문질러진다 */
+.rubcv{position:absolute;left:0;top:0;z-index:3;pointer-events:none}
+.sheet.pencil-on .rubcv{pointer-events:auto;touch-action:none;cursor:crosshair}
+
+/* 4×4 글자판 */
+.grid4{display:grid;grid-template-columns:repeat(4,var(--c));grid-auto-rows:var(--c);width:calc(var(--c) * 4);background:#fffdf4;outline:1.5px solid #9fb3cf;font-family:var(--hand);font-size:calc(var(--c) * .6);user-select:none;margin:10px 0 calc(var(--nl) * .5) 4px}
+.grid4 span{display:flex;align-items:center;justify-content:center;border-right:1px dotted #c9d6ea;border-bottom:1px dotted #c9d6ea}
+
+/* 구멍 뚫린 책갈피 */
+.bm{position:absolute;width:calc(var(--c) * 4);height:calc(var(--c) * 4);display:grid;grid-template-columns:repeat(4,1fr);touch-action:none;cursor:grab;filter:drop-shadow(0 5px 6px rgba(0,0,0,.35));transition:transform .25s;z-index:4;user-select:none}
+.bm.drag{cursor:grabbing}
+.bm i{background:#e6d2a5}
+.bm i.h{background:transparent;box-shadow:inset 0 0 0 2px rgba(122,90,40,.7)}
+.bm .lbl{position:absolute;left:6px;bottom:3px;font-family:var(--hand);font-size:17px;color:#7a5a28;pointer-events:none;white-space:nowrap}
+
+/* 스탠드: 켜면 뒷장 글씨가 좌우 뒤집혀 비친다 */
 .sheet.lit{background-color:#fffef9;box-shadow:0 0 0 1px rgba(255,240,180,.6),0 0 60px 10px rgba(255,236,160,.55),0 16px 30px -14px rgba(40,30,0,.55)}
-.back{position:absolute;left:calc(var(--nm) + 14px);right:26px;font-family:var(--hand);font-size:calc(var(--hs) * 1.15);line-height:var(--nl);color:rgba(60,60,70,.5);transform:scaleX(-1);opacity:0;transition:opacity .6s;pointer-events:none;user-select:none;filter:blur(.3px)}
+.back{position:absolute;left:calc(var(--nm) + 14px);right:26px;font-family:var(--hand);font-size:calc(var(--hs) * 1.1);line-height:var(--nl);color:rgba(60,60,70,.5);transform:scaleX(-1);opacity:0;transition:opacity .6s;pointer-events:none;user-select:none;filter:blur(.3px)}
+.back svg{display:block;width:120px;height:120px;margin:6px 0 0 10px;opacity:.85}
+.back .green{color:rgba(43,122,82,.6)}
 .sheet.lit .back{opacity:1}
-.lamp{margin-top:14px;font-family:var(--hand);font-size:22px;background:#fff3b0;border:none;padding:4px 14px;box-shadow:0 2px 4px rgba(0,0,0,.18);transform:rotate(-1deg)}
-.lamp:hover{background:#ffe680}
 
 /* 6장: 찢긴 조각 */
 .tear{position:relative;height:calc(var(--nl) * 6)}
 .tbox{position:absolute;left:0;right:0;top:0;height:calc(var(--nl) * 2)}
-.tear .tt{height:100%;display:flex;align-items:center;justify-content:center;font-family:var(--hand);font-size:calc(var(--hs) * 1.35);color:var(--red);white-space:nowrap;user-select:none;padding-top:.2em}
+.tear .tt{height:100%;display:flex;align-items:center;justify-content:center;font-family:var(--hand);font-size:calc(var(--hs) * 1.12);color:var(--red);white-space:nowrap;user-select:none;padding-top:.2em}
 .gap{background:#cbbd7a;box-shadow:inset 0 0 12px rgba(0,0,0,.35)}
 .scrapw{position:absolute;left:0;right:0;top:0;height:calc(var(--nl) * 2);filter:drop-shadow(0 4px 5px rgba(0,0,0,.35));transition:transform .25s;pointer-events:none;z-index:2}
 .scrapw.drag{transition:none}
 .scrap{position:absolute;inset:0;background:var(--sheet);touch-action:none;cursor:grab;pointer-events:auto}
 .scrapw.fixed{filter:none}
 .scrapw.fixed .scrap{cursor:default}
-
-/* 마지막 장: 끼워 넣은 초록 글씨 */
-.ins{position:relative;display:inline-block;width:.55em;height:1em}
-.ins::after{content:"∨";position:absolute;left:.05em;top:.3em;font-family:sans-serif;font-size:.55em;color:var(--green)}
-.ins i{position:absolute;left:50%;bottom:.7em;transform:translateX(-50%) rotate(-5deg);font-style:normal;font-size:.82em;color:var(--green);white-space:nowrap}
 
 /* 결과: 다음 사람에게 */
 .letter{background:#f2f8ef;border-left:3px solid var(--green);padding:10px 14px;font-family:var(--hand);font-size:23px;line-height:1.35;color:var(--green);max-width:520px;margin:14px 0}
@@ -208,6 +213,7 @@ header.hud{display:flex;align-items:flex-end;gap:10px 18px;flex-wrap:wrap;margin
     <div class="spacer"></div>
     <div class="stat"><span>걸린 시간</span><b id="time">0:00</b></div>
     <div class="stat"><span>힌트</span><b id="hintCount">0</b></div>
+    <div class="tools" id="tools"></div>
     <button class="btn" id="btnHint">힌트</button>
   </header>
   <nav class="tabs" id="tabs"></nav>
@@ -218,38 +224,55 @@ header.hud{display:flex;align-items:flex-end;gap:10px 18px;flex-wrap:wrap;margin
 
 <script>
 const $=s=>document.querySelector(s);
-const SAVE_KEY='hn.note02.v1';
+const SAVE_KEY='hn.note02.v2';
 const END=8;   // 결과 페이지 번호
 
 // ── 퍼즐 데이터 ──────────────────────────────
-// ans: 정답, alt: 같이 인정할 답, near: "거의 맞았다"로 받아 줄 답
+// ans: 정답, alt: 같이 인정할 답, near: "거의 맞았다"로 받아 줄 답, say: 특정 오답에 돌려줄 말
 const PAGES=[
   {tab:'표지'},
   {tab:'1장', ans:'다음은너야', near:['다음은','다음','다음은너','너야','은너야'],
-   hints:['여백에 그려진 화살표 낙서, 어디서 어디로 향하고 있나요?','각 줄의 맨 첫 글자만 위에서 아래로 읽어 보세요.','정답: 다음은너야']},
+   hints:['줄마다 맨 앞 글자를 눈여겨보세요.','각 줄 첫 글자를 위에서 아래로 읽어 보세요.','정답: 다음은너야']},
   {tab:'2장', ans:'할게', near:['할께','역할','쓸게','역할쓸게','빨간펜','고친글자'],
-   hints:['하람이는 연필을 꾹꾹 눌러 쓴대요. 앞 장을 뜯어 갔다면 자국이 남았겠죠.','빈 줄 위를 마우스나 손가락으로 문질러 보세요. 드러난 말은 1장 이야기예요.',"1장에서 빨간 펜이 고친 글자는 '할'과 '게'. 정답: 할게"]},
+   hints:['하람이는 연필을 꾹꾹 눌러 쓴대요. 앞 장을 뜯어 갔다면 빈 줄에 자국이 남았겠죠.','위쪽 소지품에서 연필을 고르고 빈 줄을 문질러 보세요. 드러난 말은 1장 이야기예요.',"1장에서 빨간 펜이 고친 글자는 '할'과 '게'. 정답: 할게"]},
   {tab:'3장', ans:'9173', alt:['구일칠삼'], near:['구일','칠삼','일칠삼'],
-   hints:['오른쪽 아래 모서리가 접혀 있어요.',"'4-1'은 4번째 줄의 1번째 글자예요. 띄어쓰기는 세지 않아요. 찾은 글자를 숫자로 읽어 보세요.",'구·일·칠·삼 → 정답: 9173 (부실 문 번호래요. 기억해 두세요)']},
-  {tab:'4장', ans:'거울을봐', alt:['거울봐'], near:['거울','거울을','울을봐','을봐'],
-   hints:['지우가 글자판 아래에 구멍 뚫린 책갈피를 끼워 뒀어요.','책갈피를 끌어서, 왼쪽 위 ★ 구멍이 글자판의 초록 ★ 위에 오게 놓아 보세요. 구멍으로 보이는 글자를 왼쪽 위부터 읽어요.','정답: 거울을봐']},
-  {tab:'5장', ans:'네번째', alt:['넷째','네번째사람','4번째','네번째글씨'], near:['네','번째','네번','누가또써'],
-   hints:['하람이는 집에 가기 전에 창가에서 노트를 불빛에 들어 봤대요.','“창가 불빛에 비춰 보기”를 누르면 뒷장 글씨가 비쳐요. 거울처럼 좌우가 뒤집혀 있어요.','뒷장엔 “이 노트, 우리 셋 말고 누가 또 써. 암호: 네 번째”. 정답: 네번째']},
-  {tab:'6장', ans:'초록', alt:['초록색','녹색','초록펜','초록색펜','green'], near:['초','록','연두','풀색'],
-   hints:['찢겨 나간 조각이 페이지 아래쪽에 떨어져 있어요.','조각을 한 번 눌러 바로 세우고, 끌어서 찢긴 자리에 맞춰 보세요.','붙이면 “초록 펜은 우리 셋 다 안 써”. 정답: 초록']},
+   hints:['오른쪽 아래 모서리가 접혀 있어요.',"'4-1'은 4번째 줄의 1번째 글자예요. 띄어쓰기는 세지 않아요. 찾은 글자를 숫자로 읽어 보세요.",'구·일·칠·삼 → 정답: 9173']},
+  {tab:'4장', ans:'등불', alt:['스탠드','불빛'], near:['빛','등','암호는등불'],
+   say:{'뒷장을보려면빛이필요해':'문장 끝까지 읽어 보자.'},
+   hints:['3장 모서리에서 떨어진 책갈피는 4×4에 구멍이 넷. 글자판도 4×4예요.','책갈피를 글자판에 딱 겹쳐 구멍 속 글자를 읽고, 90°씩 돌려 가며 이어 읽어요. “지우 책갈피” 글씨가 바로 선 방향에서 시작해 시계 방향으로.','“뒷장을 보려면 빛이 필요해. 암호는 등불” → 정답: 등불']},
+  {tab:'5장', ans:'9시10분', alt:['910','0910','9시10','9시십분','아홉시십분','아홉시10분','21시10분','2110','오전9시10분','오후9시10분'],
+   near:['9시','9','910분'],
+   say:{'2시50분':'비친 그대로 읽으면 안 될 것 같다.','250':'비친 그대로 읽으면 안 될 것 같다.','0250':'비친 그대로 읽으면 안 될 것 같다.','1450':'비친 그대로 읽으면 안 될 것 같다.','14시50분':'비친 그대로 읽으면 안 될 것 같다.','3시':'바늘을 다시 보자.'},
+   hints:['하람이는 암호를 “뒷장에 그려 뒀다”고 했어요. 앞에서 뒷장을 보려면?','소지품의 스탠드를 켜면 뒷장이 비쳐요. 비친 그림은 거울처럼 좌우가 뒤집혀 있어요.','비친 시계는 2시 50분처럼 보이지만 좌우를 되돌리면 9시 10분. 정답: 9시10분']},
+  {tab:'6장', ans:'윤선생님', alt:['윤선생','윤쌤','윤샘','윤선생님이'], near:['윤선','선생님','생님','윤생님'],
+   say:{'선생님':'누구 선생님인지까지 적자.','초록':'색 말고, 그 색으로 쓴 글자를 모아야 한다.','초록색':'색 말고, 그 색으로 쓴 글자를 모아야 한다.'},
+   hints:['찢긴 조각은 눌러서 돌리고, 끌어서 찢긴 자리에 맞춰요.','세 사람은 파랑·연필·빨강만 써요. 다른 색 작은 글자가 1·3·4장 구석에 하나씩, 그리고 스탠드를 켜야 보이는 곳에 하나 더 있어요.','1장 윤 · 3장 선 · 4장 생 · 5장(스탠드) 님 → 정답: 윤선생님']},
   {tab:'마지막 장', code:'3719',
-   hints:['세 사람 글씨 사이사이에 다른 색 글씨가 끼어 있어요.','초록 글씨만 순서대로 읽어 보세요. “작년 번호”는 3장에서 찾은 번호예요.','올해 번호는 작년 번호(9173)를 거울에 비춘 것 → 3719']},
+   hints:['선생님 글씨는 이 글자판에도 섞여 있어요. 그런데 어떤 순서로 읽어야 할까요?','4장처럼 책갈피를 글자판에 겹쳐 돌려 보세요. 돌릴 때마다 구멍 속에 선생님 숫자가 하나씩 보여요.','삼 → 칠 → 일 → 구, 자물쇠 번호 3719']},
   {tab:'끝'}
 ];
-const WRONG_COLOR={'파랑':'그건 지우 펜이다.','파란색':'그건 지우 펜이다.','빨강':'그건 서진이 펜이다.','빨간색':'그건 서진이 펜이다.','회색':'그건 하람이 연필이다.','연필':'그건 하람이 연필이다.','검정':'우리 셋 중에 검정 펜 쓰는 사람은 없는데…','검은색':'우리 셋 중에 검정 펜 쓰는 사람은 없는데…'};
+
+// 책갈피 구멍 (4×4 칸 번호 = 줄*4+칸): (0,1) (1,0) (1,2) (3,3)
+const HOLES=[1,4,6,15];
+// 4장: 책갈피를 바로 놓고 시계 방향으로 돌리며 읽으면 "뒷장을보려면빛이필요해암호는등불"
+const GRID4=['필뒷려호','장는을면','등요빛해','이불암보'];
+// 마지막 장: [글자, 펜]. 초록 숫자는 책갈피를 돌린 순서대로 삼·칠·일·구
+const GRIDF=[[['사','blue'],['랑','blue'],['칠','green'],['구','green']],
+             [['오','red'],['늘','red'],['삼','green'],['이','pencil']],
+             [['별','pencil'],['팔','blue'],['육','red'],['월','pencil']],
+             [['안','red'],['녕','red'],['일','green'],['십','blue']]];
 
 // ── 상태 ──────────────────────────────
 const fresh=()=>({p:0,open:0,solved:{},hints:{},wrong:{},ms:0,started:false,rubbed:false,unfolded:false,
-  card:{x:0,y:7},light:false,torn:{x:.1,y:1.6,r:180,done:false},lock:[0,0,0,0],done:false,next:''});
+  tools:{bm:false,lamp:false},light:false,torn:{x:.1,y:1.6,r:180,done:false},lock:[0,0,0,0],done:false,next:''});
 let S=fresh();
-try{const d=JSON.parse(localStorage.getItem(SAVE_KEY)||'null');if(d)S={...fresh(),...d}}catch{}
+try{const d=JSON.parse(localStorage.getItem(SAVE_KEY)||'null');if(d)S={...fresh(),...d,tools:{...fresh().tools,...(d.tools||{})}}}catch{}
 const save=()=>{try{localStorage.setItem(SAVE_KEY,JSON.stringify(S))}catch{}};
 addEventListener('pagehide',save);
+let TOOL=null;          // 지금 손에 든 도구: 'pencil' | 'bm' | null
+const STROKES={};       // 장마다 문지른 자국 (새로고침하면 사라짐, 2장 눌린 자국은 S.rubbed로 기억)
+const BM={};            // 장마다 책갈피 위치 {x,y,turns}
+let NEWTOOL=null;
 
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const fmt=ms=>{const s=Math.floor(ms/1000);return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`};
@@ -259,12 +282,13 @@ function renderStats(){$('#time').textContent=fmt(S.ms);$('#hintCount').textCont
 let tick=0;
 setInterval(()=>{if(S.started&&!S.done&&!document.hidden){S.ms+=1000;renderStats();if(++tick%5===0)save()}},1000);
 
-function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('on');clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove('on'),2200)}
-const norm=s=>s.replace(/[\s.,!?·'"~\-]/g,'').toLowerCase();
+function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('on');clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove('on'),2600)}
+const norm=s=>s.replace(/[\s.,!?·'"~:\-]/g,'').toLowerCase();
 function lev(a,b){const d=[...Array(b.length+1).keys()];for(let i=1;i<=a.length;i++){let p=d[0];d[0]=i;for(let j=1;j<=b.length;j++){const t=d[j];d[j]=Math.min(d[j]+1,d[j-1]+1,p+(a[i-1]===b[j-1]?0:1));p=t}}return d[b.length]}
 const sameDigits=(a,b)=>[...a].sort().join('')===[...b].sort().join('');
+function gain(tool,msg){if(S.tools[tool])return;S.tools[tool]=true;NEWTOOL=tool;save();toast(msg)}
 
-// ── 탭 ──────────────────────────────
+// ── 탭 · 소지품 ──────────────────────────────
 const canOpen=i=>i===END?S.done:i<=S.open;
 function renderTabs(){
   $('#tabs').innerHTML=PAGES.map((pg,i)=>{
@@ -273,12 +297,25 @@ function renderTabs(){
     return `<button class="tab${S.p===i?' on':''}" data-i="${i}"${locked?' disabled':''}>${locked?'🔒 ':''}${pg.tab}</button>`}).join('');
   $('#tabs').querySelectorAll('.tab').forEach(b=>b.onclick=()=>go(+b.dataset.i));
 }
+function renderTools(){
+  const el=$('#tools'),usable=S.started&&S.p>0&&S.p<END;
+  if(!usable){el.innerHTML='';return}
+  const items=[['pencil','✏️ 연필',true],['bm','🔖 책갈피',S.tools.bm],['lamp','💡 스탠드',S.tools.lamp]].filter(t=>t[2]);
+  el.innerHTML='<span>소지품</span>'+items.map(([id,label])=>
+    `<button class="tool${TOOL===id?' on':''}${id==='lamp'&&S.light?' lit':''}${NEWTOOL===id?' new':''}" data-t="${id}" aria-pressed="${id==='lamp'?S.light:TOOL===id}">${label}</button>`).join('');
+  NEWTOOL=null;
+  el.querySelectorAll('.tool').forEach(b=>b.onclick=()=>{
+    const id=b.dataset.t;
+    if(id==='lamp'){S.light=!S.light;save();const sh=$('.sheet');if(sh)sh.classList.toggle('lit',S.light)}
+    else TOOL=TOOL===id?null:id;
+    applyTool();
+  });
+}
 function go(i){if(!canOpen(i))return;S.p=i;save();render(true);scrollTo({top:0,behavior:'smooth'})}
 
 // ── 페이지 내용 ──────────────────────────────
 const L=(cls,html,no)=>`<p class="ln ${cls}">${no?`<span class="no">${no}</span>`:''}${html}</p>`;
 const FIX=(wrong,right)=>`<span class="fix"><s>${wrong}</s><i>${right}</i></span>`;
-const INS=w=>`<span class="ins"><i>${w}</i></span>`;
 const TINY=(t,c='green')=>`<span class="${c} tiny">${t}</span>`;
 
 function pageCover(){
@@ -299,19 +336,16 @@ function page1(){
     ${L('blue','음료수 사 온 하람이 덕에 좀 풀림.')}
     ${L('blue',`은근히 서진이 교정 역${FIX('활','할')}이 얄밉다.`)}
     ${L('blue',`너무 틀린대. 다음엔 꼼꼼히 쓸${FIX('께','게')}!`)}
-    ${L('blue',`야, 금요일엔 다 같이 떡볶이 가자!${TINY('✓')}`)}
+    ${L('blue','야, 금요일엔 다 같이 떡볶이 가자!')}
     ${L('','')}
     ${L('red','↳ 맞춤법 두 개 고쳐 둠. — 서진')}
-    <svg class="doodle" style="left:calc(var(--nm) - 30px);top:calc(var(--nl) * 3 - 6px);width:22px;height:calc(var(--nl) * 5 + 10px)" viewBox="0 0 22 180" preserveAspectRatio="none" aria-hidden="true">
-      <path d="M11 4 C 6 50, 16 100, 11 168" fill="none" stroke="#27479a" stroke-width="2" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
-      <path d="M4 156 L11 172 L18 156" fill="none" stroke="#27479a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
-    </svg>
     <svg class="doodle" style="right:18px;top:calc(var(--nl) * 8 + 2px);width:58px;height:46px" viewBox="0 0 58 46" aria-hidden="true">
       <g fill="none" stroke="#27479a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
         <path d="M10 40 C 6 24, 12 14, 22 14 C 34 14, 40 24, 36 40 Z"/><path d="M14 18 L13 6 L21 13"/><path d="M30 13 L37 6 L36 18"/>
         <circle cx="19" cy="25" r="1.3"/><circle cx="29" cy="25" r="1.3"/><path d="M22 30 Q24 32 26 30"/><path d="M36 36 C 46 36, 52 30, 50 22"/>
       </g>
     </svg>
+    <span class="doodle green" style="right:10px;top:calc(var(--nl) * 9 + 14px);font-family:var(--hand);font-size:15px;transform:rotate(-8deg)">윤</span>
   </article>${answerRow(1)}`;
 }
 
@@ -320,12 +354,8 @@ function page2(){
     ${L('head pencil','<span>3월 21일 목요일 · 흐림</span><span>— 하람</span>')}
     ${L('','')}
     ${L('pencil','내 차례는 비밀.')}
-    ${L('pencil','연필 있으면 알 거야.')}
-    <div class="rub" id="rub"><canvas id="rubCv" aria-label="연필로 문지를 수 있는 빈 종이"></canvas></div>
-    ${L('','')}
-    <svg class="doodle" style="right:20px;top:calc(var(--nl) * 2 + 4px);width:86px;height:22px" viewBox="0 0 86 22" aria-hidden="true">
-      <g fill="none" stroke="#4a4a4f" stroke-width="1.5" stroke-linejoin="round"><path d="M4 11 L14 4 H76 V18 H14 Z"/><path d="M14 4 V18"/><path d="M66 4 V18"/><path d="M4 11 L9 8 V14 Z" fill="#4a4a4f"/></g>
-    </svg>
+    <div class="rub" id="rub"></div>
+    ${L('pencil right','빈 줄이라고 빈 건 아님.')}
   </article>${answerRow(2)}`;
 }
 
@@ -343,7 +373,7 @@ function page3(){
     '사월이 오기 전에, 안녕'];
   return `<article class="sheet turn">
     ${L('head red','<span>3월 28일 목요일 · 비</span><span>— 서진</span>')}
-    ${L('red',`　　「부실 창가에서」${TINY('참 좋다')}`)}
+    ${L('red',`　　「부실 창가에서」${TINY('선')}`)}
     ${poem.map((s,i)=>L('red',s,i+1)).join('')}
     ${L('','')}
     ${L('','')}
@@ -353,33 +383,36 @@ function page3(){
   </article>${answerRow(3)}`;
 }
 
-// 4장 글자판: ★(1,2)에 책갈피 왼쪽 위를 맞추면 구멍으로 거·울·을·봐가 보인다
-const GRID=['하늘연필노트봄','떡볶★이교실창','문예부실거다지','우개울서진을람','종이비봐밀펜금','요일칠판구름안'];
-const HOLES=[0,6,8,11,13];   // 책갈피 4×4 칸 중 구멍 (줄*4+칸)
 function page4(){
   return `<article class="sheet turn">
     ${L('head blue','<span>4월 4일 목요일 · 바람</span><span>— 지우</span>')}
     ${L('blue','서진이가 또 고칠까 봐 이번엔 글자판!')}
-    ${L('blue','책갈피 구멍으로 보면 보여. ★부터 맞춰.')}
-    <div class="gwrap"><div class="grille" id="grille">
-      <div class="grid">${GRID.map(r=>[...r].map(ch=>`<span${ch==='★'?' class="star"':''}>${ch}</span>`).join('')).join('')}</div>
-      <div class="bm" id="bm" aria-label="구멍 뚫린 책갈피 (끌어서 옮기기)">${Array.from({length:16},(_,i)=>`<i class="${HOLES.includes(i)?'h':''}${i===0?' s':''}"></i>`).join('')}<span class="lbl">지우 책갈피</span></div>
-    </div></div>
+    ${L('blue',`아무렇게나 읽으면 아무 말도 안 됨.${TINY('생')}`)}
+    <div class="grid4">${GRID4.map(r=>[...r].map(ch=>`<span class="blue">${ch}</span>`).join('')).join('')}</div>
+    ${L('','')}
   </article>${answerRow(4)}`;
 }
 
 function page5(){
-  return `<article class="sheet turn${S.light?' lit':''}" id="sheet5">
+  // 뒷장에 그린 진짜 시계(9시 10분). .back이 좌우로 뒤집혀 비치므로 앞에서는 2시 50분처럼 보인다.
+  const ticks=Array.from({length:12},(_,i)=>{const a=i*Math.PI/6,x1=50+40*Math.sin(a),y1=50-40*Math.cos(a),x2=50+(i%3?36:32)*Math.sin(a),y2=50-(i%3?36:32)*Math.cos(a);return `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}"/>`}).join('');
+  return `<article class="sheet turn${S.light?' lit':''}">
     ${L('head pencil','<span>4월 11일 목요일 · 맑음</span><span>— 하람</span>')}
     ${L('','')}
-    ${L('pencil','오늘도 쓸 말 없음.')}
-    ${L('pencil','집에 가기 전에 창가에서 노트를 들어 봤다.')}
-    ${L('pencil','뒷장에 쓴 건 앞에서는 안 보이겠지.')}
-    ${L('','')}${L('','')}${L('','')}${L('','')}
-    <div class="back" style="top:calc(var(--nl) * 6 + 4px)">이 노트, 우리 셋 말고<br>누가 또 써.<br>암호: 네 번째</div>
-  </article>
-  <button class="lamp" id="lamp">${S.light?'불빛 치우기':'💡 창가 불빛에 비춰 보기'}</button>
-  ${answerRow(5)}`;
+    ${L('pencil','오늘 부실 시계가 멈췄다.')}
+    ${L('pencil','선생님한테 말했더니 웃기만 하심.')}
+    ${L('pencil','내 암호는 뒷장에 그려 둠.')}
+    ${L('','')}${L('','')}${L('','')}${L('','')}${L('','')}
+    <div class="back" style="top:calc(var(--nl) * 6 + 2px)" aria-hidden="true">멈춘 시각 = 내 암호
+      <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" fill="none" stroke="rgb(60,60,70)" stroke-width="2"/>
+        <g stroke="rgb(60,60,70)" stroke-width="2" stroke-linecap="round">${ticks}</g>
+        <text x="50" y="25" font-size="11" text-anchor="middle" fill="rgb(60,60,70)" font-family="sans-serif">12</text>
+        <line x1="50" y1="50" x2="26.1" y2="47.9" stroke="rgb(60,60,70)" stroke-width="4" stroke-linecap="round"/>
+        <line x1="50" y1="50" x2="81.2" y2="32" stroke="rgb(60,60,70)" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="50" cy="50" r="2.5" fill="rgb(60,60,70)"/></svg>
+      <span class="green" style="position:absolute;right:8px;bottom:-30px;font-size:.7em">님</span>
+    </div>
+  </article>${answerRow(5)}`;
 }
 
 // 6장 찢긴 자리: 같은 글줄을 위/아래 반쪽으로 잘라 쓴다
@@ -387,12 +420,12 @@ const TEAR=[50,46,53,48,55,47,51,45,54,49,52,46,55,48,50,44,53,47,52,49,51];
 const tearTop='polygon(0% 0%,100% 0%,'+TEAR.map((y,i)=>`${100-i*5}% ${TEAR[20-i]}%`).join(',')+')';
 const tearBot='polygon('+TEAR.map((y,i)=>`${i*5}% ${y}%`).join(',')+',100% 100%,0% 100%)';
 function page6(){
-  const tt='<div class="tt">초록 펜은 우리 셋 다 안 써.</div>';
+  const tt='<div class="tt">우리 안 쓰는 색만 장 순서대로 모아</div>';
   return `<article class="sheet turn">
     ${L('head red','<span>4월 18일 목요일 · 흐림</span><span>— 서진</span>')}
     ${L('','')}
-    ${L('red','너무 솔직하게 써서 찢어 버렸다.')}
-    ${L('red','암호는 찢긴 줄에 적힌 펜 색깔.')}
+    ${L('red','누가 우리 노트에 몰래 쓰고 있다.')}
+    ${L('red','들킬까 봐 찢어 버렸다.')}
     ${L('','')}
     <div class="tear" id="tear">
       <div class="tbox" style="clip-path:${tearTop}">${tt}</div>
@@ -406,18 +439,10 @@ function page7(){
   return `<article class="sheet turn">
     ${L('head','<span class="blue">2월 13일 · 졸업식 전날</span><span class="pencil">— 다 같이</span>')}
     ${L('','')}
-    ${L('blue',`드디어 마지막 장! ${INS('올해')} 우리 셋 다 졸업.`)}
-    ${L('','')}
-    ${L('pencil',`부실 열쇠는 ${INS('번호는')} 선생님께 돌려드림.`)}
-    ${L('','')}
-    ${L('red',`마지막까지 ${INS('작년')} 맞춤법 검사 완료.`)}
-    ${L('','')}
-    ${L('blue',`다음 부원한테 ${INS('번호를')} 이 노트 물려주자!`)}
-    ${L('','')}
-    ${L('pencil',`문 번호는 ${INS('거울에')} 바꿔 둔대.`)}
-    ${L('','')}
-    ${L('red',`그럼 ${INS('비춘')} 안녕, 문예부. ${INS('것')}`)}
-    ${L('','')}
+    ${L('blue','마지막 장은 넷이서 한 칸씩 채움!')}
+    ${L('pencil','문 번호는 선생님이 바꿨대.')}
+    ${L('red','작년 번호로는 이제 안 열림.')}
+    <div class="grid4">${GRIDF.map(r=>r.map(([ch,c])=>`<span class="${c}">${ch}</span>`).join('')).join('')}</div>
     ${L('green right','다들 졸업 축하해.')}
   </article>
   <section class="lock" id="lock">
@@ -443,7 +468,7 @@ function pageEnd(){
     </dl>
     <p>복도로 나서자 문 바깥쪽에 초록 펜으로 쓴 쪽지가 붙어 있다.</p>
     <div class="letter">끝까지 읽어 줘서 고마워.<br>세 사람이 남긴 노트, 이제 네 차례야.<br>— 문예부 지도교사 윤</div>
-    <p>네 번째 글씨의 주인은 문예부 담당 윤 선생님이었다. 졸업하는 세 사람과 함께, 새 부원을 위한 탈출 놀이를 몰래 준비해 둔 것이다. 노트 맨 뒤에는 아직 빈 줄이 남아 있다.</p>
+    <p>노트 구석구석에 숨어 있던 네 번째 글씨. 윤 선생님은 졸업하는 세 사람과 함께 새 부원을 위한 탈출 놀이를 몰래 준비해 두었다. 노트 맨 뒤에는 아직 빈 줄이 남아 있다.</p>
     ${S.next
       ?`<p class="nextline">“${esc(S.next)}” <span class="small">— 다음 사람에게</span></p>`
       :`<form class="nextf" id="nextf"><input id="nextIn" maxlength="40" placeholder="다음 사람에게 한 줄" aria-label="다음 사람에게 남길 한 줄"><button class="btn">남기기</button></form><div class="small">이 브라우저에만 남아요.</div>`}
@@ -461,6 +486,7 @@ function answerRow(p){
 // ── 렌더 ──────────────────────────────
 const VIEWS=[pageCover,page1,page2,page3,page4,page5,page6,page7,pageEnd];
 function render(anim){
+  if(S.p===0||S.p===END)TOOL=null;
   renderTabs();renderStats();
   const p=S.p;
   $('#page').innerHTML=VIEWS[p]();
@@ -468,16 +494,36 @@ function render(anim){
   $('#page').querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(+b.dataset.go));
   if(p===0)$('#start').onclick=()=>{S.started=true;S.open=Math.max(S.open,1);go(1)};
   const f=$('#pw');if(f)f.onsubmit=e=>{e.preventDefault();check(p)};
-  if(p===2)initRub();
-  if(p===3){const c=$('#corner');if(c)c.onclick=()=>{S.unfolded=true;save();render(false)}}
-  if(p===4)bindGrille();
-  if(p===5)$('#lamp').onclick=()=>{S.light=!S.light;save();$('#sheet5').classList.toggle('lit',S.light);$('#lamp').textContent=S.light?'불빛 치우기':'💡 창가 불빛에 비춰 보기'};
+  if(p===3){const c=$('#corner');if(c)c.onclick=()=>{S.unfolded=true;save();render(false);gain('bm','접힌 틈에서 구멍 뚫린 책갈피가 떨어졌다. 소지품에 넣었다.');renderTools()}}
   if(p===6)bindTorn();
   if(p===7)bindLock();
   if(p===END){
-    $('#again').onclick=()=>{if(confirm('처음부터 다시 할까요? 지금 기록은 지워져요.')){S=fresh();strokes=[];save();render(true)}};
+    $('#again').onclick=()=>{if(confirm('처음부터 다시 할까요? 지금 기록은 지워져요.')){S=fresh();for(const k in STROKES)delete STROKES[k];for(const k in BM)delete BM[k];save();render(true)}};
     const nf=$('#nextf');if(nf)nf.onsubmit=e=>{e.preventDefault();const v=$('#nextIn').value.trim();if(!v)return;S.next=v;save();render(false)};
   }
+  setupSheet();
+}
+
+// 장(.sheet)마다: 글자판 칸 크기, 연필 캔버스, 스탠드 불빛, 책갈피를 붙인다
+function setupSheet(){
+  const sh=$('#page .sheet');
+  if(!sh||S.p===END){renderTools();return}
+  const cs=getComputedStyle(sh),cw=sh.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight);
+  sh.style.setProperty('--c',clamp(Math.floor(cw/5.2),40,58)+'px');
+  sh.classList.toggle('lit',S.light);
+  const cv=document.createElement('canvas');cv.className='rubcv';sh.appendChild(cv);
+  initRub(sh,cv);
+  applyTool();
+}
+function applyTool(){
+  const sh=$('#page .sheet');
+  if(sh){
+    sh.classList.toggle('pencil-on',TOOL==='pencil');
+    const bm=sh.querySelector('.bm');
+    if(TOOL==='bm'&&!bm)showBm(sh);
+    if(TOOL!=='bm'&&bm)bm.remove();
+  }
+  renderTools();
 }
 
 function check(p){
@@ -485,13 +531,17 @@ function check(p){
   if(!v)return;
   if(v===norm(pg.ans)||(pg.alt||[]).some(a=>norm(a)===v)){
     S.solved[p]=pg.ans;S.open=Math.max(S.open,p+1);save();
-    toast('다음 장이 떨어졌다.');render(false);return;
+    render(false);
+    if(p===3&&!S.tools.bm)gain('bm','책상 밑에 떨어져 있던 구멍 뚫린 책갈피를 주웠다. 소지품에 넣었다.');
+    else if(p===4&&!S.tools.lamp)gain('lamp','다음 장이 떨어졌다. 부실 책상 스탠드도 켤 수 있게 됐다.');
+    else toast('다음 장이 떨어졌다.');
+    renderTools();return;
   }
   S.wrong[p]=(S.wrong[p]||0)+1;save();
-  const a=norm(pg.ans);
+  const a=norm(pg.ans),said=pg.say&&pg.say[v];
   const near=pg.near.includes(v)||(a.length>=4&&lev(v,a)<=1)||(/^\d{4}$/.test(a)&&/^\d{4}$/.test(v)&&sameDigits(a,v));
-  msg.className='msg'+(near?' near':'');
-  msg.textContent=(p===6&&WRONG_COLOR[v])||(near?'거의 맞았다. 조금만 더…':['아닌 것 같다.','다음 장이 꿈쩍도 안 한다.','다시 읽어 보자.'][S.wrong[p]%3]);
+  msg.className='msg'+(near&&!said?' near':'');
+  msg.textContent=said||(near?'거의 맞았다. 조금만 더…':['아닌 것 같다.','다음 장이 꿈쩍도 안 한다.','다시 읽어 보자.'][S.wrong[p]%3]);
   $('#pw').classList.remove('shake');void $('#pw').offsetWidth;$('#pw').classList.add('shake');
   inp.select();
 }
@@ -508,16 +558,24 @@ function bindLock(){
   };
 }
 
-// ── 4장: 책갈피 끌기 ──────────────────────────────
-function bindGrille(){
-  const g=$('#grille'),bm=$('#bm');if(!g)return;
-  const c=clamp(Math.floor(g.parentNode.clientWidth/7),32,50);
-  g.style.setProperty('--c',c+'px');
-  const place=()=>{bm.style.left=S.card.x*c+'px';bm.style.top=S.card.y*c+'px'};place();
+// ── 책갈피: 끌면 움직이고, 누르면 시계 방향으로 90° 돈다. 글자판 가까이 놓으면 딱 맞춰진다 ──
+function showBm(sh){
+  const c=parseFloat(getComputedStyle(sh).getPropertyValue('--c'))||44;
+  const bm=document.createElement('div');bm.className='bm';bm.setAttribute('aria-label','구멍 뚫린 책갈피 (끌어서 옮기기, 누르면 돌리기)');
+  bm.innerHTML=Array.from({length:16},(_,i)=>`<i class="${HOLES.includes(i)?'h':''}"></i>`).join('')+'<span class="lbl">지우 책갈피</span>';
+  sh.appendChild(bm);
+  const W=sh.clientWidth,H=sh.offsetHeight,size=4*c;
+  const st0=BM[S.p]||(BM[S.p]={x:W-size-14,y:Math.min(60,H-size),turns:0});
+  const place=()=>{bm.style.left=st0.x+'px';bm.style.top=st0.y+'px';bm.style.transform=`rotate(${st0.turns*90}deg)`};place();
   let st=null;
-  bm.onpointerdown=e=>{bm.setPointerCapture(e.pointerId);st={px:e.clientX,py:e.clientY,x:S.card.x*c,y:S.card.y*c};bm.classList.add('drag')};
-  bm.onpointermove=e=>{if(!st)return;st.cx=clamp(st.x+e.clientX-st.px,0,3*c);st.cy=clamp(st.y+e.clientY-st.py,0,7*c);bm.style.left=st.cx+'px';bm.style.top=st.cy+'px'};
-  bm.onpointerup=bm.onpointercancel=()=>{if(!st)return;bm.classList.remove('drag');if(st.cx!==undefined){S.card={x:Math.round(st.cx/c),y:Math.round(st.cy/c)};save()}st=null;place()};
+  bm.onpointerdown=e=>{bm.setPointerCapture(e.pointerId);st={px:e.clientX,py:e.clientY,x:st0.x,y:st0.y,moved:0};bm.classList.add('drag')};
+  bm.onpointermove=e=>{if(!st)return;const dx=e.clientX-st.px,dy=e.clientY-st.py;st.moved=Math.max(st.moved,Math.hypot(dx,dy));if(st.moved<6)return;
+    st0.x=clamp(st.x+dx,0,W-size);st0.y=clamp(st.y+dy,0,H-size);bm.style.left=st0.x+'px';bm.style.top=st0.y+'px'};
+  bm.onpointerup=bm.onpointercancel=()=>{if(!st)return;bm.classList.remove('drag');
+    if(st.moved<6)st0.turns++;
+    else{const g=sh.querySelector('.grid4');if(g){const gr=g.getBoundingClientRect(),sr=sh.getBoundingClientRect(),gx=gr.left-sr.left,gy=gr.top-sr.top;
+      if(Math.abs(st0.x-gx)<c*.45&&Math.abs(st0.y-gy)<c*.45){st0.x=gx;st0.y=gy}}}
+    st=null;place()};
 }
 
 // ── 6장: 찢긴 조각 맞추기 ──────────────────────────────
@@ -537,25 +595,28 @@ function bindTorn(){
     st=null;save();place()};
 }
 
-// ── 2장: 연필 문지르기 ──────────────────────────────
-// 문지른 자리에 흑연을 칠하고, 눌린 글씨 모양만큼은 다시 지워 종이색이 드러나게 한다.
+// ── 연필 문지르기 ──────────────────────────────
+// 장 전체에 흑연을 칠할 수 있고, 2장의 빈 줄에만 눌린 글씨가 있다. 눌린 글씨 모양만큼은 흑연을 지워 종이색이 드러난다.
 const RUB_TEXT=['빨간 펜이 고친','글자만 읽어'];
-let strokes=[];   // 문지른 경로 (가로·세로 0~1 비율), 창 크기가 바뀌면 다시 그린다
-async function initRub(){
-  const wrap=$('#rub'),cv=$('#rubCv');if(!wrap)return;
+async function initRub(sh,cv){
   try{await document.fonts.load('40px "Nanum Pen Script"')}catch{}
   if(!document.body.contains(cv))return;
-  const dpr=Math.min(devicePixelRatio||1,2),W=wrap.clientWidth,H=wrap.clientHeight;
-  cv.width=W*dpr;cv.height=H*dpr;
+  const p=S.p,dpr=Math.min(devicePixelRatio||1,2),W=sh.clientWidth,H=sh.offsetHeight;
+  cv.width=W*dpr;cv.height=H*dpr;cv.style.width=W+'px';cv.style.height=H+'px';
   const ctx=cv.getContext('2d');ctx.scale(dpr,dpr);
-  // 눌린 글씨 마스크
+  // 눌린 글씨 마스크 (2장 빈 줄 자리에만)
   const mask=document.createElement('canvas');mask.width=cv.width;mask.height=cv.height;
   const mc=mask.getContext('2d');mc.scale(dpr,dpr);
-  const fs=Math.min(58,W/6.2);
-  mc.font=`${fs}px "Nanum Pen Script"`;mc.textAlign='center';mc.textBaseline='middle';mc.lineWidth=2.6;mc.lineJoin='round';
-  mc.save();mc.translate(W/2,H/2);mc.rotate(-.04);
-  RUB_TEXT.forEach((t,i)=>{const y=(i-(RUB_TEXT.length-1)/2)*fs*1.15;mc.fillText(t,0,y);mc.strokeText(t,0,y)});
-  mc.restore();
+  const rub=sh.querySelector('#rub');let box=null;
+  if(rub){
+    const r=rub.getBoundingClientRect(),s=sh.getBoundingClientRect();
+    box={x:r.left-s.left-20,y:r.top-s.top,w:r.width+20,h:r.height};
+    const fs=Math.min(58,box.w/6.2);
+    mc.font=`${fs}px "Nanum Pen Script"`;mc.textAlign='center';mc.textBaseline='middle';mc.lineWidth=2.6;mc.lineJoin='round';
+    mc.save();mc.translate(box.x+box.w/2,box.y+box.h/2);mc.rotate(-.04);
+    RUB_TEXT.forEach((t,i)=>{const y=(i-(RUB_TEXT.length-1)/2)*fs*1.15;mc.fillText(t,0,y);mc.strokeText(t,0,y)});
+    mc.restore();
+  }
   // 흑연 질감
   const grain=document.createElement('canvas');grain.width=grain.height=48;
   const gc=grain.getContext('2d');
@@ -563,11 +624,13 @@ async function initRub(){
   for(let i=0;i<1600;i++){gc.fillStyle=`rgba(30,30,36,${.3+Math.random()*.6})`;gc.fillRect(Math.random()*48,Math.random()*48,1+Math.random()*1.5,1)}
   const pat=ctx.createPattern(grain,'repeat');
   // 글씨가 있는 칸 (12px 격자) — 얼마나 문질렀는지 셀 때 쓴다
-  const CELL=12,cols=Math.ceil(W/CELL),rows=Math.ceil(H/CELL),md=mc.getImageData(0,0,mask.width,mask.height).data;
-  const textCells=new Set(),covered=new Set();
-  for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){
-    let hit=false;for(let y=0;y<CELL&&!hit;y+=3)for(let x=0;x<CELL&&!hit;x+=3){const px=Math.floor((c*CELL+x)*dpr),py=Math.floor((r*CELL+y)*dpr);if(px<mask.width&&py<mask.height&&md[(py*mask.width+px)*4+3]>40)hit=true}
-    if(hit)textCells.add(r*cols+c)}
+  const CELL=12,cols=Math.ceil(W/CELL),rows=Math.ceil(H/CELL),textCells=new Set(),covered=new Set();
+  if(box){
+    const md=mc.getImageData(0,0,mask.width,mask.height).data;
+    for(let r=Math.floor(box.y/CELL);r<Math.ceil((box.y+box.h)/CELL)&&r<rows;r++)for(let c=Math.max(0,Math.floor(box.x/CELL));c<cols;c++){
+      let hit=false;for(let y=0;y<CELL&&!hit;y+=3)for(let x=0;x<CELL&&!hit;x+=3){const px=Math.floor((c*CELL+x)*dpr),py=Math.floor((r*CELL+y)*dpr);if(px<mask.width&&py<mask.height&&md[(py*mask.width+px)*4+3]>40)hit=true}
+      if(hit)textCells.add(r*cols+c)}
+  }
   const R=15;
   function dab(x0,y0,x1,y1){
     ctx.globalCompositeOperation='source-over';ctx.globalAlpha=.42;ctx.strokeStyle=pat;ctx.lineWidth=R*2;ctx.lineCap='round';
@@ -576,24 +639,24 @@ async function initRub(){
     for(let k=0;k<=n;k++){const x=x0+(x1-x0)*k/n,y=y0+(y1-y0)*k/n;
       for(let r=Math.floor((y-R)/CELL);r<=Math.floor((y+R)/CELL);r++)for(let c=Math.floor((x-R)/CELL);c<=Math.floor((x+R)/CELL);c++)if(r>=0&&c>=0&&r<rows&&c<cols)covered.add(r*cols+c)}
   }
-  function punch(){ctx.globalCompositeOperation='destination-out';ctx.globalAlpha=1;ctx.setTransform(1,0,0,1,0,0);ctx.drawImage(mask,0,0);ctx.setTransform(dpr,0,0,dpr,0,0)}
+  function punch(){if(!box)return;ctx.globalCompositeOperation='destination-out';ctx.globalAlpha=1;ctx.setTransform(1,0,0,1,0,0);ctx.drawImage(mask,0,0);ctx.setTransform(dpr,0,0,dpr,0,0)}
   function progress(){
-    if(S.rubbed||!textCells.size)return;
+    if(!box||S.rubbed||!textCells.size)return;
     let n=0;textCells.forEach(k=>{if(covered.has(k))n++});
     if(n/textCells.size>.6){S.rubbed=true;save();toast('눌린 자국이 드러났다.')}
   }
-  // 이미 드러냈으면 글씨 둘레를 칠해 둔다
-  if(S.rubbed){for(let y=H*.18;y<H*.86;y+=R*1.1)dab(W*.08,y,W*.92,y+4)}
+  const strokes=STROKES[p]||(STROKES[p]=[]);
+  if(box&&S.rubbed){for(let y=box.y+box.h*.12;y<box.y+box.h*.9;y+=R*1.1)dab(box.x+box.w*.06,y,box.x+box.w*.94,y+4)}
   strokes.forEach(s=>{for(let i=1;i<s.length;i++)dab(s[i-1][0]*W,s[i-1][1]*H,s[i][0]*W,s[i][1]*H)});
   punch();
   let last=null,cur=null;
   const pos=e=>{const b=cv.getBoundingClientRect();return[e.clientX-b.left,e.clientY-b.top]};
   cv.onpointerdown=e=>{cv.setPointerCapture(e.pointerId);last=pos(e);cur=[[last[0]/W,last[1]/H]];strokes.push(cur);dab(...last,...last);punch()};
-  cv.onpointermove=e=>{if(!last)return;const p=pos(e);dab(...last,...p);punch();cur.push([p[0]/W,p[1]/H]);last=p};
+  cv.onpointermove=e=>{if(!last)return;const q=pos(e);dab(...last,...q);punch();cur.push([q[0]/W,q[1]/H]);last=q};
   cv.onpointerup=cv.onpointercancel=()=>{last=null;progress()};
 }
 let lastW=innerWidth;
-addEventListener('resize',()=>{if(innerWidth===lastW)return;lastW=innerWidth;if(S.p===2)initRub();if(S.p===4)bindGrille();if(S.p===6)bindTorn()});
+addEventListener('resize',()=>{if(innerWidth===lastW)return;lastW=innerWidth;for(const k in BM)delete BM[k];render(false)});
 
 // ── 힌트 ──────────────────────────────
 function openHint(){
