@@ -8,6 +8,7 @@
 index.html          메인: 사건 노트 카드 + 사건 대장(표) + 추천 버튼(Firebase)
 lang.js             언어 결정 (?lang= → localStorage hn.lang → 브라우저 언어)
 analytics.js        GA4 전송. 스키마에 없는 이벤트·값은 버린다
+feedback.js         결말 화면 한 줄 피드백 (#again 위에 자동으로 붙음, Firestore clueFeedback, 쓰기만)
 ANALYTICS.md        이벤트 설계 문서
 notes/NN/index.html 사건 하나 = HTML 파일 하나 (CSS·JS 모두 인라인)
 notes/NN/PLAN.md    그 사건의 기획안 (이야기, 장 구성, 정답, 정할 것)
@@ -28,7 +29,7 @@ fonts/              공통 글꼴 (fonts.css → heejoy.css, kkakdugi.css, 각 �
 - 로컬 서버: `python -m http.server 8779` (Claude 미리보기는 `.claude/launch.json`의 `clues`). 파일을 바로 열면 폰트·모듈이 막힐 수 있으니 서버로 연다.
 - 화면을 바꾸면 미리보기에서 직접 확인한다: 콘솔 오류, 처음부터 끝까지 한 번 플레이, 모바일 375px 폭에서 가로 스크롤 없음.
 - 진행 저장은 localStorage에 남는다. 테스트 전에 해당 사건의 키를 지운다 (`hn.note02.v2`, `hn.note03.v2`, `hn.note04.v4`, `hn.note05.v4`, `hn.note01.save.v1`).
-- 사건을 끝내면 각 노트가 `hn.clear.noteNN`(`{ok, best, last}`, ms)에 기록을 남기고, 메인 사건 대장의 "내 기록" 칸이 그걸 읽는다. 새 노트도 끝나는 자리에서 `record(ms, ok)`를 부르고 `index.html`의 `SAVES`에 저장 키를 추가한다.
+- 사건을 끝내면 각 노트가 `hn.clear.noteNN`(`{ok, best, last}`, ms)에 기록을 남기고, 메인 사건 대장의 "내 기록" 칸이 그걸 읽는다. 새 노트도 결말에 `id="again"` 버튼을 두고 `<script src="../../feedback.js" defer></script>`를 넣는다. 끝나는 자리에서 `record(ms, ok)`를 부르고 `index.html`의 `SAVES`에 저장 키를 추가한다.
 
 ## 코드 규칙
 
