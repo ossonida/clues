@@ -4,18 +4,19 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Note 02 · 문예부 교환일기 | 히든노트</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Nanum+Gothic:wght@400;700;800&family=Nanum+Gothic+Coding:wght@400;700&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/hada0127/hada-type-levelup@v2026.10.21/css/levelup-subset.css">
+<link rel="stylesheet" href="../../fonts/fonts.css">
 <style>
 :root{
   --desk:#34302b;--pad:#fbf2a6;--pline:#a9c3e0;--margin:rgba(214,69,65,.55);--lh:32px;--ml:56px;--binding:#7a1e1b;
   --sheet:#fffdf4;--ink:#1f1c18;--dim:#6b6358;--rule:#cfc5b0;--stamp:#a3312a;
   --blue:#27479a;--pencil:#4a4a4f;--red:#c23a2e;--green:#2b7a52;
   --nl:34px;--nm:64px;--hs:clamp(20px,5.4vw,27px);
-  --mono:"Nanum Gothic Coding",monospace;--serif:"Nanum Myeongjo",serif;--hand:"Nanum Pen Script",cursive;
+  --mono:"Kkakdugi Drafting",monospace;--serif:"LevelUp",serif;--hand:"HEEJOY",cursive;
 }
 *{box-sizing:border-box}
-html,body{margin:0;background:var(--desk);color:var(--ink);font-family:"Nanum Gothic",system-ui,sans-serif;font-size:15px;line-height:1.6}
+html,body{margin:0;background:var(--desk);color:var(--ink);font-family:"Kkakdugi Drafting",system-ui,sans-serif;font-size:15px;line-height:1.6}
 @media(max-width:640px){:root{--ml:26px;--nm:40px}}
 button{font-family:inherit;cursor:pointer;color:inherit}
 
@@ -599,7 +600,7 @@ function bindTorn(){
 // 장 전체에 흑연을 칠할 수 있고, 2장의 빈 줄에만 눌린 글씨가 있다. 눌린 글씨 모양만큼은 흑연을 지워 종이색이 드러난다.
 const RUB_TEXT=['빨간 펜이 고친','글자만 읽어'];
 async function initRub(sh,cv){
-  try{await document.fonts.load('40px "Nanum Pen Script"')}catch{}
+  try{await document.fonts.load('40px "HEEJOY"')}catch{}
   if(!document.body.contains(cv))return;
   const p=S.p,dpr=Math.min(devicePixelRatio||1,2),W=sh.clientWidth,H=sh.offsetHeight;
   cv.width=W*dpr;cv.height=H*dpr;cv.style.width=W+'px';cv.style.height=H+'px';
@@ -612,7 +613,7 @@ async function initRub(sh,cv){
     const r=rub.getBoundingClientRect(),s=sh.getBoundingClientRect();
     box={x:r.left-s.left-20,y:r.top-s.top,w:r.width+20,h:r.height};
     const fs=Math.min(58,box.w/6.2);
-    mc.font=`${fs}px "Nanum Pen Script"`;mc.textAlign='center';mc.textBaseline='middle';mc.lineWidth=2.6;mc.lineJoin='round';
+    mc.font=`${fs}px "HEEJOY"`;mc.textAlign='center';mc.textBaseline='middle';mc.lineWidth=2.6;mc.lineJoin='round';
     mc.save();mc.translate(box.x+box.w/2,box.y+box.h/2);mc.rotate(-.04);
     RUB_TEXT.forEach((t,i)=>{const y=(i-(RUB_TEXT.length-1)/2)*fs*1.15;mc.fillText(t,0,y);mc.strokeText(t,0,y)});
     mc.restore();

@@ -1,0 +1,6 @@
+/* 히든노트 공통 글꼴. 모두 SIL Open Font License 1.1
+   - 손글씨: 히조이체 HEEJOY (김희정)            → heejoy.css
+   - 본문·라벨: 깍두기 도면체 Kkakdugi Drafting (역동감자) → kkakdugi.css
+   - 제목·명조 자리: 레벨업체 LevelUp (hada)     → 각 페이지에서 jsDelivr로 불러온다 */
+@import url("heejoy.css");
+@import url("kkakdugi.css");
