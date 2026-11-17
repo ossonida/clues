@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="ko" data-note="note03">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Note 03 · 은하분교 숙직 일지 | 히든노트</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Nanum+Gothic:wght@400;700;800&family=Nanum+Gothic+Coding:wght@400;700&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
+<style>
+:root{
+  --desk:#24262b;--pad:#fbf2a6;--pline:#a9c3e0;--margin:rgba(214,69,65,.55);--lh:32px;--ml:56px;--binding:#2c3540;
+  --sheet:#f4ecd6;--ink:#1f1c18;--dim:#6b6358;--stamp:#a3312a;--pen:#23262f;--crayon:#c25a7c;
+  --hs:clamp(19px,5vw,24px);
+  --mono:"Nanum Gothic Coding",monospace;--serif:"Nanum Myeongjo",serif;--hand:"Nanum Pen Script",cursive;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--desk);color:var(--ink);font-family:"Nanum Gothic",system-ui,sans-serif;font-size:15px;line-height:1.6}
+@media(max-width:640px){:root{--ml:26px}}
+button{font-family:inherit;cursor:pointer;color:inherit}
+
+/* 리갈패드 바탕 (Note 01·02와 같은 틀) */
+.app{max-width:900px;min-height:100vh;margin:0 auto;padding:0 22px 56px calc(var(--ml) + 22px);background-color:var(--pad);
+  background-image:linear-gradient(90deg,transparent calc(var(--ml) - 5px),var(--margin) calc(var(--ml) - 5px),var(--margin) calc(var(--ml) - 4px),transparent calc(var(--ml) - 4px),transparent var(--ml),var(--margin) var(--ml),var(--margin) calc(var(--ml) + 1px),transparent calc(var(--ml) + 1px)),
+    repeating-linear-gradient(transparent 0 calc(var(--lh) - 1px),var(--pline) calc(var(--lh) - 1px) var(--lh));
+  background-position:0 0,0 6px;box-shadow:0 30px 60px -20px rgba(0,0,0,.6)}
+.app::before{content:"";display:block;height:34px;margin:0 -22px 22px calc(-1 * (var(--ml) + 22px));background:linear-gradient(#3a4552,var(--binding) 70%,#1c232b);box-shadow:0 3px 0 rgba(0,0,0,.12)}
+@media(max-width:640px){.app{padding:0 12px 40px calc(var(--ml) + 12px)}.app::before{margin:0 -12px 18px calc(-1 * (var(--ml) + 12px))}}
+
+header.hud{display:flex;align-items:flex-end;gap:10px 18px;flex-wrap:wrap;margin-bottom:22px}
+.brand{font-family:var(--hand);font-size:40px;letter-spacing:-.5px;line-height:1.05}
+.brand .t{background:linear-gradient(transparent 60%,rgba(44,53,64,.25) 60% 88%,transparent 88%)}
+.brand .back{display:block;font-family:var(--mono);font-size:12px;color:var(--dim);text-decoration:none;margin-bottom:6px}
+.brand .back:hover{color:var(--ink)}
+.brand small{display:block;font-family:var(--serif);font-size:14px;color:var(--dim);margin-top:4px}
+.spacer{flex:1}
+.stat{font-family:var(--mono);font-size:12px;color:var(--dim);display:flex;flex-direction:column;line-height:1.3;padding:0 4px}
+.stat b{color:var(--ink);font-size:20px;border-bottom:1px solid var(--ink);min-width:62px}
+.btn{white-space:nowrap;background:transparent;color:var(--ink);border:1.5px solid var(--ink);border-radius:2px;padding:7px 13px;font-size:14px;font-weight:700}
+.btn:hover{background:var(--ink);color:#fffdf4}
+.btn.primary{background:var(--ink);color:#fffdf4}
+.btn.primary:hover{background:var(--stamp);border-color:var(--stamp)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn:disabled:hover{background:transparent;color:var(--ink)}
+
+/* 탭 */
+.tabs{display:flex;gap:6px;flex-wrap:wrap;align-items:flex-end;padding-left:14px;position:relative;z-index:1;margin-bottom:-4px}
+.tab{border:none;color:#3a3326;padding:7px 14px 9px;font-size:13px;font-weight:700;box-shadow:0 1px 1px rgba(0,0,0,.12);opacity:.85;background:#e8dcb8}
+.tab.map{background:#c8d6c0;margin-left:10px}
+.tab:hover{opacity:1}
+.tab.on{opacity:1;padding-top:12px;box-shadow:0 2px 3px rgba(0,0,0,.18)}
+.tab:disabled{background:#e4dcc4;color:#9a8f76;font-weight:400;cursor:not-allowed;opacity:.8}
+.tab .ok{color:#2b7a52;margin-left:3px}
+
+/* 숙직 일지 한 장 */
+.log{position:relative;max-width:660px;background:var(--sheet);padding:22px 22px 26px;user-select:none;-webkit-user-select:none;
+  box-shadow:0 1px 1px rgba(0,0,0,.12),0 16px 30px -14px rgba(40,30,0,.55);
+  background-image:radial-gradient(ellipse at 85% 10%,rgba(150,110,40,.13),transparent 45%),radial-gradient(ellipse at 10% 95%,rgba(120,90,40,.12),transparent 40%)}
+.log.turn{animation:turn .45s ease-out}
+@keyframes turn{from{opacity:0;transform:translateX(26px) rotate(.8deg)}to{opacity:1;transform:none}}
+.log h3{margin:0;text-align:center;font-family:var(--serif);font-weight:800;font-size:19px;letter-spacing:10px;color:#3d3628}
+.log .meta{display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px 12px;font-family:var(--serif);font-size:13px;color:#6b604a;border-bottom:2px solid #6b604a;padding:10px 0 6px;margin-bottom:2px}
+.log .meta b{font-family:var(--hand);font-weight:400;font-size:calc(var(--hs) * 1.02);color:var(--pen);margin-left:4px}
+.rows{display:grid;grid-template-columns:54px 70px 72px 1fr}
+.rows>div{border-bottom:1px solid #cbbf9e;padding:4px 6px 2px;font-family:var(--hand);font-size:var(--hs);line-height:1.25;color:var(--pen);min-height:38px}
+.rows>.th{font-family:var(--serif);font-size:12px;color:#6b604a;background:rgba(107,96,74,.08);min-height:0;padding:4px 6px;border-bottom:1px solid #6b604a}
+.rows .st{white-space:nowrap}
+.rows .st.bad{color:#7a1e1b}
+@media(max-width:560px){
+  .rows{grid-template-columns:48px 62px 1fr}
+  .rows>.th.memo{display:none}
+  .rows>.memo{grid-column:1/-1;padding-left:20px;min-height:0;padding-bottom:6px}
+  .rows>.memo:empty{display:none}
+  .rows>div:not(.memo):not(.th){border-bottom:none}
+}
+.log .foot{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin-top:12px;font-family:var(--hand);font-size:var(--hs);color:var(--pen);line-height:1.3}
+.log .foot .sign{font-family:var(--serif);font-size:12px;color:#6b604a;white-space:nowrap}
+.log .foot .sign b{display:inline-block;margin-left:6px;border:2px solid var(--stamp);color:var(--stamp);border-radius:50%;width:34px;height:34px;line-height:30px;text-align:center;font-family:var(--serif);font-size:12px;transform:rotate(-8deg);opacity:.8}
+.quote{display:inline-block;background:#fff8dc;border:1px dashed #b9a676;padding:0 8px;margin:2px 0;transform:rotate(-.6deg)}
+
+/* 손전등: .dk 안쪽을 덮는 어둠. 켜면 손가락/마우스 둘레만 밝아진다 */
+.dk{position:relative}
+.dark{position:absolute;inset:-2px;background:#0b0c10;z-index:6;pointer-events:none;display:flex;align-items:center;justify-content:center;
+  font-family:var(--hand);font-size:24px;color:#6d6c76;text-align:center;padding:20px}
+.dk.torch{touch-action:none;cursor:none}
+.dk.torch .dark{-webkit-mask-image:radial-gradient(circle var(--r,90px) at var(--mx,50%) var(--my,30%),transparent 55%,#000 100%);
+  mask-image:radial-gradient(circle var(--r,90px) at var(--mx,50%) var(--my,30%),transparent 55%,#000 100%)}
+.dk.torch .dark span{display:none}
+
+/* 답 쓰는 칸 */
+.pw{max-width:660px;margin-top:22px;display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center}
+.pw label{font-family:var(--hand);font-size:26px;color:var(--ink)}
+.pw input{font-family:var(--hand);font-size:26px;color:var(--pen);background:transparent;border:none;border-bottom:2px solid var(--ink);padding:0 6px;width:200px;outline:none}
+.pw input:focus{border-color:#27479a}
+.pw .msg{flex-basis:100%;font-family:var(--hand);font-size:22px;line-height:1.2;min-height:26px;color:var(--stamp)}
+.pw .msg.near{color:#27479a}
+.pw .done{font-family:var(--hand);font-size:28px;color:var(--pen)}
+.pw .done::after{content:" ✓";color:#2b7a52}
+.pw .where{font-family:var(--hand);font-size:24px;color:var(--dim)}
+.shake{animation:shake .35s}
+@keyframes shake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+.nav{max-width:660px;display:flex;justify-content:space-between;gap:12px;margin-top:18px;font-family:var(--mono);font-size:13px}
+.nav button{background:none;border:none;padding:4px 0;color:var(--dim);border-bottom:1px solid transparent}
+.nav button:hover{color:var(--ink);border-color:var(--ink)}
+
+/* 배치도 */
+.plan{max-width:660px;background:#1f2a33;color:#d9e2e6;padding:16px 16px 12px;box-shadow:0 16px 30px -14px rgba(0,0,0,.6)}
+.plan h3{margin:0 0 4px;font-family:var(--mono);font-size:12px;letter-spacing:3px;color:#93a6b2;font-weight:400}
+.plan svg{display:block;width:100%;height:auto;font-family:"Nanum Gothic",sans-serif}
+.plan .rm{cursor:pointer}
+.plan .rm rect{fill:#2a3843;stroke:#7d95a3;stroke-width:1.5}
+.plan .rm.open rect{fill:#e9dfb9;stroke:#f3ead0}
+.plan .rm.open text{fill:#2a2418}
+.plan .rm.open:hover rect{fill:#fff3c4}
+.plan .rm.locked text{fill:#7d95a3}
+.plan .rm.fresh rect{animation:glow 1.2s 3}
+@keyframes glow{50%{fill:#fff8d6;stroke:#ffd76a}}
+.plan .hall{fill:#25313b;stroke:#7d95a3;stroke-width:1.5}
+.plan .lbl{font-size:13px;font-weight:700;fill:#d9e2e6;text-anchor:middle}
+.plan .sub{font-size:10px;fill:#93a6b2;text-anchor:middle}
+.plan .legend{font-family:var(--mono);font-size:11.5px;color:#93a6b2;margin-top:6px}
+
+/* 방 */
+.room{max-width:660px;background:#2a2c31;color:#e7e1d3;padding:20px 20px 22px;box-shadow:0 16px 30px -14px rgba(0,0,0,.6)}
+.room h2{margin:0;font-family:var(--serif);font-size:20px;font-weight:800;color:#f2ead5}
+.room .desc{font-family:var(--serif);font-size:14.5px;line-height:1.85;color:#c9c2b2;margin:8px 0 16px}
+.things{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
+.thing{background:#3a3d44;border:1px solid #545862;color:#efe8d6;padding:14px 10px 12px;border-radius:3px;text-align:center;font-size:14px;font-weight:700;line-height:1.3}
+.thing:hover{background:#4a4e57;border-color:#8a8f99}
+.thing .ic{display:block;font-size:26px;margin-bottom:4px}
+.thing.new{animation:pop .5s 4}
+.room .dk{padding:4px;margin:-4px}
+.room .nav button{color:#b3ad9f}
+.room .nav button:hover{color:#fff;border-color:#fff}
+
+/* 출석부 */
+.roll{width:100%;border-collapse:collapse;font-size:12px;font-family:var(--mono);background:#fffdf4;margin:4px 0 8px}
+.roll th,.roll td{border:1px solid #b8ad92;padding:3px 0;text-align:center;min-width:18px}
+.roll th{background:#efe6cc;font-weight:400;color:#6b604a}
+.roll td.nm{font-family:"Nanum Gothic",sans-serif;font-weight:700;white-space:nowrap;padding:3px 6px;text-align:left}
+.roll td.x{color:#a3312a;font-weight:700}
+.roll td.l{color:#27479a}
+.rollwrap{overflow-x:auto}
+.legendline{font-size:12.5px;color:var(--dim)}
+
+/* 번호자물쇠 */
+.lock{margin-top:16px;background:#1b1e21;color:#e9e4d8;padding:14px 16px 16px;border-radius:6px;display:flex;flex-wrap:wrap;gap:12px 18px;align-items:center;border:1px solid #3a3f44}
+.lock h3{margin:0;flex-basis:100%;font-family:var(--mono);font-size:12px;letter-spacing:2px;color:#b9b2a2;font-weight:400}
+.dials{display:flex;gap:8px}
+.dial{display:flex;flex-direction:column;align-items:center;background:#0f1113;border-radius:4px;width:46px}
+.dial button{background:none;border:none;color:#9aa3a8;width:100%;padding:2px 0;font-size:12px}
+.dial button:hover{color:#fff}
+.dial b{font-family:var(--mono);font-size:26px;line-height:1.3;background:linear-gradient(#cfc7b4,#f7f2e6 45%,#cfc7b4);color:#1d2124;width:100%;text-align:center}
+.lock .pull{background:#c9a04a;color:#1d2124;border:none;font-weight:800;padding:10px 18px;border-radius:3px}
+.lock .pull:hover{background:#e0b85a}
+.lock .msg{flex-basis:100%;font-family:var(--hand);font-size:21px;color:#f1c7a8;min-height:24px;line-height:1.2}
+.lock.open{opacity:.75}
+
+/* 자리표 */
+.seats{display:grid;grid-template-columns:28px 1fr 1fr;gap:8px;max-width:300px;margin:8px 0;font-family:var(--hand);font-size:26px}
+.seats .win{grid-column:1;grid-row:2/4;writing-mode:vertical-rl;font-family:var(--serif);font-size:12px;color:#6b8aa3;border-left:4px double #9db7cc;display:flex;align-items:center;justify-content:center}
+.seats b{font-weight:400;border:1.5px solid #6b604a;background:#fffdf4;text-align:center;padding:8px 0}
+.seats i{font-style:normal;border:1.5px dashed #cbbf9e}
+.seats .front{grid-column:2/4;text-align:center;font-family:var(--serif);font-size:12px;color:#6b604a;border-bottom:3px solid #3d3628;padding-bottom:2px}
+
+/* 표지 */
+.cover{max-width:660px;background:#2b3038;color:#e3dccb;padding:34px 30px 30px;position:relative;box-shadow:0 18px 32px -14px rgba(0,0,0,.6);border-left:14px solid #1c2026}
+.cover .label{background:#efe6cc;color:var(--ink);padding:14px 18px 12px;max-width:300px;box-shadow:0 2px 4px rgba(0,0,0,.25);border:1px solid #b8ad92}
+.cover .label h2{margin:0;font-family:var(--serif);font-weight:800;font-size:30px;letter-spacing:12px}
+.cover .label div{font-family:var(--serif);font-size:14px;color:#6b604a;margin-top:6px}
+.cover .label .who{font-family:var(--hand);font-size:22px;color:var(--pen)}
+.cover .story{font-family:var(--serif);font-size:15px;line-height:1.85;margin:26px 0 0;max-width:540px}
+.cover .rules{background:#f4ecd6;color:var(--pen);font-family:var(--hand);font-size:23px;line-height:1.3;padding:12px 16px;margin-top:22px;max-width:460px;transform:rotate(-.8deg);box-shadow:0 3px 6px rgba(0,0,0,.3)}
+.cover .go{margin-top:22px;background:#e3dccb;color:#1c2026;border:none;font-weight:800;padding:10px 20px;font-size:15px}
+.cover .go:hover{background:#fff}
+.proto{font-family:var(--mono);font-size:11.5px;color:#8e98a3;margin-top:16px}
+
+/* 결과 */
+.result{max-width:660px}
+.result .big{font-family:var(--hand);font-size:42px;line-height:1.1;margin:0 0 10px}
+.result .seal{display:inline-block;border:3px solid var(--stamp);color:var(--stamp);font-family:var(--mono);font-weight:700;font-size:20px;letter-spacing:3px;padding:4px 14px;transform:rotate(-7deg);margin:6px 0 16px;mix-blend-mode:multiply}
+.result dl{font-family:var(--mono);font-size:14px;margin:0;max-width:340px}
+.result dl div{display:flex;border-bottom:1px dotted #cfc6b0;padding:5px 0}
+.result dt{width:110px;color:var(--dim)}.result dd{margin:0}
+.result p{font-family:var(--serif);font-size:14.5px;line-height:1.8;max-width:540px}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+
+/* 소지품 */
+.tools{display:flex;gap:6px;align-items:center;flex-wrap:wrap;font-family:var(--mono);font-size:12px;color:var(--dim)}
+.tool{border:1.5px solid var(--ink);background:#fffdf4;padding:6px 10px;font-size:13px;font-weight:700;border-radius:2px}
+.tool:hover{background:#f3ead0}
+.tool.lit{background:#ffe680;border-color:#c9a04a}
+.tool.new{animation:pop .5s 4}
+@keyframes pop{50%{transform:scale(1.18) rotate(-3deg)}}
+
+/* 모달 */
+.modal-bg{position:fixed;inset:0;background:rgba(20,20,24,.7);display:none;align-items:center;justify-content:center;padding:16px;z-index:50}
+.modal-bg.on{display:flex}
+.modal{background:var(--sheet);max-width:540px;width:100%;max-height:88vh;overflow:auto;padding:22px 24px 20px;box-shadow:0 24px 50px -16px rgba(0,0,0,.6)}
+.modal h2{font-family:var(--serif);font-weight:800;margin:0 0 8px;font-size:20px}
+.modal .sub{font-size:13px;color:var(--dim);margin-bottom:14px}
+.modal p{font-family:var(--serif);font-size:14.5px;line-height:1.8;margin:6px 0}
+.modal .hand{font-family:var(--hand);font-size:24px;line-height:1.3;color:var(--pen)}
+.modal .crayon{font-family:var(--hand);font-size:24px;color:var(--crayon)}
+.modal .paper{background:#fffdf4;border:1px solid #cbbf9e;padding:12px 14px;margin:8px 0;font-family:var(--serif);font-size:13.5px;line-height:1.75}
+.modal .faint{font-family:var(--hand);font-size:30px;color:rgba(255,255,255,.28);background:#2d3a33;padding:18px;text-align:center;letter-spacing:2px}
+.posts{display:flex;flex-direction:column;gap:12px}
+.post{background:#fff3a0;padding:10px 14px;font-family:var(--hand);font-size:22px;line-height:1.3;box-shadow:0 2px 4px rgba(0,0,0,.15)}
+.post:nth-child(2){background:#ffd6e0;transform:rotate(.6deg)}.post:nth-child(3){background:#cfeaff;transform:rotate(-.6deg)}
+.post small{display:block;font-family:var(--mono);font-size:11px;color:var(--dim)}
+.post.closed{background:#efe9d2;color:var(--dim);font-family:inherit;font-size:14px;border:none;text-align:left}
+.modal .actions{display:flex;justify-content:flex-end;margin-top:16px}
+
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fffdf4;padding:10px 18px;font-size:14px;opacity:0;transition:.25s;pointer-events:none;z-index:60;max-width:90vw}
+.toast.on{opacity:1;transform:translateX(-50%)}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="hud">
+    <div class="brand">
+      <a class="back" href="../../">← 사건 대장 / NOTE 03</a>
+      <span class="t">은하분교 숙직 일지</span>
+      <small>노트 방탈출 · 시제품</small>
+    </div>
+    <div class="spacer"></div>
+    <div class="stat"><span>걸린 시간</span><b id="time">0:00</b></div>
+    <div class="stat"><span>힌트</span><b id="hintCount">0</b></div>
+    <div class="tools" id="tools"></div>
+    <button class="btn" id="btnHint">힌트</button>
+  </header>
+  <nav class="tabs" id="tabs"></nav>
+  <main id="page"></main>
+</div>
+<div class="modal-bg" id="mbg"><div class="modal" id="modal"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const $=s=>document.querySelector(s);
+const SAVE_KEY='hn.note03.v1';
+const LAST=3;   // 시제품은 3장까지
+
+// ── 일지 데이터 ──────────────────────────────
+// ans: 정답, alt: 같이 인정할 답, near: "거의 맞았다", say: 특정 오답에 돌려줄 말
+const PAGES=[
+  {tab:'표지'},
+  {tab:'1장', q:'열쇠 숨긴 곳', ans:'시계뒤', alt:['시계','벽시계','벽시계뒤','시계뒤쪽','시계뒤에','벽시계뒤에'],
+   near:['시계뒤편','시','계뒤','시계앞'],
+   say:{'난로':'그건 이상 없던 줄이다.','책상':'책상은 아이들도 뒤진다고 했다.','풍금':'그건 이상 있던 일. 숨긴 곳은 따로 있다.','종탑':'그건 이상 있던 곳. 숨긴 곳은 따로 있다.'},
+   hints:['“이상 있음”이라고 적힌 줄만 다시 보세요.','이상 있는 줄의 비고, 그 첫 글자를 위에서부터 차례로 읽어 보세요.','시·계·뒤 → 정답: 시계뒤. 배치도에서 숙직실 벽시계를 살펴보세요.']},
+  {tab:'2장', code:'316',
+   hints:['캐비닛은 교무실에 있어요. 숙직실의 교무실 쪽문은 1장에서 찾은 열쇠꾸러미로 열려요.','교무실 출석부에서 1·2·3번 아이의 결석(/) 표시를 번호 순서대로 세어 보세요. 지각(△)은 세지 않아요.','동민 3 · 미래 1 · 은수 6 → 캐비닛 번호 316']},
+  {tab:'3장', q:'은수 자리 창밖에 보이는 것', ans:'종탑', alt:['종','종루','뒤뜰종탑','종탑이요','뒤뜰의종탑','종치는탑'],
+   near:['탑','뒤뜰','종각'],
+   say:{'철봉':'그건 1번 자리 창밖이다.','운동장':'그건 1번 자리 창밖이다.','게시판':'그건 2번 자리에서 보이는 거다.','복도':'그건 2번 자리에서 보이는 거다.','은수':'은수 자리에서 보이는 걸 적자.','창가뒷자리':'자리 말고, 그 창밖에 보이는 것.','3번':'자리 말고, 그 창밖에 보이는 것.'},
+   hints:['정전이라 일지가 안 보여요. 교무실 캐비닛에서 꺼낸 손전등을 켜 보세요.','교실 교탁 위 자리표엔 번호만 있어요. 은수가 몇 번인지는 교무실 출석부에 있어요.','은수는 3번, 창가 뒷자리. 그 책상에서 창밖을 보면 → 정답: 종탑']},
+];
+const ROOM_NAME={duty:'숙직실',office:'교무실',class:'교실',music:'음악실',bell:'종탑',hall:'현관'};
+
+// ── 상태 ──────────────────────────────
+const fresh=()=>({v:'cover',open:0,solved:{},hints:{},wrong:{},ms:0,started:false,done:false,
+  rooms:{duty:true,office:false,class:false},tools:{key:false,torch:false},torch:false,cab:[0,0,0],seen:{}});
+let S=fresh();
+try{const d=JSON.parse(localStorage.getItem(SAVE_KEY)||'null');if(d)S={...fresh(),...d,rooms:{...fresh().rooms,...(d.rooms||{})},tools:{...fresh().tools,...(d.tools||{})}}}catch{}
+const save=()=>{try{localStorage.setItem(SAVE_KEY,JSON.stringify(S))}catch{}};
+addEventListener('pagehide',save);
+let NEWTOOL=null,NEWROOM=null;
+
+const fmt=ms=>{const s=Math.floor(ms/1000);return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`};
+const hintTotal=()=>Object.values(S.hints).reduce((a,b)=>a+b,0);
+const wrongTotal=()=>Object.values(S.wrong).reduce((a,b)=>a+b,0);
+const frontier=()=>Math.min(S.open,LAST);   // 지금 풀어야 할 장 (힌트는 늘 이 장)
+function renderStats(){$('#time').textContent=fmt(S.ms);$('#hintCount').textContent=hintTotal();$('#btnHint').disabled=!S.started||S.done}
+let tick=0;
+setInterval(()=>{if(S.started&&!S.done&&!document.hidden){S.ms+=1000;renderStats();if(++tick%5===0)save()}},1000);
+function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('on');clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove('on'),3200)}
+const norm=s=>s.replace(/[\s.,!?·'"~:\-]/g,'').toLowerCase();
+function lev(a,b){const d=[...Array(b.length+1).keys()];for(let i=1;i<=a.length;i++){let p=d[0];d[0]=i;for(let j=1;j<=b.length;j++){const t=d[j];d[j]=Math.min(d[j]+1,d[j-1]+1,p+(a[i-1]===b[j-1]?0:1));p=t}}return d[b.length]}
+const sameDigits=(a,b)=>[...a].sort().join('')===[...b].sort().join('');
+function gain(tool,msg){if(S.tools[tool])return;S.tools[tool]=true;NEWTOOL=tool;save();renderTools();toast(msg)}
+function openRoom(r,msg){if(S.rooms[r])return;S.rooms[r]=true;NEWROOM=r;save();if(msg)toast(msg)}
+
+// ── 탭 · 소지품 ──────────────────────────────
+const isRoom=v=>v in ROOM_NAME;
+function canView(v){
+  if(v==='cover')return true;
+  if(!S.started)return false;
+  if(v==='map')return true;
+  if(v==='end')return S.done;
+  if(isRoom(v))return !!S.rooms[v];
+  const n=+v.slice(1);return n>=1&&n<=S.open;
+}
+function renderTabs(){
+  const tabs=[['cover','표지'],['p1','1장'],['p2','2장'],['p3','3장'],['map','배치도'],...(S.done?[['end','끝']]:[])];
+  const cur=isRoom(S.v)?'map':S.v;
+  $('#tabs').innerHTML=tabs.map(([v,label])=>{
+    const locked=!canView(v),n=v[0]==='p'?+v.slice(1):0;
+    return `<button class="tab${v==='map'?' map':''}${cur===v?' on':''}" data-v="${v}"${locked?' disabled':''}>${locked?'🔒 ':''}${label}${n&&S.solved[n]?'<span class="ok">✓</span>':''}</button>`}).join('');
+  $('#tabs').querySelectorAll('.tab').forEach(b=>b.onclick=()=>go(b.dataset.v));
+}
+function renderTools(){
+  const el=$('#tools');
+  if(!S.started||S.v==='cover'||S.v==='end'){el.innerHTML='';return}
+  const items=[['key','🔑 열쇠꾸러미',S.tools.key],['torch',S.torch?'🔦 손전등 켜짐':'🔦 손전등',S.tools.torch]].filter(t=>t[2]);
+  el.innerHTML=items.length?'<span>소지품</span>'+items.map(([id,label])=>
+    `<button class="tool${id==='torch'&&S.torch?' lit':''}${NEWTOOL===id?' new':''}" data-t="${id}"${id==='torch'?` aria-pressed="${S.torch}"`:''}>${label}</button>`).join(''):'';
+  NEWTOOL=null;
+  el.querySelectorAll('.tool').forEach(b=>b.onclick=()=>{
+    if(b.dataset.t==='key')toast('열쇠꾸러미: 「숙직실」 「교무실」 「창고」 표가 붙은 열쇠 세 개.');
+    else{S.torch=!S.torch;save();renderTools();applyTorch()}
+  });
+}
+function go(v){if(!canView(v))return;S.v=v;save();render(true);scrollTo({top:0,behavior:'smooth'})}
+
+// ── 일지 ──────────────────────────────
+// [시각, 장소, 이상 유무(true=이상 있음), 비고]
+function logSheet(date,weather,rows,foot,dark){
+  return `<article class="log turn${dark?' dk':''}">
+    <h3>숙직 일지</h3>
+    <div class="meta"><span>일자<b>${date}</b></span><span>날씨<b>${weather}</b></span><span>숙직자<b>한봉수</b></span></div>
+    <div class="rows">
+      <div class="th">시각</div><div class="th">순찰 장소</div><div class="th">이상 유무</div><div class="th memo">비고</div>
+      ${rows.map(([t,p,bad,m])=>`<div>${t}</div><div>${p}</div><div class="st${bad?' bad':''}">${bad?'이상 있음':'이상 없음'}</div><div class="memo">${m||''}</div>`).join('')}
+    </div>
+    <div class="foot"><div>${foot||''}</div><div class="sign">확인<b>한</b></div></div>
+    ${dark?'<div class="dark"><span>정전. 일지가 하나도 안 보인다.</span></div>':''}
+  </article>`;
+}
+function page1(){
+  return logSheet('1999년 2월 22일 (월)','눈',[
+    ['21:00','숙직실',false,'난로에 기름 채움'],
+    ['21:00','교무실',false,'창문 잠금 확인'],
+    ['23:00','교실',false,''],
+    ['23:00','음악실',true,'시끄러운 풍금 소리. 가 보니 아무도 없음'],
+    ['01:00','복도',true,'계속 발소리가 따라옴. 젖은 발자국 셋'],
+    ['01:00','현관',false,'빗장 확인'],
+    ['03:00','종탑',true,'뒤뜰 종 줄이 혼자 흔들림'],
+  ],'열쇠꾸러미는 애들이 자꾸 들고 가서 오늘부터 딴 데 숨겨 둠.')+answerRow(1);
+}
+function page2(){
+  return logSheet('1999년 2월 23일 (화)','흐림',[
+    ['21:00','숙직실',false,''],
+    ['21:00','교무실',true,`캐비닛 번호가 또 생각 안 남. 손전등도 그 안에.<br>교감 선생님 메모: <span class="quote">아이들 출석 번호 순서대로, 이번 달 결석한 날 수</span>`],
+    ['23:00','교실',true,'불이 켜져 있음. 가 보니 꺼짐. 문은 잠겨 있었다'],
+    ['01:00','복도',false,''],
+    ['03:00','종탑',true,'종이 한 번 울림'],
+  ],'은수 어머니 전화. 다음 주에 전학 서류 가지러 오신다고.')+answerRow(2);
+}
+function page3(){
+  return logSheet('1999년 2월 24일 (수)','눈 · 정전',[
+    ['21:00','숙직실',true,'정전. 캐비닛에서 손전등 꺼냄'],
+    ['23:00','교실',true,`불도 안 들어오는데 웃음소리. 가 보니 아무도 없음.<br>칠판에 분필 글씨: <span class="quote">은수 자리에서 창밖을 봐</span>`],
+    ['01:00','교실',true,'칠판 글씨가 지워져 있음'],
+    ['03:00','종탑',false,''],
+  ],'은수 자리가 어디더라. 자리표는 교탁 위에.',!S.solved[3])+answerRow(3);
+}
+function answerRow(p){
+  const nav=`<div class="nav"><button data-go="${p===1?'cover':'p'+(p-1)}">← 앞 장</button><button data-go="map">배치도 보기 →</button>${S.solved[p]&&p<LAST?`<button data-go="p${p+1}">다음 장 →</button>`:''}</div>`;
+  const pg=PAGES[p];
+  if(S.solved[p])return `<div class="pw"><label>${pg.q||'캐비닛 번호'}:</label><span class="done">${S.solved[p]}</span></div>${nav}`;
+  if(pg.code)return `<div class="pw"><span class="where">→ 캐비닛은 교무실에 있다. 번호를 알아내면 거기서 열 것.</span></div>${nav}`;
+  return `<form class="pw" id="pw" autocomplete="off"><label for="ans">${pg.q}:</label><input id="ans" maxlength="20" spellcheck="false"><button class="btn primary">적기</button><div class="msg" id="msg"></div></form>${nav}`;
+}
+
+// ── 배치도 ──────────────────────────────
+// 단층 분교. 위: 교실 · 음악실 · 창고 / 가운데 복도 / 아래: 현관 · 교무실 · 숙직실. 종탑은 뒤뜰.
+const PLAN=[
+  ['class',20,70,120,80],['music',140,70,100,80],['store',240,70,100,80,'창고'],
+  ['hall',20,184,100,80],['office',120,184,110,80],['duty',230,184,110,80],
+  ['bell',40,10,70,40],
+];
+function pageMap(){
+  const rm=([id,x,y,w,h,name])=>{
+    const open=!!S.rooms[id],nm=name||ROOM_NAME[id];
+    return `<g class="rm ${open?'open':'locked'}${NEWROOM===id?' fresh':''}" data-r="${id}" role="button" tabindex="0" aria-label="${nm}${open?'':' (잠김)'}">
+      <rect x="${x}" y="${y}" width="${w}" height="${h}" rx="2"/>
+      <text class="lbl" x="${x+w/2}" y="${y+h/2+(h>50?0:4)}">${open?'':'🔒 '}${nm}</text>
+      ${id==='duty'?`<text class="sub" x="${x+w/2}" y="${y+h/2+18}">지금 여기</text>`:''}
+    </g>`};
+  NEWROOM=null;
+  return `<section class="plan turn">
+    <h3>은하분교 배치도</h3>
+    <svg viewBox="0 0 360 280" role="group" aria-label="은하분교 배치도">
+      <text class="sub" x="150" y="34" text-anchor="start">뒤뜰</text>
+      <path d="M75 50 V70" stroke="#7d95a3" stroke-dasharray="3 3"/>
+      <rect class="hall" x="20" y="150" width="320" height="34"/>
+      <text class="sub" x="180" y="171">복도</text>
+      ${PLAN.map(rm).join('')}
+      <path d="M230 214 v20" stroke="#f3ead0" stroke-width="3"/>
+      <text class="sub" x="70" y="278">정문 ↓</text>
+    </svg>
+    <div class="legend">밝은 방만 들어갈 수 있다. 숙직실과 교무실 사이에 쪽문이 있다.</div>
+  </section>`;
+}
+
+// ── 방 ──────────────────────────────
+// 물건: [id, 아이콘, 이름, 눌렀을 때 → {title, html}]
+function rollTable(){
+  const days=[1,2,3,4,5,6,8,9,10,11,12,13,18,19,20,22,23];
+  const kids=[['1','김동민',{3:'x',11:'x',19:'x',5:'l'}],['2','박미래',{10:'x',2:'l',12:'l'}],['3','이은수',{9:'x',18:'x',19:'x',20:'x',22:'x',23:'x'}]];
+  return `<div class="rollwrap"><table class="roll"><tr><th>번</th><th>이름</th>${days.map(d=>`<th>${d}</th>`).join('')}</tr>
+    ${kids.map(([n,nm,m])=>`<tr><td>${n}</td><td class="nm">${nm}</td>${days.map(d=>`<td class="${m[d]||''}">${m[d]==='x'?'/':m[d]==='l'?'△':'○'}</td>`).join('')}</tr>`).join('')}
+  </table></div><div class="legendline">○ 출석 &nbsp; / 결석 &nbsp; △ 지각 &nbsp;·&nbsp; 일요일과 15~17일 설 연휴는 뺌</div>`;
+}
+const ROOMS={
+  duty:{desc:'다다미 두 장 넓이의 숙직실. 석유난로는 꺼져 있고 창에는 쇠창살이 박혀 있다. 빗소리가 창을 두드린다.',
+    things:()=>[
+      ['clock','🕰️','벽시계',()=>{
+        if(!S.solved[1])return {t:'벽시계',h:'<p>11시 7분에 멈춘 벽시계. 벽에 걸려 있다.</p>'};
+        if(!S.tools.key){gain('key','시계 뒤에서 열쇠꾸러미를 찾았다. 소지품에 넣었다.');
+          return {t:'벽시계',h:'<p>시계를 들어 올리자 뒤쪽 못에 <b>열쇠꾸러미</b>가 걸려 있다.</p><p>열쇠마다 표가 붙어 있다. 「숙직실」 「교무실」 「창고」.</p>'}}
+        return {t:'벽시계',h:'<p>시계 뒤에는 못 하나만 남았다.</p>'}}],
+      ['side','🚪','교무실 쪽문',()=>{
+        if(S.rooms.office)return {t:'교무실 쪽문',h:'<p>열린 쪽문 너머로 교무실이 보인다.</p>'};
+        if(S.tools.key){openRoom('office','교무실 쪽문이 열렸다. 배치도에서 교무실로 갈 수 있다.');
+          return {t:'교무실 쪽문',h:'<p>열쇠꾸러미의 「교무실」 열쇠가 맞는다. 철컥, 쪽문이 열렸다.</p>'}}
+        return {t:'교무실 쪽문',h:'<p>교무실로 통하는 쪽문. 잠겨 있다. 열쇠 구멍이 있다.</p>'}}],
+      ['door','🚧','복도 쪽 문',()=>({t:'복도 쪽 문',h:'<p>밖에서 빗장이 걸렸다. 어깨로 밀어 봐도 꿈쩍도 안 한다.</p>'})],
+      ['desk','🗄️','책상',()=>({t:'책상',h:'<p>일지가 놓여 있던 책상. 서랍에는 볼펜 두 자루와 1999년 달력.</p><p>달력 2월 28일에 빨간 동그라미가 쳐져 있다. 옆에 작게 <span class="hand">마지막 날</span>.</p>'})],
+      ['stove','🔥','석유난로',()=>({t:'석유난로',h:'<p>기름통이 비었다. 그런데 난로 위가 아직 미지근하다.</p>'})],
+    ]},
+  office:{desc:'책상 네 개 가운데 하나만 정리돼 있다. 벽에는 공문 한 장이 압정으로 꽂혀 있고, 구석에 회색 철제 캐비닛이 서 있다.',
+    things:()=>[
+      ['roll','📒','출석부',()=>({t:'출석부 · 1999년 2월 · 복식 학급',h:rollTable()})],
+      ['notice','📄','벽의 공문',()=>({t:'공문',h:'<div class="paper"><b>은하분교장 본교 통합 안내</b><br>학생 수 감소에 따라 은하분교장은 <b>1999년 2월 28일</b>자로 본교에 통합됩니다. 재학생 3명은 3월 2일부터 본교로 등교합니다.</div>'})],
+      ['photo','🖼️','교감 선생님 책상',()=>({t:'교감 선생님 책상',h:'<p>먼지 앉은 커피 잔. 액자 속 사진에는 아이 셋이 종탑 앞에서 웃고 있다.</p><p>사진 뒤에 색연필 글씨: <span class="crayon">우리 셋 · 98년 가을</span></p>'})],
+    ],
+    after:()=>cabinet()},
+  class:{dark:true,desc:'복식 학급 교실. 책상이 셋뿐이다. 창으로 빗물이 흘러내린다.',
+    things:()=>[
+      ['board','🟩','칠판',()=>({t:'칠판',h:'<p>지운 자국 사이로 희미한 분필 글씨가 남아 있다.</p><div class="faint">은수 자리에서 창밖을 봐</div>'})],
+      ['podium','📋','교탁',()=>({t:'교탁 위 자리표',h:`<p>교탁 위에 자리표가 테이프로 붙어 있다. 이름 없이 번호만.</p>
+        <div class="seats"><div class="front">칠판 · 교탁</div><div class="win">창문</div><b>1</b><b>2</b><b>3</b><i></i></div>`})],
+      ['d1','🪑','창가 앞 책상',()=>({t:'창가 앞 책상',h:'<p>창밖으로 운동장 철봉이 보인다. 빗물이 고였다.</p>'})],
+      ['d2','🪑','복도 쪽 책상',()=>({t:'복도 쪽 책상',h:'<p>창이 멀다. 고개를 돌리면 복도 게시판만 보인다.</p>'})],
+      ['d3','🪑','창가 뒤 책상',()=>({t:'창가 뒤 책상',h:'<p>창밖, 뒤뜰 너머로 <b>종탑</b>이 검게 서 있다.</p><p>책상 귀퉁이에 색연필로 그린 작은 종 그림.</p>'})],
+    ]},
+};
+function pageRoom(id){
+  const R=ROOMS[id],dark=R.dark;
+  return `<section class="room turn">
+    <h2>📍 ${ROOM_NAME[id]}</h2>
+    <p class="desc">${R.desc}</p>
+    <div class="${dark?'dk':''}">
+      <div class="things">${R.things().map(([tid,ic,nm])=>`<button class="thing" data-t="${tid}"><span class="ic">${ic}</span>${nm}</button>`).join('')}</div>
+      ${dark?'<div class="dark"><span>너무 어둡다. 아무것도 안 보인다.</span></div>':''}
+    </div>
+    ${R.after?R.after():''}
+    <div class="nav"><button data-go="map">← 배치도</button><button data-go="p${frontier()}">일지 펼치기 →</button></div>
+  </section>`;
+}
+function cabinet(){
+  if(S.solved[2])return `<section class="lock open"><h3>철제 캐비닛 · 열림</h3><div class="msg">안은 비었다. 손전등과 「교실」 열쇠는 이미 챙겼다.</div></section>`;
+  return `<section class="lock" id="lock"><h3>철제 캐비닛 · 3자리 번호자물쇠</h3>
+    <div class="dials">${S.cab.map((d,i)=>`<div class="dial"><button data-i="${i}" data-d="1" aria-label="${i+1}번째 숫자 올리기">▲</button><b>${d}</b><button data-i="${i}" data-d="-1" aria-label="${i+1}번째 숫자 내리기">▼</button></div>`).join('')}</div>
+    <button class="pull" id="pull">당기기</button><div class="msg" id="lockMsg"></div></section>`;
+}
+function bindCabinet(){
+  const lk=$('#lock');if(!lk)return;
+  lk.querySelectorAll('.dial button').forEach(b=>b.onclick=()=>{const i=+b.dataset.i;S.cab[i]=(S.cab[i]+(+b.dataset.d)+10)%10;b.parentNode.querySelector('b').textContent=S.cab[i];save()});
+  $('#pull').onclick=()=>{
+    const code=S.cab.join(''),ans=PAGES[2].code,m=$('#lockMsg');
+    if(code===ans){
+      S.solved[2]=ans;S.open=Math.max(S.open,3);S.tools.torch=true;NEWTOOL='torch';openRoom('class');save();
+      render(false);toast('캐비닛이 열렸다. 손전등과 「교실」 열쇠를 챙겼다. 3장이 열렸다.');return}
+    S.wrong[2]=(S.wrong[2]||0)+1;save();
+    m.textContent=code==='436'?'지각까지 센 것 같다.':sameDigits(code,ans)?'숫자는 맞는 것 같은데… 순서가 아닌가?':'철컥거리기만 하고 안 열린다.';
+    lk.classList.remove('shake');void lk.offsetWidth;lk.classList.add('shake');
+  };
+}
+
+// ── 표지 · 끝 ──────────────────────────────
+function pageCover(){
+  return `<section class="cover turn">
+    <div class="label"><h2>숙직 일지</h2><div>은하국민학교 은하분교장</div><div class="who">숙직자: 한봉수</div></div>
+    <p class="story">비 오는 밤, 캠핑장으로 고칠 폐교를 보러 왔다가 숙직실에서 비를 피했다. 바람에 문이 쾅 닫히더니, 밖에서 빗장이 걸리는 소리가 났다. 창에는 쇠창살.<br>책상 위에는 표지가 눅눅한 일지 한 권. 첫 장에 이렇게 적혀 있다.</p>
+    <div class="rules">매일 밤 9시부터 두 시간마다 순찰하고 이상 유무를 적을 것.</div>
+    <button class="btn go" id="start">${S.started?'이어서 펼치기':'일지 펼치기'}</button>
+    <div class="proto">시제품 · 1~3장 · 진행 상황은 이 브라우저에 저장돼요</div>
+  </section>`;
+}
+function pageEnd(){
+  const h=hintTotal(),ansHints=Object.values(S.hints).filter(n=>n>=3).length;
+  const grade=h===0?'숙직 교사':ansHints===0?'순찰 대원':'비 피한 손님';
+  return `<article class="log turn result">
+    <p class="big">창밖, 종탑에 불빛 하나.</p>
+    <div class="seal">${grade}</div>
+    <dl>
+      <div><dt>걸린 시간</dt><dd>${fmt(S.ms)}</dd></div>
+      <div><dt>힌트</dt><dd>${h}장</dd></div>
+      <div><dt>틀린 답</dt><dd>${wrongTotal()}번</dd></div>
+    </dl>
+    <p>은수 자리에서 내다본 뒤뜰. 비에 젖은 종탑 아래에서 등불 하나가 흔들린다. 1999년에 문 닫은 학교에, 지금 누가 있는 걸까.</p>
+    <p class="small" style="font-family:var(--mono);font-size:12.5px;color:var(--dim)">시제품은 여기까지예요. 다음 버전에서 음악실, 종탑, 현관이 열립니다.</p>
+    <div class="row"><button class="btn" id="again">처음부터 다시</button><a class="btn primary" href="../../" style="text-decoration:none">사건 대장으로</a></div>
+  </article>`;
+}
+
+// ── 렌더 ──────────────────────────────
+function view(){
+  const v=S.v;
+  if(v==='cover')return pageCover();
+  if(v==='map')return pageMap();
+  if(v==='end')return pageEnd();
+  if(isRoom(v))return pageRoom(v);
+  return [null,page1,page2,page3][+v.slice(1)]();
+}
+function render(anim){
+  if(!canView(S.v))S.v='cover';
+  renderTabs();renderStats();
+  const pg=$('#page');pg.innerHTML=view();
+  if(!anim)pg.querySelectorAll('.turn').forEach(e=>e.classList.remove('turn'));
+  pg.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
+  if(S.v==='cover')$('#start').onclick=()=>{if(!S.started){S.started=true;S.open=1}go('p'+frontier())};
+  const f=$('#pw');if(f)f.onsubmit=e=>{e.preventDefault();check(+S.v.slice(1))};
+  if(S.v==='map')pg.querySelectorAll('.rm').forEach(g=>{
+    const enter=()=>{const r=g.dataset.r;if(S.rooms[r])go(r);else toast(r==='store'?'창고. 잠겨 있다. 지금은 볼 일이 없다.':`${ROOM_NAME[r]}. 잠겨 있다.`)};
+    g.onclick=enter;g.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();enter()}}});
+  if(isRoom(S.v)){
+    const R=ROOMS[S.v];
+    pg.querySelectorAll('.thing').forEach(b=>b.onclick=()=>{
+      if(R.dark&&!S.torch){showM('…','<p>너무 어두워서 손에 닿는 것만 겨우 느껴진다. 빛이 있어야겠다.</p>');return}
+      const th=R.things().find(t=>t[0]===b.dataset.t),r=th[3]();
+      showM(r.t,r.h);
+      if(S.v==='duty')render(false);   // 열쇠·쪽문 상태 반영
+    });
+    if(S.v==='office')bindCabinet();
+  }
+  if(S.v==='end')$('#again').onclick=()=>{if(confirm('처음부터 다시 할까요? 지금 기록은 지워져요.')){S=fresh();save();render(true)}};
+  renderTools();applyTorch();
+}
+
+// 손전등: 켜면 .dk 위 어둠에 구멍이 뚫리고 포인터를 따라간다 (터치는 끌면 따라오고, 그동안 스크롤은 잠긴다)
+function applyTorch(){
+  document.querySelectorAll('.dk').forEach(el=>{
+    el.classList.toggle('torch',S.torch);
+    const mv=e=>{const b=el.getBoundingClientRect();el.style.setProperty('--mx',(e.clientX-b.left)+'px');el.style.setProperty('--my',(e.clientY-b.top)+'px')};
+    el.onpointermove=el.onpointerdown=S.torch?mv:null;
+    el.style.setProperty('--r',Math.round(Math.min(130,Math.max(80,el.clientWidth*.2)))+'px');
+  });
+}
+
+function check(p){
+  const inp=$('#ans'),v=norm(inp.value),pg=PAGES[p],msg=$('#msg');
+  if(!v)return;
+  if(v===norm(pg.ans)||(pg.alt||[]).some(a=>norm(a)===v)){
+    S.solved[p]=pg.ans;S.open=Math.max(S.open,p+1);
+    if(p===LAST){S.done=true;S.v='end';save();render(true);toast('창밖에 무언가 보인다.');return}
+    save();render(false);
+    if(p===1)toast('숙직실 벽시계 뒤를 봐야겠다. 「배치도」에서 숙직실로. 2장도 열렸다.');
+    return;
+  }
+  S.wrong[p]=(S.wrong[p]||0)+1;save();
+  const a=norm(pg.ans),said=pg.say&&pg.say[v];
+  const near=(pg.near||[]).includes(v)||(a.length>=3&&lev(v,a)<=1);
+  msg.className='msg'+(near&&!said?' near':'');
+  msg.textContent=said||(near?'거의 맞았다. 조금만 더…':['아닌 것 같다.','일지를 다시 읽어 보자.','다른 데를 봐야 하나.'][S.wrong[p]%3]);
+  $('#pw').classList.remove('shake');void $('#pw').offsetWidth;$('#pw').classList.add('shake');
+  inp.select();
+}
+
+// ── 모달 · 힌트 ──────────────────────────────
+function showM(title,html){
+  $('#modal').innerHTML=`<h2>${title}</h2>${html}<div class="actions"><button class="btn" id="mclose">닫기</button></div>`;
+  $('#mbg').classList.add('on');$('#mclose').onclick=closeM;
+}
+function openHint(){
+  const p=frontier(),pg=PAGES[p];if(!pg||!pg.hints||S.done)return;
+  const got=S.hints[p]||0;
+  $('#modal').innerHTML=`<h2>${pg.tab} 힌트</h2><div class="sub">지금 풀고 있는 장의 힌트예요. 한 장씩 떼어 볼 수 있고, 세 번째 장엔 정답이 있어요.</div>
+    <div class="posts">${pg.hints.map((h,i)=>i<got?`<div class="post"><small>포스트잇 ${i+1}</small>${h}</div>`
+      :i===got?`<button class="post closed" id="peel">포스트잇 ${i+1} 떼어 보기${i===2?' (정답)':''}</button>`
+      :`<div class="post closed">포스트잇 ${i+1}</div>`).join('')}</div>
+    <div class="actions"><button class="btn" id="mclose">닫기</button></div>`;
+  $('#mbg').classList.add('on');
+  $('#mclose').onclick=closeM;
+  const pe=$('#peel');if(pe)pe.onclick=()=>{S.hints[p]=got+1;save();renderStats();openHint()};
+}
+function closeM(){$('#mbg').classList.remove('on')}
+$('#mbg').onclick=e=>{if(e.target.id==='mbg')closeM()};
+addEventListener('keydown',e=>{if(e.key==='Escape')closeM()});
+$('#btnHint').onclick=openHint;
+addEventListener('resize',applyTorch);
+
+render(true);
+</script>
+</body>
+</html>
