@@ -319,6 +319,7 @@ const LOG={
     ['k','막은 올리는 순서가 있다. 거꾸로 올리면 줄이 엉킨다. 줄걸이에 다 적혀 있는데, 젊은 사람들이 그걸 읽을지.']]},
   8:{date:'2026. 11. 16. (월)',wx:'흐림',body:[
     ['k','짐 쌌다. 일지는 상자에 넣어 매점 위에 둔다. 18일 아침 일찍 찾으러 온다.'],
+    ['k','영사실이랑 창고 열쇠는 매표소 열쇠함에 도로 걸어 놨다. 박 여사 번호 맞추느라 한참 서 있었다. 바닥에 먼지가 발목까지 쌓였더라.'],
     ['k','어제 마지막 시험 돌리다 개관 날 필름 머리가 끊어졌다. 토막은 캔에 넣어 뒀는데 하나는 못 찾았다. 끊어진 자리마다 표시는 해 뒀다.'],
     ['k','뒷문 자물쇠 번호는 마흔일곱 해 그대로다. 이 극장이 처음 불 켠 날.']]},
 };
@@ -400,6 +401,7 @@ const SC={
   2:w=>{
     let mini='';for(let r=0;r<14;r++)for(let s=0;s<12;s++)mini+=`<rect x="${52+s*11.6+(s>5?3:0)}" y="${52+r*9.6}" width="9" height="7" fill="#c3b593"/>`;
     const base=`<rect width="600" height="340" fill="#352b2c"/><rect y="290" width="600" height="50" fill="#221a1b"/>
+      <g data-t="prints" fill="#5a4c44">${[[150,328,-8],[196,316,6],[244,326,-6],[292,312,8],[340,322,-4],[386,308,10],[430,316,-2],[466,302,14],[452,300,190],[408,312,170]].map(([x,y,r])=>`<g transform="translate(${x} ${y}) rotate(${r+90})"><ellipse cx="0" cy="-5" rx="5" ry="8"/><ellipse cx="0" cy="9" rx="4" ry="4.5"/></g>`).join('')}</g>
       <g data-t="chart"><rect x="30" y="24" width="182" height="172" fill="#efe6cf" stroke="#1c1416" stroke-width="2"/><rect x="62" y="32" width="118" height="10" fill="#7d766a"/>${mini}
         ${w.on?`<rect x="${44+(w.dx/2)}" y="${46+(w.dy/2)}" width="154" height="146" fill="rgba(170,205,240,.35)" stroke="#5f86b0" stroke-width="1.5"/>`:''}</g>
       <g data-t="window"><rect x="238" y="30" width="146" height="118" fill="#141316" stroke="#6a5a4a" stroke-width="7"/><circle cx="311" cy="128" r="12" fill="none" stroke="#6a5a4a" stroke-width="3"/><path d="M300 128 h22 M311 117 v22" stroke="#6a5a4a" stroke-width="1.5"/></g>
@@ -643,6 +645,7 @@ const TAP={
     if(t==='cab'){if(w.open)return S.bag.keys||S.used.keys?'열쇠함이 비어 있다.':'열쇠함 안에 열쇠 꾸러미가 걸려 있다.';openDev('lock');return}
     if(t==='card'){openDev('card');return}
     if(t==='file'){openDev('receipt');return}
+    if(t==='prints')return '먼지 위 구두 발자국. 어른 남자 발이다. 열쇠함 앞에서 한참 서 있다가 돌아 나간 자국이 겹쳐 있다. 먼지가 앉지 않은 걸 보면 오래되지 않았다.';
     if(t==='window')return '매표 창구 유리 너머로 캄캄한 로비가 보인다. 전광판 불빛만 바닥에 번져 있다.';
   },
   3:(t,w,h)=>{
@@ -741,7 +744,7 @@ const ACT={
         :'손잡이가 꿈쩍도 안 한다.');return}
     const P=PULL[p];
     if(c===P.ok){w.open=true;DEV=null;
-      if(p===1){clearP(1);toast('자물쇠가 풀렸다. 셔터를 밀어 올리자 먼지가 쏟아진다.');return}
+      if(p===1){clearP(1);toast('자물쇠가 풀렸다. 셔터를 밀어 올리자 먼지가 쏟아진다. 손전등을 비추니 매표소 바닥 먼지 위에 구두 발자국이 찍혀 있다. 안쪽 열쇠함 앞까지 이어진다. 아직 선명하다.');return}
       if(p===4){save();refresh();toast('자물쇠가 열렸다. 철망 문을 젖히자 317번 캔이 보인다. 다른 캔보다 가볍다.');return}
       if(p===8){save();refresh();toast('빗장이 빠졌다. 끼워져 있던 종이가 손에 떨어졌다. 그런데 문을 밀어도 꿈쩍 않는다. 문틀 옆 작은 상자 「반입문 전기 잠금」의 등이 꺼져 있다.');return}}
     if(p===4&&!P.msg[c]&&CANS.some(([n,,st])=>String(n)===c&&st)){toast('그 번호 캔은 업체 반출 목록에 있다.');return}
