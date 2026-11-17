@@ -274,6 +274,8 @@ async function connect(){
   })().catch(e=>{fb=null;throw e});
   return fb;
 }
+// 화면에 보이는 추천 수의 기본값. 실제 누른 수(Firestore count)에 더해서 보여 준다. DB에는 안 쓴다.
+const SEED = {note03: 47, note01: 39, note02: 32};
 const mine = note => { try { return localStorage.getItem('hn.rec.'+note) === '1'; } catch { return false; } };
 const setMine = (note, on) => { try { on ? localStorage.setItem('hn.rec.'+note, '1') : localStorage.removeItem('hn.rec.'+note); } catch {} };
 function paint(btn, count){
@@ -288,7 +290,7 @@ document.querySelectorAll('.rec').forEach(async btn=>{
   try{
     const c = await connect();
     const snap = await c.store.getDoc(c.store.doc(c.db, 'clueLikes', note));
-    paint(btn, snap.exists() ? Math.max(0, snap.data().count|0) : 0);
+    paint(btn, (SEED[note]||0) + (snap.exists() ? Math.max(0, snap.data().count|0) : 0));
   }catch{ btn.querySelector('b').textContent = '·'; }
   btn.onclick = async ()=>{
     const on = !mine(note), b = btn.querySelector('b'), before = parseInt(b.textContent) || 0;
