@@ -198,6 +198,8 @@ header.hud{display:flex;align-items:flex-end;gap:10px 18px;flex-wrap:wrap;margin
 .sw button.pulled{background:#2a2a2e;color:#8a8478;border-style:dashed}
 .check{list-style:none;padding:0;margin:8px 0}
 .check li{border-bottom:1px dotted #b6ab95;padding:4px 0}
+.check li.done{text-decoration:line-through;color:#7a705c}
+.paper .verso{margin-top:10px;padding-top:8px;border-top:1px dashed #b6ab95;font-family:var(--hand);font-size:1.15em;color:#2a2422}
 .viewer{display:block;width:100%;max-width:470px;margin:10px auto 0;background:#e8e0ca;border:6px solid #2b2622}
 .crank .fr{animation:fr .16s linear infinite;opacity:0}
 @keyframes fr{0%,24%{opacity:1}25%,100%{opacity:0}}
@@ -255,7 +257,7 @@ const fresh=()=>({v:'cover',open:0,clear:{},hints:{},ms:0,started:false,done:fal
      3:{door:false,box:false,brk:[1,0,0,0,0,0,0,0],ok:false},
      4:{door:false,dial:[0,0,0],open:false},
      5:{door:false,gate:false,mount:false,thread:[],ok:false,sw:[0,0,0,0],run:false},
-     6:{fold:[],door:false},
+     6:{fold:[],door:false,call:true},
      7:{pulled:[]},
      8:{dial:[0,0,0,0],tray:[2,0,3,1],slots:[],sp:false,fi:0,crank:false,open:false,out:false}}});
 let S=fresh();
@@ -268,6 +270,9 @@ const W=()=>S.w[pageNo()];
 // 영사실 차단기(5번)가 올라가 있으면 영사실에 전기가 들어온다
 const power=()=>!!S.w[3].brk[4];
 // 어두운 방: 손전등 둘레만 보인다. 창고는 매점 차단기(3번)를 올리면, 영사실은 전기가 들어오면, 객석은 영사기가 돌면 밝다
+// 끝마무리: 문단속 표 1~3번. 4번(걸쇠)은 나가면서 한다
+const SHUT=['영사기 끄기','호출등 끄기','차단기는 로비만 남기기'];
+const shut=()=>[!S.w[5].run,S.w[6].call===false,S.w[3].brk.join('')==='10000000'];
 const dark=p=>p===3?!S.w[3].brk[2]:p===5?!power():p===6?!(S.w[5].run&&power()):true;
 
 const fmt=ms=>{const s=Math.floor(ms/1000);return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`};
@@ -347,7 +352,7 @@ const HINTS={
      '단면도는 객석이 왼쪽이에요. 오른쪽(뒤)부터 ✕ 흰색 → ○ 파랑 → △ 노랑 → □ 빨강 순서로 줄을 당기세요.'],
   8:['빗장 자물쇠는 네 자리, 일지의 "극장이 처음 불 켠 날"이에요. 필름 조각 넷을 편집대에서 이어 붙여 보세요. 빗장 다음엔 문 옆 전기 잠금 상자가 남아요.',
      '끊어진 자리 표시는 조각 위쪽 구멍이에요. 매표소 유리 밑 호출등 신호표로 읽어요 (▬ = 5, ● = 1). 작은 수부터 붙인 뒤, 뷰어 손잡이를 빨리 돌리면 긁힌 칸들이 겹쳐 날짜가 보여요. 전기 잠금은 매표소 공사 내역서대로 무대 회로예요. 차단기는 넷까지라 필요 없어진 하나를 내리고 6번을 올리세요.',
-     '▬, ▬●, ▬●●, ▬●●● 순서로 붙이고 뷰어를 빨리 돌리면 1979. 7. 14. 빗장 자물쇠를 0 7 1 4로 당긴 뒤, 3장 창고 분전반에서 2번(지하 계단)을 내리고 6번(무대)을 올리세요. 다시 와서 전기 잠금 상자를 누르세요.'],
+     '▬, ▬●, ▬●●, ▬●●● 순서로 붙이고 뷰어를 빨리 돌리면 1979. 7. 14. 빗장 자물쇠를 0 7 1 4로 당긴 뒤, 3장 창고 분전반에서 2번(지하 계단)을 내리고 6번(무대)을 올리세요. 다시 와서 전기 잠금 상자를 누르세요. 문이 열리면 빗장 종이대로 5장 영사기 레버 내리기, 6장 호출등 상자 누르기, 3장 차단기 로비(1번)만 남기기를 하고 문으로 돌아와 나가세요.'],
 };
 
 // ── 장면 그림 ──────────────────────────────
@@ -481,8 +486,9 @@ const SC={
       <g data-t="bdoor"><rect x="22" y="28" width="56" height="106" fill="${w.door?'#0c0a0b':'#3a2e28'}" stroke="#120d0f" stroke-width="3"/><rect x="28" y="36" width="44" height="12" fill="#d9cfb5"/><text x="50" y="45" text-anchor="middle" font-size="8" fill="#3a2a22">무대 뒤</text><circle cx="68" cy="86" r="4" fill="#c9b06a"/></g>
       <rect x="40" y="136" width="520" height="12" fill="#3a2a22"/>
       <g data-t="seats">${rows}<rect x="292" y="160" width="14" height="180" fill="#2a1d1f"/></g>
-      ${[0,1,2,3,4,5,6].map(i=>`<circle cx="299" cy="${174+i*24}" r="2.5" fill="${on?'#ffd257':'#4a3a2a'}"/>`).join('')}`;
-    const glow=on?`<g data-t="signal" data-glow="1"><rect x="452" y="30" width="78" height="50" rx="5" fill="#151215" stroke="#5a5254" stroke-width="2"/><path d="M462 30 Q440 0 420 12" stroke="#3a3436" stroke-width="2" fill="none"/>
+      ${[0,1,2,3,4,5,6].map(i=>`<circle cx="299" cy="${174+i*24}" r="2.5" fill="${on?'#ffd257':'#4a3a2a'}"/>`).join('')}
+      <g data-t="signal"><rect x="452" y="30" width="78" height="50" rx="5" fill="#151215" stroke="#5a5254" stroke-width="2"/><path d="M462 30 Q440 0 420 12" stroke="#3a3436" stroke-width="2" fill="none"/><path d="M466 44 L484 55 L466 66 Z" fill="#2a3a44"/><circle cx="508" cy="55" r="9" fill="#4a3f2a"/></g>`;
+    const glow=on&&w.call!==false?`<g data-t="signal" data-glow="1"><rect x="452" y="30" width="78" height="50" rx="5" fill="#151215" stroke="#5a5254" stroke-width="2"/><path d="M462 30 Q440 0 420 12" stroke="#3a3436" stroke-width="2" fill="none"/>
       <g id="play" opacity=".15"><path d="M466 44 L484 55 L466 66 Z" fill="#7fd6ff"/></g>
       <g id="bulb" opacity=".15"><circle cx="508" cy="55" r="15" fill="#ffd257" opacity=".35"/><circle cx="508" cy="55" r="9" fill="#ffd257"/></g></g>`:'';
     return {base,glow};
@@ -618,7 +624,7 @@ const DEVS={
     ${[0,1,2,3].map(i=>`<rect x="${i*120+2}" y="18" width="116" height="112" fill="none" stroke="#9a9182" stroke-dasharray="4 3"/>`).join('')}
     ${w.slots.map((k,i)=>piece(k,i*120,18,'slot',i)).join('')}
     ${w.sp?'':`<text x="2" y="162" font-size="11" fill="#6b604a">필름 조각</text>${w.tray.filter(k=>!w.slots.includes(k)).map((k,j)=>piece(k,j*120,170,'tray',k)).join('')}`}</svg>${w.sp?viewerSvg(w):''}`},
-  check:{t:'빗장에 끼워져 있던 종이',h:()=>`${paper(`<h4>마지막으로 나가는 사람 볼 것</h4><ul class="check"><li>1. 영사기 끄기</li><li>2. 호출등 끄기</li><li>3. 차단기는 로비만 남기기</li><li>4. 뒷문 걸쇠 걸기</li></ul><p style="text-align:right">별빛극장</p>`)}<div class="drow"><button class="btn primary" data-act="leave">적힌 대로 하고 나가기</button></div>`},
+  check:{t:'빗장에 끼워져 있던 종이',h:()=>{const d=shut();return `${paper(`<h4>마지막으로 나가는 사람 볼 것</h4><ul class="check">${SHUT.map((s,i)=>`<li class="${d[i]?'done':''}">${d[i]?'✓ ':''}${i+1}. ${s}</li>`).join('')}<li>4. 뒷문 걸쇠 걸기</li></ul><p style="text-align:right">별빛극장</p><p class="verso">뒷면, 만년필 글씨 · 「마흔일곱 해 동안 마지막 불은 늘 내가 껐다. 이번엔 누가 대신 꺼 주면 좋겠다. — 윤」</p>`)}<div class="drow"><button class="btn primary" data-act="leave">밖으로 나가 걸쇠 걸기</button></div>`}},
 };
 function devHtml(){if(!DEV||!DEVS[DEV])return '';const d=DEVS[DEV],t=typeof d.t==='function'?d.t():d.t;
   return `<div class="dev${d.dk?' dk':''}"><div class="dh"><span>${t}</span>${DEV==='check'?'':'<button class="x" data-act="close" aria-label="닫기">✕</button>'}</div>${d.h(W())}</div>`}
@@ -680,6 +686,8 @@ const TAP={
     if(t==='bdoor'){if(w.door)return '무대 뒤 문이 열려 있다.';
       if(h==='skey'){w.door=true;used('skey');clearP(6);return '열쇠가 돌아간다. 문 너머 무대 뒤는 다시 캄캄하다.'}
       return '「무대 뒤」 문이 잠겨 있다. 꾸러미 열쇠는 하나도 안 맞았다.'}
+    if(t==='signal'&&S.w[8].out){if(w.call===false)return '호출등 스위치는 내려가 있다.';w.call=false;save();refresh();return S.w[5].run?'상자 뒤 작은 스위치를 내렸다. 빈 객석을 향해 깜빡이던 불이 꺼졌다. 객석이 한층 더 캄캄해졌다.':'상자 뒤 작은 스위치를 내렸다. 영사기가 멈춰서 이미 꺼져 있었지만, 이제 다시 돌려도 켜지지 않는다.'}
+    if(t==='signal'&&!(S.w[5].run&&power()))return '스크린 옆 낡은 상자에 전구 둘. 하나는 ▶ 모양, 하나는 동그랗다. 꺼져 있다.';
     if(t==='screen'||t==='signal'){
       if(h==='loupe')return '루페로 스크린을 들여다보니 필름 가장자리에 구멍이 뚫려 있다.  ▶  ● ● ● ● ●     ▬ ● ●';
       return t==='signal'?'스크린 옆 낡은 상자에 전구 둘. 하나는 ▶ 모양, 하나는 동그랗다. 빈 객석을 향해 혼자 깜빡이고 있다.':'스크린에 시험 릴 첫 장면이 멈춘 듯 돈다. 오른쪽 위에서 불빛이 혼자 깜빡인다.'}
@@ -715,7 +723,8 @@ function thread(i,w){
   w.thread=[];save();refresh();return `필름이 축 늘어지더니 롤러에서 빠져 버렸다. 가장자리에 눌린 글자는 ${ch}.`;
 }
 function lever(w){
-  if(w.run)return '영사기가 돌고 있다. 손을 대니 진동이 전해진다.';
+  if(w.run){if(!S.w[8].out)return '영사기가 돌고 있다. 손을 대니 진동이 전해진다.';
+    w.run=false;save();refresh();return '레버를 내렸다. 영사기가 몸을 떨다 멈춘다. 영사창 너머 스크린이 어두워졌다.'}
   if(!power())return '레버가 헛돈다. 전기가 안 들어온다. 창고 분전반이 내려간 모양이다.';
   if(!w.ok)return '필름이 걸려 있지 않다. 레버가 헛돈다.';
   const [a,b,c,d]=w.sw;
@@ -786,7 +795,8 @@ const ACT={
     if(w.sp)return;w.slots.splice(+b.dataset.i,1);save();refresh()},
   step:()=>{const w=W();w.fi=(w.fi+1)%4;save();refresh()},
   crank:()=>{const w=W();w.crank=!w.crank;save();refresh();if(w.crank)toast('손잡이를 빨리 돌리자 칸마다 남은 줄무늬가 서로 메워지며 글씨가 떠오른다.')},
-  leave:()=>{DEV=null;clearP(8);S.v='end';save();render(true);scrollTo({top:0,behavior:'smooth'})},
+  leave:()=>{const d=shut();if(d.includes(false)){toast('나가기 전에 표대로 하자. 아직 '+SHUT.filter((s,i)=>!d[i]).map(s=>'「'+s+'」').join(', ')+'가 남았다.');return}
+    DEV=null;clearP(8);S.v='end';save();render(true);scrollTo({top:0,behavior:'smooth'})},
 };
 
 // ── 줍기 · 들기 ──────────────────────────────
@@ -909,8 +919,7 @@ function pageEnd(){
     <p class="big">오늘 밤의 귀신</p>
     <div class="seal">${grade}</div>
     <dl><div><dt>걸린 시간</dt><dd>${fmt(S.ms)}</dd></div><div><dt>힌트</dt><dd>${h}장</dd></div></dl>
-    <p>빗장에 끼워져 있던 건 극장의 오래된 문단속 표였다. 뒷면에 만년필 글씨가 한 줄 더 있었다. 「마흔일곱 해 동안 마지막 불은 늘 내가 껐다. 이번엔 누가 대신 꺼 주면 좋겠다. — 윤」</p>
-    <p>나는 적힌 대로 했다. 영사실로 다시 올라가 영사기를 끄자, 객석 앞에서 깜빡이던 불빛도 같이 꺼졌다. 창고에 들러 차단기를 로비 하나만 남기고 내렸다. 골목으로 나와 걸쇠를 걸었다. 비는 그쳐 있었다.</p>
+    <p>골목으로 나와 걸쇠를 걸었다. 돌아보니 로비 전광판 하나만 켜져 있었다. 표에 적힌 그대로다. 비는 그쳐 있었다.</p>
     <p>집에 와서 휴대폰을 충전했다. 남은 영상은 로비 바닥을 찍다 끊긴 4초짜리 하나였다.</p>
     <p>다음 날 아침, 동네 단톡방에 글이 올라왔다. 「어젯밤에도 극장에 귀신불 봤다는 사람 있음. 마지막까지 있네.」</p>
     <p>창밖에서 굴착기가 별빛극장 간판을 뜯고 있었다.</p>
