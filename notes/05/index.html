@@ -824,13 +824,15 @@ function bindScene(){
   svg.onpointerup=e=>{const pt=toSvg(svg,e),d=down;down=null;if(d&&Math.hypot(pt.x-d.pt.x,pt.y-d.pt.y)<16)tapScene(d.el)};
   svg.onpointercancel=()=>{down=null};
 }
-// 2장 좌석표: 투명 시트 끌기. 귀퉁이 표시 가까이 오면 딱 맞물린다
+// 2장 좌석표: 투명 시트 끌기. 귀퉁이 표시 근처(SNAP 안)에 놓으면 저절로 맞물린다. 끌지 않고 톡 누르면 시트를 뒤집어 돌린다
+const SNAP=40;
 function bindDev(){
   const g=$('#sheetG'),svg=$('#chartSvg');if(!g||!svg)return;const w=S.w[2];let st=null;
-  g.onpointerdown=e=>{const p=toSvg(svg,e);st={x:p.x,y:p.y,dx:w.dx,dy:w.dy};try{g.setPointerCapture(e.pointerId)}catch{}e.preventDefault()};
-  g.onpointermove=e=>{if(!st)return;const p=toSvg(svg,e);w.dx=Math.max(-160,Math.min(160,Math.round(st.dx+p.x-st.x)));w.dy=Math.max(-160,Math.min(160,Math.round(st.dy+p.y-st.y)));g.setAttribute('transform',sheetT(w))};
-  const up=()=>{if(!st)return;st=null;
-    if(Math.abs(w.dx)<12&&Math.abs(w.dy)<12){const was=w.dx||w.dy;w.dx=0;w.dy=0;g.setAttribute('transform',sheetT(w));if(was)toast(w.rot?'귀퉁이 표시가 맞물렸다. 그런데 파란 글씨가 거꾸로 섰다.':'귀퉁이 표시가 딱 맞물렸다.')}
+  g.onpointerdown=e=>{const p=toSvg(svg,e);st={x:p.x,y:p.y,dx:w.dx,dy:w.dy,m:0};try{g.setPointerCapture(e.pointerId)}catch{}e.preventDefault()};
+  g.onpointermove=e=>{if(!st)return;const p=toSvg(svg,e);st.m=Math.max(st.m,Math.hypot(p.x-st.x,p.y-st.y));w.dx=Math.max(-160,Math.min(160,Math.round(st.dx+p.x-st.x)));w.dy=Math.max(-160,Math.min(160,Math.round(st.dy+p.y-st.y)));g.setAttribute('transform',sheetT(w))};
+  const up=()=>{if(!st)return;const tap=st.m<6;st=null;
+    if(tap){ACT.rot();return}
+    if(Math.hypot(w.dx,w.dy)<SNAP){const was=w.dx||w.dy;w.dx=0;w.dy=0;g.setAttribute('transform',sheetT(w));if(was)toast(w.rot?'귀퉁이 표시가 맞물렸다. 그런데 파란 글씨가 거꾸로 섰다.':'귀퉁이 표시가 딱 맞물렸다.')}
     save()};
   g.onpointerup=up;g.onpointercancel=up;
 }
