@@ -198,6 +198,10 @@ header.hud{display:flex;align-items:flex-end;gap:10px 18px;flex-wrap:wrap;margin
 .sw button.pulled{background:#2a2a2e;color:#8a8478;border-style:dashed}
 .check{list-style:none;padding:0;margin:8px 0}
 .check li{border-bottom:1px dotted #b6ab95;padding:4px 0}
+.viewer{display:block;width:100%;max-width:470px;margin:10px auto 0;background:#e8e0ca;border:6px solid #2b2622}
+.crank .fr{animation:fr .16s linear infinite;opacity:0}
+@keyframes fr{0%,24%{opacity:1}25%,100%{opacity:0}}
+@media (prefers-reduced-motion:reduce){.crank .fr{animation:none;opacity:.6}}
 </style>
 </head>
 <body>
@@ -253,7 +257,7 @@ const fresh=()=>({v:'cover',open:0,clear:{},hints:{},ms:0,started:false,done:fal
      5:{door:false,gate:false,mount:false,thread:[],ok:false,sw:[0,0,0,0],run:false},
      6:{fold:[],door:false},
      7:{pulled:[]},
-     8:{dial:[0,0,0,0],tray:[2,0,3,1],slots:[],sp:false,open:false}}});
+     8:{dial:[0,0,0,0],tray:[2,0,3,1],slots:[],sp:false,fi:0,crank:false,open:false,out:false}}});
 let S=fresh();
 try{const d=JSON.parse(localStorage.getItem(SAVE_KEY)||'null');if(d){const f=fresh();S={...f,...d,w:{...f.w}};for(const k in f.w)S.w[k]={...f.w[k],...((d.w||{})[k]||{})}}}catch{}
 const save=()=>{try{localStorage.setItem(SAVE_KEY,JSON.stringify(S))}catch{}};
@@ -261,7 +265,8 @@ addEventListener('pagehide',save);
 let DEV=null,NEWSLOT=null,TX=300,TY=170;
 const pageNo=()=>S.v[0]==='p'?+S.v.slice(1):0;
 const W=()=>S.w[pageNo()];
-const power=()=>S.w[3].ok;
+// 영사실 차단기(5번)가 올라가 있으면 영사실에 전기가 들어온다
+const power=()=>!!S.w[3].brk[4];
 // 어두운 방: 손전등 둘레만 보인다. 창고는 매점 차단기(3번)를 올리면, 영사실은 전기가 들어오면, 객석은 영사기가 돌면 밝다
 const dark=p=>p===3?!S.w[3].brk[2]:p===5?!power():p===6?!(S.w[5].run&&power()):true;
 
@@ -324,8 +329,8 @@ const HINTS={
   2:['박 여사는 번호를 그대로 적지 않았어요. 서랍 속 투명 시트와 벽의 좌석표를 함께 보세요. 열쇠함은 세 자리예요.',
      'OHP 시트를 들고 좌석표를 누르면 겹쳐져요. 시트를 끌어 네 귀퉁이 표시를 맞추세요. 시트 위 글씨대로 SCREEN 쪽이 위예요. 동그라미 자리의 번호가 열쇠함 번호이고, X는 지운 자리예요.',
      '바르게 겹치면 동그라미가 가-8, 나-2, 다-6. 앞줄부터 8 2 6으로 맞추고 손잡이를 당긴 뒤 열쇠 꾸러미를 주우세요.'],
-  3:['열쇠 꾸러미를 들고 창고 문을 누르세요. 공구함과 분전반이 있어요. 분전반 옆에 배선도가 붙어 있어요.',
-     '일지의 세 곳을 극장 장소로 바꿔 보세요. 필름 가지러 내려가는 길, 영사기사의 방, 초점 보는 자리까지 가는 길. 이름표는 개관 때 것이라 믿기 어려우니 배선도 선을 따라가 번호를 찾으세요. 로비(1번)까지 모두 넷까지만.',
+  3:['열쇠 꾸러미를 들고 창고 문을 누르세요. 공구함과 분전반, 분전반 옆 배선도가 있어요. 배선도 아래 칸 이름이 번졌다면 매표소 벽에 꽂힌 종이를 보세요.',
+     '일지의 세 곳을 극장 장소로 바꿔 보세요. 필름 가지러 내려가는 길, 영사기사의 방, 초점 보는 자리까지 가는 길. 이름표는 개관 때 것이라 믿기 어려우니 배선도 선을 따라가 번호를 찾으세요. 번진 칸 이름은 2장 매표소의 전기 공사 내역서에 순서대로 있어요. 로비(1번)까지 모두 넷까지만.',
      '배선도에서 지하 계단 = 2, 영사실 = 5, 객석 통로 = 7. 1번은 그대로 두고 2·5·7을 올리세요. 공구함의 루페도 챙기세요.'],
   4:['열쇠 꾸러미로 지하 문을 여세요. 철망 자물쇠의 꼬리표, 계단 옆 클립보드, 철망 안 캔들, 바닥을 살펴보세요. 캔 라벨은 루페를 들고 철망을 눌러 읽어요.',
      '반출 스티커가 없는 캔이 후보예요. 업체 반출 목록에 없는 번호를 찾으세요. 바닥에 떨어진 스티커도 보세요.',
@@ -336,12 +341,12 @@ const HINTS={
   6:['스크린 옆 호출등이 되풀이해서 깜빡여요. 2장 매표소 유리 밑 종이로 읽어요. 일지의 "초점 볼 때마다 앉는 데"가 예비 열쇠 자리예요.',
      '▶ 다음부터 읽어요. 첫 묶음은 줄, 둘째는 번호. 객석엔 줄 이름이 없으니 2장 좌석표처럼 스크린 쪽부터 가, 나, 다… 로 세요. 루페를 들고 스크린을 누르면 구멍으로도 보여요.',
      '짧게 5번 = 다섯째 줄 "마", 길게 1번 + 짧게 2번 = 7. 객석에서 마-7 의자를 젖혀 열쇠를 얻고, 왼쪽 위 무대 뒤 문에 쓰세요.'],
-  7:['무대 옆 줄걸이에 줄 넷과 작은 판, 벽에 무대 단면도가 있어요. 표시가 같은 것끼리 짝이에요.',
+  7:['무대 옆 줄걸이에 줄 넷과 작은 판이 있어요. 벽의 테이프 자국 자리에 있던 무대 단면도는 영사실(5장) 벽에 붙어 있어요. 표시가 같은 것끼리 짝이에요.',
      '줄걸이 판에 "올릴 때는 안쪽 막부터"라고 적혀 있어요. 안쪽은 객석에서 먼 쪽이에요. 단면도에서 객석이 어느 쪽인지 귀퉁이의 작은 글씨를 보세요.',
      '단면도는 객석이 왼쪽이에요. 오른쪽(뒤)부터 ✕ 흰색 → ○ 파랑 → △ 노랑 → □ 빨강 순서로 줄을 당기세요.'],
-  8:['빗장 자물쇠는 네 자리, 일지의 "극장이 처음 불 켠 날"이에요. 필름 조각 넷을 편집대에서 이어 붙여 보세요.',
-     '끊어진 자리 표시는 조각 위쪽 구멍이에요. 매표소 유리 밑 호출등 신호표로 읽어요 (▬ = 5, ● = 1). 작은 수부터 붙이면 잘린 숫자가 이어져요.',
-     '▬, ▬●, ▬●●, ▬●●● 순서로 붙이면 1979. 7. 14. 자물쇠를 0 7 1 4로 맞추고 당기세요.'],
+  8:['빗장 자물쇠는 네 자리, 일지의 "극장이 처음 불 켠 날"이에요. 필름 조각 넷을 편집대에서 이어 붙여 보세요. 빗장 다음엔 문 옆 전기 잠금 상자가 남아요.',
+     '끊어진 자리 표시는 조각 위쪽 구멍이에요. 매표소 유리 밑 호출등 신호표로 읽어요 (▬ = 5, ● = 1). 작은 수부터 붙인 뒤, 뷰어 손잡이를 빨리 돌리면 긁힌 칸들이 겹쳐 날짜가 보여요. 전기 잠금은 매표소 공사 내역서대로 무대 회로예요. 차단기는 넷까지라 필요 없어진 하나를 내리고 6번을 올리세요.',
+     '▬, ▬●, ▬●●, ▬●●● 순서로 붙이고 뷰어를 빨리 돌리면 1979. 7. 14. 빗장 자물쇠를 0 7 1 4로 당긴 뒤, 3장 창고 분전반에서 2번(지하 계단)을 내리고 6번(무대)을 올리세요. 다시 와서 전기 잠금 상자를 누르세요.'],
 };
 
 // ── 장면 그림 ──────────────────────────────
@@ -398,6 +403,7 @@ const SC={
       <g data-t="chart"><rect x="30" y="24" width="182" height="172" fill="#efe6cf" stroke="#1c1416" stroke-width="2"/><rect x="62" y="32" width="118" height="10" fill="#7d766a"/>${mini}
         ${w.on?`<rect x="${44+(w.dx/2)}" y="${46+(w.dy/2)}" width="154" height="146" fill="rgba(170,205,240,.35)" stroke="#5f86b0" stroke-width="1.5"/>`:''}</g>
       <g data-t="window"><rect x="238" y="30" width="146" height="118" fill="#141316" stroke="#6a5a4a" stroke-width="7"/><circle cx="311" cy="128" r="12" fill="none" stroke="#6a5a4a" stroke-width="3"/><path d="M300 128 h22 M311 117 v22" stroke="#6a5a4a" stroke-width="1.5"/></g>
+      <g data-t="file"><circle cx="216" cy="156" r="2.5" fill="#9aa0a6"/><rect x="196" y="158" width="40" height="34" fill="#f1ead8" stroke="#8a8170" transform="rotate(4 216 175)"/><path d="M202 168 h28 M202 175 h22 M202 182 h26" stroke="#8a8170" stroke-width="1.3" transform="rotate(4 216 175)"/></g>
       <g data-t="cab"><rect x="404" y="22" width="166" height="172" fill="#5d4a33" stroke="#1c1416" stroke-width="2"/>
         <rect x="424" y="34" width="126" height="20" fill="#d9cfb5"/><text x="487" y="49" text-anchor="middle" font-size="11" fill="#3a2a22">열쇠함</text>
         ${w.open?`<rect x="414" y="64" width="146" height="120" fill="#1e1712"/><path d="M432 80 h8 M478 80 h8 M524 80 h8" stroke="#b9a36a" stroke-width="3"/><path d="M560 64 L590 54 V196 L560 184Z" fill="#6b563b" stroke="#1c1416" stroke-width="2"/>`
@@ -443,6 +449,7 @@ const SC={
     const base=`<rect width="600" height="340" fill="#2b2729"/><rect y="292" width="600" height="48" fill="#1b1819"/>
       <g data-t="diagram"><rect x="26" y="26" width="140" height="116" fill="#e8dcc0" stroke="#1c1416" stroke-width="2"/>
         <path d="M58 60 h70 M58 76 h40 M58 92 h60" stroke="#8a7f6a" stroke-width="2"/><ellipse cx="128" cy="112" rx="34" ry="24" fill="#2a1a12" opacity=".9"/><ellipse cx="44" cy="40" rx="16" ry="12" fill="#2a1a12" opacity=".85"/></g>
+      <g data-t="section"><rect x="350" y="22" width="92" height="66" fill="#e8dcc0" stroke="#1c1416" stroke-width="2" transform="rotate(2 396 55)"/><path d="M358 74 H434 M372 38 V74 M388 38 V74 M404 38 V74 M420 38 V74" stroke="#5a4a36" stroke-width="1.5" transform="rotate(2 396 55)"/></g>
       <g data-t="lights"><rect x="26" y="166" width="140" height="110" fill="#3c3a3e" stroke="#1c1416" stroke-width="2"/>
         ${w.sw.map((o,i)=>`<rect x="${40+i*30}" y="196" width="20" height="44" rx="3" fill="#1d1d20"/><rect x="${43+i*30}" y="${o?200:220}" width="14" height="16" rx="2" fill="${o?'#ffcf33':'#8a8a8e'}"/>`).join('')}
         <text x="96" y="262" text-anchor="middle" font-size="10" fill="#bdb6a8">조명</text></g>
@@ -487,7 +494,7 @@ const SC={
     const base=`<rect width="600" height="340" fill="#141113"/><rect y="300" width="600" height="40" fill="#0e0c0d"/>
       <g data-t="rail"><rect x="22" y="40" width="12" height="230" fill="#4a3a26"/>${RAIL.map((k,i)=>{const x=50+i*14,r=ROPE[k],p=up.includes(k);
         return `<path d="M${x} 0 V${p?150:250}" stroke="#b9a36a" stroke-width="3"/><rect x="${x-6}" y="${p?132:210}" width="12" height="14" fill="${r.col}" stroke="#111"/>`}).join('')}</g>
-      <g data-t="section"><rect x="118" y="46" width="92" height="70" fill="#e8dcc0" stroke="#1c1416" stroke-width="2"/><path d="M126 100 H202 M140 62 V100 M156 62 V100 M172 62 V100 M188 62 V100" stroke="#5a4a36" stroke-width="1.5"/></g>
+      <g data-t="torn"><path d="M120 48 h14 M196 48 h14 M120 112 h14 M196 112 h14" stroke="#b9ae8a" stroke-width="5" opacity=".7"/><rect x="122" y="50" width="86" height="60" fill="none" stroke="#2a2426" stroke-dasharray="3 4"/></g>
       ${all?`<g data-t="standee"><path d="M372 300 V200 q-6 -40 10 -58 q-14 -10 -10 -30 q4 -22 22 -22 q18 0 22 22 q4 20 -10 30 q16 18 10 58 V300 Z" fill="#0b0a0b" stroke="#2a2628" stroke-width="2"/></g>
         <g data-t="exit2"><rect x="470" y="70" width="104" height="230" fill="#3c454e" stroke="#1a1d20" stroke-width="4"/><rect x="484" y="84" width="76" height="18" fill="#e9e6dc"/><text x="522" y="97" text-anchor="middle" font-size="10" fill="#2a2e33">2번 출입구</text><rect x="480" y="176" width="84" height="10" rx="4" fill="#aab1b8"/></g>`
         :`<g data-t="curtain"><rect x="230" y="${up.length*10+10}" width="370" height="${290-up.length*10}" fill="${front[1]}"/>${folds}</g>`}
@@ -499,13 +506,17 @@ const SC={
       <g data-t="splice"><rect x="30" y="214" width="190" height="12" fill="#6a4630" stroke="#1c1416" stroke-width="2"/><rect x="40" y="226" width="8" height="74" fill="#4f3424"/><rect x="202" y="226" width="8" height="74" fill="#4f3424"/>
         <rect x="70" y="194" width="74" height="20" fill="#9aa0a6" stroke="#1c1416" stroke-width="2"/><path d="M168 214 V160 L146 150" stroke="#555" stroke-width="4" fill="none"/><path d="M134 146 l24 -6 l2 16 z" fill="#d8c58a"/>
         ${w.sp?`<rect x="56" y="200" width="120" height="10" fill="#2b2622"/>`:''}</g>
-      <g data-t="door"><rect x="290" y="40" width="220" height="260" fill="${w.open?'#1c2a36':'#4c5660'}" stroke="#1a1d20" stroke-width="4"/>
-        ${w.open?`<path d="M290 40 L330 56 V284 L290 300 Z" fill="#4c5660" stroke="#1a1d20" stroke-width="3"/><path d="M350 290 q60 -10 140 -4" stroke="#5f7383" stroke-width="2" fill="none"/>`
+      <g data-t="door"><rect x="290" y="40" width="220" height="260" fill="${w.out?'#1c2a36':'#4c5660'}" stroke="#1a1d20" stroke-width="4"/>
+        ${w.out?`<path d="M290 40 L330 56 V284 L290 300 Z" fill="#4c5660" stroke="#1a1d20" stroke-width="3"/><path d="M350 290 q60 -10 140 -4" stroke="#5f7383" stroke-width="2" fill="none"/>`
+          :w.open?`<rect x="470" y="162" width="40" height="14" rx="5" fill="#aab1b8" stroke="#1a1d20" stroke-width="2"/><rect x="460" y="150" width="24" height="38" fill="#8a9096" stroke="#1a1d20" stroke-width="2"/>`
           :`<rect x="300" y="162" width="200" height="14" rx="5" fill="#aab1b8" stroke="#1a1d20" stroke-width="2"/><rect x="460" y="150" width="24" height="38" fill="#8a9096" stroke="#1a1d20" stroke-width="2"/>`}
         <rect x="350" y="56" width="100" height="22" fill="#e9e6dc"/><text x="400" y="72" text-anchor="middle" font-size="12" fill="#2a2e33">2번 출입구</text></g>
+      <g data-t="strike"><rect x="520" y="40" width="54" height="40" fill="#3a3e44" stroke="#1a1d20" stroke-width="2"/><rect x="524" y="44" width="46" height="10" fill="#d9cfb5"/><text x="547" y="52" text-anchor="middle" font-size="6" fill="#2a2e33">전기 잠금</text><circle cx="537" cy="67" r="6" fill="#151315" stroke="#777"/><rect x="551" y="61" width="14" height="12" rx="2" fill="#8a2a22" stroke="#1a1d20"/><path d="M547 80 V150 H510" stroke="#555" stroke-width="2" fill="none"/></g>
       ${w.open?'':`<g data-t="paper"><rect x="356" y="132" width="40" height="30" fill="#f2ecd9" stroke="#8a8170" stroke-width="1.5" transform="rotate(-6 376 147)"/><path d="M362 140 h26 M362 147 h20 M362 154 h24" stroke="#8a8170" stroke-width="1.2" transform="rotate(-6 376 147)"/></g>
         <g data-t="lock">${padlock(440,180,1.2)}</g>`}`;
-    return {base};
+    const on=!!S.w[3].brk[5];
+    const glow=`<g data-t="strike" data-glow="1"><circle cx="537" cy="67" r="5" fill="${on?'#2fdb6a':'#3a1010'}"/>${on?'<circle cx="537" cy="67" r="12" fill="#2fdb6a" opacity=".25"/>':''}</g>`;
+    return {base,glow};
   },
 };
 function items(p,w){const L=[];
@@ -535,7 +546,18 @@ const FILM=`<g font-family="Kkakdugi Drafting" font-weight="700" fill="#1f1c18" 
 function piece(k,x,y,act,arg){
   return `<g data-act="${act}" data-i="${arg}" transform="translate(${x} ${y})" style="cursor:pointer"><rect x="2" width="116" height="112" fill="#2b2622"/>
     <rect x="10" y="6" width="18" height="9" rx="2" fill="#f6f0de"/>${Array.from({length:k},(_,j)=>`<circle cx="${38+j*13}" cy="10.5" r="4.5" fill="#f6f0de"/>`).join('')}
-    <rect x="3" y="22" width="114" height="80" fill="#e8e0ca"/><g clip-path="url(#cfr)"><g transform="translate(${-k*120} 0)">${FILM}</g></g></g>`}
+    <rect x="3" y="22" width="114" height="80" fill="#e8e0ca"/><g clip-path="url(#cfr)"><g transform="translate(3 36) scale(.2426 .46)">${frame(k)}</g></g></g>`}
+// 8장 개관 필름: 칸마다 글씨의 1/4만 남고(흩어진 점) 먼지 자국이 덮였다. 한 칸으론 못 읽고, 빨리 돌리면 잔상으로 글씨만 이어진다
+const NOISE=(()=>{const h=(i,j,s)=>{let x=(i*374761393+j*668265263+s*982451653)>>>0;x=Math.imul(x^(x>>>13),1274126177)>>>0;return (x^(x>>>16))>>>0};
+  const M=['','','',''],N=['','','',''];
+  for(let i=0;i<118;i++)for(let j=0;j<28;j++){const c=`M${i*4} ${j*4}h4v4h-4z`;M[h(i,j,1)%4]+=c;if(h(i,j,2)%100<16)N[h(i,j,3)%4]+=c}
+  document.querySelector('svg defs').insertAdjacentHTML('beforeend',M.map((d,k)=>`<mask id="mk${k}" maskUnits="userSpaceOnUse" x="0" y="0" width="472" height="112"><path d="${d}" fill="#fff"/></mask>`).join(''));
+  return N})();
+const frame=k=>`<g mask="url(#mk${k})">${FILM}</g><path d="${NOISE[k]}" fill="#1f1c18" opacity=".8"/>`;
+// 편집대 뷰어: 한 칸씩 보면 줄무늬 조각뿐, 손잡이를 빨리 돌리면 네 칸이 겹쳐 보인다
+function viewerSvg(w){
+  return `<svg class="viewer${w.crank?' crank':''}" viewBox="0 0 470 110" aria-label="편집대 뷰어">${w.crank?[0,1,2,3].map(k=>`<g class="fr" style="animation-delay:${-k*.04}s">${frame(k)}</g>`).join(''):frame(w.fi)}</svg>
+    <div class="drow"><button class="btn" data-act="step"${w.crank?' disabled':''}>한 칸 넘기기 (${w.fi+1}/4)</button><button class="btn primary" data-act="crank">${w.crank?'손잡이 멈추기':'손잡이 빨리 돌리기'}</button></div>`}
 function chartBase(){
   let s=`<rect width="356" height="362" fill="#efe6cf"/><rect x="60" y="4" width="236" height="16" fill="#7d766a"/><text x="178" y="16" text-anchor="middle" font-size="11" fill="#fff" letter-spacing="6">SCREEN</text>`;
   for(let i=0;i<12;i++)s+=`<text x="${46+i*24}" y="34" text-anchor="middle" font-size="9" fill="#5a5246">${i+1}</text>`;
@@ -557,7 +579,7 @@ function wiringSvg(){
   return `<svg viewBox="0 0 360 250"><rect width="360" height="250" fill="#efe6cf"/><text x="12" y="18" font-size="11" fill="#5a4a36">배선도 · 1998. 3. 고침</text>
     ${[0,1,2,3,4,5,6,7].map(i=>`<circle cx="${xt(i)}" cy="40" r="10" fill="#fffdf4" stroke="#3a2a1a" stroke-width="2"/><text x="${xt(i)}" y="44" text-anchor="middle" font-size="11" font-weight="700" fill="#3a2a1a">${i+1}</text>`).join('')}
     <g fill="none" stroke="#2a2420" stroke-width="2.2">${WMAP.map((b,i)=>`<path d="M${xt(i)} 50 C${xt(i)} 130 ${xb(b)} 120 ${xb(b)} 200"/>`).join('')}</g>
-    ${WIRE.map((n,i)=>`<rect x="${xb(i)-20}" y="200" width="40" height="34" fill="#fffdf4" stroke="#3a2a1a" stroke-width="1.5"/><text x="${xb(i)}" y="${n.length>3?214:221}" text-anchor="middle" font-size="9" fill="#3a2a1a">${n.length>3?`${n.split(' ')[0]}</text><text x="${xb(i)}" y="227" text-anchor="middle" font-size="9" fill="#3a2a1a">${n.split(' ')[1]||''}`:n}</text>`).join('')}
+    ${WIRE.map((n,i)=>[1,3,5,6].includes(i)?'▒▒▒':n).map((n,i)=>`<rect x="${xb(i)-20}" y="200" width="40" height="34" fill="#fffdf4" stroke="#3a2a1a" stroke-width="1.5"/><text x="${xb(i)}" y="${n.length>3?214:221}" text-anchor="middle" font-size="9" fill="#3a2a1a">${n.length>3?`${n.split(' ')[0]}</text><text x="${xb(i)}" y="227" text-anchor="middle" font-size="9" fill="#3a2a1a">${n.split(' ')[1]||''}`:n}</text>`).join('')}
     <ellipse cx="300" cy="22" rx="40" ry="14" fill="#b8a27a" opacity=".55"/></svg>`}
 function sectionSvg(){
   const C=[[90,'s','붉은 막'],[150,'t','흑막'],[210,'o','배경막'],[290,'x','흑막']];
@@ -570,6 +592,7 @@ const DEVS={
   poster:{t:'포스터',h:()=>`<div class="paper poster"><h4>별빛극장 마지막 상영</h4><div class="big">여름의 끝</div><p>1979년 개봉 · 35mm 필름<br>상영시간 <b>95분</b> · 전체 관람가</p><p>2026. 11. 15. (일)</p><p style="font-size:11.5px;color:#5a2a22;margin:0">※ 막회는 어르신 손님들을 위해 극장 앞 37번 막차 시간에 맞춰 끝납니다.</p></div>`},
   bus:{t:'옆문 유리에 붙은 종이',h:()=>paper(`<h4>별빛극장 앞 정류장</h4><div class="big">37번 막차</div><p>평일 23:40<br>토요일 23:25<br>일요일·공휴일 23:10</p>`)},
   notice:{t:'게시판 종이',h:()=>paper(`<h4>민원 처리 결과 회신 (2026. 11. 12.)</h4><p>신고 내용: 폐관을 앞둔 별빛극장 객석 쪽에서 밤마다 불빛이 깜빡임<br>처리 결과: 낮에 현장을 확인했으나 이상 없음</p><p style="text-align:right">구청 도시정비과</p>`)},
+  receipt:{t:'벽에 꽂힌 종이',h:()=>paper(`<h4>전기 공사 내역서 · 1998. 3.</h4><p>1. 분전반 회로 새로 정리 · 배선도 새로 그림<br>&nbsp;&nbsp;&nbsp;배선도 아래 칸(왼쪽부터): 매표소 · 객석 통로 · 무대 · 지하 계단 · 로비 · 영사실 · 매점 · 객석등</p><p>2. 반입문 전기 잠금 새로 달기 · 무대 회로에서 끌어옴</p><p style="text-align:right">○○전기 · 별빛극장 귀중</p>`)},
   card:{t:'유리 밑 종이',h:()=>paper(`<h4>객석 호출등 신호 · 매표소 → 안내원</h4><p>짧게 ● = 1<br>길게 ▬ = 5<br>쉬는 데서 끊어 읽기<br>▶ 켜진 다음부터 · 줄 먼저, 번호 다음</p>`)},
   chart:{t:'좌석표',h:w=>`<svg id="chartSvg" class="drag" viewBox="0 0 356 362">${chartBase()}${w.on?sheetSvg(w):''}</svg>${w.on?`<div class="drow"><button class="btn" data-act="rot">시트 돌리기</button></div>`:''}`},
   lock:{t:()=>LOCKT[pageNo()],h:w=>`${pageNo()===4?`<p class="paper" style="max-width:240px;margin:0 auto 12px;font-family:var(--hand);font-size:var(--hs);transform:rotate(-2deg)">꼬리표: 번호 = 내 캔 — 윤</p>`:''}<div class="dials">${w.dial.map((d,i)=>`<div class="dial"><button data-act="dial" data-i="${i}" data-d="1" aria-label="${i+1}번째 칸 올리기">▲</button><b>${d}</b><button data-act="dial" data-i="${i}" data-d="9" aria-label="${i+1}번째 칸 내리기">▼</button></div>`).join('')}</div><div class="drow"><button class="btn primary" data-act="pull">당기기</button></div>`},
@@ -589,10 +612,10 @@ const DEVS={
   seats:{t:'객석',h:w=>`<div class="scr">스크린</div><div class="seatgrid">${Array.from({length:14},(_,r)=>Array.from({length:12},(_,i)=>(i===6?'<span></span>':'')+`<button class="seat${w.fold.includes(r*12+i)?' folded':r===5&&i===2?' down':''}" data-act="seat" data-r="${r}" data-s="${i+1}" aria-label="좌석"></button>`).join('')).join('')}</div>`},
   section:{t:'벽에 붙은 무대 단면도',h:()=>sectionSvg()},
   rail:{t:'무대 옆 줄걸이',dk:true,h:w=>`<p class="paper" style="max-width:300px;margin:0 auto 12px;text-align:center">막 줄 · 올릴 때는 <b>안쪽 막부터</b><br>내릴 때는 바깥 막부터</p><div class="sw">${RAIL.map(k=>{const r=ROPE[k],p=w.pulled.includes(k);return `<button data-act="rope" data-k="${k}" class="${p?'pulled':''}"><span class="tagx" style="background:${r.col};color:${r.fg}">${r.sym}</span>${r.name} 테이프<em>${p?'올라감':'당기기'}</em></button>`}).join('')}</div>`},
-  splice:{t:'편집대',h:w=>`<svg id="spSvg" viewBox="0 0 480 300">
+  splice:{t:'편집대',h:w=>`<svg id="spSvg" viewBox="0 0 480 ${w.sp?136:300}">
     ${[0,1,2,3].map(i=>`<rect x="${i*120+2}" y="18" width="116" height="112" fill="none" stroke="#9a9182" stroke-dasharray="4 3"/>`).join('')}
     ${w.slots.map((k,i)=>piece(k,i*120,18,'slot',i)).join('')}
-    ${w.sp?'':`<text x="2" y="162" font-size="11" fill="#6b604a">필름 조각</text>${w.tray.filter(k=>!w.slots.includes(k)).map((k,j)=>piece(k,j*120,170,'tray',k)).join('')}`}</svg>`},
+    ${w.sp?'':`<text x="2" y="162" font-size="11" fill="#6b604a">필름 조각</text>${w.tray.filter(k=>!w.slots.includes(k)).map((k,j)=>piece(k,j*120,170,'tray',k)).join('')}`}</svg>${w.sp?viewerSvg(w):''}`},
   check:{t:'빗장에 끼워져 있던 종이',h:()=>`${paper(`<h4>마지막으로 나가는 사람 볼 것</h4><ul class="check"><li>1. 영사기 끄기</li><li>2. 호출등 끄기</li><li>3. 차단기는 로비만 남기기</li><li>4. 뒷문 걸쇠 걸기</li></ul><p style="text-align:right">별빛극장</p>`)}<div class="drow"><button class="btn primary" data-act="leave">적힌 대로 하고 나가기</button></div>`},
 };
 function devHtml(){if(!DEV||!DEVS[DEV])return '';const d=DEVS[DEV],t=typeof d.t==='function'?d.t():d.t;
@@ -619,6 +642,7 @@ const TAP={
     if(t==='drawer'){if(w.drawer)return S.bag.sheet||S.used.sheet?'서랍이 비어 있다.':null;w.drawer=true;refresh();return '서랍을 당겼다. 맨 위에 투명한 OHP 시트가 한 장 있다. 동그라미가 몇 개 그려져 있다.'}
     if(t==='cab'){if(w.open)return S.bag.keys||S.used.keys?'열쇠함이 비어 있다.':'열쇠함 안에 열쇠 꾸러미가 걸려 있다.';openDev('lock');return}
     if(t==='card'){openDev('card');return}
+    if(t==='file'){openDev('receipt');return}
     if(t==='window')return '매표 창구 유리 너머로 캄캄한 로비가 보인다. 전광판 불빛만 바닥에 번져 있다.';
   },
   3:(t,w,h)=>{
@@ -644,6 +668,7 @@ const TAP={
     if(t==='gate')return w.gate?'렌즈 옆 필름 문. 이제 비어 있다.':null;
     if(t==='diagram'||t==='lights'){openDev(t);return}
     if(t==='lever')return lever(w);
+    if(t==='section'){openDev('section');return}
     if(t==='lamp')return '켜 둔 채 차단기로 끄고 다녔다던 작업등이다. 아까 로비에서 본 영사실 창 불빛이 이거였다.';
     if(t==='window')return w.run?'영사창 너머 스크린이 하얗게 빛난다.':'작은 영사창 너머로 캄캄한 객석이 내려다보인다.';
   },
@@ -658,7 +683,7 @@ const TAP={
   },
   7:(t,w)=>{
     if(t==='rail'){openDev('rail');return}
-    if(t==='section'){openDev('section');return}
+    if(t==='torn')return '벽에 테이프 자국만 네 귀퉁이 남았다. 뭔가 붙어 있다 떼어진 자리다.';
     if(t==='curtain')return '무거운 막이 바닥까지 내려와 길을 막고 있다. 손으로 걷어 보려 했지만 꿈쩍 않는다.';
     if(t==='standee')return '손전등을 바로 비췄다. 사람이 아니라 입간판이다. 1979년 개관작 『별이 지는 언덕』 주인공, 사람 키만 한 등신대. 숨을 내쉬었다.';
     if(t==='exit2')return '막 뒤로 2번 출입구가 보인다.';
@@ -667,7 +692,12 @@ const TAP={
     if(t==='splice'){const n=S.bag.film||0;if(!w.sp&&n<4)return `필름을 이어 붙이는 편집대다. 조각이 아직 ${n}개뿐이다.`;openDev('splice');return}
     if(t==='lock'){openDev('lock');return}
     if(t==='paper')return '빗장 틈에 코팅된 종이가 끼워져 있다. 「마지막으로 나가는 사람 볼 것」. 빗장을 빼야 뺄 수 있겠다.';
-    if(t==='door'){if(w.open){openDev('check');return}return '2번 출입구. 빗장에 번호 자물쇠가 걸려 있다. 문틈으로 찬바람이 샌다.'}
+    if(t==='door'){if(w.out){openDev('check');return}if(w.open)return '빗장은 빠졌는데 문이 꿈쩍 않는다. 옆에 붙은 「반입문 전기 잠금」 상자 때문인 것 같다.';return '2번 출입구. 빗장에 번호 자물쇠가 걸려 있다. 문틈으로 찬바람이 샌다.'}
+    if(t==='strike'){
+      if(w.out){openDev('check');return}
+      if(!S.w[3].brk[5])return w.open?'「반입문 전기 잠금 · 1998」. 열림 버튼을 눌러도 아무 반응이 없다. 등이 꺼져 있다. 전기가 안 들어오는 모양이다.':'문틀 옆 작은 상자. 「반입문 전기 잠금 · 1998」. 등이 꺼져 있다.';
+      if(!w.open)return '전기 잠금 등에 초록 불이 들어와 있다. 그래도 빗장이 걸려 있어서 문은 안 열린다.';
+      w.out=true;openDev('check');return '초록 등을 확인하고 열림 버튼을 눌렀다. 문이 밖으로 밀린다. 찬바람이 훅 들이친다.'}
   },
 };
 function thread(i,w){
@@ -713,16 +743,15 @@ const ACT={
     if(c===P.ok){w.open=true;DEV=null;
       if(p===1){clearP(1);toast('자물쇠가 풀렸다. 셔터를 밀어 올리자 먼지가 쏟아진다.');return}
       if(p===4){save();refresh();toast('자물쇠가 열렸다. 철망 문을 젖히자 317번 캔이 보인다. 다른 캔보다 가볍다.');return}
-      if(p===8){save();openDev('check');toast('빗장이 빠졌다. 끼워져 있던 종이가 손에 떨어졌다.');return}}
+      if(p===8){save();refresh();toast('빗장이 빠졌다. 끼워져 있던 종이가 손에 떨어졌다. 그런데 문을 밀어도 꿈쩍 않는다. 문틀 옆 작은 상자 「반입문 전기 잠금」의 등이 꺼져 있다.');return}}
     if(p===4&&!P.msg[c]&&CANS.some(([n,,st])=>String(n)===c&&st)){toast('그 번호 캔은 업체 반출 목록에 있다.');return}
     toast(P.msg[c]||'자물쇠가 꿈쩍도 안 한다.')},
   brk:b=>{const w=S.w[3],i=+b.dataset.i;
-    if(w.ok){toast('필요한 불은 다 들어왔다. 이대로 두자.');return}
     if(w.brk[i]){w.brk[i]=0;save();refresh();return}
     w.brk[i]=1;
     if(i===3){trip();save();refresh();toast('올리자마자 차단기가 전부 떨어졌다. 로비 전광판까지 꺼졌다. 객석등은 혼자서도 못 버티는 모양이다.');return}
     if(w.brk.filter(Boolean).length>4){trip();save();refresh();toast('다섯 개째를 올리자 차단기가 전부 떨어졌다. 로비 전광판까지 꺼졌다. 처음부터 다시.');return}
-    if(w.brk.join('')==='11001010'){w.ok=true;DEV=null;
+    if(!S.clear[3]&&w.brk.join('')==='11001010'){w.ok=true;DEV=null;
       if(!S.clear[3])clearP(3);else{save();refresh()}
       toast('마지막 차단기를 올리자 문틈 너머 로비 쪽이 환해졌다. 고개를 내밀어 보니 2층 영사실 창에 불이 켜져 있다. 아무도 없을 텐데.');return}
     save();refresh();toast(BRKMSG[i])},
@@ -746,12 +775,14 @@ const ACT={
     save();refresh();toast(['맨 뒤쪽 어딘가에서 막 하나가 천천히 올라간다. 먼지가 쏟아진다.','막이 하나 더 올라갔다. 줄이 팽팽하게 걸린다.','셋째 막이 올라갔다. 앞에 막 하나가 남았다.'][w.pulled.length-1])},
   tray:b=>{const w=W();if(S.hold==='loupe'){toast('필름 칸 아래 깨알 글씨가 잘려 있어서 못 읽겠다.');return}
     if(w.slots.length>=4)return;w.slots.push(+b.dataset.i);
-    if(w.slots.length===4){if(w.slots.join('')==='0123'){w.sp=true;used('film');save();refresh();toast('조각이 맞물렸다. 반으로 잘려 있던 숫자들이 이어진다.');return}
+    if(w.slots.length===4){if(w.slots.join('')==='0123'){w.sp=true;used('film');save();refresh();toast('조각이 맞물려 한 줄이 됐다. 그런데 칸마다 글씨가 가는 줄무늬로 긁혀 나가서, 한 칸만 봐서는 알아볼 수 없다.');return}
       save();refresh();toast('이어 놓고 보니 잘린 숫자 반쪽이 서로 안 맞는다.');return}
     save();refresh()},
   slot:b=>{const w=W();
-    if(S.hold==='loupe'){toast(w.sp?'루페를 대니 필름 칸 아래 작은 글씨가 읽힌다. "별빛극장 개관 · 첫 회 · 1979"':'필름 칸 아래 깨알 글씨가 잘려 있어서 못 읽겠다.');return}
+    if(S.hold==='loupe'){toast(w.sp?'루페를 대 봐도 긁힌 줄무늬만 크게 보인다. 이건 돌려 봐야 한다.':'필름 칸 아래 깨알 글씨가 잘려 있어서 못 읽겠다.');return}
     if(w.sp)return;w.slots.splice(+b.dataset.i,1);save();refresh()},
+  step:()=>{const w=W();w.fi=(w.fi+1)%4;save();refresh()},
+  crank:()=>{const w=W();w.crank=!w.crank;save();refresh();if(w.crank)toast('손잡이를 빨리 돌리자 칸마다 남은 줄무늬가 서로 메워지며 글씨가 떠오른다.')},
   leave:()=>{DEV=null;clearP(8);S.v='end';save();render(true);scrollTo({top:0,behavior:'smooth'})},
 };
 
