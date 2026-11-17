@@ -64,8 +64,8 @@ header.hud{display:flex;align-items:flex-end;gap:10px 18px;flex-wrap:wrap;margin
 .rows{display:grid;grid-template-columns:54px 70px 72px 1fr}
 .rows>div{border-bottom:1px solid #cbbf9e;padding:4px 6px 2px;font-family:var(--hand);font-size:var(--hs);line-height:1.25;color:var(--pen);min-height:38px}
 .rows>.th{font-family:var(--serif);font-size:12px;color:#6b604a;background:rgba(107,96,74,.08);min-height:0;padding:4px 6px;border-bottom:1px solid #6b604a}
-.rows .st{white-space:nowrap}
-.rows .st.bad{color:#7a1e1b}
+.rows .st{white-space:nowrap;color:#7a7264}
+.rows .st.bad{color:#c4261c;font-weight:700;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px}
 @media(max-width:560px){
   .rows{grid-template-columns:48px 62px 1fr}
   .rows>.th.memo{display:none}
@@ -80,7 +80,10 @@ header.hud{display:flex;align-items:flex-end;gap:10px 18px;flex-wrap:wrap;margin
 
 /* 5장 이후: 몇 장 비운 뒤 새로 쓴 기록. 잉크가 진하고 글씨가 떨린다 */
 .blank{text-align:center;font-family:var(--serif);font-size:12.5px;color:#9a8f76;letter-spacing:4px;padding:22px 0 14px;border-bottom:1px dashed #cbbf9e;margin-bottom:10px}
-.fresh .meta b,.fresh .rows>div:not(.th),.fresh .foot>div:first-child{color:#1c2c6e}
+/* 2026년 기록: 새 파란 볼펜. 옛 기록(검정)과 색·굵기 둘 다 다르게 */
+.fresh .meta b,.fresh .rows>div:not(.th),.fresh .foot>div:first-child{color:#1747d1;-webkit-text-stroke:.35px #1747d1}
+.fresh .rows .st{color:#1747d1}
+.fresh .rows .st.bad{color:#c4261c}
 .fresh .rows>div:not(.th){letter-spacing:.5px;transform:rotate(-.4deg)}
 .fresh .meta .yr{display:inline-block;min-width:54px;border-bottom:1.5px dotted #9a8f76;margin:0 4px}
 
@@ -163,7 +166,7 @@ header.hud{display:flex;align-items:flex-end;gap:10px 18px;flex-wrap:wrap;margin
 .roll th{background:#efe6cc;font-weight:400;color:#6b604a}
 .roll td.nm{font-family:"Kkakdugi Drafting",sans-serif;font-weight:700;white-space:nowrap;padding:3px 6px;text-align:left}
 .roll td.x{color:#a3312a;font-weight:700}
-.roll td.l{color:#27479a}
+.roll td.l{color:#1747d1;font-weight:700}
 @media(max-width:560px){.roll{font-size:9.5px;letter-spacing:-.3px}.roll th,.roll td{min-width:0;padding:2px 0}.roll td.nm{padding:2px 2px;font-size:10px}}
 .rollwrap{overflow-x:auto}
 .legendline{font-size:12.5px;color:var(--dim)}
@@ -274,7 +277,7 @@ const PAGES=[
    say:{'난로':'그건 이상 없던 줄이다.','책상':'책상은 아이들도 뒤진다고 했다.','풍금':'그건 이상 있던 일. 숨긴 곳은 따로 있다.','종탑':'그건 이상 있던 곳. 숨긴 곳은 따로 있다.'},
    hints:['“이상 있음”이라고 적힌 줄만 다시 보세요.','이상 있는 줄의 비고, 그 첫 글자를 위에서부터 차례로 읽어 보세요.','시·계·뒤 → 정답: 시계뒤. 배치도에서 숙직실 벽시계를 살펴보세요.']},
   {tab:'2장', code:'316',
-   hints:['캐비닛은 교무실에 있어요. 번호를 적어 둔 메모가 교무실 메모지 묶음에 있었는데, 그 장은 뜯겨 나갔어요. 숙직실 책상도 다시 보세요.','숙직실에서 챙긴 연필을 소지품에서 눌러 든 채로 메모지 묶음을 누르면 눌린 글씨 "애들 이번 달 쉰 날"이 떠올라요. 출석부에서 동·미·은 각자의 결석(/)을 세어 보세요. 지각(△)은 쉰 날이 아니에요.','동민 3 · 미래 1 · 은수 6 → 캐비닛 번호 316']},
+   hints:['캐비닛은 교무실에 있어요. 번호를 적어 둔 메모가 교무실 메모지 묶음에 있었는데, 그 장은 뜯겨 나갔어요. 숙직실 책상도 다시 보세요.','숙직실에서 챙긴 연필을 소지품에서 골라 든 채로 메모지 묶음을 누르면 눌린 글씨 "애들 이번 달 쉰 날"이 떠올라요. 출석부에서 동·미·은 각자의 결석(/)을 세어 보세요. 지각(△)은 쉰 날이 아니에요.','동민 3 · 미래 1 · 은수 6 → 캐비닛 번호 316']},
   {tab:'3장', q:'확인란', ans:'종탑', alt:['종','종루','뒤뜰종탑','종탑이요','뒤뜰의종탑','종치는탑'],
    near:['탑','뒤뜰','종각'],
    say:{'은수자리에서창밖을봐':'칠판이 시킨 대로, 창밖에 뭐가 보이는지 직접 가서 보자.','창밖':'창밖에 뭐가 보이는지 직접 가서 보자.','창밖을봐':'창밖에 뭐가 보이는지 직접 가서 보자.','은수자리':'그 자리에서 창밖에 뭐가 보이는지 보자.','철봉':'그건 1번 자리 창밖이다.','운동장':'그건 1번 자리 창밖이다.','게시판':'그건 2번 자리에서 보이는 거다.','복도':'그건 2번 자리에서 보이는 거다.','은수':'은수 자리에서 보이는 걸 적자.','창가뒷자리':'자리 말고, 그 창밖에 보이는 것.','3번':'자리 말고, 그 창밖에 보이는 것.'},
