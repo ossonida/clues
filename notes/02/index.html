@@ -10,7 +10,7 @@
 :root{
   --desk:#34302b;--pad:#fbf2a6;--pline:#a9c3e0;--margin:rgba(214,69,65,.55);--lh:32px;--ml:56px;--binding:#7a1e1b;
   --sheet:#fffdf4;--ink:#1f1c18;--dim:#6b6358;--rule:#cfc5b0;--stamp:#a3312a;
-  --blue:#27479a;--pencil:#4a4a4f;--red:#c23a2e;
+  --blue:#27479a;--pencil:#4a4a4f;--red:#c23a2e;--green:#2b7a52;
   --nl:34px;--nm:64px;--hs:clamp(20px,5.4vw,27px);
   --mono:"Nanum Gothic Coding",monospace;--serif:"Nanum Myeongjo",serif;--hand:"Nanum Pen Script",cursive;
 }
@@ -133,6 +133,53 @@ header.hud{display:flex;align-items:flex-end;gap:10px 18px;flex-wrap:wrap;margin
 .nav button{background:none;border:none;padding:4px 0;color:var(--dim);border-bottom:1px solid transparent}
 .nav button:hover{color:var(--ink);border-color:var(--ink)}
 
+.green{color:var(--green)}
+.tiny{font-size:.62em;display:inline-block;transform:rotate(-6deg);margin-left:.3em}
+.ln.right{text-align:right}
+
+/* 4장: 글자판 + 구멍 뚫린 책갈피 */
+.gwrap{width:100%}
+.grille{position:relative;width:calc(var(--c) * 7);height:calc(var(--c) * 11);margin-top:6px}
+.grid{display:grid;grid-template-columns:repeat(7,var(--c));grid-auto-rows:var(--c);background:#fffdf4;outline:1.5px solid #9fb3cf;font-family:var(--hand);font-size:calc(var(--c) * .62);color:var(--blue);user-select:none}
+.grid span{display:flex;align-items:center;justify-content:center;border-right:1px dotted #c9d6ea;border-bottom:1px dotted #c9d6ea}
+.grid span.star{color:var(--green);font-size:calc(var(--c) * .55)}
+.bm{position:absolute;width:calc(var(--c) * 4);height:calc(var(--c) * 4);display:grid;grid-template-columns:repeat(4,1fr);touch-action:none;cursor:grab;filter:drop-shadow(0 5px 6px rgba(0,0,0,.35));transition:left .12s,top .12s;z-index:2;user-select:none}
+.bm.drag{transition:none;cursor:grabbing}
+.bm i{background:#e6d2a5;position:relative}
+.bm i.h{background:transparent;box-shadow:inset 0 0 0 2px rgba(122,90,40,.7)}
+.bm i.s::before{content:"★";position:absolute;left:2px;top:-1px;font-size:11px;font-style:normal;color:#7a5a28}
+.bm .lbl{position:absolute;right:6px;bottom:3px;font-family:var(--hand);font-size:17px;color:#7a5a28;pointer-events:none}
+
+/* 5장: 불빛에 비추기 */
+.sheet.lit{background-color:#fffef9;box-shadow:0 0 0 1px rgba(255,240,180,.6),0 0 60px 10px rgba(255,236,160,.55),0 16px 30px -14px rgba(40,30,0,.55)}
+.back{position:absolute;left:calc(var(--nm) + 14px);right:26px;font-family:var(--hand);font-size:calc(var(--hs) * 1.15);line-height:var(--nl);color:rgba(60,60,70,.5);transform:scaleX(-1);opacity:0;transition:opacity .6s;pointer-events:none;user-select:none;filter:blur(.3px)}
+.sheet.lit .back{opacity:1}
+.lamp{margin-top:14px;font-family:var(--hand);font-size:22px;background:#fff3b0;border:none;padding:4px 14px;box-shadow:0 2px 4px rgba(0,0,0,.18);transform:rotate(-1deg)}
+.lamp:hover{background:#ffe680}
+
+/* 6장: 찢긴 조각 */
+.tear{position:relative;height:calc(var(--nl) * 6)}
+.tbox{position:absolute;left:0;right:0;top:0;height:calc(var(--nl) * 2)}
+.tear .tt{height:100%;display:flex;align-items:center;justify-content:center;font-family:var(--hand);font-size:calc(var(--hs) * 1.35);color:var(--red);white-space:nowrap;user-select:none;padding-top:.2em}
+.gap{background:#cbbd7a;box-shadow:inset 0 0 12px rgba(0,0,0,.35)}
+.scrapw{position:absolute;left:0;right:0;top:0;height:calc(var(--nl) * 2);filter:drop-shadow(0 4px 5px rgba(0,0,0,.35));transition:transform .25s;pointer-events:none;z-index:2}
+.scrapw.drag{transition:none}
+.scrap{position:absolute;inset:0;background:var(--sheet);touch-action:none;cursor:grab;pointer-events:auto}
+.scrapw.fixed{filter:none}
+.scrapw.fixed .scrap{cursor:default}
+
+/* 마지막 장: 끼워 넣은 초록 글씨 */
+.ins{position:relative;display:inline-block;width:.55em;height:1em}
+.ins::after{content:"∨";position:absolute;left:.05em;top:.3em;font-family:sans-serif;font-size:.55em;color:var(--green)}
+.ins i{position:absolute;left:50%;bottom:.7em;transform:translateX(-50%) rotate(-5deg);font-style:normal;font-size:.82em;color:var(--green);white-space:nowrap}
+
+/* 결과: 다음 사람에게 */
+.letter{background:#f2f8ef;border-left:3px solid var(--green);padding:10px 14px;font-family:var(--hand);font-size:23px;line-height:1.35;color:var(--green);max-width:520px;margin:14px 0}
+.nextf{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:8px}
+.nextf input{font-family:var(--hand);font-size:24px;background:transparent;border:none;border-bottom:2px solid var(--ink);padding:0 4px;flex:1;min-width:200px;outline:none}
+.nextline{font-family:var(--hand);font-size:26px;color:var(--ink)}
+.small{font-size:12.5px;color:var(--dim);font-family:var(--mono)}
+
 /* 힌트 모달 */
 .modal-bg{position:fixed;inset:0;background:rgba(30,25,18,.66);display:none;align-items:center;justify-content:center;padding:16px;z-index:50}
 .modal-bg.on{display:flex}
@@ -156,7 +203,7 @@ header.hud{display:flex;align-items:flex-end;gap:10px 18px;flex-wrap:wrap;margin
     <div class="brand">
       <a class="back" href="../../">← 사건 대장 / NOTE 02</a>
       <span class="t">문예부 교환일기</span>
-      <small>노트 방탈출 · 시제품</small>
+      <small>노트 방탈출</small>
     </div>
     <div class="spacer"></div>
     <div class="stat"><span>걸린 시간</span><b id="time">0:00</b></div>
@@ -171,27 +218,40 @@ header.hud{display:flex;align-items:flex-end;gap:10px 18px;flex-wrap:wrap;margin
 
 <script>
 const $=s=>document.querySelector(s);
-const SAVE_KEY='hn.note02.proto.v1';
+const SAVE_KEY='hn.note02.v1';
+const END=8;   // 결과 페이지 번호
 
 // ── 퍼즐 데이터 ──────────────────────────────
+// ans: 정답, alt: 같이 인정할 답, near: "거의 맞았다"로 받아 줄 답
 const PAGES=[
   {tab:'표지'},
   {tab:'1장', ans:'다음은너야', near:['다음은','다음','다음은너','너야','은너야'],
    hints:['여백에 그려진 화살표 낙서, 어디서 어디로 향하고 있나요?','각 줄의 맨 첫 글자만 위에서 아래로 읽어 보세요.','정답: 다음은너야']},
   {tab:'2장', ans:'할게', near:['할께','역할','쓸게','역할쓸게','빨간펜','고친글자'],
    hints:['하람이는 연필을 꾹꾹 눌러 쓴대요. 앞 장을 뜯어 갔다면 자국이 남았겠죠.','빈 줄 위를 마우스나 손가락으로 문질러 보세요. 드러난 말은 1장 이야기예요.',"1장에서 빨간 펜이 고친 글자는 '할'과 '게'. 정답: 할게"]},
-  {tab:'3장', code:'9173',
-   hints:['오른쪽 아래 모서리가 접혀 있어요.',"'4-1'은 4번째 줄의 1번째 글자예요. 띄어쓰기는 세지 않아요. 찾은 글자를 숫자로 읽어 보세요.",'구·일·칠·삼 → 자물쇠 번호 9173']},
+  {tab:'3장', ans:'9173', alt:['구일칠삼'], near:['구일','칠삼','일칠삼'],
+   hints:['오른쪽 아래 모서리가 접혀 있어요.',"'4-1'은 4번째 줄의 1번째 글자예요. 띄어쓰기는 세지 않아요. 찾은 글자를 숫자로 읽어 보세요.",'구·일·칠·삼 → 정답: 9173 (부실 문 번호래요. 기억해 두세요)']},
+  {tab:'4장', ans:'거울을봐', alt:['거울봐'], near:['거울','거울을','울을봐','을봐'],
+   hints:['지우가 글자판 아래에 구멍 뚫린 책갈피를 끼워 뒀어요.','책갈피를 끌어서, 왼쪽 위 ★ 구멍이 글자판의 초록 ★ 위에 오게 놓아 보세요. 구멍으로 보이는 글자를 왼쪽 위부터 읽어요.','정답: 거울을봐']},
+  {tab:'5장', ans:'네번째', alt:['넷째','네번째사람','4번째','네번째글씨'], near:['네','번째','네번','누가또써'],
+   hints:['하람이는 집에 가기 전에 창가에서 노트를 불빛에 들어 봤대요.','“창가 불빛에 비춰 보기”를 누르면 뒷장 글씨가 비쳐요. 거울처럼 좌우가 뒤집혀 있어요.','뒷장엔 “이 노트, 우리 셋 말고 누가 또 써. 암호: 네 번째”. 정답: 네번째']},
+  {tab:'6장', ans:'초록', alt:['초록색','녹색','초록펜','초록색펜','green'], near:['초','록','연두','풀색'],
+   hints:['찢겨 나간 조각이 페이지 아래쪽에 떨어져 있어요.','조각을 한 번 눌러 바로 세우고, 끌어서 찢긴 자리에 맞춰 보세요.','붙이면 “초록 펜은 우리 셋 다 안 써”. 정답: 초록']},
+  {tab:'마지막 장', code:'3719',
+   hints:['세 사람 글씨 사이사이에 다른 색 글씨가 끼어 있어요.','초록 글씨만 순서대로 읽어 보세요. “작년 번호”는 3장에서 찾은 번호예요.','올해 번호는 작년 번호(9173)를 거울에 비춘 것 → 3719']},
   {tab:'끝'}
 ];
+const WRONG_COLOR={'파랑':'그건 지우 펜이다.','파란색':'그건 지우 펜이다.','빨강':'그건 서진이 펜이다.','빨간색':'그건 서진이 펜이다.','회색':'그건 하람이 연필이다.','연필':'그건 하람이 연필이다.','검정':'우리 셋 중에 검정 펜 쓰는 사람은 없는데…','검은색':'우리 셋 중에 검정 펜 쓰는 사람은 없는데…'};
 
 // ── 상태 ──────────────────────────────
-const fresh=()=>({p:0,open:0,solved:{},hints:{},wrong:{},ms:0,started:false,rubbed:false,unfolded:false,lock:[0,0,0,0],done:false});
+const fresh=()=>({p:0,open:0,solved:{},hints:{},wrong:{},ms:0,started:false,rubbed:false,unfolded:false,
+  card:{x:0,y:7},light:false,torn:{x:.1,y:1.6,r:180,done:false},lock:[0,0,0,0],done:false,next:''});
 let S=fresh();
 try{const d=JSON.parse(localStorage.getItem(SAVE_KEY)||'null');if(d)S={...fresh(),...d}}catch{}
 const save=()=>{try{localStorage.setItem(SAVE_KEY,JSON.stringify(S))}catch{}};
 addEventListener('pagehide',save);
 
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const fmt=ms=>{const s=Math.floor(ms/1000);return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`};
 const hintTotal=()=>Object.values(S.hints).reduce((a,b)=>a+b,0);
 const wrongTotal=()=>Object.values(S.wrong).reduce((a,b)=>a+b,0);
@@ -202,34 +262,32 @@ setInterval(()=>{if(S.started&&!S.done&&!document.hidden){S.ms+=1000;renderStats
 function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('on');clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove('on'),2200)}
 const norm=s=>s.replace(/[\s.,!?·'"~\-]/g,'').toLowerCase();
 function lev(a,b){const d=[...Array(b.length+1).keys()];for(let i=1;i<=a.length;i++){let p=d[0];d[0]=i;for(let j=1;j<=b.length;j++){const t=d[j];d[j]=Math.min(d[j]+1,d[j-1]+1,p+(a[i-1]===b[j-1]?0:1));p=t}}return d[b.length]}
+const sameDigits=(a,b)=>[...a].sort().join('')===[...b].sort().join('');
 
 // ── 탭 ──────────────────────────────
+const canOpen=i=>i===END?S.done:i<=S.open;
 function renderTabs(){
   $('#tabs').innerHTML=PAGES.map((pg,i)=>{
-    if(i===4&&!S.done)return '';
-    const locked=i>S.open&&!(i===4&&S.done);
+    if(i===END&&!S.done)return '';
+    const locked=!canOpen(i);
     return `<button class="tab${S.p===i?' on':''}" data-i="${i}"${locked?' disabled':''}>${locked?'🔒 ':''}${pg.tab}</button>`}).join('');
   $('#tabs').querySelectorAll('.tab').forEach(b=>b.onclick=()=>go(+b.dataset.i));
 }
-function go(i){if(i>S.open&&!(i===4&&S.done))return;S.p=i;save();render(true);scrollTo({top:0,behavior:'smooth'})}
+function go(i){if(!canOpen(i))return;S.p=i;save();render(true);scrollTo({top:0,behavior:'smooth'})}
 
 // ── 페이지 내용 ──────────────────────────────
 const L=(cls,html,no)=>`<p class="ln ${cls}">${no?`<span class="no">${no}</span>`:''}${html}</p>`;
 const FIX=(wrong,right)=>`<span class="fix"><s>${wrong}</s><i>${right}</i></span>`;
+const INS=w=>`<span class="ins"><i>${w}</i></span>`;
+const TINY=(t,c='green')=>`<span class="${c} tiny">${t}</span>`;
 
 function pageCover(){
   return `<section class="cover">
     <div class="label"><h2>문예부 교환일기</h2><div>규칙: 앞 사람이 숨긴 말을 찾아 맨 아래 빈칸에 적어야 다음 장을 쓸 수 있음.</div></div>
     <p class="story">방과 후 문예부실에서 깜빡 졸았다. 눈을 떠 보니 창밖은 벌써 어둑하고, 문은 밖에서 잠겨 있다. 안쪽 손잡이에는 처음 보는 4자리 번호자물쇠가 걸려 있다.<br>책상 위에는 작년 부원들이 돌려 쓰던 교환일기 한 권. 표지 안쪽에 누군가 이렇게 적어 두었다.</p>
     <div class="rules">“끝까지 읽은 사람만 <b>나갈 수 있음.</b>”</div>
-    <ul class="how">
-      <li>한 장씩 읽고, 맨 아래 <b>오늘의 암호</b> 칸에 숨은 말을 적으면 다음 장이 열려요.</li>
-      <li>지난 장은 언제든 위쪽 탭으로 다시 펼칠 수 있어요. 앞 장에 답이 숨어 있기도 해요.</li>
-      <li>노트는 진짜 종이처럼 다룰 수 있어요. 문지르고, 접힌 곳을 펴 보세요.</li>
-      <li>막히면 <b>힌트</b>를 누르세요. 장마다 포스트잇 3장이 있고, 마지막 장엔 정답이 적혀 있어요.</li>
-    </ul>
     <button class="btn go" id="start">${S.started?'이어서 펼치기':'노트 펼치기'}</button>
-    <div class="proto">시제품 · 1~3장까지 들어 있어요 · 진행 상황은 이 브라우저에 저장돼요</div>
+    <div class="proto">진행 상황은 이 브라우저에 저장돼요</div>
   </section>`;
 }
 
@@ -241,7 +299,7 @@ function page1(){
     ${L('blue','음료수 사 온 하람이 덕에 좀 풀림.')}
     ${L('blue',`은근히 서진이 교정 역${FIX('활','할')}이 얄밉다.`)}
     ${L('blue',`너무 틀린대. 다음엔 꼼꼼히 쓸${FIX('께','게')}!`)}
-    ${L('blue','야, 금요일엔 다 같이 떡볶이 가자!')}
+    ${L('blue',`야, 금요일엔 다 같이 떡볶이 가자!${TINY('✓')}`)}
     ${L('','')}
     ${L('red','↳ 맞춤법 두 개 고쳐 둠. — 서진')}
     <svg class="doodle" style="left:calc(var(--nm) - 30px);top:calc(var(--nl) * 3 - 6px);width:22px;height:calc(var(--nl) * 5 + 10px)" viewBox="0 0 22 180" preserveAspectRatio="none" aria-hidden="true">
@@ -283,26 +341,98 @@ function page3(){
     '다 쓰고 나면 이 노트는',
     '월요일에 누구 손에 있을까',
     '사월이 오기 전에, 안녕'];
-  return `<article class="sheet turn" id="sheet3">
+  return `<article class="sheet turn">
     ${L('head red','<span>3월 28일 목요일 · 비</span><span>— 서진</span>')}
-    ${L('red','　　「부실 창가에서」')}
+    ${L('red',`　　「부실 창가에서」${TINY('참 좋다')}`)}
     ${poem.map((s,i)=>L('red',s,i+1)).join('')}
     ${L('','')}
+    ${L('','')}
     ${S.unfolded
-      ?`<div class="flap"><b>4-1 · 9-3 · 2-5 · 7-3</b><span>(줄-글자, 띄어쓰기는 안 셈)</span></div>`
+      ?`<div class="flap"><b>4-1 · 9-3 · 2-5 · 7-3</b></div>`
       :`<button class="corner" id="corner" aria-label="접힌 모서리 펴기" title="접힌 모서리"></button>`}
+  </article>${answerRow(3)}`;
+}
+
+// 4장 글자판: ★(1,2)에 책갈피 왼쪽 위를 맞추면 구멍으로 거·울·을·봐가 보인다
+const GRID=['하늘연필노트봄','떡볶★이교실창','문예부실거다지','우개울서진을람','종이비봐밀펜금','요일칠판구름안'];
+const HOLES=[0,6,8,11,13];   // 책갈피 4×4 칸 중 구멍 (줄*4+칸)
+function page4(){
+  return `<article class="sheet turn">
+    ${L('head blue','<span>4월 4일 목요일 · 바람</span><span>— 지우</span>')}
+    ${L('blue','서진이가 또 고칠까 봐 이번엔 글자판!')}
+    ${L('blue','책갈피 구멍으로 보면 보여. ★부터 맞춰.')}
+    <div class="gwrap"><div class="grille" id="grille">
+      <div class="grid">${GRID.map(r=>[...r].map(ch=>`<span${ch==='★'?' class="star"':''}>${ch}</span>`).join('')).join('')}</div>
+      <div class="bm" id="bm" aria-label="구멍 뚫린 책갈피 (끌어서 옮기기)">${Array.from({length:16},(_,i)=>`<i class="${HOLES.includes(i)?'h':''}${i===0?' s':''}"></i>`).join('')}<span class="lbl">지우 책갈피</span></div>
+    </div></div>
+  </article>${answerRow(4)}`;
+}
+
+function page5(){
+  return `<article class="sheet turn${S.light?' lit':''}" id="sheet5">
+    ${L('head pencil','<span>4월 11일 목요일 · 맑음</span><span>— 하람</span>')}
+    ${L('','')}
+    ${L('pencil','오늘도 쓸 말 없음.')}
+    ${L('pencil','집에 가기 전에 창가에서 노트를 들어 봤다.')}
+    ${L('pencil','뒷장에 쓴 건 앞에서는 안 보이겠지.')}
+    ${L('','')}${L('','')}${L('','')}${L('','')}
+    <div class="back" style="top:calc(var(--nl) * 6 + 4px)">이 노트, 우리 셋 말고<br>누가 또 써.<br>암호: 네 번째</div>
+  </article>
+  <button class="lamp" id="lamp">${S.light?'불빛 치우기':'💡 창가 불빛에 비춰 보기'}</button>
+  ${answerRow(5)}`;
+}
+
+// 6장 찢긴 자리: 같은 글줄을 위/아래 반쪽으로 잘라 쓴다
+const TEAR=[50,46,53,48,55,47,51,45,54,49,52,46,55,48,50,44,53,47,52,49,51];
+const tearTop='polygon(0% 0%,100% 0%,'+TEAR.map((y,i)=>`${100-i*5}% ${TEAR[20-i]}%`).join(',')+')';
+const tearBot='polygon('+TEAR.map((y,i)=>`${i*5}% ${y}%`).join(',')+',100% 100%,0% 100%)';
+function page6(){
+  const tt='<div class="tt">초록 펜은 우리 셋 다 안 써.</div>';
+  return `<article class="sheet turn">
+    ${L('head red','<span>4월 18일 목요일 · 흐림</span><span>— 서진</span>')}
+    ${L('','')}
+    ${L('red','너무 솔직하게 써서 찢어 버렸다.')}
+    ${L('red','암호는 찢긴 줄에 적힌 펜 색깔.')}
+    ${L('','')}
+    <div class="tear" id="tear">
+      <div class="tbox" style="clip-path:${tearTop}">${tt}</div>
+      <div class="tbox gap" style="clip-path:${tearBot}"></div>
+      <div class="scrapw${S.torn.done?' fixed':''}" id="scrapw"><div class="scrap" id="scrap" style="clip-path:${tearBot}" aria-label="찢긴 조각 (누르면 돌리기, 끌어서 맞추기)">${tt}</div></div>
+    </div>
+  </article>${answerRow(6)}`;
+}
+
+function page7(){
+  return `<article class="sheet turn">
+    ${L('head','<span class="blue">2월 13일 · 졸업식 전날</span><span class="pencil">— 다 같이</span>')}
+    ${L('','')}
+    ${L('blue',`드디어 마지막 장! ${INS('올해')} 우리 셋 다 졸업.`)}
+    ${L('','')}
+    ${L('pencil',`부실 열쇠는 ${INS('번호는')} 선생님께 돌려드림.`)}
+    ${L('','')}
+    ${L('red',`마지막까지 ${INS('작년')} 맞춤법 검사 완료.`)}
+    ${L('','')}
+    ${L('blue',`다음 부원한테 ${INS('번호를')} 이 노트 물려주자!`)}
+    ${L('','')}
+    ${L('pencil',`문 번호는 ${INS('거울에')} 바꿔 둔대.`)}
+    ${L('','')}
+    ${L('red',`그럼 ${INS('비춘')} 안녕, 문예부. ${INS('것')}`)}
+    ${L('','')}
+    ${L('green right','다들 졸업 축하해.')}
   </article>
   <section class="lock" id="lock">
     <h3>문 손잡이 · 4자리 번호자물쇠</h3>
     <div class="dials">${S.lock.map((d,i)=>`<div class="dial"><button data-i="${i}" data-d="1" aria-label="${i+1}번째 숫자 올리기">▲</button><b>${d}</b><button data-i="${i}" data-d="-1" aria-label="${i+1}번째 숫자 내리기">▼</button></div>`).join('')}</div>
     <button class="pull" id="pull">당기기</button>
     <div class="msg" id="lockMsg"></div>
-  </section>`;
+  </section>
+  <div class="nav"><button data-go="6">← 앞 장</button><span></span></div>`;
 }
 
 function pageEnd(){
   const h=hintTotal(),ansHints=Object.values(S.hints).filter(n=>n>=3).length;
   const grade=h===0?'명예 문예부원':ansHints===0?'문예부원':'견학생';
+  const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   return `<article class="sheet turn result">
     <p class="big">철컥. 문이 열렸다.</p>
     <div class="seal">${grade}</div>
@@ -311,7 +441,12 @@ function pageEnd(){
       <div><dt>힌트</dt><dd>${h}장</dd></div>
       <div><dt>틀린 암호</dt><dd>${wrongTotal()}번</dd></div>
     </dl>
-    <p>복도로 나서려다 노트를 한 번 더 넘겨 본다. 세 사람의 글씨 뒤로, 아무도 쓴 적 없는 네 번째 글씨가 희미하게 남아 있다.<br><b>— 정식판에서 이어집니다.</b></p>
+    <p>복도로 나서자 문 바깥쪽에 초록 펜으로 쓴 쪽지가 붙어 있다.</p>
+    <div class="letter">끝까지 읽어 줘서 고마워.<br>세 사람이 남긴 노트, 이제 네 차례야.<br>— 문예부 지도교사 윤</div>
+    <p>네 번째 글씨의 주인은 문예부 담당 윤 선생님이었다. 졸업하는 세 사람과 함께, 새 부원을 위한 탈출 놀이를 몰래 준비해 둔 것이다. 노트 맨 뒤에는 아직 빈 줄이 남아 있다.</p>
+    ${S.next
+      ?`<p class="nextline">“${esc(S.next)}” <span class="small">— 다음 사람에게</span></p>`
+      :`<form class="nextf" id="nextf"><input id="nextIn" maxlength="40" placeholder="다음 사람에게 한 줄" aria-label="다음 사람에게 남길 한 줄"><button class="btn">남기기</button></form><div class="small">이 브라우저에만 남아요.</div>`}
     <div class="row"><button class="btn" id="again">처음부터 다시</button><a class="btn primary" href="../../" style="text-decoration:none">사건 대장으로</a></div>
   </article>`;
 }
@@ -324,45 +459,82 @@ function answerRow(p){
 }
 
 // ── 렌더 ──────────────────────────────
+const VIEWS=[pageCover,page1,page2,page3,page4,page5,page6,page7,pageEnd];
 function render(anim){
   renderTabs();renderStats();
   const p=S.p;
-  $('#page').innerHTML=[pageCover,page1,page2,page3,pageEnd][p]();
+  $('#page').innerHTML=VIEWS[p]();
   if(!anim)$('#page').querySelectorAll('.turn').forEach(e=>e.classList.remove('turn'));
   $('#page').querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(+b.dataset.go));
   if(p===0)$('#start').onclick=()=>{S.started=true;S.open=Math.max(S.open,1);go(1)};
   const f=$('#pw');if(f)f.onsubmit=e=>{e.preventDefault();check(p)};
   if(p===2)initRub();
-  if(p===3)bindLock();
-  if(p===4)$('#again').onclick=()=>{if(confirm('처음부터 다시 할까요? 지금 기록은 지워져요.')){S=fresh();save();render(true)}};
+  if(p===3){const c=$('#corner');if(c)c.onclick=()=>{S.unfolded=true;save();render(false)}}
+  if(p===4)bindGrille();
+  if(p===5)$('#lamp').onclick=()=>{S.light=!S.light;save();$('#sheet5').classList.toggle('lit',S.light);$('#lamp').textContent=S.light?'불빛 치우기':'💡 창가 불빛에 비춰 보기'};
+  if(p===6)bindTorn();
+  if(p===7)bindLock();
+  if(p===END){
+    $('#again').onclick=()=>{if(confirm('처음부터 다시 할까요? 지금 기록은 지워져요.')){S=fresh();strokes=[];save();render(true)}};
+    const nf=$('#nextf');if(nf)nf.onsubmit=e=>{e.preventDefault();const v=$('#nextIn').value.trim();if(!v)return;S.next=v;save();render(false)};
+  }
 }
 
 function check(p){
-  const inp=$('#ans'),raw=inp.value,v=norm(raw),pg=PAGES[p],msg=$('#msg');
+  const inp=$('#ans'),v=norm(inp.value),pg=PAGES[p],msg=$('#msg');
   if(!v)return;
-  if(v===norm(pg.ans)){
+  if(v===norm(pg.ans)||(pg.alt||[]).some(a=>norm(a)===v)){
     S.solved[p]=pg.ans;S.open=Math.max(S.open,p+1);save();
     toast('다음 장이 떨어졌다.');render(false);return;
   }
   S.wrong[p]=(S.wrong[p]||0)+1;save();
-  const near=pg.near.includes(v)||(norm(pg.ans).length>=4&&lev(v,norm(pg.ans))<=1);
+  const a=norm(pg.ans);
+  const near=pg.near.includes(v)||(a.length>=4&&lev(v,a)<=1)||(/^\d{4}$/.test(a)&&/^\d{4}$/.test(v)&&sameDigits(a,v));
   msg.className='msg'+(near?' near':'');
-  msg.textContent=near?'거의 맞았다. 조금만 더…':['아닌 것 같다.','다음 장이 꿈쩍도 안 한다.','다시 읽어 보자.'][S.wrong[p]%3];
+  msg.textContent=(p===6&&WRONG_COLOR[v])||(near?'거의 맞았다. 조금만 더…':['아닌 것 같다.','다음 장이 꿈쩍도 안 한다.','다시 읽어 보자.'][S.wrong[p]%3]);
   $('#pw').classList.remove('shake');void $('#pw').offsetWidth;$('#pw').classList.add('shake');
   inp.select();
 }
 
-// ── 3장: 모서리 + 자물쇠 ──────────────────────────────
+// ── 마지막 장: 자물쇠 ──────────────────────────────
 function bindLock(){
-  const c=$('#corner');if(c)c.onclick=()=>{S.unfolded=true;save();render(false)};
   $('#lock').querySelectorAll('.dial button').forEach(b=>b.onclick=()=>{const i=+b.dataset.i;S.lock[i]=(S.lock[i]+(+b.dataset.d)+10)%10;b.parentNode.querySelector('b').textContent=S.lock[i];save()});
   $('#pull').onclick=()=>{
-    const code=S.lock.join(''),m=$('#lockMsg');
-    if(code===PAGES[3].code){S.done=true;S.open=4;S.p=4;save();toast('철컥!');render(true);return}
-    S.wrong[3]=(S.wrong[3]||0)+1;save();
-    m.textContent=[...code].sort().join('')===[...PAGES[3].code].sort().join('')?'숫자는 맞는 것 같은데… 순서가 아닌가?':'꿈쩍도 안 한다.';
+    const code=S.lock.join(''),m=$('#lockMsg'),ans=PAGES[7].code;
+    if(code===ans){S.done=true;S.p=END;save();toast('철컥!');render(true);return}
+    S.wrong[7]=(S.wrong[7]||0)+1;save();
+    m.textContent=code==='9173'?'작년 번호로는 안 열린다. 정말 바뀌었나 보다.':sameDigits(code,ans)?'숫자는 맞는 것 같은데… 순서가 아닌가?':'꿈쩍도 안 한다.';
     $('#lock').classList.remove('shake');void $('#lock').offsetWidth;$('#lock').classList.add('shake');
   };
+}
+
+// ── 4장: 책갈피 끌기 ──────────────────────────────
+function bindGrille(){
+  const g=$('#grille'),bm=$('#bm');if(!g)return;
+  const c=clamp(Math.floor(g.parentNode.clientWidth/7),32,50);
+  g.style.setProperty('--c',c+'px');
+  const place=()=>{bm.style.left=S.card.x*c+'px';bm.style.top=S.card.y*c+'px'};place();
+  let st=null;
+  bm.onpointerdown=e=>{bm.setPointerCapture(e.pointerId);st={px:e.clientX,py:e.clientY,x:S.card.x*c,y:S.card.y*c};bm.classList.add('drag')};
+  bm.onpointermove=e=>{if(!st)return;st.cx=clamp(st.x+e.clientX-st.px,0,3*c);st.cy=clamp(st.y+e.clientY-st.py,0,7*c);bm.style.left=st.cx+'px';bm.style.top=st.cy+'px'};
+  bm.onpointerup=bm.onpointercancel=()=>{if(!st)return;bm.classList.remove('drag');if(st.cx!==undefined){S.card={x:Math.round(st.cx/c),y:Math.round(st.cy/c)};save()}st=null;place()};
+}
+
+// ── 6장: 찢긴 조각 맞추기 ──────────────────────────────
+// 누르면 180° 돌고, 끌면 움직인다. 바로 선 채로 찢긴 자리 가까이 놓으면 딱 붙는다.
+function bindTorn(){
+  const t=$('#tear'),w=$('#scrapw'),s=$('#scrap');if(!t)return;
+  const W=t.clientWidth,H=t.querySelector('.tbox').clientHeight;
+  const place=()=>{w.style.transform=`translate(${S.torn.x*W}px,${S.torn.y*H}px) rotate(${S.torn.r}deg)`};place();
+  if(S.torn.done)return;
+  let st=null;
+  s.onpointerdown=e=>{s.setPointerCapture(e.pointerId);st={px:e.clientX,py:e.clientY,x:S.torn.x,y:S.torn.y,moved:0};w.classList.add('drag')};
+  s.onpointermove=e=>{if(!st)return;const dx=e.clientX-st.px,dy=e.clientY-st.py;st.moved=Math.max(st.moved,Math.hypot(dx,dy));
+    if(st.moved<6)return;S.torn.x=clamp(st.x+dx/W,-.3,.3);S.torn.y=clamp(st.y+dy/H,-.3,2);place()};
+  s.onpointerup=s.onpointercancel=()=>{if(!st)return;w.classList.remove('drag');
+    if(st.moved<6)S.torn.r=(S.torn.r+180)%360;
+    if(S.torn.r===0&&Math.abs(S.torn.x*W)<18&&Math.abs(S.torn.y*H)<18){S.torn={...S.torn,x:0,y:0,done:true};w.classList.add('fixed');s.onpointerdown=null;toast('찢긴 자리에 딱 맞는다.')}
+    st=null;save();place()};
 }
 
 // ── 2장: 연필 문지르기 ──────────────────────────────
@@ -421,7 +593,7 @@ async function initRub(){
   cv.onpointerup=cv.onpointercancel=()=>{last=null;progress()};
 }
 let lastW=innerWidth;
-addEventListener('resize',()=>{if(innerWidth!==lastW){lastW=innerWidth;if(S.p===2)initRub()}});
+addEventListener('resize',()=>{if(innerWidth===lastW)return;lastW=innerWidth;if(S.p===2)initRub();if(S.p===4)bindGrille();if(S.p===6)bindTorn()});
 
 // ── 힌트 ──────────────────────────────
 function openHint(){
@@ -441,7 +613,7 @@ $('#mbg').onclick=e=>{if(e.target.id==='mbg')closeM()};
 addEventListener('keydown',e=>{if(e.key==='Escape')closeM()});
 $('#btnHint').onclick=openHint;
 
-if(S.p>S.open&&!(S.p===4&&S.done))S.p=0;
+if(!canOpen(S.p))S.p=0;
 render(true);
 </script>
 </body>
