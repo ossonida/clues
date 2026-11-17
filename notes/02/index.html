@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="ko" data-note="note02">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Note 02 · 문예부 교환일기 | 히든노트</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Nanum+Gothic:wght@400;700;800&family=Nanum+Gothic+Coding:wght@400;700&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
+<style>
+:root{
+  --desk:#34302b;--pad:#fbf2a6;--pline:#a9c3e0;--margin:rgba(214,69,65,.55);--lh:32px;--ml:56px;--binding:#7a1e1b;
+  --sheet:#fffdf4;--ink:#1f1c18;--dim:#6b6358;--rule:#cfc5b0;--stamp:#a3312a;
+  --blue:#27479a;--pencil:#4a4a4f;--red:#c23a2e;
+  --nl:34px;--nm:64px;--hs:clamp(20px,5.4vw,27px);
+  --mono:"Nanum Gothic Coding",monospace;--serif:"Nanum Myeongjo",serif;--hand:"Nanum Pen Script",cursive;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--desk);color:var(--ink);font-family:"Nanum Gothic",system-ui,sans-serif;font-size:15px;line-height:1.6}
+@media(max-width:640px){:root{--ml:26px;--nm:40px}}
+button{font-family:inherit;cursor:pointer;color:inherit}
+
+/* 리갈패드 바탕 (Note 01과 같은 틀) */
+.app{max-width:900px;min-height:100vh;margin:0 auto;padding:0 22px 56px calc(var(--ml) + 22px);background-color:var(--pad);
+  background-image:linear-gradient(90deg,transparent calc(var(--ml) - 5px),var(--margin) calc(var(--ml) - 5px),var(--margin) calc(var(--ml) - 4px),transparent calc(var(--ml) - 4px),transparent var(--ml),var(--margin) var(--ml),var(--margin) calc(var(--ml) + 1px),transparent calc(var(--ml) + 1px)),
+    repeating-linear-gradient(transparent 0 calc(var(--lh) - 1px),var(--pline) calc(var(--lh) - 1px) var(--lh));
+  background-position:0 0,0 6px;box-shadow:0 30px 60px -20px rgba(0,0,0,.6)}
+.app::before{content:"";display:block;height:34px;margin:0 -22px 22px calc(-1 * (var(--ml) + 22px));background:linear-gradient(#8a2420,var(--binding) 70%,#5a1412);box-shadow:0 3px 0 rgba(0,0,0,.12)}
+@media(max-width:640px){.app{padding:0 12px 40px calc(var(--ml) + 12px)}.app::before{margin:0 -12px 18px calc(-1 * (var(--ml) + 12px))}}
+
+header.hud{display:flex;align-items:flex-end;gap:10px 18px;flex-wrap:wrap;margin-bottom:22px}
+.brand{font-family:var(--hand);font-size:40px;letter-spacing:-.5px;line-height:1.05}
+.brand .t{background:linear-gradient(transparent 60%,rgba(214,69,65,.28) 60% 88%,transparent 88%)}
+.brand .back{display:block;font-family:var(--mono);font-size:12px;color:var(--dim);text-decoration:none;margin-bottom:6px}
+.brand .back:hover{color:var(--ink)}
+.brand small{display:block;font-family:var(--serif);font-size:14px;color:var(--dim);margin-top:4px}
+.spacer{flex:1}
+.stat{font-family:var(--mono);font-size:12px;color:var(--dim);display:flex;flex-direction:column;line-height:1.3;padding:0 4px}
+.stat b{color:var(--ink);font-size:20px;border-bottom:1px solid var(--ink);min-width:62px}
+.btn{white-space:nowrap;background:transparent;color:var(--ink);border:1.5px solid var(--ink);border-radius:2px;padding:7px 13px;font-size:14px;font-weight:700}
+.btn:hover{background:var(--ink);color:var(--sheet)}
+.btn.primary{background:var(--ink);color:var(--sheet)}
+.btn.primary:hover{background:var(--stamp);border-color:var(--stamp)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn:disabled:hover{background:transparent;color:var(--ink)}
+
+/* 페이지 플래그 */
+.tabs{display:flex;gap:6px;flex-wrap:wrap;align-items:flex-end;padding-left:14px;position:relative;z-index:1;margin-bottom:-4px}
+.tab{border:none;color:#3a3326;padding:7px 14px 9px;font-size:13px;font-weight:700;box-shadow:0 1px 1px rgba(0,0,0,.12);opacity:.85;background:#ffe36e}
+.tab:nth-child(2){background:#bfe1f6}.tab:nth-child(3){background:#e4e4e4}.tab:nth-child(4){background:#f9c6cf}.tab:nth-child(5){background:#c9ecc0}
+.tab:hover{opacity:1}
+.tab.on{opacity:1;padding-top:12px;box-shadow:0 2px 3px rgba(0,0,0,.18)}
+.tab:disabled{background:#e4dcc4;color:#9a8f76;font-weight:400;cursor:not-allowed;opacity:.8}
+
+/* 교환일기 한 장 */
+.sheet{position:relative;max-width:640px;background-color:var(--sheet);padding:var(--nl) 26px calc(var(--nl) * 1.5) calc(var(--nm) + 14px);
+  background-image:linear-gradient(90deg,transparent calc(var(--nm) - 1px),rgba(214,69,65,.6) calc(var(--nm) - 1px),rgba(214,69,65,.6) var(--nm),transparent var(--nm)),
+    repeating-linear-gradient(transparent 0 calc(var(--nl) - 1px),#c9d6ea calc(var(--nl) - 1px) var(--nl));
+  box-shadow:0 1px 1px rgba(0,0,0,.12),0 16px 30px -14px rgba(40,30,0,.55);overflow:hidden}
+@media(max-width:640px){.sheet{padding-right:12px;padding-left:calc(var(--nm) + 8px)}}
+.sheet.turn{animation:turn .45s ease-out}
+@keyframes turn{from{opacity:0;transform:translateX(26px) rotate(.8deg)}to{opacity:1;transform:none}}
+.ln{height:var(--nl);line-height:calc(var(--nl) - 4px);font-family:var(--hand);font-size:var(--hs);white-space:nowrap;position:relative;margin:0}
+.ln.head{display:flex;justify-content:space-between;font-size:calc(var(--hs) * .82)}
+.blue{color:var(--blue)}.pencil{color:var(--pencil)}.red{color:var(--red)}
+.ln .no{position:absolute;left:calc(-1 * var(--nm) - 2px);width:calc(var(--nm) - 20px);text-align:right;font-family:var(--hand);font-size:calc(var(--hs) * .78);color:var(--red)}
+/* 빨간 펜 교정: 틀린 글자에 줄 긋고 위에 고친 글자 */
+.fix{position:relative;display:inline-block}
+.fix s{text-decoration:line-through;text-decoration-color:var(--red);text-decoration-thickness:2px}
+.fix i{position:absolute;left:.05em;top:-.62em;font-style:normal;color:var(--red);font-size:.86em;transform:rotate(-8deg)}
+.doodle{position:absolute;pointer-events:none}
+
+/* 연필 문지르기 */
+.rub{position:relative;height:calc(var(--nl) * 5);margin-left:calc(-1 * var(--nm) + 8px)}
+.rub canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:crosshair}
+
+/* 접힌 모서리 */
+.corner{position:absolute;right:0;bottom:0;width:74px;height:74px;border:none;padding:0;background:linear-gradient(135deg,transparent 50%,#e8e0c8 50%,#d9cfb2 100%);
+  box-shadow:-3px -3px 6px -3px rgba(0,0,0,.25);clip-path:polygon(100% 0,100% 100%,0 100%);transition:transform .2s}
+.corner:hover{transform:scale(1.06);transform-origin:100% 100%}
+.flap{position:absolute;right:10px;bottom:12px;background:#fff8e6;border:1px dashed #d9b9a8;padding:6px 12px 8px;font-family:var(--hand);color:var(--red);transform:rotate(-3deg);box-shadow:0 4px 10px -6px rgba(0,0,0,.4);animation:turn .35s ease-out;text-align:right}
+.flap b{display:block;font-weight:400;font-size:calc(var(--hs) * 1.05);line-height:1.15}
+.flap span{font-size:calc(var(--hs) * .72)}
+
+/* 오늘의 암호 */
+.pw{max-width:640px;margin-top:22px;display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center}
+.pw label{font-family:var(--hand);font-size:26px;color:var(--ink)}
+.pw input{font-family:var(--hand);font-size:26px;color:var(--blue);background:transparent;border:none;border-bottom:2px solid var(--ink);padding:0 6px;width:200px;outline:none}
+.pw input:focus{border-color:var(--blue)}
+.pw .msg{flex-basis:100%;font-family:var(--hand);font-size:22px;line-height:1.2;min-height:26px;color:var(--stamp)}
+.pw .msg.near{color:var(--blue)}
+.pw .done{font-family:var(--hand);font-size:28px;color:var(--blue)}
+.pw .done::after{content:" ✓";color:var(--green,#3d6b3a)}
+.shake{animation:shake .35s}
+@keyframes shake{20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+
+/* 번호자물쇠 */
+.lock{max-width:640px;margin-top:26px;background:#2f3438;color:#e9e4d8;padding:16px 18px 18px;border-radius:6px;box-shadow:0 14px 24px -14px rgba(0,0,0,.7);display:flex;flex-wrap:wrap;gap:14px 20px;align-items:center}
+.lock h3{margin:0;flex-basis:100%;font-family:var(--mono);font-size:12px;letter-spacing:2px;color:#b9b2a2;font-weight:400}
+.dials{display:flex;gap:8px}
+.dial{display:flex;flex-direction:column;align-items:center;background:#1d2124;border-radius:4px;width:46px}
+.dial button{background:none;border:none;color:#9aa3a8;width:100%;padding:2px 0;font-size:12px}
+.dial button:hover{color:#fff}
+.dial b{font-family:var(--mono);font-size:26px;line-height:1.3;color:#f3eee2;background:linear-gradient(#cfc7b4,#f7f2e6 45%,#cfc7b4);color:#1d2124;width:100%;text-align:center}
+.lock .pull{background:#c9a04a;color:#1d2124;border:none;font-weight:800;padding:10px 18px;border-radius:3px}
+.lock .pull:hover{background:#e0b85a}
+.lock .msg{flex-basis:100%;font-family:var(--hand);font-size:21px;color:#f1c7a8;min-height:24px;line-height:1.2}
+
+/* 표지 */
+.cover{max-width:640px;background:#2f4a3c;color:#efe7cf;padding:34px 30px 30px;position:relative;box-shadow:0 18px 32px -14px rgba(0,0,0,.6);border-left:14px solid #233a2e}
+.cover .label{background:#fffdf4;color:var(--ink);padding:14px 18px 12px;max-width:340px;transform:rotate(-1.5deg);box-shadow:0 2px 4px rgba(0,0,0,.25)}
+.cover .label h2{margin:0;font-family:var(--hand);font-weight:400;font-size:44px;line-height:1}
+.cover .label div{font-family:var(--hand);font-size:22px;color:var(--blue);margin-top:6px;line-height:1.2}
+.cover .story{font-family:var(--serif);font-size:15px;line-height:1.85;margin:26px 0 0;max-width:520px}
+.cover .rules{background:#fff8c9;color:var(--ink);font-family:var(--hand);font-size:23px;line-height:1.3;padding:12px 16px;margin-top:22px;max-width:440px;transform:rotate(1.2deg);box-shadow:0 3px 6px rgba(0,0,0,.3)}
+.cover .rules b{font-weight:400;color:var(--stamp)}
+.cover .how{font-size:13.5px;line-height:1.7;margin-top:22px;color:#cfd8c6}
+.cover .how li{margin:2px 0}
+.cover .go{margin-top:20px;background:#efe7cf;color:#233a2e;border:none;font-weight:800;padding:10px 20px;font-size:15px}
+.cover .go:hover{background:#fff}
+.proto{font-family:var(--mono);font-size:11.5px;color:#a9b8a4;margin-top:16px}
+
+/* 결과 */
+.result{text-align:left}
+.result .big{font-family:var(--hand);font-size:44px;line-height:1.1;margin:0 0 10px}
+.result .seal{display:inline-block;border:3px solid var(--stamp);color:var(--stamp);font-family:var(--mono);font-weight:700;font-size:20px;letter-spacing:3px;padding:4px 14px;transform:rotate(-7deg);margin:6px 0 16px;mix-blend-mode:multiply}
+.result dl{font-family:var(--mono);font-size:14px;margin:0;max-width:340px}
+.result dl div{display:flex;border-bottom:1px dotted #cfc6b0;padding:5px 0}
+.result dt{width:110px;color:var(--dim)}.result dd{margin:0}
+.result p{font-family:var(--serif);font-size:14.5px;line-height:1.8;max-width:520px}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+
+.nav{max-width:640px;display:flex;justify-content:space-between;margin-top:18px;font-family:var(--mono);font-size:13px}
+.nav button{background:none;border:none;padding:4px 0;color:var(--dim);border-bottom:1px solid transparent}
+.nav button:hover{color:var(--ink);border-color:var(--ink)}
+
+/* 힌트 모달 */
+.modal-bg{position:fixed;inset:0;background:rgba(30,25,18,.66);display:none;align-items:center;justify-content:center;padding:16px;z-index:50}
+.modal-bg.on{display:flex}
+.modal{background:var(--pad);max-width:520px;width:100%;max-height:88vh;overflow:auto;padding:22px 24px 20px;box-shadow:0 24px 50px -16px rgba(0,0,0,.6)}
+.modal h2{font-family:var(--serif);font-weight:800;margin:0 0 4px;font-size:20px}
+.modal .sub{font-size:13px;color:var(--dim);margin-bottom:14px}
+.posts{display:flex;flex-direction:column;gap:12px}
+.post{background:#fff3a0;padding:10px 14px;font-family:var(--hand);font-size:22px;line-height:1.3;box-shadow:0 2px 4px rgba(0,0,0,.15)}
+.post:nth-child(2){background:#ffd6e0;transform:rotate(.6deg)}.post:nth-child(3){background:#cfeaff;transform:rotate(-.6deg)}
+.post small{display:block;font-family:var(--mono);font-size:11px;color:var(--dim)}
+.post.closed{background:#efe9d2;color:var(--dim);font-family:inherit;font-size:14px}
+.modal .actions{display:flex;justify-content:flex-end;margin-top:16px}
+
+.toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--sheet);padding:10px 18px;font-size:14px;opacity:0;transition:.25s;pointer-events:none;z-index:60;max-width:90vw}
+.toast.on{opacity:1;transform:translateX(-50%)}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="hud">
+    <div class="brand">
+      <a class="back" href="../../">← 사건 대장 / NOTE 02</a>
+      <span class="t">문예부 교환일기</span>
+      <small>노트 방탈출 · 시제품</small>
+    </div>
+    <div class="spacer"></div>
+    <div class="stat"><span>걸린 시간</span><b id="time">0:00</b></div>
+    <div class="stat"><span>힌트</span><b id="hintCount">0</b></div>
+    <button class="btn" id="btnHint">힌트</button>
+  </header>
+  <nav class="tabs" id="tabs"></nav>
+  <main id="page"></main>
+</div>
+<div class="modal-bg" id="mbg"><div class="modal" id="modal"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const $=s=>document.querySelector(s);
+const SAVE_KEY='hn.note02.proto.v1';
+
+// ── 퍼즐 데이터 ──────────────────────────────
+const PAGES=[
+  {tab:'표지'},
+  {tab:'1장', ans:'다음은너야', near:['다음은','다음','다음은너','너야','은너야'],
+   hints:['여백에 그려진 화살표 낙서, 어디서 어디로 향하고 있나요?','각 줄의 맨 첫 글자만 위에서 아래로 읽어 보세요.','정답: 다음은너야']},
+  {tab:'2장', ans:'할게', near:['할께','역할','쓸게','역할쓸게','빨간펜','고친글자'],
+   hints:['하람이는 연필을 꾹꾹 눌러 쓴대요. 앞 장을 뜯어 갔다면 자국이 남았겠죠.','빈 줄 위를 마우스나 손가락으로 문질러 보세요. 드러난 말은 1장 이야기예요.',"1장에서 빨간 펜이 고친 글자는 '할'과 '게'. 정답: 할게"]},
+  {tab:'3장', code:'9173',
+   hints:['오른쪽 아래 모서리가 접혀 있어요.',"'4-1'은 4번째 줄의 1번째 글자예요. 띄어쓰기는 세지 않아요. 찾은 글자를 숫자로 읽어 보세요.",'구·일·칠·삼 → 자물쇠 번호 9173']},
+  {tab:'끝'}
+];
+
+// ── 상태 ──────────────────────────────
+const fresh=()=>({p:0,open:0,solved:{},hints:{},wrong:{},ms:0,started:false,rubbed:false,unfolded:false,lock:[0,0,0,0],done:false});
+let S=fresh();
+try{const d=JSON.parse(localStorage.getItem(SAVE_KEY)||'null');if(d)S={...fresh(),...d}}catch{}
+const save=()=>{try{localStorage.setItem(SAVE_KEY,JSON.stringify(S))}catch{}};
+addEventListener('pagehide',save);
+
+const fmt=ms=>{const s=Math.floor(ms/1000);return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`};
+const hintTotal=()=>Object.values(S.hints).reduce((a,b)=>a+b,0);
+const wrongTotal=()=>Object.values(S.wrong).reduce((a,b)=>a+b,0);
+function renderStats(){$('#time').textContent=fmt(S.ms);$('#hintCount').textContent=hintTotal();$('#btnHint').disabled=!S.started||S.done||!PAGES[S.p].hints}
+let tick=0;
+setInterval(()=>{if(S.started&&!S.done&&!document.hidden){S.ms+=1000;renderStats();if(++tick%5===0)save()}},1000);
+
+function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('on');clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove('on'),2200)}
+const norm=s=>s.replace(/[\s.,!?·'"~\-]/g,'').toLowerCase();
+function lev(a,b){const d=[...Array(b.length+1).keys()];for(let i=1;i<=a.length;i++){let p=d[0];d[0]=i;for(let j=1;j<=b.length;j++){const t=d[j];d[j]=Math.min(d[j]+1,d[j-1]+1,p+(a[i-1]===b[j-1]?0:1));p=t}}return d[b.length]}
+
+// ── 탭 ──────────────────────────────
+function renderTabs(){
+  $('#tabs').innerHTML=PAGES.map((pg,i)=>{
+    if(i===4&&!S.done)return '';
+    const locked=i>S.open&&!(i===4&&S.done);
+    return `<button class="tab${S.p===i?' on':''}" data-i="${i}"${locked?' disabled':''}>${locked?'🔒 ':''}${pg.tab}</button>`}).join('');
+  $('#tabs').querySelectorAll('.tab').forEach(b=>b.onclick=()=>go(+b.dataset.i));
+}
+function go(i){if(i>S.open&&!(i===4&&S.done))return;S.p=i;save();render(true);scrollTo({top:0,behavior:'smooth'})}
+
+// ── 페이지 내용 ──────────────────────────────
+const L=(cls,html,no)=>`<p class="ln ${cls}">${no?`<span class="no">${no}</span>`:''}${html}</p>`;
+const FIX=(wrong,right)=>`<span class="fix"><s>${wrong}</s><i>${right}</i></span>`;
+
+function pageCover(){
+  return `<section class="cover">
+    <div class="label"><h2>문예부 교환일기</h2><div>규칙: 앞 사람이 숨긴 말을 찾아 맨 아래 빈칸에 적어야 다음 장을 쓸 수 있음.</div></div>
+    <p class="story">방과 후 문예부실에서 깜빡 졸았다. 눈을 떠 보니 창밖은 벌써 어둑하고, 문은 밖에서 잠겨 있다. 안쪽 손잡이에는 처음 보는 4자리 번호자물쇠가 걸려 있다.<br>책상 위에는 작년 부원들이 돌려 쓰던 교환일기 한 권. 표지 안쪽에 누군가 이렇게 적어 두었다.</p>
+    <div class="rules">“끝까지 읽은 사람만 <b>나갈 수 있음.</b>”</div>
+    <ul class="how">
+      <li>한 장씩 읽고, 맨 아래 <b>오늘의 암호</b> 칸에 숨은 말을 적으면 다음 장이 열려요.</li>
+      <li>지난 장은 언제든 위쪽 탭으로 다시 펼칠 수 있어요. 앞 장에 답이 숨어 있기도 해요.</li>
+      <li>노트는 진짜 종이처럼 다룰 수 있어요. 문지르고, 접힌 곳을 펴 보세요.</li>
+      <li>막히면 <b>힌트</b>를 누르세요. 장마다 포스트잇 3장이 있고, 마지막 장엔 정답이 적혀 있어요.</li>
+    </ul>
+    <button class="btn go" id="start">${S.started?'이어서 펼치기':'노트 펼치기'}</button>
+    <div class="proto">시제품 · 1~3장까지 들어 있어요 · 진행 상황은 이 브라우저에 저장돼요</div>
+  </section>`;
+}
+
+function page1(){
+  return `<article class="sheet turn">
+    ${L('head blue','<span>3월 14일 목요일 · 맑음</span><span>— 지우</span>')}
+    ${L('','')}
+    ${L('blue','다들 늦게 와서 혼자 한참 기다림.')}
+    ${L('blue','음료수 사 온 하람이 덕에 좀 풀림.')}
+    ${L('blue',`은근히 서진이 교정 역${FIX('활','할')}이 얄밉다.`)}
+    ${L('blue',`너무 틀린대. 다음엔 꼼꼼히 쓸${FIX('께','게')}!`)}
+    ${L('blue','야, 금요일엔 다 같이 떡볶이 가자!')}
+    ${L('','')}
+    ${L('red','↳ 맞춤법 두 개 고쳐 둠. — 서진')}
+    <svg class="doodle" style="left:calc(var(--nm) - 30px);top:calc(var(--nl) * 3 - 6px);width:22px;height:calc(var(--nl) * 5 + 10px)" viewBox="0 0 22 180" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M11 4 C 6 50, 16 100, 11 168" fill="none" stroke="#27479a" stroke-width="2" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+      <path d="M4 156 L11 172 L18 156" fill="none" stroke="#27479a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
+    </svg>
+    <svg class="doodle" style="right:18px;top:calc(var(--nl) * 8 + 2px);width:58px;height:46px" viewBox="0 0 58 46" aria-hidden="true">
+      <g fill="none" stroke="#27479a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M10 40 C 6 24, 12 14, 22 14 C 34 14, 40 24, 36 40 Z"/><path d="M14 18 L13 6 L21 13"/><path d="M30 13 L37 6 L36 18"/>
+        <circle cx="19" cy="25" r="1.3"/><circle cx="29" cy="25" r="1.3"/><path d="M22 30 Q24 32 26 30"/><path d="M36 36 C 46 36, 52 30, 50 22"/>
+      </g>
+    </svg>
+  </article>${answerRow(1)}`;
+}
+
+function page2(){
+  return `<article class="sheet turn">
+    ${L('head pencil','<span>3월 21일 목요일 · 흐림</span><span>— 하람</span>')}
+    ${L('','')}
+    ${L('pencil','내 차례는 비밀.')}
+    ${L('pencil','연필 있으면 알 거야.')}
+    <div class="rub" id="rub"><canvas id="rubCv" aria-label="연필로 문지를 수 있는 빈 종이"></canvas></div>
+    ${L('','')}
+    <svg class="doodle" style="right:20px;top:calc(var(--nl) * 2 + 4px);width:86px;height:22px" viewBox="0 0 86 22" aria-hidden="true">
+      <g fill="none" stroke="#4a4a4f" stroke-width="1.5" stroke-linejoin="round"><path d="M4 11 L14 4 H76 V18 H14 Z"/><path d="M14 4 V18"/><path d="M66 4 V18"/><path d="M4 11 L9 8 V14 Z" fill="#4a4a4f"/></g>
+    </svg>
+  </article>${answerRow(2)}`;
+}
+
+function page3(){
+  const poem=[
+    '오후 네 시, 창문이 노랗다',
+    '분필 냄새 칠판 위로 번지고',
+    '지우는 또 맞춤법을 틀리고',
+    '구름처럼 하람은 말이 없다',
+    '팔짱 낀 나는 빨간 펜을 든다',
+    '육교 너머 종이 울리면',
+    '작년 삼월의 우리가 떠오른다',
+    '다 쓰고 나면 이 노트는',
+    '월요일에 누구 손에 있을까',
+    '사월이 오기 전에, 안녕'];
+  return `<article class="sheet turn" id="sheet3">
+    ${L('head red','<span>3월 28일 목요일 · 비</span><span>— 서진</span>')}
+    ${L('red','　　「부실 창가에서」')}
+    ${poem.map((s,i)=>L('red',s,i+1)).join('')}
+    ${L('','')}
+    ${S.unfolded
+      ?`<div class="flap"><b>4-1 · 9-3 · 2-5 · 7-3</b><span>(줄-글자, 띄어쓰기는 안 셈)</span></div>`
+      :`<button class="corner" id="corner" aria-label="접힌 모서리 펴기" title="접힌 모서리"></button>`}
+  </article>
+  <section class="lock" id="lock">
+    <h3>문 손잡이 · 4자리 번호자물쇠</h3>
+    <div class="dials">${S.lock.map((d,i)=>`<div class="dial"><button data-i="${i}" data-d="1" aria-label="${i+1}번째 숫자 올리기">▲</button><b>${d}</b><button data-i="${i}" data-d="-1" aria-label="${i+1}번째 숫자 내리기">▼</button></div>`).join('')}</div>
+    <button class="pull" id="pull">당기기</button>
+    <div class="msg" id="lockMsg"></div>
+  </section>`;
+}
+
+function pageEnd(){
+  const h=hintTotal(),ansHints=Object.values(S.hints).filter(n=>n>=3).length;
+  const grade=h===0?'명예 문예부원':ansHints===0?'문예부원':'견학생';
+  return `<article class="sheet turn result">
+    <p class="big">철컥. 문이 열렸다.</p>
+    <div class="seal">${grade}</div>
+    <dl>
+      <div><dt>걸린 시간</dt><dd>${fmt(S.ms)}</dd></div>
+      <div><dt>힌트</dt><dd>${h}장</dd></div>
+      <div><dt>틀린 암호</dt><dd>${wrongTotal()}번</dd></div>
+    </dl>
+    <p>복도로 나서려다 노트를 한 번 더 넘겨 본다. 세 사람의 글씨 뒤로, 아무도 쓴 적 없는 네 번째 글씨가 희미하게 남아 있다.<br><b>— 정식판에서 이어집니다.</b></p>
+    <div class="row"><button class="btn" id="again">처음부터 다시</button><a class="btn primary" href="../../" style="text-decoration:none">사건 대장으로</a></div>
+  </article>`;
+}
+
+function answerRow(p){
+  if(S.solved[p])return `<div class="pw"><label>오늘의 암호:</label><span class="done">${S.solved[p]}</span></div>
+    <div class="nav"><button data-go="${p-1}">← 앞 장</button><button data-go="${p+1}">다음 장 넘기기 →</button></div>`;
+  return `<form class="pw" id="pw" autocomplete="off"><label for="ans">오늘의 암호:</label><input id="ans" maxlength="20" spellcheck="false"><button class="btn primary">적기</button><div class="msg" id="msg"></div></form>
+    <div class="nav"><button data-go="${p-1}">← 앞 장</button><span></span></div>`;
+}
+
+// ── 렌더 ──────────────────────────────
+function render(anim){
+  renderTabs();renderStats();
+  const p=S.p;
+  $('#page').innerHTML=[pageCover,page1,page2,page3,pageEnd][p]();
+  if(!anim)$('#page').querySelectorAll('.turn').forEach(e=>e.classList.remove('turn'));
+  $('#page').querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(+b.dataset.go));
+  if(p===0)$('#start').onclick=()=>{S.started=true;S.open=Math.max(S.open,1);go(1)};
+  const f=$('#pw');if(f)f.onsubmit=e=>{e.preventDefault();check(p)};
+  if(p===2)initRub();
+  if(p===3)bindLock();
+  if(p===4)$('#again').onclick=()=>{if(confirm('처음부터 다시 할까요? 지금 기록은 지워져요.')){S=fresh();save();render(true)}};
+}
+
+function check(p){
+  const inp=$('#ans'),raw=inp.value,v=norm(raw),pg=PAGES[p],msg=$('#msg');
+  if(!v)return;
+  if(v===norm(pg.ans)){
+    S.solved[p]=pg.ans;S.open=Math.max(S.open,p+1);save();
+    toast('다음 장이 떨어졌다.');render(false);return;
+  }
+  S.wrong[p]=(S.wrong[p]||0)+1;save();
+  const near=pg.near.includes(v)||(norm(pg.ans).length>=4&&lev(v,norm(pg.ans))<=1);
+  msg.className='msg'+(near?' near':'');
+  msg.textContent=near?'거의 맞았다. 조금만 더…':['아닌 것 같다.','다음 장이 꿈쩍도 안 한다.','다시 읽어 보자.'][S.wrong[p]%3];
+  $('#pw').classList.remove('shake');void $('#pw').offsetWidth;$('#pw').classList.add('shake');
+  inp.select();
+}
+
+// ── 3장: 모서리 + 자물쇠 ──────────────────────────────
+function bindLock(){
+  const c=$('#corner');if(c)c.onclick=()=>{S.unfolded=true;save();render(false)};
+  $('#lock').querySelectorAll('.dial button').forEach(b=>b.onclick=()=>{const i=+b.dataset.i;S.lock[i]=(S.lock[i]+(+b.dataset.d)+10)%10;b.parentNode.querySelector('b').textContent=S.lock[i];save()});
+  $('#pull').onclick=()=>{
+    const code=S.lock.join(''),m=$('#lockMsg');
+    if(code===PAGES[3].code){S.done=true;S.open=4;S.p=4;save();toast('철컥!');render(true);return}
+    S.wrong[3]=(S.wrong[3]||0)+1;save();
+    m.textContent=[...code].sort().join('')===[...PAGES[3].code].sort().join('')?'숫자는 맞는 것 같은데… 순서가 아닌가?':'꿈쩍도 안 한다.';
+    $('#lock').classList.remove('shake');void $('#lock').offsetWidth;$('#lock').classList.add('shake');
+  };
+}
+
+// ── 2장: 연필 문지르기 ──────────────────────────────
+// 문지른 자리에 흑연을 칠하고, 눌린 글씨 모양만큼은 다시 지워 종이색이 드러나게 한다.
+const RUB_TEXT=['빨간 펜이 고친','글자만 읽어'];
+let strokes=[];   // 문지른 경로 (가로·세로 0~1 비율), 창 크기가 바뀌면 다시 그린다
+async function initRub(){
+  const wrap=$('#rub'),cv=$('#rubCv');if(!wrap)return;
+  try{await document.fonts.load('40px "Nanum Pen Script"')}catch{}
+  if(!document.body.contains(cv))return;
+  const dpr=Math.min(devicePixelRatio||1,2),W=wrap.clientWidth,H=wrap.clientHeight;
+  cv.width=W*dpr;cv.height=H*dpr;
+  const ctx=cv.getContext('2d');ctx.scale(dpr,dpr);
+  // 눌린 글씨 마스크
+  const mask=document.createElement('canvas');mask.width=cv.width;mask.height=cv.height;
+  const mc=mask.getContext('2d');mc.scale(dpr,dpr);
+  const fs=Math.min(58,W/6.2);
+  mc.font=`${fs}px "Nanum Pen Script"`;mc.textAlign='center';mc.textBaseline='middle';mc.lineWidth=2.6;mc.lineJoin='round';
+  mc.save();mc.translate(W/2,H/2);mc.rotate(-.04);
+  RUB_TEXT.forEach((t,i)=>{const y=(i-(RUB_TEXT.length-1)/2)*fs*1.15;mc.fillText(t,0,y);mc.strokeText(t,0,y)});
+  mc.restore();
+  // 흑연 질감
+  const grain=document.createElement('canvas');grain.width=grain.height=48;
+  const gc=grain.getContext('2d');
+  gc.fillStyle='rgba(60,60,68,.45)';gc.fillRect(0,0,48,48);
+  for(let i=0;i<1600;i++){gc.fillStyle=`rgba(30,30,36,${.3+Math.random()*.6})`;gc.fillRect(Math.random()*48,Math.random()*48,1+Math.random()*1.5,1)}
+  const pat=ctx.createPattern(grain,'repeat');
+  // 글씨가 있는 칸 (12px 격자) — 얼마나 문질렀는지 셀 때 쓴다
+  const CELL=12,cols=Math.ceil(W/CELL),rows=Math.ceil(H/CELL),md=mc.getImageData(0,0,mask.width,mask.height).data;
+  const textCells=new Set(),covered=new Set();
+  for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){
+    let hit=false;for(let y=0;y<CELL&&!hit;y+=3)for(let x=0;x<CELL&&!hit;x+=3){const px=Math.floor((c*CELL+x)*dpr),py=Math.floor((r*CELL+y)*dpr);if(px<mask.width&&py<mask.height&&md[(py*mask.width+px)*4+3]>40)hit=true}
+    if(hit)textCells.add(r*cols+c)}
+  const R=15;
+  function dab(x0,y0,x1,y1){
+    ctx.globalCompositeOperation='source-over';ctx.globalAlpha=.42;ctx.strokeStyle=pat;ctx.lineWidth=R*2;ctx.lineCap='round';
+    ctx.beginPath();ctx.moveTo(x0,y0);ctx.lineTo(x1,y1);ctx.stroke();
+    const n=Math.max(1,Math.ceil(Math.hypot(x1-x0,y1-y0)/6));
+    for(let k=0;k<=n;k++){const x=x0+(x1-x0)*k/n,y=y0+(y1-y0)*k/n;
+      for(let r=Math.floor((y-R)/CELL);r<=Math.floor((y+R)/CELL);r++)for(let c=Math.floor((x-R)/CELL);c<=Math.floor((x+R)/CELL);c++)if(r>=0&&c>=0&&r<rows&&c<cols)covered.add(r*cols+c)}
+  }
+  function punch(){ctx.globalCompositeOperation='destination-out';ctx.globalAlpha=1;ctx.setTransform(1,0,0,1,0,0);ctx.drawImage(mask,0,0);ctx.setTransform(dpr,0,0,dpr,0,0)}
+  function progress(){
+    if(S.rubbed||!textCells.size)return;
+    let n=0;textCells.forEach(k=>{if(covered.has(k))n++});
+    if(n/textCells.size>.6){S.rubbed=true;save();toast('눌린 자국이 드러났다.')}
+  }
+  // 이미 드러냈으면 글씨 둘레를 칠해 둔다
+  if(S.rubbed){for(let y=H*.18;y<H*.86;y+=R*1.1)dab(W*.08,y,W*.92,y+4)}
+  strokes.forEach(s=>{for(let i=1;i<s.length;i++)dab(s[i-1][0]*W,s[i-1][1]*H,s[i][0]*W,s[i][1]*H)});
+  punch();
+  let last=null,cur=null;
+  const pos=e=>{const b=cv.getBoundingClientRect();return[e.clientX-b.left,e.clientY-b.top]};
+  cv.onpointerdown=e=>{cv.setPointerCapture(e.pointerId);last=pos(e);cur=[[last[0]/W,last[1]/H]];strokes.push(cur);dab(...last,...last);punch()};
+  cv.onpointermove=e=>{if(!last)return;const p=pos(e);dab(...last,...p);punch();cur.push([p[0]/W,p[1]/H]);last=p};
+  cv.onpointerup=cv.onpointercancel=()=>{last=null;progress()};
+}
+let lastW=innerWidth;
+addEventListener('resize',()=>{if(innerWidth!==lastW){lastW=innerWidth;if(S.p===2)initRub()}});
+
+// ── 힌트 ──────────────────────────────
+function openHint(){
+  const p=S.p,pg=PAGES[p];if(!pg.hints)return;
+  const got=S.hints[p]||0;
+  $('#modal').innerHTML=`<h2>${pg.tab} 힌트</h2><div class="sub">포스트잇을 한 장씩 떼어 볼 수 있어요. 세 번째 장엔 정답이 적혀 있어요.</div>
+    <div class="posts">${pg.hints.map((h,i)=>i<got?`<div class="post"><small>포스트잇 ${i+1}</small>${h}</div>`
+      :i===got?`<button class="post closed" id="peel">포스트잇 ${i+1} 떼어 보기${i===2?' (정답)':''}</button>`
+      :`<div class="post closed">포스트잇 ${i+1}</div>`).join('')}</div>
+    <div class="actions"><button class="btn" id="mclose">닫기</button></div>`;
+  $('#mbg').classList.add('on');
+  $('#mclose').onclick=closeM;
+  const pe=$('#peel');if(pe)pe.onclick=()=>{S.hints[p]=got+1;save();renderStats();openHint()};
+}
+function closeM(){$('#mbg').classList.remove('on')}
+$('#mbg').onclick=e=>{if(e.target.id==='mbg')closeM()};
+addEventListener('keydown',e=>{if(e.key==='Escape')closeM()});
+$('#btnHint').onclick=openHint;
+
+if(S.p>S.open&&!(S.p===4&&S.done))S.p=0;
+render(true);
+</script>
+</body>
+</html>
