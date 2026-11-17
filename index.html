@@ -74,6 +74,9 @@ a.note:hover .open{color:var(--stamp);border-color:var(--stamp)}
 .note.n2{transform:rotate(1.4deg)}
 .note.n2 h2{max-width:calc(100% - 120px)}
 .note.n2 .photo{width:124px}
+.note.n3{transform:rotate(-.7deg)}
+.note.n3 h2{max-width:calc(100% - 120px)}
+.note.n3 .photo{width:124px}
 .note.blank{background:#fde98a;transform:rotate(2deg);padding:22px 22px 26px;min-height:190px;box-shadow:0 1px 1px rgba(0,0,0,.1),0 10px 20px -12px rgba(40,30,0,.5)}
 .note.blank::before{display:none}
 .note.blank .no{color:#8a7a3a}
@@ -177,6 +180,35 @@ footer{padding-top:var(--lh);padding-bottom:var(--lh);font-family:var(--hand);fo
         <span class="open" data-en="Open the notebook →">노트 펼치기 →</span>
         <div class="stamp" data-en="LOCKED">잠김</div>
       </a>
+      <a class="note n3" href="notes/03/">
+        <span class="tape"></span>
+        <div class="photo">
+          <svg class="clip" viewBox="0 0 16 48" aria-hidden="true"><path d="M11 14 V38 a4 4 0 0 1 -8 0 V8 a5.5 5.5 0 0 1 11 0 V34 a2.5 2.5 0 0 1 -5 0 V14" fill="none" stroke="#8d969c" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <svg viewBox="0 0 320 240" aria-hidden="true">
+            <rect width="320" height="240" fill="#14171d"/>
+            <path d="M40 210 L150 40 L300 120 Z" fill="rgba(255,236,170,.10)"/>
+            <rect x="92" y="70" width="150" height="120" fill="#e9dfc4" transform="rotate(-5 167 130)"/>
+            <rect x="92" y="70" width="150" height="20" fill="#6b604a" transform="rotate(-5 167 130)"/>
+            <path d="M104 106 h126 M104 124 h126 M104 142 h126 M104 160 h126 M140 92 v90 M190 92 v90" stroke="#a89a78" stroke-width="1.4" transform="rotate(-5 167 130)"/>
+            <path d="M112 118 h18 M150 118 h30 M112 136 h18 M150 136 h28 M198 136 h22" stroke="#1c2c6e" stroke-width="3" stroke-linecap="round" transform="rotate(-5 167 130)"/>
+            <rect x="26" y="182" width="58" height="20" rx="4" fill="#3a3d44" transform="rotate(-30 55 192)"/>
+            <rect x="74" y="168" width="14" height="24" rx="2" fill="#c9a04a" transform="rotate(-30 55 192)"/>
+            <path d="M268 30 v40" stroke="#7d95a3" stroke-width="2"/><path d="M256 70 q12 -18 24 0 z" fill="#7d95a3"/>
+          </svg>
+          <span class="cap" data-en="found on the night-duty desk">숙직실 책상 위</span>
+        </div>
+        <span class="no">NOTE 03</span>
+        <h2 data-en-html="The Night-Duty<br>Log">은하분교<br>숙직 일지</h2>
+        <div class="sub" data-en="A closed school, a rainy night, and a log still being kept">문 닫은 분교, 비 오는 밤, 아직 쓰이는 일지</div>
+        <dl class="fields">
+          <div><dt data-en="Genre">장르</dt><dd data-en="Escape room">방탈출</dd></div>
+          <div><dt data-en="Difficulty">난이도</dt><dd data-en="●●●○○ Medium">●●●○○ 보통</dd></div>
+          <div><dt data-en="Players">인원</dt><dd data-en="1+">1인 이상</dd></div>
+          <div><dt data-en="Play time">소요 시간</dt><dd data-en="30–40 min · Korean only">30~40분</dd></div>
+        </dl>
+        <span class="open" data-en="Open the log →">일지 펼치기 →</span>
+        <div class="stamp" data-en="ON DUTY">숙직 중</div>
+      </a>
     </section>
 
     <section class="ledger align">
@@ -189,6 +221,8 @@ footer{padding-top:var(--lh);padding-bottom:var(--lh);font-family:var(--hand);fo
             <td class="rc"><button class="rec" data-note="note01" aria-pressed="false"><span class="ico">★</span><span class="lbl">추천</span><b>·</b></button></td></tr>
           <tr><td class="n">NOTE 02</td><td><a href="notes/02/" data-en="The Club Diary">문예부 교환일기</a></td><td class="g" data-en="Escape room">방탈출</td><td class="lv" title="2/5"><span class="dots">●●○○○</span> <span data-en="Easy">쉬움</span></td><td data-en="1+">1인~</td><td data-en="20–30 min">20~30분</td>
             <td class="rc"><button class="rec" data-note="note02" aria-pressed="false"><span class="ico">★</span><span class="lbl">추천</span><b>·</b></button></td></tr>
+          <tr><td class="n">NOTE 03</td><td><a href="notes/03/" data-en="The Night-Duty Log">은하분교 숙직 일지</a></td><td class="g" data-en="Escape room">방탈출</td><td class="lv" title="3/5"><span class="dots">●●●○○</span> <span data-en="Medium">보통</span></td><td data-en="1+">1인~</td><td data-en="30–40 min">30~40분</td>
+            <td class="rc"><button class="rec" data-note="note03" aria-pressed="false"><span class="ico">★</span><span class="lbl">추천</span><b>·</b></button></td></tr>
         </tbody>
       </table>
       </div>
