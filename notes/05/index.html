@@ -72,6 +72,8 @@ header.hud{display:flex;align-items:flex-end;gap:10px 18px;flex-wrap:wrap;margin
 .scene{display:block;width:100%;height:auto;user-select:none;-webkit-user-select:none;touch-action:manipulation;-webkit-tap-highlight-color:transparent;cursor:pointer;background:#000}
 .scene text{font-family:"Kkakdugi Drafting",sans-serif}
 .scene.h-loupe{cursor:zoom-in}
+/* 어두운 방에서는 손가락으로 끌어 손전등을 움직인다. 페이지 스크롤은 일지·여백에서 */
+.scene.dk{touch-action:none}
 .scene [data-t]:hover{filter:brightness(1.12)}
 .item .spark{animation:spark 2.2s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
 @keyframes spark{0%,70%,100%{opacity:0;transform:scale(.4)}80%{opacity:1;transform:scale(1)}}
@@ -517,7 +519,7 @@ function items(p,w){const L=[];
 const itemSvg=([id,x,y])=>`<g class="item" data-item="${id}" transform="translate(${x} ${y})"><circle r="24" fill="transparent"/><use href="#i-${id}" x="-17" y="-17" width="34" height="34"/><path class="spark" d="M14 -18 l2 5 5 2 -5 2 -2 5 -2 -5 -5 -2 5 -2z" fill="#fff6c2"/></g>`;
 function sceneSvg(p){
   const w=S.w[p],D=SC[p](w),dk=dark(p),tor=!!S.bag.torch;
-  return `<svg id="scene" class="scene${S.hold?' h-'+S.hold:''}" viewBox="0 0 ${SW} ${SH}" role="img" aria-label="${ROOM[p]}">
+  return `<svg id="scene" class="scene${dk&&tor?' dk':''}${S.hold?' h-'+S.hold:''}" viewBox="0 0 ${SW} ${SH}" role="img" aria-label="${ROOM[p]}">
     <defs><radialGradient id="tg"><stop offset="0" stop-color="#000"/><stop offset=".55" stop-color="#000"/><stop offset="1" stop-color="#fff"/></radialGradient>
     <mask id="tm" maskUnits="userSpaceOnUse" x="0" y="0" width="${SW}" height="${SH}"><rect width="${SW}" height="${SH}" fill="#fff"/>${tor?`<circle id="tc" cx="${TX}" cy="${TY}" r="118" fill="url(#tg)"/>`:''}</mask></defs>
     ${D.base}
@@ -765,7 +767,7 @@ function hold(k){
   if(k==='torch'){toast('손전등은 켠 채로 들고 있다.');return}
   if(k==='film'){toast(`필름 조각 ${S.bag.film}개.`);return}
   S.hold=S.hold===k?null:k;save();renderBag();
-  const sc=$('#scene');if(sc)sc.setAttribute('class','scene'+(S.hold?' h-'+S.hold:''));
+  const sc=$('#scene');if(sc){sc.classList.forEach(c=>c.startsWith('h-')&&sc.classList.remove(c));if(S.hold)sc.classList.add('h-'+S.hold)}
 }
 const toSvg=(svg,e)=>{const pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;return pt.matrixTransform(svg.getScreenCTM().inverse())};
 function moveTorch(pt){TX=Math.round(pt.x);TY=Math.round(pt.y);const c=document.getElementById('tc');if(c){c.setAttribute('cx',TX);c.setAttribute('cy',TY)}}
@@ -781,8 +783,8 @@ function tapScene(el){
 }
 function bindScene(){
   const svg=$('#scene');if(!svg)return;let down=null;
-  svg.onpointerdown=e=>{const pt=toSvg(svg,e);down={pt,el:e.target};moveTorch(pt)};
-  svg.onpointermove=e=>{if(e.pointerType==='mouse')moveTorch(toSvg(svg,e))};
+  svg.onpointerdown=e=>{const pt=toSvg(svg,e);down={pt,el:e.target};moveTorch(pt);if(e.pointerType!=='mouse'&&svg.classList.contains('dk'))try{svg.setPointerCapture(e.pointerId)}catch{}};
+  svg.onpointermove=e=>{if(e.pointerType==='mouse'||down)moveTorch(toSvg(svg,e))};
   svg.onpointerup=e=>{const pt=toSvg(svg,e),d=down;down=null;if(d&&Math.hypot(pt.x-d.pt.x,pt.y-d.pt.y)<16)tapScene(d.el)};
   svg.onpointercancel=()=>{down=null};
 }
@@ -908,7 +910,7 @@ function openHint(){
 }
 function closeM(){$('#mbg').classList.remove('on')}
 $('#mbg').onclick=e=>{if(e.target.id==='mbg')closeM()};
-addEventListener('keydown',e=>{if(e.key==='Escape'){closeM();if(S.hold){S.hold=null;save();renderBag();const sc=$('#scene');if(sc)sc.setAttribute('class','scene')}}});
+addEventListener('keydown',e=>{if(e.key==='Escape'){closeM();if(S.hold){S.hold=null;save();renderBag();const sc=$('#scene');if(sc)sc.classList.forEach(c=>c.startsWith('h-')&&sc.classList.remove(c))}}});
 $('#btnHint').onclick=openHint;
 
 render(true);
