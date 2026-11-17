@@ -235,6 +235,7 @@ header.hud{display:flex;align-items:flex-end;gap:10px 18px;flex-wrap:wrap;margin
     <div class="spacer"></div>
     <div class="stat"><span>걸린 시간</span><b id="time">0:00</b></div>
     <div class="stat"><span>힌트</span><b id="hintCount">0</b></div>
+    <button class="btn" id="btnSnd" aria-pressed="true" title="소리">🔈</button>
     <button class="btn" id="btnHint">힌트</button>
   </header>
   <nav class="tabs" id="tabs"></nav>
@@ -809,6 +810,76 @@ const ACT={
     DEV=null;clearP(8);S.v='end';save();render(true);scrollTo({top:0,behavior:'smooth'})},
 };
 
+// ── 소리 ── (설계: notes/05/SOUND.md) 음악·놀래키는 소리 없음, 장소의 소리만
+const SND={
+  ctx:null,master:null,on:(()=>{try{return localStorage.getItem('hn.sound')!=='off'}catch{return true}})(),log:[],prev:null,ambKey:null,amb:null,crankNode:null,
+  init(){
+    if(!this.on)return;
+    if(!this.ctx){const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;this.ctx=new AC();this.master=this.ctx.createGain();this.master.gain.value=.72;this.master.connect(this.ctx.destination)}
+    if(this.ctx.state==='suspended')this.ctx.resume();if(!this.amb)this.ambKey=null;this.updateAmb()
+  },
+  button(){const b=$('#btnSnd');b.textContent=this.on?'🔈':'🔇';b.setAttribute('aria-pressed',String(this.on))},
+  toggle(){this.on=!this.on;try{localStorage.setItem('hn.sound',this.on?'on':'off')}catch{}this.button();if(this.on){this.ambKey=null;this.init()}else{this.stopAmb(.12);this.stopCrank();this.ambKey=null}},
+  noise(){const b=this.ctx.createBuffer(1,Math.floor(this.ctx.sampleRate*.7),this.ctx.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;const n=this.ctx.createBufferSource();n.buffer=b;n.loop=true;return n},
+  burst(gain=.12,secs=.04,high=0){
+    if(!this.ctx||!this.on)return;const n=this.noise(),f=this.ctx.createBiquadFilter(),g=this.ctx.createGain(),t=this.ctx.currentTime;f.type=high?'highpass':'lowpass';f.frequency.value=high||700;g.gain.setValueAtTime(gain,t);g.gain.exponentialRampToValueAtTime(.0001,t+secs);n.connect(f);f.connect(g);g.connect(this.master);n.start(t);n.stop(t+secs+.03)
+  },
+  tone(freq,gain,type='sine',secs=.08,end=freq*.6){
+    if(!this.ctx||!this.on)return;const t=this.ctx.currentTime,o=this.ctx.createOscillator(),g=this.ctx.createGain();o.type=type;o.frequency.setValueAtTime(freq,t);o.frequency.exponentialRampToValueAtTime(Math.max(1,end),t+secs);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(gain,t+.008);g.gain.exponentialRampToValueAtTime(.0001,t+secs);o.connect(g);g.connect(this.master);o.start(t);o.stop(t+secs+.02)
+  },
+  fx(name){
+    this.log.push(name);if(!this.ctx||!this.on)return;
+    if(name==='tick'){this.burst(.09,.015,3000);return}
+    if(name==='rattle'){this.burst(.16,.045);setTimeout(()=>this.burst(.12,.04),75);return}
+    if(name==='unlock'){this.burst(.13,.025,2200);this.tone(900,.09,'sine',.18,1250);return}
+    if(name==='door'){this.tone(120,.11,'sawtooth',.32,90);return}
+    if(name==='shutter'){this.burst(.09,.8);return}
+    if(name==='breaker'){this.burst(.16,.06);return}
+    if(name==='trip'){if(this.amb){this.amb.gain.gain.setTargetAtTime(.0001,this.ctx.currentTime,.01);setTimeout(()=>this.amb&&this.amb.gain.gain.setTargetAtTime(1,this.ctx.currentTime,.05),220)}[0,1,2,3].forEach(i=>setTimeout(()=>this.burst(.16,.05),i*70));return}
+    if(name==='projStart'){this.tone(60,.09,'sawtooth',1.5,96);return}
+    if(name==='projStop'){this.tone(96,.08,'sawtooth',1.5,48);return}
+    if(name==='switch'){this.burst(.07,.018,2600);return}
+    if(name==='rope'){this.burst(.09,.6);return}
+    if(name==='splice'){this.burst(.07,.025,1800);this.tone(420,.045,'square',.06,360);return}
+    if(name==='crank'){this.crankNode?this.stopCrank():this.startCrank();return}
+    if(name==='doorOpen'){this.tone(86,.13,'sawtooth',.6,55);return}
+    if(name==='latch')this.burst(.2,.08)
+  },
+  startCrank(){if(!this.ctx||!this.on||this.crankNode)return;const n=this.noise(),f=this.ctx.createBiquadFilter(),g=this.ctx.createGain(),o=this.ctx.createOscillator(),m=this.ctx.createGain();f.type='bandpass';f.frequency.value=1900;g.gain.value=.025;o.frequency.value=24;m.gain.value=.012;o.connect(m);m.connect(g.gain);n.connect(f);f.connect(g);g.connect(this.master);n.start();o.start();this.crankNode={n,o}},
+  stopCrank(){if(!this.crankNode)return;try{this.crankNode.n.stop();this.crankNode.o.stop()}catch{}this.crankNode=null},
+  drop(){this.tone(1400,.035,'sine',.06,700)},
+  want(){const v=S.v;if(v==='map')return this.ambKey||'rain';if(v==='cover'||v==='p1'||v==='p2')return'rain';if(v==='p3')return'drip';if(v==='p4')return'cellar';if(v==='p5')return S.w[5].run&&power()?'projector':'room';if(v==='p6')return S.w[5].run&&power()?'projectorFar':'quiet';if(v==='p7')return'wind';if(v==='p8')return S.w[8].out?'open':'outside';return null},
+  startAmb(key){
+    if(!this.ctx||!this.on||!key||key==='quiet')return;const gain=this.ctx.createGain(),parts=[],drops=[];gain.gain.value=0;gain.connect(this.master);
+    const addNoise=(type,freq,level)=>{const n=this.noise(),f=this.ctx.createBiquadFilter(),g=this.ctx.createGain();f.type=type;f.frequency.value=freq;g.gain.value=level;n.connect(f);f.connect(g);g.connect(gain);n.start();parts.push(()=>n.stop());return g};
+    const addHum=(freq,level)=>{const o=this.ctx.createOscillator(),g=this.ctx.createGain();o.type='sine';o.frequency.value=freq;g.gain.value=level;o.connect(g);g.connect(gain);o.start();parts.push(()=>o.stop())};
+    const pulse=(target,hz,depth)=>{const o=this.ctx.createOscillator(),g=this.ctx.createGain();o.frequency.value=hz;g.gain.value=depth;o.connect(g);g.connect(target.gain);o.start();parts.push(()=>o.stop())};
+    const addDrop=()=>{const again=()=>{this.drop();drops.push(setTimeout(again,2000+Math.random()*4000))};drops.push(setTimeout(again,1000+Math.random()*2500))};
+    if(['rain','drip','outside','open'].includes(key))addNoise('lowpass',900,key==='drip'?.025:key==='open'?.085:.05);
+    if(key==='drip'||key==='cellar'){addDrop();if(key==='cellar')addHum(55,.02)}
+    if(key==='room')addNoise('lowpass',550,.008);
+    if(key==='projector'||key==='projectorFar'){pulse(addNoise('bandpass',2000,key==='projector'?.06:.02),24,key==='projector'?.025:.008);addHum(48,key==='projector'?.025:.009)}
+    if(['wind','outside','open'].includes(key))pulse(addNoise('bandpass',300,key==='open'?.04:.02),.12,.008);
+    gain.gain.linearRampToValueAtTime(1,this.ctx.currentTime+.8);this.amb={gain,parts,drops}
+  },
+  stopAmb(secs=.8){
+    if(!this.ctx||!this.amb)return;const a=this.amb;this.amb=null;a.drops.forEach(clearTimeout);a.gain.gain.cancelScheduledValues(this.ctx.currentTime);a.gain.gain.setValueAtTime(a.gain.gain.value,this.ctx.currentTime);a.gain.gain.linearRampToValueAtTime(0,this.ctx.currentTime+secs);setTimeout(()=>a.parts.forEach(stop=>{try{stop()}catch{}}),(secs+.1)*1000)
+  },
+  updateAmb(){const key=this.want();if(key===this.ambKey)return;this.stopAmb(S.v==='end'?3:.8);this.ambKey=key;this.startAmb(key)},
+  state(){const w=S.w;return {v:S.v,started:S.started,dials:[1,2,4,8].map(n=>w[n].dial.join('')),shutter:w[1].open,opens:[w[2].open,w[4].open,w[8].open],doors:[w[3].door,w[4].door,w[5].door],brk:w[3].brk.join(''),run:w[5].run,call:w[6].call,rope:w[7].pulled.length,slots:w[8].slots.length,crank:w[8].crank,out:w[8].out}},
+  after(){
+    const now=this.state(),old=this.prev;if(old&&!(now.v==='cover'&&!now.started)){
+      now.dials.forEach((v,i)=>{if(v!==old.dials[i])this.fx('tick')});if(!old.shutter&&now.shutter)this.fx('shutter');now.opens.forEach((v,i)=>{if(!old.opens[i]&&v)this.fx('unlock')});now.doors.forEach((v,i)=>{if(!old.doors[i]&&v)this.fx('door')});
+      if(old.brk!==now.brk){const a=old.brk.replaceAll('0','').length,b=now.brk.replaceAll('0','').length;if(a&&b===0)this.fx('trip');else if(a!==b)this.fx('breaker')}
+      if(old.run!==now.run)this.fx(now.run?'projStart':'projStop');if(old.call!==false&&now.call===false)this.fx('switch');if(now.rope>old.rope)this.fx('rope');if(now.slots>old.slots)this.fx('splice');if(old.crank!==now.crank)this.fx('crank');if(!old.out&&now.out)this.fx('doorOpen');if(old.v==='p8'&&now.v==='end')this.fx('latch')
+    }
+    this.prev=now;this.updateAmb()
+  },
+};
+SND.button();$('#btnSnd').onclick=()=>SND.toggle();document.addEventListener('pointerdown',()=>SND.init(),{once:true});document.addEventListener('keydown',()=>SND.init(),{once:true});
+const _pull=ACT.pull;
+ACT.pull=b=>{const w=W(),was=w.open;_pull(b);if(W()===w&&!w.open&&!was)SND.fx('rattle')};
+
 // ── 줍기 · 들기 ──────────────────────────────
 function take(id){
   const p=pageNo(),w=W();
@@ -946,7 +1017,7 @@ function render(anim){
   if(!anim)pg.querySelectorAll('.turn').forEach(e=>e.classList.remove('turn'));
   if(v==='cover')$('#start').onclick=()=>{if(!S.started){S.started=true;S.open=1}go('p'+frontier())};
   if(v==='end')$('#again').onclick=()=>{if(confirm('처음부터 다시 할까요? 지금 기록은 지워져요.')){S=fresh();DEV=null;save();render(true)}};
-  renderBag();bindScene();bindDev();
+  renderBag();bindScene();bindDev();SND.after();
 }
 const refresh=()=>render(false);
 $('#page').addEventListener('click',e=>{
