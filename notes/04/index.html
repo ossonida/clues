@@ -205,7 +205,7 @@ header.hud{display:flex;align-items:flex-end;gap:10px 18px;flex-wrap:wrap;margin
 
 <script>
 const $=s=>document.querySelector(s);
-const SAVE_KEY='hn.note04.v3';
+const SAVE_KEY='hn.note04.v4';
 const PLAY_LAST=3;   // 시제품은 3장까지
 const SW=600,SH=360,GY=300;   // 장면 크기, 땅 높이
 
@@ -216,7 +216,7 @@ const josa=(w,a,b)=>{const c=w.charCodeAt(w.length-1)-0xac00;return w+(c>=0&&c<1
 // ── 상태 ──────────────────────────────
 // w[장]: 깡총이 위치(seg, x)와 그 장에서 바뀐 것
 const fresh=()=>({v:'cover',open:0,clear:{},hints:{},ms:0,started:false,done:false,bag:{},hold:null,
-  w:{1:{bridge:false},2:{ladder:false,erased:false,rub:[]},3:{big:{},umb:false,placed:false}}});
+  w:{1:{shook:false,half:false,shade:false,bridge:false},2:{ladder:false,erased:false,rub:[],plank:false},3:{big:{},umb:false,placed:false,rub:[],scrub:false}}});
 let S=fresh();
 try{const d=JSON.parse(localStorage.getItem(SAVE_KEY)||'null');if(d)S={...fresh(),...d,w:{...fresh().w,...(d.w||{})}}}catch{}
 const save=()=>{try{localStorage.setItem(SAVE_KEY,JSON.stringify(S))}catch{}};
@@ -236,37 +236,53 @@ function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('on');
 
 // ── 장 설계 ──────────────────────────────
 // 깡총이는 직접 움직이지 않는다. 낙서를 써서 길이 열리면 깡총이가 그 자리로 옮겨 가 있다.
+// 장마다 장치가 여러 겹이다. 한 장치를 풀어야 다음 장치가 보이거나 손에 닿는다.
 // pos: 지금 깡총이 자리 / clear: 귀퉁이를 넘길 수 있나 / why: 아직 못 넘기는 이유
 // items: [낙서, x, y] / reach: 아직 못 줍는 이유 / guides: 연필로 따라 그으면 진짜가 되는 점선
+// tap: 낙서 없이 눌러서 바꾸는 장치 (바뀌면 말을 돌려준다) / miss: 연필로 그었는데 아무 일 없을 때 한마디
 const curve=(x0,y0,cx,cy,x1,y1,n)=>Array.from({length:n+1},(_,i)=>{const t=i/n,u=1-t;return [u*u*x0+2*u*t*cx+t*t*x1,u*u*y0+2*u*t*cy+t*t*y1]});
 const line=(x0,y0,x1,y1,n)=>Array.from({length:n+1},(_,i)=>[x0+(x1-x0)*i/n,y0+(y1-y0)*i/n]);
+// 1장 다리 점선: 앞쪽 반은 처음부터 보이고, 뒤쪽 반은 해가 눈부셔 안 보인다
+const BR=curve(222,GY+2,310,232,398,GY+2,22),BR_A=BR.slice(0,12),BR_B=BR.slice(11);
+const PLANK=line(322,GY+2,408,GY+2,14);
 const LV={
   1:{date:'2009. 3. 2. (월)',
-    say:['전학 첫날. 짝한테 하고 싶은 말이 있었는데 못 했다.','깡총이를 그렸다. 개울가에 혼자 있는 토끼. 다리는 그리다 말았다.','깡총이 집은 다음에 그려 줄게. 문도.'],
+    say:['전학 첫날. 짝한테 하고 싶은 말이 있었는데 못 했다.','깡총이를 그렸다. 개울가에 혼자 있는 토끼. 다리는 반만 그리다 말았다. 창가 자리라 해가 너무 눈부셨다.','깡총이 집은 다음에 그려 줄게. 문도.'],
     pos:w=>w.bridge?[470,GY]:[84,GY],
-    clear:w=>w.bridge,why:()=>'개울이 막고 있다. 깡총이는 헤엄을 못 친다.',
-    items:()=>[['pencil',168,GY]],reach:()=>null,
-    guides:w=>w.bridge?[]:[{id:'bridge',pts:curve(222,GY+2,310,232,398,GY+2,22),done:w=>{w.bridge=true},msg:'선이 진짜 다리가 됐다! 깡총이가 건너갔다.'}],
-    hints:['깡총이는 개울을 못 건너요. 개울가에 굴러다니는 몽당연필을 보세요.','연필을 주운 뒤 필통에서 골라 들고, 개울 위 점선을 따라 쭉 그어 보세요. 한 번에 안 돼도 여러 번 나눠 그어도 돼요.','다리가 생기면 깡총이가 건너가요. 오른쪽 아래 접힌 귀퉁이를 누르면 다음 장이에요.']},
+    clear:w=>w.bridge,why:w=>w.half?'다리가 개울 한가운데서 뚝 끊겼다.':'개울이 막고 있다. 깡총이는 헤엄을 못 친다.',
+    items:w=>w.shook?[['pencil',176,GY]]:[],reach:()=>null,
+    guides:w=>[...(!w.half?[{id:'brA',pts:BR_A,done:w=>{w.half=true},msg:'다리가 반만 생겼다. 나머지 점선은… 눈이 부셔서 안 보인다.'}]:[]),
+      ...(w.half&&w.shade&&!w.bridge?[{id:'brB',pts:BR_B,done:w=>{w.bridge=true},msg:'다리가 이어졌다! 깡총이가 건너갔다.'}]:[])],
+    tap:(id,w)=>{
+      if(id==='tree'){if(w.shook)return '나무에는 이제 아무것도 안 걸려 있다.';w.shook=true;NEW_DROP='pencil';return '나무를 흔들었더니 몽당연필이 툭 떨어졌다!'}
+      if(id==='cloud'){if(w.shade)return '구름이 해를 가려 주고 있다.';w.shade=true;return '구름이 둥실 흘러가 해를 가렸다. 이제 눈이 안 부시다.'}
+      return null},
+    miss:w=>w.half&&!w.shade&&!w.bridge?'눈이 부셔서 나머지 점선이 하나도 안 보인다.':null,
+    hints:['연필은 나무에 걸려 있어요. 개울 위 점선은 앞쪽 반만 보여요.','나무를 누르면 연필이 떨어져요. 점선을 연필로 그으면 다리가 반만 생겨요. 나머지 점선은 해가 너무 밝아서 안 보여요.','구름을 눌러 해를 가리면 나머지 점선이 보여요. 마저 그으면 깡총이가 건너가요. 그다음 오른쪽 아래 귀퉁이를 누르세요.']},
   2:{date:'2009. 3. 4. (수)',
-    say:['누가 내 연습장을 볼펜으로 시꺼멓게 칠해 놨다.','짝이 내 지우개를 빌려 가더니, 지우개 그림을 책꽂이 맨 위에 그려 놓고 갔다. 손이 안 닿는다.','짝 이름도 아직 모름.'],
-    pos:w=>w.erased?[480,GY]:w.ladder?[150,140]:[84,GY],
-    clear:w=>w.erased,why:()=>'시꺼먼 볼펜 낙서가 벽처럼 막고 있다.',
-    items:()=>[['eraser',112,140]],reach:(id,w)=>w.ladder?null:'책꽂이가 너무 높다. 깡총이 키로는 어림없다.',
-    guides:w=>w.ladder?[]:[{id:'ladder',pts:line(204,GY+4,204,136,20),done:w=>{w.ladder=true},msg:'선이 진짜 사다리가 됐다! 깡총이가 올라갔다.'}],
-    hints:['지우개는 책꽂이 맨 위에 있어요. 1장에서 주운 연필이 필통에 있어요.','연필을 들고 책꽂이 옆 점선을 따라 위아래로 쭉 그으면 사다리가 생겨요. 그다음 지우개를 누르면 주워요.','지우개를 들고 시꺼먼 벽을 박박 문지르세요. 다 지우면 오른쪽 아래 귀퉁이를 누르세요.']},
+    say:['누가 내 연습장을 볼펜으로 시꺼멓게 칠해 놨다. 너무 세게 칠해서 종이가 찢어졌다.','짝이 내 지우개를 빌려 가더니, 지우개 그림을 책꽂이 맨 위에 그려 놓고 갔다. 손이 안 닿는다.','짝 이름도 아직 모름.'],
+    pos:w=>w.plank?[490,GY]:w.erased?[250,GY]:w.ladder?[162,140]:[84,GY],
+    clear:w=>w.plank,why:w=>w.erased?'종이가 찢어져 구멍이 났다. 깡총이 발이 쑥 빠진다.':'시꺼먼 볼펜 낙서가 벽처럼 막고 있다.',
+    items:()=>[['eraser',88,140]],reach:(id,w)=>w.ladder?null:'책꽂이가 너무 높다. 깡총이 키로는 어림없다.',
+    guides:w=>[...(!w.ladder?[{id:'ladder',pts:line(204,GY+4,204,136,20),done:w=>{w.ladder=true},msg:'선이 진짜 사다리가 됐다! 깡총이가 올라갔다.'}]:[]),
+      ...(w.erased&&!w.plank?[{id:'plank',pts:PLANK,done:w=>{w.plank=true},msg:'찢어진 구멍 위에 판자가 놓였다. 깡총이가 건넜다.'}]:[])],
+    hints:['지우개는 책꽂이 맨 위에 있어요. 1장에서 주운 연필이 필통에 있어요.','책꽂이 옆 점선을 연필로 위아래로 그으면 사다리가 생겨요. 지우개를 주워 들고 시꺼먼 벽을 박박 문지르세요.','벽 밑에 종이가 찢어진 구멍이 있어요. 구멍 위 점선을 연필로 그어 판자를 놓고 귀퉁이를 누르세요.']},
   3:{date:'2009. 3. 6. (금)',
-    say:['짝 이름은 지호. 깡총이 귀엽대.','지호가 숨은그림찾기를 그려 줬다. 그림이 너무 작아서 하나도 못 찾았다.','오늘 비 온다더니 지호가 연습장에도 비구름을 그려 놨다.'],
+    say:['짝 이름은 지호. 깡총이 귀엽대.','지호가 숨은그림찾기를 그려 줬다. 너무 작아서 하나도 못 찾았다. 하나는 지호가 잘못 그렸다고 볼펜으로 박박 칠해 버렸다.','오늘 비 온다더니 지호가 연습장에도 비구름을 그려 놨다.'],
     pos:w=>w.umb&&w.placed?[462,172]:w.umb?[264,GY]:[70,GY],
     clear:w=>w.umb&&w.placed,why:w=>!w.umb?RAIN:'책 더미가 너무 높다.',
-    items:w=>[['lens',112,GY],...['umbrella','ladder','key','star'].filter(k=>w.big[k]).map(k=>[k,BIG[k].x,GY])],
+    items:w=>[['lens',132,GY],...['umbrella','ladder','key','star'].filter(k=>w.big[k]).map(k=>[k,BIG[k].x,GY])],
     reach:(id,w)=>BIG[id]&&BIG[id].x>206&&!w.umb?RAIN:null,
     guides:()=>[],
-    hints:['비구름 밑은 젖어서 못 지나가요. 위에 지호가 그린 숨은그림찾기 속 작은 낙서들을 보세요.','바닥의 돋보기를 주워서 들고 그림 속 작은 우산·사다리를 눌러 보세요. 크게 튀어나와요.','우산을 들고 비구름을 누르면 우산이 펼쳐져요. 사다리는 들고 책 더미를 누르면 세워져요. 그다음 귀퉁이를 누르세요.']},
+    hints:['비구름 밑은 젖어서 못 지나가요. 위에 지호가 그린 숨은그림찾기를 보세요. 바닥에 돋보기가 있어요.','돋보기를 들고 작은 우산을 누르면 커져요. 우산을 들고 비구름을 누르면 펼쳐져요. 목록의 사다리는 파란 볼펜으로 칠한 곳 밑에 있어요.','2장 지우개로 칠한 곳을 문지르고, 돋보기로 사다리를 키워 주우세요. 사다리를 들고 책 더미를 누른 뒤 귀퉁이를 누르세요.']},
 };
+// 지우개로 문지르는 볼펜 낙서 칸. 70%를 지우면 key가 true가 된다
+const ZONE={2:{x:276,y:96,w:136,h:GY-96+34,key:'erased',sw:7.5,n:14,msg:'볼펜 벽이 다 지워졌다. 밑에 파란 글씨가 있었다. 그런데 종이가 찢어져 있다.'},
+  3:{x:280,y:40,w:42,h:38,key:'scrub',sw:3.5,n:3,msg:'박박 칠한 볼펜을 지웠더니 밑에 작은 사다리가 숨어 있었다.'}};
 const RAIN='비구름 너머다. 깡총이는 연필 그림이라 젖으면 번진다!';
 // 3장 숨은그림: 작은 낙서 자리(t)와, 돋보기로 누르면 떨어지는 땅 위 자리(x)
-const BIG={umbrella:{t:[86,74],x:160},ladder:{t:[300,58],x:372},key:{t:[214,86],x:64},star:{t:[352,90],x:384}};
+// 땅 위 자리는 깡총이(시작 x=70, 우산 밑 x=264)와 서로 겹치지 않게 둔다
+const BIG={umbrella:{t:[86,74],x:192},ladder:{t:[300,58],x:346},key:{t:[214,86],x:548},star:{t:[352,90],x:404}};
 
 // ── 탭 · 필통 ──────────────────────────────
 function canView(v){
@@ -305,17 +321,27 @@ const sun=(x,y)=>C(`<circle cx="${x}" cy="${y}" r="24" fill="#ffcf3a"/>`)+`<g st
 const fold=(ok)=>`<g class="fold${ok?' ready':''}" data-exit="1"><path d="M${SW} ${SH-58} L${SW} ${SH} L${SW-58} ${SH} Z" fill="#7aa884" opacity=".25"/><path d="M${SW-58} ${SH} L${SW} ${SH-58} L${SW-46} ${SH-46} Z" fill="#eef4e6" stroke="#9fbf9f" stroke-width="2"/><path d="M${SW-40} ${SH-30} l12 0 m-5 -5 l5 5 l-5 5" stroke="#4f7a5a" stroke-width="2.4" fill="none" stroke-linecap="round"/></g>`;
 const dotted=pts=>`<path d="M${pts.map(p=>p.join(' ')).join(' L')}" stroke="#7d7d7d" stroke-width="4" stroke-dasharray="1 11" stroke-linecap="round" fill="none"/>`;
 
+function tree(w){
+  return `<g data-tap="tree" style="cursor:pointer">
+    <rect x="96" y="80" width="130" height="150" fill="rgba(0,0,0,0)"/>
+    ${C(`<rect x="152" y="160" width="18" height="${GY-158}" fill="#a8703c"/>`)}<path d="M152 ${GY} V160 M170 ${GY} V160" stroke="#3b3b3b" stroke-width="2.6" filter="url(#rough)"/>
+    ${C(`<path d="M106 150 C96 112 128 86 150 98 C162 74 204 80 206 110 C230 120 224 168 196 170 C186 186 128 186 120 172 C100 172 96 158 106 150 Z" fill="#7cc46a"/>`)}
+    <path d="M106 150 C96 112 128 86 150 98 C162 74 204 80 206 110 C230 120 224 168 196 170 C186 186 128 186 120 172 C100 172 96 158 106 150 Z" fill="none" stroke="#3b3b3b" stroke-width="2.6" filter="url(#rough)"/>
+    ${w.shook?'':`<g class="item"><use href="#d-pencil" x="168" y="100" width="40" height="40"/><path class="spark" d="M206 104 l2 -7 l2 7 l7 2 l-7 2 l-2 7 l-2 -7 l-7 -2 Z" fill="#ffd84a"/></g>`}
+  </g>`;
+}
 function art1(w){
-  return `${sun(530,64)}${cloud(120,62,1)}${cloud(330,42,.7)}
+  const glare=w.shade?'':`<g opacity=".55" stroke="#fff6b0" stroke-width="10" stroke-linecap="round"><path d="M300 ${GY-40} L330 ${GY-10} M340 ${GY-36} L372 ${GY-4}"/></g>`;
+  return `${sun(530,64)}${w.shade?`<g class="pop" style="transform-origin:526px 70px">${cloud(526,70,.95)}</g>`:`<g data-tap="cloud" style="cursor:pointer">${cloud(330,46,.75)}</g>`}
     ${ground(0,226)}${ground(394,SW)}
     ${C(`<path d="M222 ${GY-2} Q232 ${GY+8} 226 ${SH} H394 Q388 ${GY+8} 398 ${GY-2} Z" fill="#6fbdf0"/>`)}
     <path d="M240 ${GY+18} q12 -6 24 0 t24 0 M300 ${GY+36} q12 -6 24 0 t24 0 M250 ${GY+48} q10 -5 20 0" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round"/>
     <path d="M222 ${GY-2} Q232 ${GY+8} 226 ${SH} M398 ${GY-2} Q388 ${GY+8} 394 ${SH}" stroke="#8a5a2b" stroke-width="3.5" fill="none" filter="url(#rough)"/>
-    ${tuft(60)}${tuft(140)}${tuft(440)}${tuft(500)}${flower(110,GY-24,'#f78fb3')}${flower(470,GY-24,'#a78bfa')}
-    ${w.bridge?bridge():dotted(curve(222,GY+2,310,232,398,GY+2,22))}`;
+    ${tree(w)}${tuft(40)}${tuft(440)}${tuft(500)}${flower(470,GY-24,'#a78bfa')}
+    ${w.bridge?bridge(BR.filter((_,i)=>i%2===0)):w.half?bridge(BR_A.filter((_,i)=>i%2===0)):dotted(BR_A)}
+    ${w.half&&!w.bridge&&w.shade?dotted(BR_B):''}${glare}`;
 }
-function bridge(){
-  const pts=curve(222,GY+2,310,232,398,GY+2,12);
+function bridge(pts){
   return `<g class="pop" style="transform-origin:310px 270px">
     <path d="M${pts.map(p=>p.join(' ')).join(' L')}" stroke="#9b6131" stroke-width="12" fill="none" stroke-linecap="round" filter="url(#rough)"/>
     ${pts.slice(1,-1).map(([x,y])=>`<path d="M${x} ${y-8} V${y+8}" stroke="#5e3a1a" stroke-width="3" stroke-linecap="round"/>`).join('')}
@@ -325,7 +351,10 @@ function bridge(){
 }
 function art2(w){
   const books=[[64,'#e8604c'],[80,'#4f8ee8'],[96,'#f2c14e'],[112,'#58b368'],[128,'#a77be0'],[144,'#e8604c']];
-  return `${cloud(470,52,.8)}${ground()}
+  return `${cloud(470,52,.8)}${ground(0,326)}${ground(404,SW)}
+    ${C(`<path d="M326 ${GY} L334 ${GY+14} L328 ${GY+26} L338 ${GY+40} L332 ${SH} H400 L408 ${GY+44} L398 ${GY+30} L406 ${GY+16} L400 ${GY} Z" fill="#cfd8c4"/>`)}
+    <path d="M326 ${GY} L334 ${GY+14} L328 ${GY+26} L338 ${GY+40} L332 ${SH} M400 ${GY} L406 ${GY+16} L398 ${GY+30} L408 ${GY+44} L400 ${SH}" stroke="#3b3b3b" stroke-width="2.6" fill="none" filter="url(#rough)"/>
+    ${w.plank?`<g class="pop" style="transform-origin:365px 300px"><path d="M316 ${GY+2} L414 ${GY+2}" stroke="#9b6131" stroke-width="13" stroke-linecap="round" filter="url(#rough)"/><path d="M340 ${GY-4} V${GY+8} M366 ${GY-4} V${GY+8} M392 ${GY-4} V${GY+8}" stroke="#5e3a1a" stroke-width="3" stroke-linecap="round"/></g>`:w.erased?dotted(PLANK):''}
     ${C(`<rect x="52" y="140" width="128" height="160" fill="#d49a5c"/>`)}
     <rect x="52" y="140" width="128" height="160" fill="none" stroke="#3b3b3b" stroke-width="3" filter="url(#rough)"/>
     <path d="M52 194 H180 M52 248 H180" stroke="#3b3b3b" stroke-width="3" filter="url(#rough)"/>
@@ -336,17 +365,18 @@ function art2(w){
     <text x="296" y="${GY-100}" font-size="34" fill="var(--blue)">나는</text>
     <text x="296" y="${GY-60}" font-size="34" fill="var(--blue)">지호야.</text>
     <text x="290" y="${GY-20}" font-size="23" fill="var(--blue)">토끼 이름 뭐야?</text>
-    ${w.erased?'':wall(w)}
+    ${w.erased?'':scrib(ZONE[2],w)}
     ${tuft(470)}${tuft(520)}${flower(500,GY-24,'#f78fb3')}
     <text x="440" y="${GY+44}" font-size="24" fill="#777">3×4=12 &nbsp;6×7=42</text>`;
 }
-const WALL={x:276,y:96,w:128,h:GY-96+4};
-function wall(w){
-  let d='';const {x,y,w:ww,h}=WALL;
-  for(let yy=y+4,i=0;yy<y+h;yy+=6,i++)d+=`${i?' L':'M'}${i%2?x+((i*7)%9):x+ww-((i*5)%9)} ${yy}`;
-  for(let i=0;i<14;i++){const cx=x+16+((i*37)%(ww-30)),cy=y+18+((i*53)%(h-36));d+=` M${cx-16} ${cy} q16 -22 32 0 q-16 22 -32 0`}
-  return `<mask id="em" maskUnits="userSpaceOnUse" x="0" y="0" width="${SW}" height="${SH}"><rect width="${SW}" height="${SH}" fill="#fff"/><g id="emH">${w.rub.map(([a,b])=>`<circle cx="${a}" cy="${b}" r="24" fill="#000"/>`).join('')}</g></mask>
-    <g id="wall" mask="url(#em)"><path d="${d}" stroke="#1b2140" stroke-width="7.5" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".95"/></g>`;
+// 볼펜으로 박박 칠한 칸. 지우개로 문지른 자리(w.rub)는 마스크로 뚫린다
+const RUB_R=24;
+function scrib(Z,w){
+  let d='';const {x,y,w:ww,h,sw,n}=Z,step=Math.max(4,sw*.8),loop=Math.min(16,ww/3);
+  for(let yy=y+sw/2,i=0;yy<y+h;yy+=step,i++)d+=`${i?' L':'M'}${i%2?x+((i*7)%9):x+ww-((i*5)%9)} ${yy.toFixed(1)}`;
+  for(let i=0;i<n;i++){const cx=x+loop+((i*37)%Math.max(1,ww-2*loop)),cy=y+loop+((i*53)%Math.max(1,h-2*loop));d+=` M${cx-loop} ${cy} q${loop} ${-loop*1.4} ${loop*2} 0 q${-loop} ${loop*1.4} ${-loop*2} 0`}
+  return `<mask id="em" maskUnits="userSpaceOnUse" x="0" y="0" width="${SW}" height="${SH}"><rect width="${SW}" height="${SH}" fill="#fff"/><g id="emH">${w.rub.map(([a,b])=>`<circle cx="${a}" cy="${b}" r="${RUB_R}" fill="#000"/>`).join('')}</g></mask>
+    <g id="wall" mask="url(#em)"><path d="${d}" stroke="#1b2140" stroke-width="${sw}" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".95"/></g>`;
 }
 function art3(w){
   const tinies=Object.entries(BIG).filter(([k])=>!w.big[k]).map(([k,{t}])=>`<use href="#d-${k}" x="${t[0]-9}" y="${t[1]-9}" width="18" height="18" data-tiny="${k}"/>`).join('');
@@ -366,7 +396,7 @@ function art3(w){
         <path d="M250 100 c-6 -10 8 -12 4 -2 c8 -6 10 6 0 6"/>
       </g>
       <text x="186" y="104" font-size="7.5" fill="var(--blue)">토요일에 미끄럼틀 밑에서 만나!</text>
-      ${tinies}
+      ${tinies}${w.scrub?'':scrib(ZONE[3],w)}
     </g>
     ${cloud(264,150,1.25,'#9aa3ad')}
     ${w.umb?`<g class="pop" style="transform-origin:264px 200px"><use href="#d-umbrella" x="226" y="166" width="76" height="76"/></g>`:''}
@@ -395,7 +425,7 @@ function scene(p){
   const items=L.items(w).filter(([id])=>!S.bag[id]&&!(id==='ladder'&&w.placed)&&!(id==='umbrella'&&w.umb));
   const out=`<svg class="scene" id="scene" viewBox="0 0 ${SW} ${SH}" role="img" aria-label="${p}장 낙서">
     <defs><clipPath id="lc"><circle id="lcC" r="${LR}" cx="-999" cy="-999"/></clipPath></defs>
-    <g id="scn">${[null,art1,art2,art3][p](w)}${fold(L.clear(w))}${items.map(itemG).join('')}${kcG(p,w)}</g>
+    <g id="scn">${[null,art1,art2,art3][p](w)}${kcG(p,w)}${items.map(itemG).join('')}${fold(L.clear(w))}</g>
     <g id="ink"></g>
     <g id="lens" style="display:none" pointer-events="none">
       <g clip-path="url(#lc)"><circle id="lbg" r="${LR}" fill="#fbfdf5"/><g id="lz"><use href="#scn"/></g></g>
@@ -421,7 +451,8 @@ function turnPage(){
   if(!L.clear(w)){toast(L.why(w));return}
   S.clear[p]=true;S.open=Math.max(S.open,p+1);if(p>=PLAY_LAST)S.done=true;save();
   busy=true;toast(p>=PLAY_LAST?'깡총이가 귀퉁이를 넘어간다!':`${p+1}장으로 깡총!`);
-  const kc=$('#kc');if(kc)kc.animate([{transform:'translate(0,0)'},{transform:'translate(40px,-40px)'},{transform:'translate(160px,0)',opacity:0}],{duration:700,easing:'ease-in',fill:'forwards',composite:'add'});
+  // transform 속성이 있는 #kc 대신 안쪽 g를 움직인다 (속성 위에 CSS를 얹으면 브라우저마다 순간이동함)
+  const kc=$('#kc');if(kc)kc.firstElementChild.animate([{transform:'translate(0,0)'},{transform:'translate(40px,-40px)'},{transform:'translate(160px,0)',opacity:0}],{duration:700,easing:'ease-in',fill:'forwards'});
   setTimeout(()=>{$('#sheet').classList.add('leave')},500);
   setTimeout(()=>{busy=false;go(p>=PLAY_LAST?'end':'p'+(p+1))},1100);
 }
@@ -463,22 +494,30 @@ function endStroke(){
     if(c.size/gd.pts.length>=.8){const u=update(gd.msg);gd.done(w);delete cover[gd.id];u();return true}
   }
   if(g){g.classList.add('ink-fade');setTimeout(()=>g.remove(),800)}
+  const m=LV[p].miss&&LV[p].miss(w);if(m)toast(m);
   return true;
 }
-// 지우개: 2장 볼펜 벽만 지워진다. 칸의 70%를 지우면 벽이 사라진다
+// 지우개: 장마다 정해진 볼펜 칸(ZONE)만 지워진다. 칸의 70%를 지우면 다 걷힌다
 let rubbing=false;
-const inWall=pt=>pt.x>=WALL.x-8&&pt.x<=WALL.x+WALL.w+8&&pt.y>=WALL.y-8&&pt.y<=WALL.y+WALL.h;
+const zoneNow=()=>{const p=pageNo(),Z=ZONE[p];return Z&&!S.w[p][Z.key]?Z:null};
+const inZone=(Z,pt)=>pt.x>=Z.x-8&&pt.x<=Z.x+Z.w+8&&pt.y>=Z.y-8&&pt.y<=Z.y+Z.h+8;
 function rub(pt){
-  const w=W();if(pageNo()!==2||w.erased||!inWall(pt))return;
+  const Z=zoneNow(),w=W();if(!Z||!inZone(Z,pt))return;
   const x=Math.round(pt.x),y=Math.round(pt.y),last=w.rub[w.rub.length-1];
   if(last&&Math.hypot(last[0]-x,last[1]-y)<10)return;
   w.rub.push([x,y]);
   const c=document.createElementNS('http://www.w3.org/2000/svg','circle');
-  c.setAttribute('cx',x);c.setAttribute('cy',y);c.setAttribute('r',24);c.setAttribute('fill','#000');$('#emH').appendChild(c);
+  c.setAttribute('cx',x);c.setAttribute('cy',y);c.setAttribute('r',RUB_R);c.setAttribute('fill','#000');$('#emH').appendChild(c);
   let all=0,got=0;
-  for(let gx=WALL.x+10;gx<WALL.x+WALL.w;gx+=20)for(let gy=WALL.y+10;gy<WALL.y+WALL.h;gy+=20){all++;if(w.rub.some(([a,b])=>(a-gx)**2+(b-gy)**2<24*24))got++}
-  if(got/all>=.7){const u=update('볼펜 벽이 다 지워졌다. 밑에 파란 글씨가 있었다. 깡총이가 지나갔다.');w.erased=true;rubbing=false;save();$('#wall').classList.add('fade');setTimeout(u,900)}
+  for(let gx=Z.x+10;gx<Z.x+Z.w;gx+=20)for(let gy=Z.y+10;gy<Z.y+Z.h;gy+=20){all++;if(w.rub.some(([a,b])=>(a-gx)**2+(b-gy)**2<RUB_R*RUB_R))got++}
+  if(got/all>=.7){const u=update(Z.msg);w[Z.key]=true;rubbing=false;save();$('#wall').classList.add('fade');busy=true;setTimeout(()=>{busy=false;u()},900)}
   else if(w.rub.length%6===0)save();
+}
+// 눌러서 바꾸는 장치 (나무 흔들기, 구름 옮기기 …)
+function tapThing(id){
+  const p=pageNo(),L=LV[p];if(!L.tap)return false;
+  const u=update(),m=L.tap(id,W());if(m==null)return false;
+  u();toast(m);return true;
 }
 function onTap(pt,el){
   if(busy)return;
@@ -486,6 +525,7 @@ function onTap(pt,el){
   // 돋보기: 작은 낙서를 누르면 크게 튀어나와 땅에 떨어진다
   if(h==='lens'&&p===3){
     const k=Object.keys(BIG).find(k=>!w.big[k]&&Math.hypot(BIG[k].t[0]-pt.x,BIG[k].t[1]-pt.y)<16);
+    if(k==='ladder'&&!w.scrub){toast('볼펜으로 박박 칠해져서 하나도 안 보인다.');return}
     if(k){w.big[k]=true;NEW_DROP=k;save();render(false);toast(`작은 ${josa(NAME[k],'이','가')} 커다랗게 튀어나왔다!`);return}
   }
   // 우산: 비구름 밑에 펼쳐 둔다
@@ -497,6 +537,8 @@ function onTap(pt,el){
   if(el&&el.closest('[data-exit]')){turnPage();return}
   const it=el&&el.closest('[data-item]');
   if(it){take(it.dataset.item);return}
+  const tp=el&&el.closest('[data-tap]');
+  if(tp&&tapThing(tp.dataset.tap))return;
   if(el&&el.closest('[data-kc]')){toast(LV[p].clear(w)?'깡총이가 귀퉁이 쪽을 쳐다본다.':'나다. 깡총이. '+LV[p].why(w));return}
   if(h&&h!=='key'&&h!=='star'){wiggleHeld();return}
   if(p===3&&pt.y<112&&pt.x<400)toast('작은 낙서가 잔뜩. 너무 작아서 콩알만 하다.');
@@ -508,7 +550,7 @@ function bindScene(){
   svg.onpointerdown=e=>{
     const pt=toSvg(svg,e);down={pt,el:e.target};
     if(S.hold==='pencil'){stroke=[[pt.x,pt.y]];$('#ink').insertAdjacentHTML('beforeend',inkPath(stroke));try{svg.setPointerCapture(e.pointerId)}catch{}}
-    else if(S.hold==='eraser'&&pageNo()===2&&!W().erased&&inWall(pt)){rubbing=true;try{svg.setPointerCapture(e.pointerId)}catch{}rub(pt)}
+    else if(S.hold==='eraser'&&zoneNow()&&inZone(zoneNow(),pt)){rubbing=true;try{svg.setPointerCapture(e.pointerId)}catch{}rub(pt)}
     if(S.hold==='lens')showLens(pt);
   };
   svg.onpointermove=e=>{
@@ -521,7 +563,9 @@ function bindScene(){
     const d=down;down=null;
     if(stroke){if(endStroke())return}
     if(rubbing){rubbing=false;return}
-    if(d)onTap(toSvg(svg,e),d.el);
+    // 끌고 지나간 건 누르기로 치지 않는다
+    const pt=toSvg(svg,e);
+    if(d&&Math.hypot(pt.x-d.pt.x,pt.y-d.pt.y)<14)onTap(pt,d.el);
   };
   svg.onpointercancel=()=>{stroke=null;rubbing=false;down=null};
   svg.onpointerleave=()=>{if(S.hold==='lens')$('#lens').style.display='none'};
