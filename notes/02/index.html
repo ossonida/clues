@@ -537,8 +537,8 @@ function check(p){
     S.solved[p]=pg.ans;S.open=Math.max(S.open,p+1);save();
     render(false);
     if(p===3&&!S.tools.bm)gain('bm','책상 밑에 떨어져 있던 구멍 뚫린 책갈피를 주웠다. 소지품에 넣었다.');
-    else if(p===4&&!S.tools.lamp)gain('lamp','다음 장이 떨어졌다. 부실 책상 스탠드도 켤 수 있게 됐다.');
-    else toast('다음 장이 떨어졌다.');
+    else if(p===4&&!S.tools.lamp)gain('lamp','붙어 있던 다음 장이 떨어졌다. 이제 부실 책상 스탠드도 켤 수 있다.');
+    else toast('붙어 있던 다음 장이 떨어졌다.');
     renderTools();return;
   }
   S.wrong[p]=(S.wrong[p]||0)+1;save();

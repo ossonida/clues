@@ -239,7 +239,7 @@ details summary{font-family:var(--mono)}
       <div class="card">
         <h3 data-t="notebook">수사 수첩</h3>
         <div class="clue-list" id="clues"></div>
-        <div class="hint" data-t="notebookHint">단서를 누르면 다시 볼 수 있어요. 심문할 때 증거로 제시할 수 있습니다.</div>
+        <div class="hint" data-t="notebookHint">단서를 누르면 다시 볼 수 있어요. 심문할 때 증거로 내밀 수 있어요.</div>
       </div>
       <div class="card">
         <h3 data-t="summaryTitle">사건 개요</h3>
@@ -528,7 +528,7 @@ function spend(n){
   S.time=Math.max(0,S.time-n);renderHud();
 }
 function checkTime(){
-  if(S.time<=0&&!S.over){hn('time_ran_out',{clue_count:S.clues.length});setTimeout(()=>{toast(t('timeUp','조사 시간이 끝났습니다'));openAccuse(true)},400);return true}
+  if(S.time<=0&&!S.over){hn('time_ran_out',{clue_count:S.clues.length});setTimeout(()=>{toast(t('timeUp','조사 시간이 끝났어요'));openAccuse(true)},400);return true}
   return false;
 }
 function addClues(list,source='scene'){
@@ -570,7 +570,7 @@ function renderLocs(){
     return `<button class="loc ${S.loc===l.id?'on':''} ${open?'':'locked'}" data-loc="${l.id}">${open?'':'🔒 '}${l.name}</button>`}).join('');
   document.querySelectorAll('.loc').forEach(b=>b.onclick=()=>{
     const l=LOCS.find(x=>x.id===b.dataset.loc);
-    if(!locOpen(l)){toast(t('lockedLoc','잠겨 있습니다. 안쪽 복도의 창고 문을 열어야 해요.'));return}
+    if(!locOpen(l)){toast(t('lockedLoc','잠겨 있어요. 안쪽 복도 창고 문부터 열어야 해요.'));return}
     if(S.loc!==l.id)hn('location_opened',{location:l.id,minutes_used:used()});
     S.loc=l.id;renderLocs();renderScene();
   });
@@ -593,7 +593,7 @@ function isDone(h){
 }
 function renderNotebook(fresh){
   const el=$('#clues');
-  if(!S.clues.length){el.innerHTML=`<div class="empty">${t('noClues','아직 찾은 단서가 없습니다.')}</div>`;return}
+  if(!S.clues.length){el.innerHTML=`<div class="empty">${t('noClues','아직 찾은 단서가 없어요.')}</div>`;return}
   el.innerHTML=S.clues.map(c=>`<button class="clue-item ${fresh.includes(c)?'new':''}" data-c="${c}"><span class="cat">${CLUES[c].cat}</span>${CLUES[c].title}</button>`).join('');
   el.querySelectorAll('.clue-item').forEach(b=>b.onclick=()=>{
     const c=b.dataset.c;
@@ -637,7 +637,7 @@ function investigate(h){
 let pad={h:null,val:''};
 function openPad(h){
   pad={h,val:''};
-  modal(`<h2>${h.puzzle.title}</h2><div class="body" style="color:var(--dim);font-size:13px">${h.puzzle.prompt}<br>${t('wrongCost','틀릴 때마다 1분이 지나갑니다.')}</div>
+  modal(`<h2>${h.puzzle.title}</h2><div class="body" style="color:var(--dim);font-size:13px">${h.puzzle.prompt}<br>${t('wrongCost','틀릴 때마다 1분이 지나가요.')}</div>
   <div class="pin" id="pin">${'<span></span>'.repeat(h.puzzle.len)}</div>
   <div class="keypad">${[1,2,3,4,5,6,7,8,9].map(n=>`<button data-k="${n}">${n}</button>`).join('')}<button data-k="del">⌫</button><button data-k="0">0</button><button data-k="ok" style="color:var(--gold2)">OK</button></div>
   <div class="actions"><button class="btn" onclick="closeM()">${t('giveUp','그만두기')}</button></div>`);
@@ -774,8 +774,8 @@ function openAccuse(forced){
 function accHead(n,t){return `<div style="font-size:12px;color:var(--gold2);font-weight:700;letter-spacing:1px">STEP ${n} / 3</div><h2 style="margin-top:2px">${t}</h2>`}
 function accCancel(){return ACC.forced?'':`<button class="btn" onclick="closeM()">${t('keepInvestigating','조사 계속하기')}</button>`}
 function accStep1(){
-  modal(`${ACC.forced?'<div class="hint" style="color:var(--red);margin:0 0 6px">'+t('forcedMsg','조사 시간이 끝났습니다. 지금 결론을 내려야 합니다.')+'</div>':''}${accHead(1,t('q1','범인은 누구인가?'))}
-  <div class="hint" style="margin:0 0 10px">${t('noUndo','한 단계씩 확정하면 되돌릴 수 없습니다.')}</div>
+  modal(`${ACC.forced?'<div class="hint" style="color:var(--red);margin:0 0 6px">'+t('forcedMsg','조사 시간이 끝났어요. 이제 결론을 내려야 해요.')+'</div>':''}${accHead(1,t('q1','범인은 누구인가?'))}
+  <div class="hint" style="margin:0 0 10px">${t('noUndo','한 단계씩 확정해요. 확정한 단계는 되돌릴 수 없어요.')}</div>
   <div class="sus-row">${Object.entries(SUSPECTS).map(([id,v])=>`<button class="sus" data-s="${id}"><div class="face" style="background:${v.color}">${v.name[0]}</div>${v.name}<small>${v.sub}</small></button>`).join('')}</div>
   <div class="actions">${accCancel()}<button class="btn primary" id="n1" disabled>${t('confirm','확정')}</button></div>`);
   document.querySelectorAll('.sus').forEach(b=>b.onclick=()=>{ACC.who=b.dataset.s;document.querySelectorAll('.sus').forEach(x=>x.classList.toggle('on',x===b));$('#n1').disabled=false});
@@ -796,7 +796,7 @@ function accStep2(){
 }
 function accStep3(){
   ACC.step=3;
-  const list=S.clues.length?S.clues.map(c=>`<label class="opt"><input type="checkbox" value="${c}"><span class="cat" style="font-size:11px;color:var(--dim);margin-right:6px">${CLUES[c].cat}</span>${CLUES[c].title}</label>`).join(''):`<div class="empty">${t('emptyNotebook','수첩에 단서가 없습니다.')}</div>`;
+  const list=S.clues.length?S.clues.map(c=>`<label class="opt"><input type="checkbox" value="${c}"><span class="cat" style="font-size:11px;color:var(--dim);margin-right:6px">${CLUES[c].cat}</span>${CLUES[c].title}</label>`).join(''):`<div class="empty">${t('emptyNotebook','수첩에 단서가 없어요.')}</div>`;
   modal(`${accHead(3,t('q3','지목의 근거'))}
   <div class="hint" style="margin:0 0 10px">${t('q3hint',`${SUSPECTS[ACC.who].name}이(가) 범인이라는 근거가 되는 단서를 수첩에서 <b>최대 3개</b> 고르세요.`,SUSPECTS[ACC.who].name)}</div>
   <div style="max-height:46vh;overflow:auto">${list}</div>
@@ -845,7 +845,7 @@ function result(){
 사장이 퇴근했다.
 
 [21:31]
-쇼케이스 앱의 와이파이가 끊겼다. 이제 쇼케이스가 열려도 사장 휴대폰에는 아무 기록이 남지 않는다. 그 사실을 아는 사람은 아무도 없었다. 박태수에게는 운이 좋았다.
+쇼케이스 앱의 와이파이가 끊겼다. 이제 쇼케이스가 열려도 사장 휴대폰에는 아무 기록이 남지 않는다. 그 사실을 아는 사람은 아무도 없었다. 박태수로서는 운이 좋았다.
 
 [21:40]
 최건우가 생일 선물을 들고 들어왔다. 상자를 봉할 테이프가 없었다. 서지아가 테이프를 찾으러 창고로 들어갔다.
@@ -862,7 +862,7 @@ function result(){
 
 [22:05]
 계산을 하며 영수증을 꺼내는 척 서랍 오른쪽 칸에 열쇠를 슬쩍 내려놓았다. 손님 쪽에서 손이 닿는 칸이다. 서지아는 늘 계산대 안쪽에서 왼쪽 칸에 열쇠를 넣는다. 오른쪽 칸에 둘 일이 없다.
-진짜 미플은 백팩에 담겨 그와 함께 문을 나섰다.
+진짜 미플 스무 개는 그의 백팩에 든 채 카페 밖으로 나갔다.
 
 [22:10]
 서지아는 쇼케이스 자물쇠를 당겨 보고 체크리스트에 ✔를 그었다. 잠겨 있었으니까. 상자 안까지 열어 보지는 않았다.
@@ -879,7 +879,7 @@ function result(){
 • 서지아: 알바비 문제로 사장에게 서운했고 손에 금박 가루도 묻어 있었다. 하지만 ‘띡’ 소리가 났을 때 지아는 창고 안에 있었다. 금박은 선물 포장지에서 나왔다.
 • 윤미래: 전시를 몰랐다고 거짓말을 했다. 하지만 범행이 끝난 뒤인 21:50에 왔고, 21:55에 사진만 찍었다. 반짝이는 금색 가루는 네일 글리터다.
 • 최건우: 물감 전문가다. 하지만 그가 쓰는 건 MG-03이고, 가짜는 서툰 붓질의 MG-07이다. 단톡방에 없으니 전시 날짜를 미리 알 수도 없었다.
-• 금색 흔적은 전부 미끼였다. 금박, 글리터, MG-03. 진짜 금색은 박태수의 붓끝에서 나왔다.`)).replace(/^\[(.+)\]$/gm,'<b class="tl">$1</b>')}</div></details>
+• 금박 가루, 네일 글리터, MG-03은 모두 사건과 상관없는 금색이었다. 가짜 미플에 칠한 물감은 박태수가 산 MG-07이다.`)).replace(/^\[(.+)\]$/gm,'<b class="tl">$1</b>')}</div></details>
   <div class="actions"><button class="btn" id="again">${t('again','처음부터 다시')}</button><a class="btn primary" href="../../" style="text-decoration:none">${t('toMain','사건 파일 보관함으로 →')}</a></div>`);
   $('#again').onclick=()=>{hn('case_restarted');closeM();reset();showIntro()};
 }
@@ -1016,9 +1016,9 @@ function showHow(){
    <table>${EN.ui.howCosts.map(([a,b])=>`<tr><td>${a}</td><td>${b}</td></tr>`).join('')}</table>
    <div style="margin-top:6px;color:var(--dim)">${EN.ui.howNote}</div></div>`:`  <div style="font-size:14px">목표는 하나예요. <b>누가, 언제, 어떻게 바꿔치기했는지</b> 밝히는 것.</div>
   <div class="steps">
-   <div class="stp"><div class="n">1</div><div><b class="t">현장 둘러보기</b><span>위쪽 탭으로 장소를 옮기고, 그림 속 물건을 클릭해 조사해요. 찾은 단서는 오른쪽 <b>수사 수첩</b>에 모여요. 눈에 잘 안 띄는 곳도 있어요.</span></div></div>
+   <div class="stp"><div class="n">1</div><div><b class="t">현장 둘러보기</b><span>위쪽 탭으로 장소를 옮기고, 그림 속 물건을 눌러 조사해요. 찾은 단서는 오른쪽 <b>수사 수첩</b>에 모여요. 눈에 잘 안 띄는 곳도 있어요.</span></div></div>
    <div class="stp"><div class="n">2</div><div><b class="t">잠긴 것 풀기</b><span>휴대폰, 녹화기, 창고는 비밀번호가 있어요. 답의 힌트는 현장 어딘가에 숨어 있어요.</span></div></div>
-   <div class="stp"><div class="n">3</div><div><b class="t">심문하기</b><span>위쪽 <b>심문하기</b> 버튼 → 사람 선택 → 진술 듣기. 그다음 수첩의 단서를 보여주면 새로운 이야기를 털어놓기도 해요.</span></div></div>
+   <div class="stp"><div class="n">3</div><div><b class="t">심문하기</b><span>위쪽 <b>심문하기</b> 버튼 → 사람 선택 → 진술 듣기. 그다음 수첩의 단서를 보여주면 새 이야기를 털어놓기도 해요.</span></div></div>
    <div class="stp"><div class="n">4</div><div><b class="t">범인 지목</b><span>준비되면 <b>범인 지목</b> 버튼. 범인 선택 → 범행 시각 입력 → 근거 단서 제출, 세 단계를 마치면 결과와 사건의 전말이 나와요.</span></div></div>
   </div>
   <div class="timebox"><b>⏱ 조사 시간 80분</b> <span style="color:var(--dim)">(실제 시간이 아니라, 행동할 때마다 줄어드는 게임 속 시간)</span>
@@ -1037,7 +1037,7 @@ $('#btnHelp').onclick=()=>{hn('help_opened');showHow()};
 $('#btnAccuse').onclick=()=>openAccuse(false);
 if(restore()){
   hn('case_resumed',{clue_count:S.clues.length,minutes_used:used()});
-  toast(t('resumed','지난번에 조사하던 곳부터 이어서 합니다'));
+  toast(t('resumed','지난번에 조사하던 곳부터 이어서 해요'));
   checkTime();
 }else{reset();showIntro()}
 </script>
