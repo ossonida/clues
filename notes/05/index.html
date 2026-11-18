@@ -816,7 +816,7 @@ const SND={
   ctx:null,master:null,on:(()=>{try{return localStorage.getItem('hn.sound')!=='off'}catch{return true}})(),log:[],prev:null,ambKey:null,amb:null,crankNode:null,ducked:false,
   init(){
     if(!this.on)return;
-    if(!this.ctx){const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;this.ctx=new AC();this.master=this.ctx.createGain();this.master.gain.value=.72;this.master.connect(this.ctx.destination)}
+    if(!this.ctx){const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;this.ctx=new AC();this.master=this.ctx.createGain();this.master.gain.value=.55;this.master.connect(this.ctx.destination)}
     if(this.ctx.state==='suspended')this.ctx.resume();if(!this.amb)this.ambKey=null;this.updateAmb()
   },
   button(){const b=$('#btnSnd');b.textContent=this.on?'🔈':'🔇';b.setAttribute('aria-pressed',String(this.on))},
@@ -833,8 +833,8 @@ const SND={
     if(name==='tick'){this.burst(.09,.015,3000);return}
     if(name==='rattle'){this.burst(.16,.045);setTimeout(()=>this.burst(.12,.04),75);return}
     if(name==='unlock'){this.burst(.13,.025,2200);this.tone(900,.09,'sine',.18,1250);return}
-    if(name==='door'){this.tone(120,.11,'sawtooth',.32,90);return}
-    if(name==='shutter'){this.burst(.09,.8);return}
+    if(name==='door'){this.latchClick(.08);setTimeout(()=>this.creak(.8,640,380,.07),120);setTimeout(()=>this.thud(.08),850);return}
+    if(name==='shutter'){this.shutter();return}
     if(name==='breaker'){this.burst(.16,.06);return}
     if(name==='trip'){if(this.amb){this.amb.gain.gain.setTargetAtTime(.0001,this.ctx.currentTime,.01);setTimeout(()=>this.amb&&this.amb.gain.gain.setTargetAtTime(1,this.ctx.currentTime,.05),220)}[0,1,2,3].forEach(i=>setTimeout(()=>this.burst(.16,.05),i*70));return}
     if(name==='projStart'){this.tone(60,.09,'sawtooth',1.5,96);return}
@@ -842,30 +842,44 @@ const SND={
     if(name==='switch'){this.burst(.07,.018,2600);return}
     if(name==='rope'){this.burst(.09,.6);return}
     if(name==='splice'){this.burst(.07,.025,1800);this.tone(420,.045,'square',.06,360);return}
-    if(name==='doorOpen'){this.tone(86,.13,'sawtooth',.6,55);return}
+    if(name==='doorOpen'){this.latchClick(.1);setTimeout(()=>{this.tone(180,.05,'sine',.5,145);this.tone(267,.05,'sine',.5,210);this.creak(1.4,420,230,.08)},100);setTimeout(()=>this.boost(),1500);return}
     if(name==='latch')this.burst(.2,.08)
   },
   startCrank(){if(!this.ctx||!this.on||this.crankNode)return;const n=this.noise(),f=this.ctx.createBiquadFilter(),g=this.ctx.createGain(),o=this.ctx.createOscillator(),m=this.ctx.createGain();f.type='bandpass';f.frequency.value=1900;g.gain.value=.025;o.frequency.value=24;m.gain.value=.012;o.connect(m);m.connect(g.gain);n.connect(f);f.connect(g);g.connect(this.master);n.start();o.start();this.crankNode={n,o}},
   stopCrank(){if(!this.crankNode)return;try{this.crankNode.n.stop();this.crankNode.o.stop()}catch{}this.crankNode=null},
+  latchClick(level){this.burst(level,.02,2500);this.tone(1800,level*.3,'sine',.01,1400)},
+  creak(secs,from,to,level){
+    if(!this.ctx||!this.on)return;const t=this.ctx.currentTime,j=.92+Math.random()*.16,n=this.noise(),f=this.ctx.createBiquadFilter(),g=this.ctx.createGain(),o=this.ctx.createOscillator(),m=this.ctx.createGain();f.type='bandpass';f.Q.value=18;f.frequency.setValueAtTime(from*j,t);f.frequency.exponentialRampToValueAtTime(to*j,t+secs);g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(level,t+.08);g.gain.setValueAtTime(level,t+secs*.7);g.gain.linearRampToValueAtTime(.0001,t+secs);o.frequency.value=34+Math.random()*6;m.gain.value=level*.6;o.connect(m);m.connect(g.gain);n.connect(f);f.connect(g);g.connect(this.master);n.start(t);o.start(t);n.stop(t+secs+.03);o.stop(t+secs+.03)
+  },
+  thud(level){this.tone(70,level,'sine',.18,42);this.burst(level*.5,.06)},
+  shutter(){
+    if(!this.ctx||!this.on)return;const t=this.ctx.currentTime,n=this.noise(),f=this.ctx.createBiquadFilter(),g=this.ctx.createGain(),o=this.ctx.createOscillator(),m=this.ctx.createGain();f.type='bandpass';f.frequency.value=1200;f.Q.value=2;g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(.08,t+.12);g.gain.linearRampToValueAtTime(.0001,t+.9);o.frequency.value=5+Math.random()*3;m.gain.value=.05;o.connect(m);m.connect(g.gain);n.connect(f);f.connect(g);g.connect(this.master);n.start(t);o.start(t);n.stop(t+.93);o.stop(t+.93)
+  },
   drop(){this.tone(1400,.035,'sine',.06,700)},
-  want(){const v=S.v;if(v==='map')return this.ambKey||'rain';if(v==='cover'||v==='p1'||v==='p2')return'rain';if(v==='p3')return'drip';if(v==='p4')return'cellar';if(v==='p5')return S.w[5].run&&power()?'projector':'room';if(v==='p6')return S.w[5].run&&power()?'projectorFar':'quiet';if(v==='p7')return'wind';if(v==='p8')return S.w[8].out?'open':'outside';return null},
+  want(){const v=S.v;if(v==='map')return this.ambKey||'calm';if(v==='cover'||v==='end')return null;if(v==='p3'||v==='p4')return'drip';if(v==='p6'||v==='p7')return'tight';if(v==='p5'||v==='p8')return'tense';return'calm'},
   startAmb(key){
-    if(!this.ctx||!this.on||!key||key==='quiet')return;const gain=this.ctx.createGain(),parts=[],drops=[];gain.gain.value=0;gain.connect(this.master);
-    const addNoise=(type,freq,level)=>{const n=this.noise(),f=this.ctx.createBiquadFilter(),g=this.ctx.createGain();f.type=type;f.frequency.value=freq;g.gain.value=level;n.connect(f);f.connect(g);g.connect(gain);n.start();parts.push(()=>n.stop());return g};
-    const addHum=(freq,level)=>{const o=this.ctx.createOscillator(),g=this.ctx.createGain();o.type='sine';o.frequency.value=freq;g.gain.value=level;o.connect(g);g.connect(gain);o.start();parts.push(()=>o.stop())};
-    const pulse=(target,hz,depth)=>{const o=this.ctx.createOscillator(),g=this.ctx.createGain();o.frequency.value=hz;g.gain.value=depth;o.connect(g);g.connect(target.gain);o.start();parts.push(()=>o.stop())};
-    const addDrop=()=>{const again=()=>{this.drop();drops.push(setTimeout(again,2000+Math.random()*4000))};drops.push(setTimeout(again,1000+Math.random()*2500))};
-    if(['rain','drip','outside','open'].includes(key))addNoise('lowpass',900,key==='drip'?.025:key==='open'?.085:.05);
-    if(key==='drip'||key==='cellar'){addDrop();if(key==='cellar')addHum(55,.02)}
-    if(key==='room')addNoise('lowpass',550,.008);
-    if(key==='projector'||key==='projectorFar'){pulse(addNoise('bandpass',2000,key==='projector'?.06:.02),24,key==='projector'?.025:.008);addHum(48,key==='projector'?.025:.009)}
-    if(['wind','outside','open'].includes(key))pulse(addNoise('bandpass',300,key==='open'?.04:.02),.12,.008);
-    gain.gain.linearRampToValueAtTime(1,this.ctx.currentTime+.8);this.amb={gain,parts,drops}
+    if(!this.ctx||!this.on||!key)return;const gain=this.ctx.createGain(),parts=[],pads=[],padTimers=[],dropTimers=[],rareTimers=[];gain.gain.value=0;gain.connect(this.master);
+    const osc=(type,freq,level,target=gain)=>{const o=this.ctx.createOscillator(),g=this.ctx.createGain();o.type=type;o.frequency.value=freq;g.gain.value=level;o.connect(g);g.connect(target);o.start();parts.push(()=>o.stop());return {o,g}};
+    const drone=this.ctx.createGain(),droneFilter=this.ctx.createBiquadFilter(),lfo=this.ctx.createOscillator(),lfoGain=this.ctx.createGain();drone.gain.value=.03;droneFilter.type='lowpass';droneFilter.frequency.value=500;drone.connect(droneFilter);droneFilter.connect(gain);osc('sine',73.4,.5,drone);osc('triangle',110,.5,drone);lfo.frequency.value=.05;lfoGain.gain.value=.006;lfo.connect(lfoGain);lfoGain.connect(drone.gain);lfo.start();parts.push(()=>lfo.stop());
+    const padFilter=this.ctx.createBiquadFilter();padFilter.type='lowpass';padFilter.frequency.value=900;padFilter.connect(gain);[146.8,174.6,220].forEach(freq=>pads.push(osc('triangle',freq,.0001,padFilter).g));
+    const tension=this.ctx.createGain();tension.gain.value=.0001;tension.connect(gain);osc('sine',155.6,.008,tension);
+    const a={gain,parts,pads,padFilter,tension,padTimers,dropTimers,rareTimers,lastNote:-1};
+    const pulsePad=i=>{if(!this.amb||this.amb!==a)return;const g=pads[i],t=this.ctx.currentTime;g.gain.cancelScheduledValues(t);g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(.01,t+1.6);g.gain.linearRampToValueAtTime(.0001,t+5);padTimers[i]=setTimeout(()=>pulsePad(i),8000+Math.random()*6000)};
+    pads.forEach((_,i)=>padTimers[i]=setTimeout(()=>pulsePad(i),i*3200));
+    const rare=()=>{if(!this.amb||this.amb!==a)return;const notes=[293.7,311.1,349.2,440,466.2,523.3];let i=Math.floor(Math.random()*notes.length);if(i===a.lastNote)i=(i+1+Math.floor(Math.random()*(notes.length-1)))%notes.length;a.lastNote=i;const t=this.ctx.currentTime,o1=this.ctx.createOscillator(),o2=this.ctx.createOscillator(),g=this.ctx.createGain(),d=this.ctx.createDelay(),fb=this.ctx.createGain(),f=this.ctx.createBiquadFilter();o1.type='sine';o2.type='triangle';o1.frequency.value=notes[i];o2.frequency.value=notes[i];g.gain.setValueAtTime(.0001,t);g.gain.linearRampToValueAtTime(.02,t+.01);g.gain.linearRampToValueAtTime(.0001,t+2.5);d.delayTime.value=.35;fb.gain.value=.3;f.type='lowpass';f.frequency.value=1500;o1.connect(g);o2.connect(g);g.connect(gain);g.connect(d);d.connect(f);f.connect(fb);fb.connect(d);d.connect(gain);o1.start(t);o2.start(t);o1.stop(t+2.6);o2.stop(t+2.6);rareTimers.push(setTimeout(rare,6000+Math.random()*6000))};rareTimers.push(setTimeout(rare,6000+Math.random()*6000));
+    gain.gain.linearRampToValueAtTime(1,this.ctx.currentTime+3);this.amb=a;this.setScore(key)
+  },
+  drops(on){
+    const a=this.amb;if(!a)return;if(!on){a.dropTimers.forEach(clearTimeout);a.dropTimers=[];return}if(a.dropTimers.length)return;const again=()=>{if(!this.amb||this.amb!==a)return;this.drop();a.dropTimers.push(setTimeout(again,2000+Math.random()*4000))};a.dropTimers.push(setTimeout(again,1000+Math.random()*2500))
+  },
+  setScore(key){
+    const a=this.amb;if(!a||!this.ctx)return;const t=this.ctx.currentTime,tight=key==='tight',tense=key==='tense'||tight;a.tension.gain.setTargetAtTime(tense?1:.0001,t,.8);a.padFilter.frequency.setTargetAtTime(tight?600:900,t,.8);this.drops(key==='drip')
   },
   stopAmb(secs=.8){
-    if(!this.ctx||!this.amb)return;const a=this.amb;this.amb=null;a.drops.forEach(clearTimeout);a.gain.gain.cancelScheduledValues(this.ctx.currentTime);a.gain.gain.setValueAtTime(a.gain.gain.value,this.ctx.currentTime);a.gain.gain.linearRampToValueAtTime(0,this.ctx.currentTime+secs);setTimeout(()=>a.parts.forEach(stop=>{try{stop()}catch{}}),(secs+.1)*1000)
+    if(!this.ctx||!this.amb)return;const a=this.amb;this.amb=null;a.padTimers.forEach(clearTimeout);a.dropTimers.forEach(clearTimeout);a.rareTimers.forEach(clearTimeout);a.gain.gain.cancelScheduledValues(this.ctx.currentTime);a.gain.gain.setValueAtTime(a.gain.gain.value,this.ctx.currentTime);a.gain.gain.linearRampToValueAtTime(0,this.ctx.currentTime+secs);setTimeout(()=>a.parts.forEach(stop=>{try{stop()}catch{}}),(secs+.1)*1000)
   },
-  updateAmb(){const key=this.want();if(key===this.ambKey)return;this.stopAmb(S.v==='end'?3:.8);this.ambKey=key;this.startAmb(key)},
+  updateAmb(){const key=this.want();if(!key){this.stopAmb(S.v==='end'?3:.8);this.ambKey=null;return}if(!this.amb)this.startAmb(key);else this.setScore(key);this.ambKey=key},
+  boost(){if(!this.ctx||!this.amb||this.ducked)return;const g=this.amb.gain.gain,t=this.ctx.currentTime,v=g.value;g.cancelScheduledValues(t);g.setValueAtTime(v,t);g.linearRampToValueAtTime(v*1.3,t+.1);g.linearRampToValueAtTime(v,t+.7)},
   duck(){
     const still=typeof STILL!=='undefined'&&performance.now()<STILL;
     if(still&&!this.ducked&&this.amb&&this.ctx){const g=this.amb.gain.gain,t=this.ctx.currentTime;g.cancelScheduledValues(t);g.setValueAtTime(g.value,t);g.linearRampToValueAtTime(.12,t+.3);this.ducked=true}
