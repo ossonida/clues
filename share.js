@@ -10,12 +10,12 @@
   const URL_=`https://ossonida.github.io/clues/notes/${NUM}/${EN?'?lang=en':''}`;
   const TITLE=(document.title.split(' | ')[0]||'').replace(/^Note\s*\d+\s*·\s*/i,'').trim();
   const T=EN?{
-    h:'Share your record',card:'Share record card',link:'Send to a friend',saved:'Image saved and text copied.',savedOnly:'Image saved.',textOnly:'This browser blocks the card image, so the text was copied instead.',hold:'Text copied. Press and hold the card below to save it.',holdOnly:'Press and hold the card below to save it.',copied:'Link copied.',
+    h:'Share your record',card:'Share record card',link:'Send to a friend',saved:'Image saved and text copied.',savedOnly:'Image saved.',manual:'Copy the text below and send it.',textOnly:'This browser blocks the card image, so the text was copied instead.',hold:'Text copied. Press and hold the card below to save it.',holdOnly:'Press and hold the card below to save it.',copied:'Link copied.',
     fail:'Could not share. Please try again.',time:'Time',hints:'Hints',none:'none',done:'ESCAPED',open:'UNSOLVED',
     tease:'Can you beat it?',line:(t,h)=>`I finished Hidden Note ${NUM} "${TITLE}" in ${t}${h}. Your turn?`,hl:h=>h<0?'':h===0?' with no hints':` with ${h} hint${h>1?'s':''}`,
     friend:`A free mystery escape game in your browser: Hidden Note ${NUM} "${TITLE}". Keep a scrap of paper handy.`
   }:{
-    h:'기록 공유',card:'기록 카드 공유',link:'친구에게 링크 보내기',saved:'이미지를 저장하고 문구를 복사했어요.',savedOnly:'이미지를 저장했어요.',textOnly:'이 브라우저는 카드 그림을 막아서, 기록 문구만 복사했어요.',hold:'문구를 복사했어요. 아래 카드를 길게 눌러 저장하세요.',holdOnly:'아래 카드를 길게 눌러 저장하세요.',copied:'링크를 복사했어요.',
+    h:'기록 공유',card:'기록 카드 공유',link:'친구에게 링크 보내기',saved:'이미지를 저장하고 문구를 복사했어요.',savedOnly:'이미지를 저장했어요.',manual:'아래 문구를 복사해서 보내 주세요.',textOnly:'이 브라우저는 카드 그림을 막아서, 기록 문구만 복사했어요.',hold:'문구를 복사했어요. 아래 카드를 길게 눌러 저장하세요.',holdOnly:'아래 카드를 길게 눌러 저장하세요.',copied:'링크를 복사했어요.',
     fail:'공유하지 못했어요. 다시 눌러 주세요.',time:'걸린 시간',hints:'힌트',none:'없음',done:'탈 출',open:'미 해 결',
     tease:'너는 몇 분?',line:(t,h)=>`히든노트 ${NUM} 「${TITLE}」 ${t}${h} 끝냈어. 너도 해 볼래?`,hl:h=>h<0?'':h===0?', 힌트 없이':`, 힌트 ${h}개 쓰고`,
     friend:`브라우저에서 바로 하는 무료 추리·방탈출, 히든노트 ${NUM} 「${TITLE}」. 메모지 한 장 옆에 두고 해 봐.`
@@ -53,7 +53,9 @@
       try{const u=c.toDataURL('image/png'),bin=atob(u.split(',')[1]),a=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)a[i]=bin.charCodeAt(i);res({blob:new Blob([a],{type:'image/png'}),r})}catch{res({blob:null,r})}};
       try{c.toBlob(done,'image/png')}catch{done(null)}});
   }
-  async function copy(s){try{await navigator.clipboard.writeText(s);return true}catch{return false}}
+  async function copy(s){try{await navigator.clipboard.writeText(s);return true}catch{}
+    try{const a=document.createElement('textarea');a.value=s;a.setAttribute('readonly','');a.style.cssText='position:fixed;top:0;left:0;opacity:0';document.body.appendChild(a);a.select();const ok=document.execCommand('copy');a.remove();return ok}catch{return false}}
+  function showText(box,s){let ta=box.querySelector('textarea');if(!ta){ta=document.createElement('textarea');ta.readOnly=true;box.appendChild(ta)}ta.value=s;ta.focus();ta.select()}
   // 카드는 결말이 뜰 때 미리 그려 둔다. 누른 뒤에 그리면 휴대폰이 "사용자가 누른 동작"으로 안 쳐서 공유 창을 막는다
   let READY=null;
   async function prep(){const {blob,r}=await draw();
@@ -68,13 +70,14 @@
     if(navigator.share){try{await navigator.share({text});return ''}catch(e){if(e&&e.name==='AbortError')return ''}}
     // 공유 창이 안 되는 곳(카톡 안 브라우저, PC 등): 카드를 화면에 띄우고 문구 복사. PC는 파일로도 저장
     const shown=showImg(box);const ok=await copy(text);
-    if(!shown)return ok?T.textOnly:T.fail;
-    if(!matchMedia('(pointer:coarse)').matches){const a=document.createElement('a');a.href=box.querySelector('img').src;a.download=file.name;document.body.appendChild(a);a.click();a.remove();return ok?T.saved:T.savedOnly}
-    return ok?T.hold:T.holdOnly;
+    if(!ok)showText(box,text);
+    if(!shown)return ok?T.textOnly:T.manual;
+    if(!matchMedia('(pointer:coarse)').matches){const a=document.createElement('a');a.href=box.querySelector('img').src;a.download=file.name;document.body.appendChild(a);a.click();a.remove();return ok?T.saved:T.savedOnly+' '+T.manual}
+    return ok?T.hold:T.holdOnly+' '+T.manual;
   }
-  async function shareLink(){
+  async function shareLink(box){
     if(navigator.share){try{await navigator.share({title:document.title,text:T.friend,url:URL_});return ''}catch(e){if(e&&e.name==='AbortError')return ''}}
-    return (await copy(T.friend+' '+URL_))?T.copied:T.fail;
+    const s=T.friend+' '+URL_;if(await copy(s))return T.copied;showText(box,s);return T.manual;
   }
 
   const st=document.createElement('style');st.textContent=`.hnsh{margin:10px 0 6px;max-width:560px;color:#2a2422}
@@ -83,6 +86,7 @@
 .hnsh button{font:inherit;cursor:pointer;border:2px solid #3a322c;background:#fffdf4;color:#2a2422;border-radius:4px;padding:6px 10px}
 .hnsh button.main{background:#3a322c;color:#fffdf4}
 .hnsh small{color:#5a5046}
+.hnsh textarea{display:block;box-sizing:border-box;width:100%;min-height:70px;margin-top:8px;font:inherit;font-size:14px;border:1px solid #8a8170;border-radius:4px;padding:6px 8px;background:#fff;color:#2a2422}
 .hnsh img{display:block;width:100%;max-width:320px;margin-top:8px;border:1px solid #8a8170}`;document.head.appendChild(st);
 
   function mount(){
@@ -93,7 +97,7 @@
     row.parentElement.insertBefore(box,row);READY=null;prep().catch(()=>{});
     box.addEventListener('click',async e=>{const b=e.target.closest('[data-sh]');if(!b||b.disabled)return;
       const msg=box.querySelector('small');b.disabled=true;msg.textContent='';
-      try{msg.textContent=await (b.dataset.sh==='card'?shareCard(box):shareLink())}catch{msg.textContent=T.fail}
+      try{msg.textContent=await (b.dataset.sh==='card'?shareCard(box):shareLink(box))}catch{msg.textContent=T.fail}
       b.disabled=false});
   }
   new MutationObserver(mount).observe(document.body||document.documentElement,{childList:true,subtree:true});
