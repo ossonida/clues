@@ -316,29 +316,29 @@ function combine(a,b){
 function inspect(i){
   if(i==='torch'){
     if(false){S.f.fuseOut=1;give('fuse');save();say('손잡이 끝을 돌리니 건전지 옆 작은 칸에서 예비 퓨즈가 나왔다.');bag();return}
-    say(S.f.fuseOut?'빈 칸이 하나 있는 손전등.':'묵직한 손전등.');return}
+    say(S.f.fuseOut?'묵직한 손전등.':'묵직한 손전등.');return}
   const T={key:'선배 열쇠고리. "장비"라고 쓴 견출지.',thermos:'빈 보온병.',hot:'주전자 물을 담았다. 뜨겁다.',pencil:'뭉툭한 연필.',driver:'일자 드라이버.',handle:'철문 손잡이. 나사가 없다.',handle2:'손잡이와 드라이버. 문에 다시 달 수 있겠다.',fuse:'유리관 퓨즈.'};
   say(T[i]||'');
 }
 
 /* ---------- 조작 ---------- */
 const TAP={
-  window(){if(dark())return say('창밖이 새카맣다.');if(!S.f.wiped){S.f.sawDrawing=1;save();return say('김 서린 유리에 누가 손가락으로 그려 놨다. 동그란 계기 하나, 그 옆에 오른쪽 화살표.')}say('맑다. 바깥은 바람.')},
+  window(){if(dark())return say('창밖이 새카맣다.');if(!S.f.wiped){S.f.sawDrawing=1;save();return say('김 서린 유리에 누가 손가락으로 그려 놨다. 동그란 계기를 그리고, 그 옆에 오른쪽으로 화살표를 그었다.')}say('맑다. 바깥은 바람.')},
   stove(){if(S.f.stoveOff){S.f.stoveOff=0;S.f.wiped=0;save();draw();return say('난로를 다시 켰다.')}
     S.f.stoveOff=1;S.f.wiped=0;save();draw();say('난로 밸브를 잠갔다. 방이 금세 식는다.');setTimeout(()=>{if(S.f.stoveOff){S.f.sawDrawing=1;save();if(S.room==='A'&&S.wall.A===0){draw();say('창에 김이 서리면서, 누가 손가락으로 그려 둔 그림이 떠올랐다.')}}},1600)},
   kettle(){if(has('thermos')){take('thermos');give('hot');hold='hot';save();draw();return say('주전자 물을 보온병에 따랐다. 아직 뜨겁다.')}say('난로 위 주전자. 물이 아직 뜨겁다.')},
   clock(){say(S.t?'22시 30분.':'21시 정각. 관측 시각이다.')},
   outdoor(){if(dark()&&!has('torch'))return say('너무 어둡다. 문고리도 안 보인다.');go('C',3,'문을 열자 바람이 얼굴을 친다.')},
   understove(){if(!has('torch'))return say('바닥이 안 보인다.');S.f.handleFound=1;give('handle');save();draw();say('난로 밑으로 굴러 들어간 철문 손잡이를 찾았다.')},
-  drawer1(){if(!S.f.d1){S.f.d1=1;give('driver');save();bag();return say('첫 칸: 일자 드라이버.')}say('첫 칸은 비었다.')},
-  drawer2(){if(S.f.d2)return say('둘째 칸은 비었다.');if(!has('key'))return say('잠겨 있다. 열쇠 구멍.');S.f.d2=1;take('key');give('thermos');give('pencil');save();draw();say('열쇠가 맞았다. 보온병과 연필.')},
-  drawer3(){say('셋째 칸엔 숫자 바퀴 넷. 바퀴 아래에 칠한 정도가 다른 동그라미가 새겨져 있다. (자물쇠는 다음 업데이트)')},
+  drawer1(){if(!S.f.d1){S.f.d1=1;give('driver');save();bag();return say('첫 칸에 일자 드라이버가 있다.')}say('첫 칸은 비었다.')},
+  drawer2(){if(S.f.d2)return say('둘째 칸은 비었다.');if(!has('key'))return say('잠겨 있다. 열쇠 구멍.');S.f.d2=1;take('key');give('thermos');give('pencil');save();draw();say('열쇠가 맞았다. 안에 보온병과 연필이 들어 있다.')},
+  drawer3(){say('셋째 칸에는 숫자 바퀴가 네 개 달려 있다. 바퀴 아래에 칠한 정도가 다른 동그라미가 새겨져 있다. (자물쇠는 다음 업데이트)')},
   note(){openCard('선배 메모 뒷면',`<p class="hand">전보 보내면 본청에서 바로 확인 답신 와.<br>"수신. 구름재 하나" 이렇게.<br>(구름재 하나 = 우리 관측소 호출부호. 옛날엔 관측원이 둘이라 「둘」도 있었는데 79년에 없어졌대.)<br>안 오면 다시 보내고.</p>`)},
   calendar(){say('11월 13일에 빨간 동그라미. 선배가 쳐 둔 건 아니다. 잉크가 오래됐다.')},
   torch(){S.f.torchTaken=1;give('torch');save();draw();say(dark()?'손전등을 켰다.':'손전등을 챙겼다.')},
   baro(){if(dark()&&!has('torch'))return say('어둡다.');if(S.f.baro)return say('기울어진 기압계. 바늘이 계속 내려간다.');S.f.baro=1;save();draw();say('창의 그림처럼 기압계를 밀어 보았다. 액자가 기울며 뒤에서 열쇠가 걸려 있다.')},
   keyspot(){S.f.keyTaken=1;give('key');save();draw();say('장비 열쇠를 챙겼다.')},
-  drums(){say('기록계 원통 둘. 빨간 펜은 기압, 파란 펜은 바람. 원통은 손으로도 돌아간다.')},
+  drums(){say('기록계 원통이 두 개 나란히 돈다. 빨간 펜은 기압, 파란 펜은 바람. 원통은 손으로도 돌아간다.')},
   table(){openCard('간이 전보 숫자표 (선배 손글씨)',`<table class="tbl"><tr><th>묶음</th><th>형식</th><th>쓰는 법</th></tr>
     <tr><td>기온</td><td>1 s TTT</td><td>s: 영상 0 · 영하 1<br>TTT: 기온×10 (세 자리)</td></tr>
     <tr><td>바람</td><td>2 dd ff</td><td>dd: 풍향 각도 ÷10<br>ff: 풍속 m/s</td></tr>
@@ -361,11 +361,11 @@ const TAP={
   toolbox(){say('공구함. 드라이버 자리만 비었다. 선배가 위로 가져갔나 보다.')},
   locker(){say('정기철. 녹슨 사물함. 손으로는 꿈쩍 않는다. (다음 업데이트)')},
   tower(){say('풍향탑. 바늘이 바람에 마구 돈다.')},
-  screen(){if(S.f.screen)return openCard('백엽상 속',`<p class="hand">온도계 둘.<br>왼쪽 (마른 것): <b>-2.6 ℃</b><br>오른쪽 (젖은 천을 감은 것): <b>-3.1 ℃</b></p>`);
+  screen(){if(S.f.screen)return openCard('백엽상 속',`<p class="hand">온도계가 두 개 걸려 있다.<br>왼쪽 (마른 것): <b>-2.6 ℃</b><br>오른쪽 (젖은 천을 감은 것): <b>-3.1 ℃</b></p>`);
     if(has('hot')){S.f.screen=1;take('hot');save();draw();return say('뜨거운 물을 부으니 얼음이 녹아 백엽상 문이 열렸다.')}say('백엽상: 온도계를 넣어 두는 하얀 나무 상자. 바람과 햇빛을 막아 바깥 기온을 잰다. 그런데 문이 얼어붙었다.')},
   raingauge(){say('우량계. 눈이 소복이 쌓였다.')},
   fence(){if(S.f.rubbed)return say('쪽지: "발전기 점검표, 서윤이 고친 대로"');if(has('pencil')){S.f.rubbed=1;save();return say('연필로 문지르자 눌린 글씨가 떠올랐다: "발전기 점검표, 서윤이 고친 대로"')}say('울타리에 구겨진 쪽지. 아무것도 안 쓰인 것 같은데 눌린 자국이 있다.')},
-  lights(){say('산 아래 쉼터 불빛 하나.')},
+  lights(){say('산 아래 쉼터에 불이 켜져 있다.')},
   indoor(){go('A',0,S.f.stoveOff||dark()?'관측실로 들어왔다. 바람은 피했지만 방이 차다.':'관측실로 들어왔다. 따뜻하다.')},
   raincoat(){say('노란 우비. 주머니가 불룩하다… 비었다.')},
   searchlight(){say('탐조등. 열쇠로 켜는 식이다.')}
