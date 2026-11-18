@@ -135,6 +135,8 @@ header.hud{display:flex;align-items:flex-end;gap:10px 18px;flex-wrap:wrap;margin
 .plan .rm.open{cursor:pointer}
 .plan .rm.fresh rect{animation:fresh 1.2s ease-in-out 3}
 @keyframes fresh{50%{fill:#6b8fa3}}
+.fdrag{position:fixed;z-index:99;font-size:30px;pointer-events:none;transform:translate(-50%,-60%)}
+.slot[data-b="film"]{touch-action:none}
 .mapbtn{float:right;font:inherit;font-family:var(--mono);font-size:13px;background:#d6dbe4;color:#2f3a4a;border:none;padding:4px 10px;cursor:pointer;margin-top:2px}
 .plan .rm.open:hover rect{fill:#3a5466}
 .plan .legend{font-family:var(--mono);font-size:11.5px;color:#93a6b2;margin-top:6px}
@@ -641,7 +643,7 @@ const DEVS={
   splice:{t:'편집대',h:w=>`<svg id="spSvg" viewBox="0 0 480 ${w.sp?136:300}">
     ${[0,1,2,3].map(i=>`<rect x="${i*120+2}" y="18" width="116" height="112" fill="none" stroke="#9a9182" stroke-dasharray="4 3"/>`).join('')}
     ${w.slots.map((k,i)=>piece(k,i*120,18,'slot',i)).join('')}
-    ${w.sp?'':`<text x="2" y="162" font-size="11" fill="#6b604a">필름 조각</text>${w.tray.filter(k=>!w.slots.includes(k)).map((k,j)=>piece(k,j*120,170,'tray',k)).join('')}`}</svg>${w.sp?viewerSvg(w):''}`},
+    ${w.sp?'':`<text x="2" y="162" font-size="11" fill="#6b604a">필름 조각</text>${w.tray.slice(0,putN(w)).filter(k=>!w.slots.includes(k)).map((k,j)=>piece(k,j*120,170,'tray',k)).join('')}`}</svg>${w.sp?viewerSvg(w):''}`},
   check:{t:'빗장에 끼워져 있던 종이',h:()=>{const d=shut();return `${paper(`<h4>마지막으로 나가는 사람 볼 것</h4><ul class="check">${SHUT.map((s,i)=>`<li class="${d[i]?'done':''}">${d[i]?'✓ ':''}${i+1}. ${s}</li>`).join('')}<li>4. 뒷문 걸쇠 걸기</li></ul><p style="text-align:right">별빛극장</p><p class="verso">뒷면, 만년필 글씨 · 「마흔일곱 해 동안 마지막 불은 늘 내가 껐다. 이번엔 누가 대신 꺼 주면 좋겠다. — 윤」</p>`)}<div class="drow"><button class="btn primary" data-act="leave">밖으로 나가 걸쇠 걸기</button></div>`}},
 };
 function devHtml(){if(!DEV||!DEVS[DEV])return '';const d=DEVS[DEV],t=typeof d.t==='function'?d.t():d.t;
@@ -719,8 +721,7 @@ const TAP={
   },
   8:(t,w)=>{
     if(t==='splice'){
-      if(!w.sp&&!S.used.film){const n=S.bag.film||0;if(n<4)return `필름을 이어 붙이는 편집대다. 조각이 아직 ${n}개뿐이다.`;
-        used('film');openDev('splice');return '소지품의 필름 조각 넷을 꺼내 편집대 위에 늘어놓았다.'}
+      if(S.hold==='film'){openDev('splice');putFilm();return}
       openDev('splice');return}
     if(t==='lock'){openDev('lock');return}
     if(t==='paper')return '빗장 틈에 코팅된 종이가 끼워져 있다. 「마지막으로 나가는 사람 볼 것」. 빗장을 빼야 뺄 수 있겠다.';
@@ -921,9 +922,23 @@ function take(id){
   toast(id==='torch'?'카운터 밑을 더듬자 손전등이 잡힌다. 스위치를 밀자 불이 들어온다.':`${josa(NAME[id],'을','를')} 주웠다.`);
   if(p===2&&id==='keys')clearP(2);
 }
+// 편집대에 올린 조각 수. 예전 저장(편집대를 열면 한꺼번에 꺼냄)은 넷 다 올린 것으로 본다
+const putN=w=>w.put!=null?w.put:(S.used.film?4:0);
+function putFilm(){const w=S.w[8];if(w.sp)return;
+  if(!S.bag.film){toast('소지품에 남은 필름 조각이 없다.');return}
+  w.put=putN(w)+1;S.bag.film--;if(!S.bag.film)delete S.bag.film;S.hold=null;save();refresh();
+  toast(S.bag.film?`필름 조각 하나를 편집대에 올렸다. 소지품에 ${S.bag.film}개 남았다.`:w.put<4?`편집대에 조각 ${w.put}개. 하나는 아직 어딘가에 있다.`.replace('하나는',4-w.put+'개는'):'조각 넷이 다 편집대 위에 있다.')}
+// 소지품 필름을 끌어서 편집대에 놓기
+let FD=null;
+addEventListener('pointerdown',e=>{const s=e.target.closest&&e.target.closest('.slot.has[data-b="film"]');if(s)FD={x:e.clientX,y:e.clientY,g:null}});
+addEventListener('pointermove',e=>{if(!FD)return;if(!FD.g&&Math.hypot(e.clientX-FD.x,e.clientY-FD.y)>8){FD.g=document.createElement('div');FD.g.className='fdrag';FD.g.textContent='🎞';document.body.appendChild(FD.g)}
+  if(FD.g){FD.g.style.left=e.clientX+'px';FD.g.style.top=e.clientY+'px';e.preventDefault()}},{passive:false});
+addEventListener('pointerup',e=>{if(!FD)return;const g=FD.g;FD=null;if(!g)return;g.remove();FD={skip:true};setTimeout(()=>{if(FD&&FD.skip)FD=null},0);
+  const el=document.elementFromPoint(e.clientX,e.clientY);
+  if(pageNo()===8&&el&&el.closest&&el.closest('#spSvg,[data-t="splice"]')){if(DEV!=='splice')openDev('splice');putFilm()}});
 function hold(k){
   if(k==='torch'){toast('손전등은 켠 채로 들고 있다.');return}
-  if(k==='film'){toast(`필름 조각 ${S.bag.film}개.`);return}
+  if(k==='film'){if(pageNo()===8&&DEV==='splice'&&!W().sp){putFilm();return}toast(`필름 조각 ${S.bag.film}개.`);return}
   S.hold=S.hold===k?null:k;save();renderBag();
   const sc=$('#scene');if(sc){sc.classList.forEach(c=>c.startsWith('h-')&&sc.classList.remove(c));if(S.hold)sc.classList.add('h-'+S.hold)}
 }
@@ -989,7 +1004,7 @@ function renderBag(){
   $('#bag').innerHTML=`<div class="in" role="toolbar" aria-label="소지품"><span class="lbl">소지품</span><button class="slot has book${(S.seen||0)<Math.min(S.open,LAST)?` unread`:``}" data-book aria-label="상영 일지" title="상영 일지"><svg viewBox="0 0 40 40"><rect x="9" y="6" width="23" height="29" rx="2" fill="#5b2a2e"/><rect x="12" y="6" width="3" height="29" fill="#3b1a1d"/><rect x="18" y="12" width="10" height="2" fill="#e8d9b0"/><rect x="18" y="17" width="8" height="2" fill="#e8d9b0"/></svg></button>${ORDER.map(id=>{const has=!!S.bag[id];
     return `<button class="slot${has?' has':''}${S.hold===id?' on':''}${NEWSLOT===id?' new':''}" data-b="${id}"${has?` aria-pressed="${S.hold===id}" aria-label="${NAME[id]}" title="${NAME[id]}"`:' disabled aria-label="빈 칸"'}>${has?`<svg viewBox="0 0 40 40"><use href="#i-${id}" width="40" height="40"/></svg>${id==='film'?`<i>${S.bag.film}</i>`:''}`:''}</button>`}).join('')}</div>`;
   NEWSLOT=null;
-  $('#bag').querySelectorAll('.slot.has[data-b]').forEach(b=>b.onclick=()=>hold(b.dataset.b));
+  $('#bag').querySelectorAll('.slot.has[data-b]').forEach(b=>b.onclick=()=>{if(FD&&FD.skip){FD=null;return}hold(b.dataset.b)});
   const bk=$('#bag [data-book]');if(bk)bk.onclick=openBook;
 }
 function go(v){if(!canView(v))return;if(v!==S.v)DEV=null;S.v=v;save();render(true);scrollTo({top:0,behavior:'smooth'});
