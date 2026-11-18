@@ -180,13 +180,16 @@ const SND={on:true,ctx:null,wind:null,
   noise(dur,f,g,q=1){const c=this.ac();if(!c||!this.on)return;const b=c.createBuffer(1,c.sampleRate*dur,c.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
     const s=c.createBufferSource();s.buffer=b;const fl=c.createBiquadFilter();fl.type='bandpass';fl.frequency.value=f;fl.Q.value=q;const gn=c.createGain();gn.gain.setValueAtTime(g,c.currentTime);gn.gain.exponentialRampToValueAtTime(.001,c.currentTime+dur);
     s.connect(fl).connect(gn).connect(c.destination);s.start()},
-  click(){this.noise(.04,2500,.25,2)},
+  click(){this.noise(.045,1800,.11,1.4)},
   type(n=14){for(let i=0;i<n;i++)setTimeout(()=>this.click(),i*90+Math.random()*40)},
-  thud(){this.noise(.35,120,.5,.7)},
-  hum(on){const c=this.ac();if(!c)return;if(this.h){try{this.h.stop()}catch{}this.h=null}if(!on||!this.on)return;const o=c.createOscillator(),g=c.createGain();o.type='sawtooth';o.frequency.value=48;g.gain.value=.025;o.connect(g).connect(c.destination);o.start();this.h=o},
-  startWind(){const c=this.ac();if(!c||this.wind||!this.on)return;const b=c.createBuffer(1,c.sampleRate*4,c.sampleRate),d=b.getChannelData(0);let l=0;for(let i=0;i<d.length;i++){l=(l+.02*(Math.random()*2-1))/1.02;d[i]=l*3}
-    const s=c.createBufferSource();s.buffer=b;s.loop=true;const f=c.createBiquadFilter();f.type='lowpass';f.frequency.value=500;const g=c.createGain();g.gain.value=.12;s.connect(f).connect(g).connect(c.destination);s.start();this.wind=s},
-  stop(){if(this.wind){try{this.wind.stop()}catch{}this.wind=null}this.hum(false)}
+  thud(){this.noise(.32,120,.2,.7)},
+  hum(on){const c=this.ac();if(!c)return;if(this.h){try{this.h.stop()}catch{}this.h=null}if(!on||!this.on)return;const o=c.createOscillator(),f=c.createBiquadFilter(),g=c.createGain();o.type='triangle';o.frequency.value=48;f.type='lowpass';f.frequency.value=110;g.gain.value=.012;o.connect(f).connect(g).connect(c.destination);o.start();this.h=o},
+  // 난수 노이즈 대신, 고역 없는 두 저음이 아주 천천히 흔들리는 밤 공기.
+  startWind(){const c=this.ac();if(!c||this.wind||!this.on)return;const t=c.currentTime,out=c.createGain(),f=c.createBiquadFilter(),lfo=c.createOscillator(),lg=c.createGain(),parts=[];
+    out.gain.setValueAtTime(.0001,t);out.gain.linearRampToValueAtTime(.022,t+1.8);f.type='lowpass';f.frequency.value=180;lfo.type='sine';lfo.frequency.value=.035;lg.gain.value=.008;lfo.connect(lg).connect(out.gain);
+    [[55,'sine',.52],[82.4,'triangle',.18]].forEach(([freq,type,level])=>{const o=c.createOscillator(),g=c.createGain();o.type=type;o.frequency.value=freq;g.gain.value=level;o.connect(g).connect(f);o.start();parts.push(o)});
+    f.connect(out).connect(c.destination);lfo.start();this.wind={out,lfo,parts}},
+  stop(){if(this.wind){const w=this.wind,t=this.ctx?this.ctx.currentTime:0;try{w.out.gain.cancelScheduledValues(t);w.out.gain.setValueAtTime(Math.max(.0001,w.out.gain.value),t);w.out.gain.linearRampToValueAtTime(.0001,t+.45);setTimeout(()=>{try{w.lfo.stop();w.parts.forEach(o=>o.stop())}catch{}},500)}catch{}this.wind=null}this.hum(false)}
 };
 $('#snd').onclick=()=>{SND.on=!SND.on;$('#snd').textContent=SND.on?'소리 켬':'소리 끔';$('#snd').setAttribute('aria-pressed',SND.on);if(SND.on){SND.startWind();if(S.f.power)SND.hum(true)}else SND.stop()};
 
@@ -405,7 +408,7 @@ function openGen(){GEN=[];const L=['① 연료 밸브 열기','② 초크 닫기
   openCard('발전기',`<p class="hand">순서대로 눌러 본다.</p><div class="gen">${L.map((l,i)=>`<button data-g="${i+1}">${l}</button>`).join('')}</div><p class="hand" id="gmsg"></p>`);
   $('#card').querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>{if(b.classList.contains('on'))return;b.classList.add('on');GEN.push(+b.dataset.g);
     if(GEN.length<4)return;const ok=GEN.join('')==='1243';
-    if(!ok){$('#gmsg').textContent=GEN[2]===3&&GEN[3]===4?'털털거리다 멎었다. 점검표 그대로 했는데.':'시동이 안 걸린다.';SND.noise(.8,80,.4,.5);
+    if(!ok){$('#gmsg').textContent=GEN[2]===3&&GEN[3]===4?'털털거리다 멎었다. 점검표 그대로 했는데.':'시동이 안 걸린다.';SND.noise(.8,80,.12,.5);
       setTimeout(()=>{GEN=[];$('#card').querySelectorAll('[data-g]').forEach(x=>x.classList.remove('on'))},900);return}
     SND.hum(true);$('#gmsg').textContent='부르릉, 걸렸다!';S.f.power=1;save();setTimeout(()=>{closeCard();powerBack()},900)})}
 function powerBack(){draw();say('불이 들어왔다. 창 너머 풍향탑 아래 사람 그림자가… 다시 보니 없다.');
