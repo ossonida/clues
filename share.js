@@ -7,7 +7,7 @@
   if(!NOTE||!/^note\d\d$/.test(NOTE))return;
   const EN=window.HN_LANG==='en';
   const NUM=NOTE.slice(4);
-  const URL_=`https://ossonida.github.io/clues/notes/${NUM}/${EN?'?lang=en':''}`;
+  const URL_=`https://clues-kappa.vercel.app/notes/${NUM}/${EN?'?lang=en':''}`;
   const TITLE=(document.title.split(' | ')[0]||'').replace(/^Note\s*\d+\s*·\s*/i,'').trim();
   const T=EN?{
     h:'Share your record',card:'Share record card',link:'Send to a friend',saved:'Image saved and text copied.',savedOnly:'Image saved.',manual:'Copy the text below and send it.',textOnly:'This browser blocks the card image, so the text was copied instead.',hold:'Text copied. Press and hold the card below to save it.',holdOnly:'Press and hold the card below to save it.',copied:'Link copied.',
@@ -71,7 +71,7 @@
     g.save();g.translate(800,560);g.rotate(-.14);g.strokeStyle=g.fillStyle='#a3312a';g.lineWidth=10;g.strokeRect(-150,-62,300,124);
     g.font=`700 64px ${mono}`;g.textAlign='center';g.fillText(r.ok?T.done:T.open,0,22);g.restore();
     g.font='64px HEEJOY,cursive';g.fillStyle='#2a2422';g.fillText(T.tease,150,820);
-    g.font=`30px ${mono}`;g.fillStyle='#5a5046';g.fillText('ossonida.github.io/clues',150,1010);
+    g.font=`30px ${mono}`;g.fillStyle='#5a5046';g.fillText('clues-kappa.vercel.app',150,1010);
     return new Promise(res=>{const done=b=>{if(b&&b.size){res({blob:b,r});return}
       try{const u=c.toDataURL('image/png'),bin=atob(u.split(',')[1]),a=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)a[i]=bin.charCodeAt(i);res({blob:new Blob([a],{type:'image/png'}),r})}catch{res({blob:null,r})}};
       try{c.toBlob(done,'image/png')}catch{done(null)}});

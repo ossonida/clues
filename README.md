@@ -24,4 +24,4 @@ notes/01/index.html Note 01 사건 파일 (단일 HTML)
 ## 공개하기 (GitHub Pages)
 
 Settings → Pages → Build and deployment에서 Source를 **Deploy from a branch**, Branch를 **main / (root)** 로 저장하면
-`https://ossonida.github.io/clues/` 에서 플레이할 수 있습니다.
+`https://clues-kappa.vercel.app/` 에서 플레이할 수 있습니다.
