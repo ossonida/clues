@@ -127,12 +127,7 @@ header.hud{display:flex;align-items:flex-end;gap:10px 18px;flex-wrap:wrap;margin
 .nav button:hover{color:var(--ink);border-color:var(--ink)}
 
 /* 배치도 */
-.book{max-width:680px;display:grid;gap:14px}
-.book>h3{margin:0;text-align:center;font-family:var(--serif);font-weight:800;font-size:19px;letter-spacing:10px;color:#3d3628}
-.book .log{scroll-margin-top:12px}
 .newtag{position:absolute;top:-8px;right:12px;background:#b3261e;color:#fff;font-family:var(--mono);font-size:12px;padding:2px 8px;transform:rotate(3deg)}
-.toroom{display:block;margin:10px 0 0 auto;font:inherit;font-family:var(--mono);font-size:13px;background:none;border:1px solid #6b604a;color:#3d3628;padding:4px 10px;cursor:pointer}
-.newpage{display:block;max-width:680px;width:100%;margin:0 0 10px;text-align:left;font:inherit;font-family:var(--mono);font-size:14px;background:#fff8d6;border:2px dashed #b3261e;color:#3d3628;padding:8px 12px;cursor:pointer}
 .plan{max-width:680px;background:#1f2a33;color:#d9e2e6;padding:16px 16px 12px;box-shadow:0 16px 30px -14px rgba(0,0,0,.6)}
 .plan h3{margin:0 0 6px;font-family:var(--mono);font-size:12px;letter-spacing:3px;color:#93a6b2;font-weight:400}
 .plan svg{display:block;width:100%;height:auto}
@@ -178,8 +173,12 @@ header.hud{display:flex;align-items:flex-end;gap:10px 18px;flex-wrap:wrap;margin
 .slot svg{width:100%;height:100%;display:block}
 .slot i{position:absolute;right:-4px;top:-6px;background:#c4261c;color:#fff;font-style:normal;font-size:11px;font-weight:700;border-radius:9px;min-width:18px;height:18px;line-height:18px;text-align:center}
 .slot.new{animation:pop .5s 4}
+.slot.book.unread::after{content:'';position:absolute;right:-3px;top:-3px;width:11px;height:11px;border-radius:50%;background:#c4261c;border:2px solid #f3ead2}
+.bookhd{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}.bookhd span{font-family:var(--mono);font-size:13px;color:var(--dim)}
+.bookft{display:flex;justify-content:space-between;gap:8px;margin-top:14px}
+.modal .log{box-shadow:none;padding:12px 6px 6px}.modal .plan{padding:12px}
 @keyframes pop{50%{transform:scale(1.25) rotate(-5deg)}}
-@media(max-width:420px){.bag .lbl{display:none}.slot{width:40px;height:40px;padding:3px}.bag .in{gap:5px;padding:7px 9px 9px}}
+@media(max-width:420px){.bag .lbl{display:none}.slot{width:37px;height:37px;padding:3px}.bag .in{gap:4px;padding:7px 8px 9px}}
 
 /* 모달 · 힌트 */
 .modal-bg{position:fixed;inset:0;background:rgba(20,16,18,.72);display:none;align-items:center;justify-content:center;padding:16px;z-index:50}
@@ -963,12 +962,11 @@ setInterval(()=>{const b=document.getElementById('bulb');if(!b)return;const t=(p
 function canView(v){
   if(v==='cover')return true;
   if(!S.started)return false;
-  if(v==='map')return true;
   if(v==='end')return S.done;
   const n=+v.slice(1);return n>=1&&n<=Math.min(S.open,LAST);
 }
 function renderTabs(){
-  const tabs=[['cover','표지'],...[1,2,3,4,5,6,7,8].map(n=>['p'+n,n+'장']),['map','📓 일지'+(S.started&&(S.seen||0)<Math.min(S.open,LAST)?' •':'')],...(S.done?[['end','끝']]:[])];
+  const tabs=[['cover','표지'],...[1,2,3,4,5,6,7,8].map(n=>['p'+n,n+'장']),...(S.done?[['end','끝']]:[])];
   $('#tabs').innerHTML=tabs.map(([v,label])=>{const lk=!canView(v),n=v[0]==='p'?+v.slice(1):0;
     return `<button class="tab${v==='map'?' map':''}${S.v===v?' on':''}" data-v="${v}"${lk?' disabled':''}>${lk?'🔒 ':''}${label}${n&&S.clear[n]?'<span class="ok">✓</span>':''}</button>`}).join('');
   $('#tabs').querySelectorAll('.tab').forEach(b=>b.onclick=()=>go(b.dataset.v));
@@ -977,17 +975,14 @@ function renderBag(){
   const show=S.started&&!S.done&&(S.v[0]==='p'||S.v==='map');
   document.body.classList.toggle('hasbag',show);
   if(!show){$('#bag').innerHTML='';return}
-  $('#bag').innerHTML=`<div class="in" role="toolbar" aria-label="소지품"><span class="lbl">소지품</span>${ORDER.map(id=>{const has=!!S.bag[id];
+  $('#bag').innerHTML=`<div class="in" role="toolbar" aria-label="소지품"><span class="lbl">소지품</span><button class="slot has book${(S.seen||0)<Math.min(S.open,LAST)?` unread`:``}" data-book aria-label="상영 일지" title="상영 일지"><svg viewBox="0 0 40 40"><rect x="9" y="6" width="23" height="29" rx="2" fill="#5b2a2e"/><rect x="12" y="6" width="3" height="29" fill="#3b1a1d"/><rect x="18" y="12" width="10" height="2" fill="#e8d9b0"/><rect x="18" y="17" width="8" height="2" fill="#e8d9b0"/></svg></button>${ORDER.map(id=>{const has=!!S.bag[id];
     return `<button class="slot${has?' has':''}${S.hold===id?' on':''}${NEWSLOT===id?' new':''}" data-b="${id}"${has?` aria-pressed="${S.hold===id}" aria-label="${NAME[id]}" title="${NAME[id]}"`:' disabled aria-label="빈 칸"'}>${has?`<svg viewBox="0 0 40 40"><use href="#i-${id}" width="40" height="40"/></svg>${id==='film'?`<i>${S.bag.film}</i>`:''}`:''}</button>`}).join('')}</div>`;
   NEWSLOT=null;
-  $('#bag').querySelectorAll('.slot.has').forEach(b=>b.onclick=()=>hold(b.dataset.b));
+  $('#bag').querySelectorAll('.slot.has[data-b]').forEach(b=>b.onclick=()=>hold(b.dataset.b));
+  const bk=$('#bag [data-book]');if(bk)bk.onclick=openBook;
 }
-let LOGFROM=99;
-function go(v){if(!canView(v))return;if(v!==S.v)DEV=null;
-  if(v==='map'&&S.v!=='map'){LOGFROM=S.seen||0;S.seen=Math.min(S.open,LAST)}
-  S.v=v;save();render(true);
-  const nw=v==='map'&&document.getElementById('log-'+(LOGFROM+1));
-  if(nw)setTimeout(()=>nw.scrollIntoView({behavior:'smooth',block:'start'}),60);else scrollTo({top:0,behavior:'smooth'})}
+function go(v){if(!canView(v))return;if(v!==S.v)DEV=null;S.v=v;save();render(true);scrollTo({top:0,behavior:'smooth'});
+  if(v[0]==='p'&&S.started&&(S.seen||0)<+v.slice(1))toast('일지에 아직 안 읽은 쪽이 있다. 소지품의 일지를 눌러 펼쳐 보자.')}
 
 // ── 쪽 ──────────────────────────────
 function pageCover(){
@@ -1005,20 +1000,29 @@ function pageCover(){
 function pageLevel(p){
   const L=LOG[p],w=S.w[p];
   const edge=p===5&&w.door&&(w.thread.length||w.ok)?`<div class="edge">필름 가장자리<b>${w.thread.map(i=>ROL[i].ch).join(' ')}</b></div>`:'';
-  const unread=(S.seen||0)<p;
-  return `${unread?`<button class="newpage turn" data-go="map">📓 일지에 새 쪽이 있다 · ${L.date}</button>`:''}
-    <section class="room turn"><h2>${ROOM[p]}${S.clear[p]?'<small>✓ 지나옴</small>':''}</h2>${sceneSvg(p)}${edge}<div id="dev">${devHtml()}</div></section>
-    <div class="nav"><button data-go="${p===1?'cover':'p'+(p-1)}">← 앞 장</button><button data-go="map">📓 일지</button>${S.clear[p]&&p<LAST?`<button data-go="p${p+1}">다음 장 →</button>`:'<span></span>'}</div>`;
+  return `<section class="room turn"><h2>${ROOM[p]}${S.clear[p]?'<small>✓ 지나옴</small>':''}</h2>${sceneSvg(p)}${edge}<div id="dev">${devHtml()}</div></section>
+    <div class="nav"><button data-go="${p===1?'cover':'p'+(p-1)}">← 앞 장</button><span></span>${S.clear[p]&&p<LAST?`<button data-go="p${p+1}">다음 장 →</button>`:'<span></span>'}</div>`;
 }
-function pageLog(){
-  const n=Math.min(S.open,LAST),from=LOGFROM;
-  const pages=Array.from({length:n},(_,i)=>i+1).map(p=>{const L=LOG[p];
-    return `<article class="log" id="log-${p}">${p>from?'<span class="newtag">새 쪽</span>':''}
+// ── 상영 일지 책자: 소지품의 일지를 눌러 한 쪽씩 넘겨 본다. 열린 장까지 날짜 쪽, 맨 뒤는 윤 기사가 그린 극장 약도
+const BOOK={i:0,from:0};
+function openBook(){
+  const n=Math.min(S.open,LAST);BOOK.from=S.seen||0;
+  BOOK.i=BOOK.from<n?BOOK.from:Math.max(0,Math.min(pageNo()||n,n)-1);
+  S.seen=n;save();renderBag();bookPage();$('#mbg').classList.add('on');
+}
+function bookPage(){
+  const n=Math.min(S.open,LAST),last=n,i=Math.max(0,Math.min(BOOK.i,last));BOOK.i=i;
+  let body;
+  if(i<n){const p=i+1,L=LOG[p];
+    body=`<article class="log">${p>BOOK.from?'<span class="newtag">새 쪽</span>':''}
     <div class="meta"><span>일자<b>${L.date}</b></span><span>날씨<b>${L.wx}</b></span><span>영사기사<b>윤만석</b></span></div>
-    ${L.body.map(([t,x])=>`<div class="${t}">${x}</div>`).join('')}
-    <button class="toroom" data-go="p${p}">→ ${p}장 · ${ROOM[p]}${S.clear[p]?' ✓':''}</button></article>`}).join('');
-  return `<section class="book turn"><h3>상 영 일 지</h3>${pages}${pageMap()}</section>
-  <div class="nav"><button data-go="p${frontier()}">← 지금 장으로</button><span></span></div>`;
+    ${L.body.map(([t,x])=>`<div class="${t}">${x}</div>`).join('')}</article>`}
+  else body=pageMap();
+  $('#modal').innerHTML=`<div class="bookhd"><h2>상 영 일 지</h2><span>${i+1} / ${last+1}</span></div>${body}
+    <div class="bookft"><button class="btn" id="bprev"${i===0?' disabled':''}>‹ 앞 쪽</button><button class="btn primary" id="mclose">덮기</button><button class="btn" id="bnext"${i===last?' disabled':''}>뒤 쪽 ›</button></div>`;
+  $('#modal').scrollTop=0;
+  $('#bprev').onclick=()=>{BOOK.i--;bookPage()};$('#bnext').onclick=()=>{BOOK.i++;bookPage()};$('#mclose').onclick=closeM;
+  $('#modal').querySelectorAll('[data-go]').forEach(g=>g.onclick=()=>{closeM();go(g.dataset.go)});
 }
 function pageMap(){
   const R=[[7,'무대 뒤',150,18,300,52,0],[8,'2번 출입구',460,18,100,52,0],[6,'객석',150,80,300,140,0],[5,'영사실 (2층)',300,232,140,32,1],[4,'지하 필름 창고',460,232,120,32,1],[2,'매표소',150,288,86,58,0],[1,'로비',240,288,210,58,0],[3,'매점 창고',460,288,120,58,0]];
@@ -1051,9 +1055,9 @@ function render(anim){
   if(!canView(S.v))S.v='cover';
   renderTabs();renderStats();
   const pg=$('#page'),v=S.v;
-  pg.innerHTML=v==='cover'?pageCover():v==='end'?pageEnd():v==='map'?pageLog():pageLevel(+v.slice(1));
+  pg.innerHTML=v==='cover'?pageCover():v==='end'?pageEnd():pageLevel(+v.slice(1));
   if(!anim)pg.querySelectorAll('.turn').forEach(e=>e.classList.remove('turn'));
-  if(v==='cover')$('#start').onclick=()=>{if(!S.started){S.started=true;S.open=1;go('map');return}go('p'+frontier())};
+  if(v==='cover')$('#start').onclick=()=>{if(!S.started){S.started=true;S.open=1;go('p1');openBook();return}go('p'+frontier())};
   if(v==='end')$('#again').onclick=()=>{if(confirm('처음부터 다시 할까요? 지금 기록은 지워져요.')){S=fresh();DEV=null;save();render(true)}};
   renderBag();bindScene();bindDev();SND.after();
 }
