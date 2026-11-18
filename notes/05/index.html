@@ -935,6 +935,10 @@ function tapScene(el){
   const t=el.closest('[data-t]');
   if(dark(p)&&!S.bag.torch&&!(t&&t.dataset.glow)){toast('너무 어둡다. 눈앞도 잘 안 보인다. 매점 쪽 바닥에서 뭔가 작게 반짝인다.');return}
   if(!t){if(h)toast(`여기엔 ${josa(NAME[h],'을','를')} 쓸 데가 없다.`);return}
+  // 열린 문을 누르면 다음 방으로, 계단을 누르면 앞 방으로
+  const EXIT={1:"shutter",6:"bdoor",7:"exit2"},BACK={4:"stairs"};
+  if(!h&&EXIT[p]===t.dataset.t&&S.clear[p]&&p<LAST){go("p"+(p+1));return}
+  if(!h&&BACK[p]===t.dataset.t){go("p"+(p-1));return}
   const m=TAP[p](t.dataset.t,w,h);
   if(m)toast(m);
   else if(m===undefined&&h&&!DEV)toast(`여기엔 ${josa(NAME[h],'을','를')} 쓸 데가 없다.`);
