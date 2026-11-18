@@ -64,7 +64,7 @@
 
   function mount(){
     const again=document.getElementById('again');if(!again)return;
-    const row=again.parentElement;if(!row||row.previousElementSibling?.classList.contains('hnfb'))return;
+    const row=again.parentElement;if(!row||row.parentElement.querySelector(':scope>.hnfb'))return;
     const box=document.createElement('section');box.className='hnfb';box.setAttribute('aria-label',T.q);
     row.parentElement.insertBefore(box,row);paint(box);
     box.addEventListener('click',e=>{
@@ -75,4 +75,6 @@
   }
   new MutationObserver(mount).observe(document.body||document.documentElement,{childList:true,subtree:true});
   mount();
+  // 기록 공유(share.js)도 같이 붙인다. 피드백 칸 아래에 놓이도록 피드백을 먼저 붙인 뒤 불러온다
+  const me=document.currentScript;if(me){const s=document.createElement('script');s.src=me.src.replace(/feedback.js.*$/,'share.js');s.defer=true;document.head.appendChild(s)}
 })();
