@@ -45,7 +45,9 @@ header{display:flex;align-items:flex-end;gap:10px 16px;flex-wrap:wrap;margin-bot
 #prev{left:6px}#next{right:6px}
 .where{position:absolute;left:10px;top:8px;font-size:12px;color:#c9c2ae;background:rgba(0,0,0,.4);padding:2px 8px;border-radius:2px;pointer-events:none}
 #dark{position:absolute;inset:0;pointer-events:none;display:none}
-.say{min-height:52px;margin:10px 0 0;font-family:var(--hand);font-size:clamp(19px,4.8vw,23px);line-height:1.35;color:var(--pen)}
+.toast{position:fixed;left:50%;bottom:86px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fffdf4;padding:10px 18px;font-size:14px;line-height:1.5;opacity:0;transition:.25s;pointer-events:none;z-index:60;width:max-content;max-width:min(560px,90vw);text-align:center}
+.toast.on{opacity:1;transform:translateX(-50%)}
+.say-old{min-height:52px;margin:10px 0 0;font-family:var(--hand);font-size:clamp(19px,4.8vw,23px);line-height:1.35;color:var(--pen)}
 .bag{position:fixed;left:0;right:0;bottom:0;background:#20262f;border-top:3px solid #0f141b;padding:8px 10px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap;z-index:5}
 .bag .lbl{color:#9aa3ad;font-size:12px;align-self:center}
 .it{min-width:64px;height:58px;padding:2px 6px;background:#2d3540;border:2px solid #3c4655;border-radius:4px;color:#ece6d4;font-size:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.15}
@@ -112,7 +114,7 @@ header{display:flex;align-items:flex-end;gap:10px 16px;flex-wrap:wrap;margin-bot
     <button class="nav" id="prev" aria-label="왼쪽 벽">◀</button>
     <button class="nav" id="next" aria-label="오른쪽 벽">▶</button>
   </div>
-  <p class="say" id="say"></p>
+  
   <div class="tools"><button class="btn" id="hint">포스트잇 (힌트)</button></div>
 </section>
 
@@ -124,6 +126,7 @@ header{display:flex;align-items:flex-end;gap:10px 16px;flex-wrap:wrap;margin-bot
 </section>
 </div>
 <nav class="bag" id="bag" hidden></nav>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 <div class="modal" id="modal"><div class="card" id="card"></div></div>
 
 <script>
@@ -150,7 +153,7 @@ function record(ms,ok=true){try{const k='hn.clear.note06',p=JSON.parse(localStor
 let hold=null;
 const has=i=>S.inv.includes(i), give=i=>{if(!has(i))S.inv.push(i)}, take=i=>{S.inv=S.inv.filter(x=>x!==i);if(hold===i)hold=null};
 const dark=()=>S.t===1&&!S.f.power;
-function say(t){$('#say').textContent=t}
+function say(t){const e=$('#toast');if(!t){e.classList.remove('on');return}e.textContent=t;e.classList.add('on');clearTimeout(say.h);say.h=setTimeout(()=>e.classList.remove('on'),Math.min(7500,2600+t.length*45))}
 
 /* ---------- 소리 (Web Audio 합성, 끌 수 있음) ---------- */
 const SND={on:true,ctx:null,wind:null,

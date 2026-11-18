@@ -14,6 +14,9 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
+<script src="../../lang.js"></script>
+<script>window.hn=window.hn||function(){(hn.q=hn.q||[]).push(arguments)}</script>
+<script type="module" src="../../analytics.js"></script>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/hada0127/hada-type-levelup@v2026.10.21/css/levelup-subset.css">
 <link rel="stylesheet" href="../../fonts/fonts.css">
@@ -232,15 +235,19 @@ const fresh=()=>({v:'cover',open:0,clear:{},hints:{},ms:0,started:false,done:fal
   w:{1:{shook:false,half:false,shade:false,bridge:false},2:{ladder:false,erased:false,rub:[],plank:false},3:{big:{},umb:false,placed:false,rub:[],scrub:false},
     4:{found:false,unblue:false,traced:false,rub:[],done:false},5:{unlock:false,dial:[0,0,0,0],open:false},6:{star:false,read:false,door:false,opened:false}}});
 let S=fresh();
-try{const d=JSON.parse(localStorage.getItem(SAVE_KEY)||'null');if(d)S={...fresh(),...d,w:{...fresh().w,...(d.w||{})}}}catch{}
+let resumed=false;
+try{const d=JSON.parse(localStorage.getItem(SAVE_KEY)||'null');if(d){S={...fresh(),...d,w:{...fresh().w,...(d.w||{})}};resumed=S.started&&!S.done}}catch{}
 const save=()=>{try{localStorage.setItem(SAVE_KEY,JSON.stringify(S))}catch{}};
-addEventListener('pagehide',save);
+addEventListener('pagehide',()=>{save();if(S.started&&!S.done)ana('case_left',{stage:'investigating',location:'chapter_'+pageNo(),clue_count:Object.keys(S.clear).length,minutes_used:anaMinutes(),play_minutes:anaMinutes()},true)});
 let NEW=null,busy=false;
 const pageNo=()=>S.v[0]==='p'?+S.v.slice(1):0;
 const W=()=>S.w[pageNo()];
 
 const fmt=ms=>{const s=Math.floor(ms/1000);return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`};
 const hintTotal=()=>Object.values(S.hints).reduce((a,b)=>a+b,0);
+const anaMinutes=()=>Math.round(S.ms/60000);
+const ana=(name,params={},beacon=false)=>{if(window.hn)window.hn(name,params,beacon)};
+const anaChapter=(name,p)=>ana(name,{chapter:p,minutes_used:anaMinutes()});
 const frontier=()=>Math.min(Math.max(S.open,1),PLAY_LAST);
 function hintPage(){const p=pageNo();return p&&p<=S.open&&!S.clear[p]&&LV[p]?p:frontier()}
 function renderStats(){$('#time').textContent=fmt(S.ms);$('#hintCount').textContent=hintTotal();$('#btnHint').disabled=!S.started||S.done}
@@ -390,7 +397,7 @@ function renderBag(){
   $('#bag').querySelectorAll('.slot.has').forEach(b=>b.onclick=()=>{S.hold=S.hold===b.dataset.b?null:b.dataset.b;save();renderBag();syncHold()});
 }
 function wiggleHeld(){const b=S.hold&&$(`.slot[data-b="${S.hold}"]`);if(!b)return;b.classList.remove('no');void b.offsetWidth;b.classList.add('no')}
-function go(v){if(!canView(v)||busy)return;if(v!==S.v)ROUTE=null;S.v=v;save();render(true);scrollTo({top:0,behavior:'smooth'})}
+function go(v){if(!canView(v)||busy)return;if(v!==S.v)ROUTE=null;S.v=v;if(v[0]==='p')anaChapter('chapter_opened',+v.slice(1));save();render(true);scrollTo({top:0,behavior:'smooth'})}
 
 // ── 그림 ──────────────────────────────
 const C=(s,attrs='')=>`<g filter="url(#crayon)" ${attrs}>${s}</g>`;   // 크레용으로 칠한 면
@@ -583,7 +590,9 @@ function record(ms,ok=true){try{const k='hn.clear.note04',p=JSON.parse(localStor
 function turnPage(){
   const p=pageNo(),w=W(),L=LV[p];
   if(!L.clear(w)){toast(L.why(w));return}
+  anaChapter('chapter_solved',p);
   S.clear[p]=true;S.open=Math.max(S.open,p+1);if(p>=PLAY_LAST&&!S.done){S.done=true;S.hold=null;record(S.ms)}save();
+  if(p>=PLAY_LAST)ana('case_finished',{grade:'solved',points:1,clue_count:PLAY_LAST,clue_total:PLAY_LAST,minutes_used:anaMinutes(),play_minutes:anaMinutes()});
   busy=true;toast(p>=PLAY_LAST?'깡총이가 귀퉁이를 넘어간다!':`${p+1}장으로 깡총!`);
   // transform 속성이 있는 #kc 대신 안쪽 g를 움직인다 (속성 위에 CSS를 얹으면 브라우저마다 순간이동함)
   const kc=$('#kc');if(kc)kc.firstElementChild.animate([{transform:'translate(0,0)'},{transform:'translate(40px,-40px)'},{transform:'translate(160px,0)',opacity:0}],{duration:700,easing:'ease-in',fill:'forwards'});
@@ -752,8 +761,8 @@ function render(anim){
   pg.innerHTML=v==='cover'?pageCover():v==='end'?pageEnd():pageLevel(+v.slice(1));
   if(!anim)pg.querySelectorAll('.turn').forEach(e=>e.classList.remove('turn'));
   pg.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
-  if(v==='cover')$('#start').onclick=()=>{if(!S.started){S.started=true;S.open=1}go('p'+frontier())};
-  if(v==='end')$('#again').onclick=()=>{if(confirm('처음부터 다시 할까요? 지금 기록은 지워져요.')){S=fresh();save();render(true)}};
+  if(v==='cover')$('#start').onclick=()=>{if(!S.started){ana('case_started');S.started=true;S.open=1}go('p'+frontier())};
+  if(v==='end')$('#again').onclick=()=>{if(confirm('처음부터 다시 할까요? 지금 기록은 지워져요.')){ana('case_restarted');S=fresh();save();render(true)}};
   renderBag();bindScene();
 }
 
@@ -768,13 +777,15 @@ function openHint(){
     <div class="actions"><button class="btn" id="mclose">닫기</button></div>`;
   $('#mbg').classList.add('on');
   $('#mclose').onclick=closeM;
-  const pe=$('#peel');if(pe)pe.onclick=()=>{S.hints[p]=got+1;save();renderStats();openHint()};
+  const pe=$('#peel');if(pe)pe.onclick=()=>{S.hints[p]=got+1;ana('hint_revealed',{chapter:p,level:got+1,minutes_used:anaMinutes()});save();renderStats();openHint()};
 }
 function closeM(){$('#mbg').classList.remove('on')}
 $('#mbg').onclick=e=>{if(e.target.id==='mbg')closeM()};
 addEventListener('keydown',e=>{if(e.key==='Escape'){closeM();if(S.hold){S.hold=null;save();renderBag();syncHold()}}});
 $('#btnHint').onclick=openHint;
 
+ana('case_intro_viewed');
+if(resumed)ana('case_resumed',{clue_count:Object.keys(S.clear).length,minutes_used:anaMinutes()});
 render(true);
 </script>
 </body>

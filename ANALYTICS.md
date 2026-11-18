@@ -25,6 +25,9 @@
 | `case_started` | "조사 시작" 누름 | — |
 | `case_resumed` | 새로고침·재방문 시 저장된 진행을 이어서 시작 (`case_left`는 새로고침 때도 찍힘) | `clue_count`, `minutes_used` |
 | `help_opened` | 게임 방법 다시 보기 | — |
+| `chapter_opened` | 방탈출 노트에서 장을 열기 | `chapter`, `minutes_used` |
+| `chapter_solved` | 방탈출 노트에서 다음 장으로 가는 조건을 충족 | `chapter`, `minutes_used` |
+| `hint_revealed` | 힌트 포스트잇 한 장을 열기 | `chapter`, `level` (1~3), `minutes_used` |
 | `location_opened` | 장소 이동 | `location`, `minutes_used` |
 | `hotspot_checked` | 물건 조사 | `hotspot`, `location`, `outcome` (found / nothing_new / blocked / revisit), `step`, `minutes_used` |
 | `clue_found` | 새 단서 획득 | `clue`, `source` (scene / phone / interrogation), `clue_count`, `minutes_used` |
@@ -47,7 +50,7 @@
 **관리 → 맞춤 정의**에 등록해야 보고서·탐색에서 파라미터를 쓸 수 있습니다(등록한 날부터 집계).
 
 - 맞춤 측정기준(이벤트 범위): `note`, `lang`, `place`, `outcome`, `action`, `location`, `hotspot`, `clue`, `source`, `puzzle`, `app`, `suspect`, `stage`, `grade`, `accused`, `culprit_correct`, `time_correct`, `evidence_correct`, `forced`
-- 맞춤 측정항목(이벤트 범위): `minutes_used`(분), `play_minutes`(분), `clue_count`, `clue_total`, `points`, `attempt`, `step`, `evidence_count`
+- 맞춤 측정항목(이벤트 범위): `minutes_used`(분), `play_minutes`(분), `chapter`, `level`, `clue_count`, `clue_total`, `points`, `attempt`, `step`, `evidence_count`
 - **관리 → 이벤트 → 주요 이벤트**로 표시: `case_started`, `case_finished`, `recommend_clicked`
 
 ## 보면 좋은 탐색 보고서
@@ -59,7 +62,8 @@
 5. **결과 분포**: `case_finished`를 `grade`, `accused`로 봅니다. 함정 용의자에게 얼마나 걸리는지, `forced=yes`(시간 초과) 비율은 어떤지 확인합니다.
 6. **심문 효과**: `evidence_shown`을 `suspect` × `clue` × `outcome`으로 봅니다. 어떤 증거 제시가 실제로 새 단서로 이어지는지 알 수 있습니다.
 7. **언어·국가**: `lang` × 국가로 영어판 이용과 완주율을 봅니다.
+8. **노트 방탈출 막힘**: `chapter_opened` 대비 `chapter_solved` 비율과 `hint_revealed`의 `level` 분포를 장별로 봅니다. 답안·암호 내용은 수집하지 않습니다.
 
 ## 새 사건을 추가할 때
 
-`<html data-note="note02">`처럼 사건 번호만 바꾸고, Note 01과 같은 위치에서 `hn(...)`을 부르면 됩니다. 장소·단서·퍼즐 id는 영문·숫자·밑줄로 짓습니다(`^[a-zA-Z][a-zA-Z0-9_]{0,39}$`, 40자 이내). 이 형식이 아닌 값은 전송되지 않습니다.
+`<html data-note="note02">`처럼 사건 번호만 바꾸고, `lang.js`·분석 초기화 코드·`analytics.js`를 함께 불러옵니다. 방탈출 노트는 최소한 `case_intro_viewed`, `case_started`, `chapter_opened`, `chapter_solved`, `hint_revealed`, `case_finished`를 부릅니다. 답안·암호·후기 같은 입력 내용은 절대 전송하지 않습니다. 장소·단서·퍼즐 id는 영문·숫자·밑줄로 짓습니다(`^[a-zA-Z][a-zA-Z0-9_]{0,39}$`, 40자 이내). 이 형식이 아닌 값은 전송되지 않습니다.
