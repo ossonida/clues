@@ -385,7 +385,7 @@ const TAP={
   table(){openCard('간이 전보 숫자표 (선배 손글씨)',`<table class="tbl nt"><tr><th>묶음</th><th>형식</th><th>쓰는 법</th></tr>
     <tr><td>기온</td><td class="nt-f">1 s TTT</td><td>s: 영상 0 · 영하 1<br>TTT: 기온×10 (세 자리)</td></tr>
     <tr><td>바람</td><td class="nt-f">2 dd ff</td><td>dd: 풍향 각도 ÷10<br>ff: 풍속 m/s</td></tr>
-    <tr><td>구름</td><td class="nt-f">3 hhhh</td><td>구름 높이 m ÷10 (네 자리)</td></tr></table><p class="hand">정시에 그 시각 것만. 묶음은 다섯 자리.</p>`)},
+    <tr><td>구름</td><td class="nt-f">3 hhhh</td><td>구름 높이 m ÷10 (네 자리)</td></tr></table><p class="hand">예) 영상 5.3℃ → <b>10053</b></p><p class="hand">정시에 그 시각 것만. 묶음은 다섯 자리.</p>`)},
   symbols(){say('일기도 운량 기호. 동그라미를 칠한 만큼 하늘이 구름으로 덮였다는 뜻이다.')},
   teletype(){if(dark())return say('전원이 나가 텔레타이프가 죽어 있다.');openTele()},
   radio(){say(dark()?'무전기도 꺼졌다.':'잡음뿐. 볼륨을 낮춰 켜 두었다.')},
