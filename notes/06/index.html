@@ -291,14 +291,17 @@ function draw(){
 }
 /* 정전: 손전등 빛만 */
 let LX=400,LY=225;
-function drawDark(){
+function drawDark(){touchMode();
   const c=$('#dark');if(!dark()){c.style.display='none';return}
   const r=$('#stage').getBoundingClientRect();c.width=r.width;c.height=r.height;c.style.display='block';
   const g=c.getContext('2d');g.fillStyle='rgba(2,3,6,.97)';g.fillRect(0,0,c.width,c.height);
-  if(has('torch')){const x=LX/800*c.width,y=LY/450*c.height,R=c.width*.2;g.globalCompositeOperation='destination-out';const gr=g.createRadialGradient(x,y,0,x,y,R);gr.addColorStop(0,'rgba(0,0,0,1)');gr.addColorStop(.7,'rgba(0,0,0,.85)');gr.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=gr;g.beginPath();g.arc(x,y,R,0,7);g.fill();g.globalCompositeOperation='source-over'}
+  if(has('torch')){const x=LX/800*c.width,y=LY/450*c.height,R=Math.max(c.width*.2,95);g.globalCompositeOperation='destination-out';const gr=g.createRadialGradient(x,y,0,x,y,R);gr.addColorStop(0,'rgba(0,0,0,1)');gr.addColorStop(.7,'rgba(0,0,0,.85)');gr.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=gr;g.beginPath();g.arc(x,y,R,0,7);g.fill();g.globalCompositeOperation='source-over'}
   else if(S.room==='A'&&S.wall.A===1&&!S.f.torchTaken){const x=388/800*c.width,y=222/450*c.height;g.fillStyle='rgba(255,230,160,.5)';g.beginPath();g.arc(x,y,6,0,7);g.fill()}
 }
-$('#stage').addEventListener('pointermove',e=>{const r=$('#stage').getBoundingClientRect();LX=(e.clientX-r.left)/r.width*800;LY=(e.clientY-r.top)/r.height*450;if(dark())drawDark()});
+/* 손전등: 마우스는 따라다니고, 손가락은 누른 곳·끄는 곳을 비춘다. 어두울 땐 장면을 끌어도 화면이 스크롤되지 않게 */
+const aim=e=>{const r=$('#stage').getBoundingClientRect();LX=(e.clientX-r.left)/r.width*800;LY=(e.clientY-r.top)/r.height*450;if(dark())drawDark()};
+$('#stage').addEventListener('pointerdown',aim);$('#stage').addEventListener('pointermove',e=>{if(e.pointerType==='mouse'||e.buttons||e.pressure)aim(e)});
+function touchMode(){$('#stage').style.touchAction=dark()&&has('torch')?'none':''}
 function bag(){
   const b=$('#bag');b.hidden=!S.inv.length;document.body.classList.toggle('hasbag',!!S.inv.length);
   b.innerHTML='<span class="lbl">소지품</span>'+S.inv.map(i=>`<button class="it${hold===i?' on':''}" data-i="${i}"><i>${ITEMS[i][0]}</i>${ITEMS[i][1]}</button>`).join('');
