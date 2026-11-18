@@ -762,7 +762,7 @@ const PULL={
   8:{ok:'0714',msg:{'1979':'연도 말고 날짜일 것 같다.','1407':'날짜를 거꾸로 맞춘 것 같다.','1115':'그건 극장이 문 닫은 날이다.','2135':'그건 막회 시각이다.'}},
 };
 const ACT={
-  close:()=>{DEV=null;refresh()},
+  close:()=>{if(DEV==='splice'&&S.w[8].crank){S.w[8].crank=false;save()}DEV=null;refresh()},
   rot:()=>{const w=W();w.rot=w.rot?0:180;save();refresh();if(!w.dx&&!w.dy)toast(w.rot?'파란 글씨가 거꾸로 섰다.':'파란 글씨가 바로 섰다.')},
   dial:b=>{const w=W();const i=+b.dataset.i;w.dial[i]=(w.dial[i]+ +b.dataset.d)%10;save();refresh()},
   pull:()=>{const p=pageNo(),w=W(),c=w.dial.join('');
@@ -905,7 +905,7 @@ const SND={
       if(old.brk!==now.brk){const a=old.brk.replaceAll('0','').length,b=now.brk.replaceAll('0','').length;if(a&&b===0)this.fx('trip');else if(a!==b)this.fx('breaker')}
       if(!old.mount&&now.mount)this.reelMount();if(old.run!==now.run)this.fx(now.run?'projStart':'projStop');if(old.call!==false&&now.call===false)this.fx('switch');if(now.rope>old.rope)this.fx('rope');if(now.slots>old.slots)this.fx('splice');if(old.crank!==now.crank)this.fx('crank');if(!old.out&&now.out)this.fx('doorOpen');if(old.v==='p8'&&now.v==='end')this.fx('latch')
     }
-    this.prev=now;this.updateAmb();if(S.v==='p8'&&S.w[8].crank)this.startCrank();else this.stopCrank();this.duck()
+    this.prev=now;this.updateAmb();if(S.v==='p8'&&DEV==='splice'&&S.w[8].crank)this.startCrank();else this.stopCrank();this.duck()
   },
 };
 SND.button();$('#btnSnd').onclick=()=>SND.toggle();document.addEventListener('pointerdown',()=>SND.init(),{once:true});document.addEventListener('keydown',()=>SND.init(),{once:true});
