@@ -1,6 +1,6 @@
 # AGENTS.md · 히든노트 (Hidden Note)
 
-브라우저에서 바로 플레이하는 추리·방탈출 "사건 파일" 시리즈. 빌드 없는 정적 사이트이고 GitHub Pages(`https://ossonida.github.io/clues/`)로 공개한다.
+브라우저에서 바로 플레이하는 추리·방탈출 "사건 파일" 시리즈. 빌드 없는 정적 사이트이고 Vercel(`https://clues-kappa.vercel.app/`, GitHub Pages 주소는 밖에 쓰지 않는다)로 공개한다.
 
 ## 구조
 
