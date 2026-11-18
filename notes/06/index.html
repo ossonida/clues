@@ -398,7 +398,7 @@ function openTele(){
   if(done)return;const inp=$('#tin');inp.focus();
   const send=()=>{const v=inp.value.replace(/[^0-9]/g,'');
     if(v==='11026'){S.f.sent21=1;save();SND.type(16);$('#tape').textContent='구름재 하나 21시\n11026';
-      setTimeout(()=>{SND.type(22);$('#tape').textContent+='\n\n수신. 구름재 둘 확인. 791113 2100';S.f.reply=1;save();
+      setTimeout(()=>{SND.type(22);setTimeout(()=>SND.found(),1950);$('#tape').textContent+='\n\n수신. 구름재 둘 확인. 791113 2100';S.f.reply=1;save();
         $('#card').insertAdjacentHTML('beforeend','<p class="hand">…구름재 <b>둘</b>? 우리 호출부호는 「구름재 하나」다. 「둘」은 1979년에 없어진 부호라고 했는데.<br>찍힌 날짜는 1979년 11월 13일 21시. 꼭 30년 전 오늘이다.</p><p><button class="btn primary" id="nextSlot">다음 정시까지</button></p>');
         $('#nextSlot').onclick=()=>{closeCard();toSlot1()}},1800);return}
     const R={'11031':'온도계가 둘이다. 젖은 천을 감은 쪽은 기온이 아니다.','01026':'둘째 칸은 영상·영하 표시다.','1026':'다섯 자리라고 했다.','10026':'영하다.','1126':'기온은 ×10, 세 자리.'};
