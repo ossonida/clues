@@ -102,6 +102,7 @@ header{display:flex;align-items:flex-end;gap:10px 16px;flex-wrap:wrap;margin-bot
 .nt .nt-f{font-size:20px;font-weight:700;letter-spacing:2px;color:var(--ink);white-space:nowrap;background:#fffdf2}
 .ns-rule{margin:4px 0 0;font-size:11.5px;color:#7a7262}
 .ns-pen{font-family:var(--hand);font-size:21px;color:#1d3f8a;margin:10px 0 0;transform:rotate(-1deg)}
+.fogin{animation:fogin 4.5s ease-in both}.fogtx text{animation:fogin 5s 2.5s ease-in both}@keyframes fogin{from{opacity:0}to{opacity:1}}
 </style>
 </head>
 <body>
@@ -156,7 +157,7 @@ header{display:flex;align-items:flex-end;gap:10px 16px;flex-wrap:wrap;margin-bot
     <p>나는 새 포스트잇을 하나 꺼내 발전기 옆에 붙였다. 텔레타이프는 조용하다. 21시의 답신을 누가 보냈는지는, 아무도 묻지 않았다.</p>
   </div>
   <p class="clock">근무 시간 <b id="took" style="display:inline;border:none"></b></p>
-  <button class="btn" id="again">처음부터 다시</button> <a class="btn primary" href="../../" style="text-decoration:none">사건 대장으로</a>
+  <p><button class="btn" id="again">처음부터 다시</button> <a class="btn primary" href="../../" style="text-decoration:none">사건 대장으로</a></p>
 </section>
 </div>
 <nav class="bag" id="bag" hidden></nav>
@@ -193,6 +194,7 @@ function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch{}}
 function record(ms,ok=true){try{const k='hn.clear.note06',p=JSON.parse(localStorage.getItem(k)||'{}');localStorage.setItem(k,JSON.stringify({ok:ok||!!p.ok,best:ok?Math.min(p.best||Infinity,ms):p.best||null,last:ms,at:Date.now()}))}catch{}}
 let hold=null;
 const has=i=>S.inv.includes(i), give=i=>{if(!has(i))S.inv.push(i)}, take=i=>{S.inv=S.inv.filter(x=>x!==i);if(hold===i)hold=null};
+const FOGSEEN={};
 const dark=()=>S.t===1&&!S.f.power;
 const TEMPS={0:['-2.6','-3.1'],2:['-3.0','-3.5'],3:['-3.2','-3.6'],4:['-3.4','-3.8']};
 function say(t){const e=$('#toast');if(!t){e.classList.remove('on');return}e.textContent=t;e.classList.add('on');clearTimeout(say.h);say.h=setTimeout(()=>e.classList.remove('on'),Math.min(7500,2600+t.length*45))}
@@ -246,9 +248,9 @@ function drawA(w){
       <line x1="385" y1="76" x2="385" y2="232" stroke="#b9a57d" stroke-width="5"/><line x1="272" y1="154" x2="498" y2="154" stroke="#b9a57d" stroke-width="5"/>
       <rect x="262" y="240" width="246" height="10" fill="#5b4632"/>`;
     if(S.t===1&&S.f.power)s+=`<g opacity=".8"><circle cx="452" cy="182" r="5" fill="#05080d"/><rect x="448" y="187" width="8" height="22" fill="#05080d"/></g>`;
-    if(fog)s+=`<rect x="276" y="80" width="218" height="148" fill="#dfe6ea" opacity=".6"/>`+
+    if(fog){const k=S.f.thanks?'fogT':'fog'+S.t,slow=!FOGSEEN[k];FOGSEEN[k]=1;s+=`<g class="${slow?(S.f.thanks?'fogin fogtx':'fogin'):''}"><rect x="276" y="80" width="218" height="148" fill="#dfe6ea" opacity=".6"/>`+
       (S.f.thanks?`<text x="385" y="168" font-size="34" text-anchor="middle" fill="#55697a" font-family="HEEJOY,cursive">고마워</text>`
-      :S.t===0?`<g stroke="#687c89" stroke-width="5" fill="none" stroke-linecap="round" opacity=".9"><circle cx="340" cy="150" r="28"/><line x1="340" y1="150" x2="356" y2="132"/><path d="M386 150 h62 m-14 -12 l14 12 -14 12"/></g>`:'');
+      :S.t===0?`<g stroke="#687c89" stroke-width="5" fill="none" stroke-linecap="round" opacity=".9"><circle cx="340" cy="150" r="28"/><line x1="340" y1="150" x2="356" y2="132"/><path d="M386 150 h62 m-14 -12 l14 12 -14 12"/></g>`:'')+'</g>';}
     s+=`${hs('window',272,76,226,156)}
       <g><ellipse cx="622" cy="340" rx="80" ry="10" fill="#000" opacity=".38"/><rect x="566" y="236" width="112" height="104" rx="8" fill="url(#metal)" stroke="#131619" stroke-width="4"/><rect x="580" y="252" width="84" height="64" rx="5" fill="#202223"/><rect x="592" y="268" width="60" height="36" rx="4" fill="${S.f.stoveOff?'#29292a':'#d9601a'}"/>
       ${S.f.stoveOff?'':'<ellipse cx="622" cy="286" rx="44" ry="34" fill="url(#lampGlow)"/>'}<rect x="612" y="116" width="20" height="88" fill="#3a3f42"/><rect x="600" y="204" width="44" height="32" rx="9" fill="#676d70" stroke="#30363a" stroke-width="3"/><path d="M644 214q14 0 14 12" stroke="#5a6267" stroke-width="6" fill="none"/></g>
@@ -522,8 +524,8 @@ function openTele(){
       if(S.t===2)setTimeout(()=>{SND.type(10);S.tape[S.tape.length-1]+='\n수신. 구름재 하나';$('#tape').textContent+='\n수신. 구름재 하나';S.f.lockerOpen=1;save();
         $('#card').insertAdjacentHTML('beforeend','<p class="hand">이번엔 제대로 「구름재 하나」다.<br>그때 지하에서 쇠문이 삐걱 열리는 소리가 났다.</p>');SND.thud()},1600);
       if(S.t===4)setTimeout(()=>{SND.type(14);S.tape[S.tape.length-1]+='\n수신. 구름재 하나. 운고 600. 헬기 출동.';$('#tape').textContent+='\n수신. 구름재 하나. 운고 600. 헬기 출동.';S.f.thanks=1;S.f.wiped=0;save();
-        $('#card').insertAdjacentHTML('beforeend','<p class="hand">헬기가 뜬다. 숨을 내쉬자 창에 김이 서렸다. 그 위로, 아무도 쓰지 않은 글씨가 천천히 떠오른다.</p><p><button class="btn primary" id="toEnd">동이 틀 때까지</button></p>');
-        $('#toEnd').onclick=()=>{closeCard();finish()};S.room='A';S.wall.A=0;draw()},1600);
+        $('#card').insertAdjacentHTML('beforeend','<p class="hand">헬기가 뜬다.</p><p><button class="btn primary" id="toEnd">동이 틀 때까지</button></p>');
+        $('#toEnd').onclick=()=>{closeCard();S.room='A';S.wall.A=0;save();draw();say('숨을 내쉬자 창에 천천히 김이 서린다.');setTimeout(finish,9000)}},1600);
       return}
     SND.wrong();
     if(S.t===4){const g=inp.value.trim().split(/\s+/);if(v.includes('11026')||v.includes('22714'))return say('03시 값을 다시 재야 한다.');if(v.length!==15)return say('묶음 셋, 열다섯 자리다.');if(!v.endsWith('30060'))return say('구름 높이를 다시 보자. 각도판 옆 표.');return say('기온이나 바람이 03시 값이 아니다.')}
@@ -588,7 +590,7 @@ function openGen(){GEN=[];const L=['① 연료 밸브 열기','② 초크 닫기
     if(!ok){$('#gmsg').textContent=GEN[2]===3&&GEN[3]===4?'털털거리다 멎었다. 점검표 그대로 했는데.':'시동이 안 걸린다.';SND.wrong();
       setTimeout(()=>{GEN=[];$('#card').querySelectorAll('[data-g]').forEach(x=>x.classList.remove('on'))},900);return}
     SND.hum(true);$('#gmsg').textContent='부르릉, 걸렸다!';S.f.power=1;save();setTimeout(()=>{closeCard();powerBack()},900)})}
-function powerBack(){S.room='A';S.wall.A=0;save();draw();say('불이 들어왔다. 창 너머 풍향탑 아래 사람 그림자가… 다시 보니 없다.');
+function powerBack(){save();draw();say('불이 들어왔다. 창 너머 풍향탑 아래 사람 그림자가… 다시 보니 없다.');
   setTimeout(()=>toSlot(2,'자정. 바람이 더 세졌다. 바깥 풍향 바늘은 미친 듯이 돈다.'),3800)}
 function toSlot(t,msg){S.t=t;save();closeCard();draw();if(msg)say(msg)}
 function finish(){S.t=5;if(!S.ms){S.ms=Date.now()-S.start;record(S.ms,true)}S.done=1;save();$('#game').hidden=true;$('#bag').hidden=true;$('#end').hidden=false;const m=Math.round(S.ms/60000);$('#took').textContent=m+'분';window.scrollTo(0,0)}
