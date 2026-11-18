@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Note 01 · 퍼니보드 사건 파일 | 히든노트</title>
+<title>Note 01 · FUN보드 사건 파일 | 히든노트</title>
 <meta name="description" content="보드게임 카페의 마지막 손님. 장소를 조사하고 심문해 범인을 지목하는 코지 미스터리.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="히든노트">
-<meta property="og:title" content="Note 01 · 퍼니보드 사건 파일 | 히든노트">
+<meta property="og:title" content="Note 01 · FUN보드 사건 파일 | 히든노트">
 <meta property="og:description" content="보드게임 카페의 마지막 손님. 장소를 조사하고 심문해 범인을 지목하는 코지 미스터리.">
 <meta property="og:url" content="https://ossonida.github.io/clues/notes/01/">
 <meta property="og:image" content="https://ossonida.github.io/clues/og/note01.png">
@@ -229,7 +229,7 @@ details summary{font-family:var(--mono)}
 <body>
 <div class="app">
   <header class="hud">
-    <div class="brand"><a class="back" href="../../" data-t="back">← 사건 파일 보관함 / NOTE 01</a><span data-t="title">퍼니보드 사건 파일</span> <small data-t="subtitle">보드게임 카페의 마지막 손님</small></div>
+    <div class="brand"><a class="back" href="../../" data-t="back">← 사건 파일 보관함 / NOTE 01</a><span data-t="title">FUN보드 사건 파일</span> <small data-t="subtitle">보드게임 카페의 마지막 손님</small></div>
     <div class="spacer"></div>
     <div class="langsw"><button data-l="ko">한국어</button><button data-l="en">English</button></div>
     <div class="stat time" id="stTime"><span data-t="timeLeft">남은 조사 시간</span><b id="tLeft">80분</b></div>
@@ -301,7 +301,7 @@ const CLUES = {
 <tr><td>21:27</td><td>열림</td></tr><tr><td>21:29</td><td>닫힘</td></tr>
 <tr><td>21:31</td><td>⚠ 기기 연결 끊김</td></tr>
 <tr><td>다음 날 09:58</td><td>기기 다시 연결됨</td></tr><tr><td>다음 날 10:02</td><td>열림</td></tr></table>`},
-  c_chat:{cat:'기록',title:'단골 단톡방',html:`<div style="background:#1f2229;color:#eee;border-radius:10px;padding:10px 12px;margin:-4px -4px 6px"><div style="display:flex;justify-content:space-between;font-weight:700"><span>퍼니보드 단골방</span><span style="color:#8a8f99;font-weight:400;font-size:12px">👥 13</span></div><div style="margin-top:6px;font-size:11px;color:#aab;line-height:1.7">대화상대: 한도윤(방장) · 김하늘 · 정민석 · 이소라 · 박태수 · 윤미래 · 오세진 · 강다은 · 문준호 · 백유나 · 송지후 · 임채원 · 홍기범</div></div>`},
+  c_chat:{cat:'기록',title:'단골 단톡방',html:`<div style="background:#1f2229;color:#eee;border-radius:10px;padding:10px 12px;margin:-4px -4px 6px"><div style="display:flex;justify-content:space-between;font-weight:700"><span>FUN보드 단골방</span><span style="color:#8a8f99;font-weight:400;font-size:12px">👥 13</span></div><div style="margin-top:6px;font-size:11px;color:#aab;line-height:1.7">대화상대: 한도윤(방장) · 김하늘 · 정민석 · 이소라 · 박태수 · 윤미래 · 오세진 · 강다은 · 문준호 · 백유나 · 송지후 · 임채원 · 홍기범</div></div>`},
   c_sms:{cat:'기록',title:'서지아의 문자',text:'사건 사흘 전, 서지아 → 한도윤\n“사장님 지난달 알바비 아직 안 들어왔어요 ㅠㅠ 이번 주도 안 되면 저 진짜 곤란해요.”\n\n한도윤: “미안 ㅠ 이번 주 안에 꼭 줄게”'},
   c_market:{cat:'기록',title:'중고장터 캡처',text:'사장 친구가 보내준 캡처. 사건 당일 22:30 게시글.\n\n작성자 “MR_store”:\n“드래곤 바자르 초판 한정판 풀세트 시세 아시는 분? 오늘 실물 보고 왔어요.”\n\n첨부 사진: 쇼케이스 유리에 바짝 붙어서 찍은 한정판 상자. 사진 정보상 촬영 시각 21:55.'},
   c_beepnote:{cat:'현장',title:'쇼케이스 안내문',text:'“이 쇼케이스는 문을 열면 ‘띡’ 소리가 나고, 열림·닫힘이 사장님 휴대폰 앱에 기록됩니다.”'},
@@ -1010,8 +1010,8 @@ ${[0,1,2].map(r=>Array.from({length:4},(_,i)=>`<rect x="${58+i*42}" y="${64+r*70
 /* ===================== INTRO ===================== */
 function showIntro(){
   hn('case_intro_viewed');
-  modal(`<div class="intro"><h2>${t('title','퍼니보드 사건 파일')}<br><span style="font-size:15px;color:var(--dim)">${t('subtitle','보드게임 카페의 마지막 손님')}</span></h2>
-  ${t('intro',`  <p>11월 17일 오전 10시 2분. 생일날 아침이었다. 보드게임 카페 「퍼니보드」 사장 한도윤은 출근하자마자 쇼케이스부터 열었다. 어제 딱 하루 전시한 《드래곤 바자르》 초판 한정판을 얼른 집에 가져다 둘 생각이었다.</p>
+  modal(`<div class="intro"><h2>${t('title','FUN보드 사건 파일')}<br><span style="font-size:15px;color:var(--dim)">${t('subtitle','보드게임 카페의 마지막 손님')}</span></h2>
+  ${t('intro',`  <p>11월 17일 오전 10시 2분. 생일날 아침이었다. 보드게임 카페 「FUN보드」 사장 한도윤은 출근하자마자 쇼케이스부터 열었다. 어제 딱 하루 전시한 《드래곤 바자르》 초판 한정판을 얼른 집에 가져다 둘 생각이었다.</p>
   <p>도금 미플 하나를 집어 들었는데 엄지에 금색이 묻어났다. 문질러 보니 더 묻어났다. 다음 것도, 그다음 것도 마찬가지였다. <b>스무 개 전부, 나무 미플에 금색 물감을 칠한 가짜였다.</b> 시세만 수백만 원짜리 진짜는 온데간데없었다.</p>
   <p>쇼케이스는 잠겨 있었다. 유리도 자물쇠도 멀쩡했다.</p>
   <p>어젯밤 사장이 퇴근한 21시 30분부터 문을 잠근 22시 20분까지, 카페에 있던 사람은 넷. 알바생 한 명, 단골 두 명, 옆 가게 사장. 하나같이 사장이 잘 아는 얼굴이다.</p>

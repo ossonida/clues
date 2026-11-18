@@ -1,9 +1,9 @@
 // Note 01 English text. Korean stays inline in index.html; this file only supplies English.
 window.HN_EN = {
 ui: {
-  docTitle: 'Note 01 · The Funny Board Case | Hidden Note',
+  docTitle: 'Note 01 · The FUN Board Case | Hidden Note',
   back: '← Case archive / NOTE 01',
-  title: 'The Funny Board Case',
+  title: 'The FUN Board Case',
   subtitle: 'Last Customers at the Board Game Café',
   timeLeft: 'Time left',
   cluesFound: 'Clues found',
@@ -92,7 +92,7 @@ ui: {
   storeroom: 'Storeroom',
   showcaseSign: '⚠ About this showcase',
   wallNote: '(other side: back hallway)',
-  intro: `<p>10:02 a.m., November 17. Doyun Han's birthday. The first thing the owner of the Funny Board café did when he got in was open the showcase. Yesterday, for one day only, it had held a first-edition limited set of <i>Dragon Bazaar</i>, and he wanted it safely back home.</p>
+  intro: `<p>10:02 a.m., November 17. Doyun Han's birthday. The first thing the owner of the FUN Board café did when he got in was open the showcase. Yesterday, for one day only, it had held a first-edition limited set of <i>Dragon Bazaar</i>, and he wanted it safely back home.</p>
   <p>He picked up one of the gold-plated meeples, and gold came off on his thumb. He rubbed it. More came off. Same with the next one, and the one after that. <b>All twenty were plain wooden meeples with a coat of gold paint.</b> The real ones, worth thousands on their own, were gone.</p>
   <p>The showcase was locked. Not a scratch on the glass or the lock.</p>
   <p>From 21:30, when he left last night, until 22:20, when the doors were locked, four people were in the café: his part-timer, two regulars, and the guy who runs the shop next door. He knows every one of them.</p>
@@ -215,7 +215,7 @@ clues: {
   c_t_yoon: {title: 'Mirae: comes clean', text: '"…Okay, yes, I took the photo. I wanted to know what it was worth. I took it around 9:55, right up against the glass, but it was already locked and I didn\'t touch a thing. I said I didn\'t know about it because… it was embarrassing."'},
 },
 
-chatHeader: `<div style="background:#1f2229;color:#eee;border-radius:10px;padding:10px 12px;margin:-4px -4px 6px"><div style="display:flex;justify-content:space-between;font-weight:700"><span>Funny Board Regulars</span><span style="color:#8a8f99;font-weight:400;font-size:12px">👥 13</span></div><div style="margin-top:6px;font-size:11px;color:#aab;line-height:1.7">Members: Doyun Han (admin) · Haneul Kim · Minseok Jung · Sora Lee · Taesu Park · Mirae Yoon · Sejin Oh · Daeun Kang · Junho Moon · Yuna Baek · Jihoo Song · Chaewon Lim · Gibeom Hong</div></div>`,
+chatHeader: `<div style="background:#1f2229;color:#eee;border-radius:10px;padding:10px 12px;margin:-4px -4px 6px"><div style="display:flex;justify-content:space-between;font-weight:700"><span>FUN Board Regulars</span><span style="color:#8a8f99;font-weight:400;font-size:12px">👥 13</span></div><div style="margin-top:6px;font-size:11px;color:#aab;line-height:1.7">Members: Doyun Han (admin) · Haneul Kim · Minseok Jung · Sora Lee · Taesu Park · Mirae Yoon · Sejin Oh · Daeun Kang · Junho Moon · Yuna Baek · Jihoo Song · Chaewon Lim · Gibeom Hong</div></div>`,
 chat: {
   days: {'7일 전': '7 days ago', '5일 전': '5 days ago', '3일 전': '3 days ago', '사건 당일': 'The day of'},
   names: {'한도윤': 'Doyun Han', '김하늘': 'Haneul Kim', '정민석': 'Minseok Jung', '박태수': 'Taesu Park', '이소라': 'Sora Lee', '윤미래': 'Mirae Yoon'},
