@@ -335,7 +335,7 @@ const TAP={
   drawer1(){if(!S.f.d1){S.f.d1=1;give('driver');save();bag();return say('첫 칸: 일자 드라이버.')}say('첫 칸은 비었다.')},
   drawer2(){if(S.f.d2)return say('둘째 칸은 비었다.');if(!has('key'))return say('잠겨 있다. 열쇠 구멍.');S.f.d2=1;take('key');give('thermos');give('pencil');save();draw();say('열쇠가 맞았다. 보온병과 연필.')},
   drawer3(){say('셋째 칸엔 숫자 바퀴 넷. 바퀴 아래에 칠한 정도가 다른 동그라미가 새겨져 있다. (자물쇠는 다음 업데이트)')},
-  note(){openCard('선배 메모 뒷면',`<p class="hand">전보 보내면 본청에서 바로 확인 답신 와.<br>"수신. 구름재 하나" 이렇게.<br>안 오면 다시 보내고.</p>`)},
+  note(){openCard('선배 메모 뒷면',`<p class="hand">전보 보내면 본청에서 바로 확인 답신 와.<br>"수신. 구름재 하나" 이렇게.<br>(구름재 하나 = 우리 관측소 호출부호. 옛날엔 관측원이 둘이라 「둘」도 있었는데 79년에 없어졌대.)<br>안 오면 다시 보내고.</p>`)},
   calendar(){say('11월 13일에 빨간 동그라미. 선배가 쳐 둔 건 아니다. 잉크가 오래됐다.')},
   torch(){S.f.torchTaken=1;give('torch');save();draw();say(dark()?'손전등을 켰다.':'손전등을 챙겼다.')},
   baro(){if(dark()&&!has('torch'))return say('어둡다.');if(S.f.baro)return say('기울어진 기압계. 바늘이 계속 내려간다.');if(!S.f.sawDrawing&&!S.f.baroPoke){S.f.baroPoke=1;return say('기압이 내려가고 있다. 액자가 벽에서 살짝 들떠 있다.')}S.f.baro=1;save();draw();say('창의 그림처럼 기압계를 밀어 보았다. 액자가 기울며 뒤에서 열쇠가 걸려 있다.')},
@@ -391,7 +391,7 @@ function openTele(){
   const send=()=>{const v=inp.value.replace(/[^0-9]/g,'');
     if(v==='11026'){S.f.sent21=1;save();SND.type(16);$('#tape').textContent='구름재 하나 21시\n11026';
       setTimeout(()=>{SND.type(22);$('#tape').textContent+='\n\n수신. 구름재 둘 확인. 791113 2100';S.f.reply=1;save();
-        $('#card').insertAdjacentHTML('beforeend','<p class="hand">…구름재 <b>둘</b>? 날짜는 1979년 11월 13일 21시.</p><p><button class="btn primary" id="nextSlot">다음 정시까지</button></p>');
+        $('#card').insertAdjacentHTML('beforeend','<p class="hand">…구름재 <b>둘</b>? 우리 호출부호는 「구름재 하나」다. 「둘」은 1979년에 없어진 부호라고 했는데.<br>찍힌 날짜는 1979년 11월 13일 21시. 꼭 30년 전 오늘이다.</p><p><button class="btn primary" id="nextSlot">다음 정시까지</button></p>');
         $('#nextSlot').onclick=()=>{closeCard();toSlot1()}},1800);return}
     const R={'11031':'온도계가 둘이다. 젖은 천을 감은 쪽은 기온이 아니다.','01026':'둘째 칸은 영상·영하 표시다.','1026':'다섯 자리라고 했다.','10026':'영하다.','1126':'기온은 ×10, 세 자리.'};
     say(R[v]||(v.length!==5?'다섯 자리 묶음이다.':'답신이 오지 않는다. 숫자를 다시 보자.'))};
