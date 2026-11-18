@@ -98,6 +98,7 @@ header{display:flex;align-items:flex-end;gap:10px 16px;flex-wrap:wrap;margin-bot
 .ns-ex{display:flex;align-items:center;gap:10px;margin-top:6px;padding:10px 8px;background:#f1e7cf;border-left:4px solid var(--stamp)}
 .ns-ex>span{width:72px;font-size:12px;color:#5a3a2a}
 .ns-ex .ns-cell b{border-color:var(--stamp);color:var(--stamp)}
+.ns-rule{margin:4px 0 0;font-size:11.5px;color:#7a7262}
 .ns-pen{font-family:var(--hand);font-size:21px;color:#1d3f8a;margin:10px 0 0;transform:rotate(-1deg)}
 </style>
 </head>
@@ -380,15 +381,13 @@ const TAP={
   keyspot(){S.f.keyTaken=1;give('key');SND.found();save();draw();say('장비 열쇠를 챙겼다.')},
   drums(){say('기록계 원통이 두 개 나란히 돈다. 빨간 펜은 기압, 파란 펜은 바람. 원통은 손으로도 돌아간다.')},
   table(){
-    const box=(cells)=>'<div class="ns-boxes">'+cells.map(([c,l,k])=>`<div class="ns-cell${k?' '+k:''}"><b>${c}</b><small>${l}</small></div>`).join('')+'</div>';
-    openCard('관측실 남쪽 벽에 붙은 종이',`<div class="ns-sheet">
-      <div class="ns-tape"></div>
-      <h4>간이 전보 숫자표</h4><p class="ns-sub">정시에 잰 값만, 묶음 하나는 다섯 칸</p>
-      <div class="ns-row"><div class="ns-name">기온</div>${box([['1','번호','fix'],['s','영상 0<br>영하 1'],['T','기온'],['T','×10'],['T','세 자리']])}</div>
-      <div class="ns-row"><div class="ns-name">바람</div>${box([['2','번호','fix'],['d','풍향'],['d','각도÷10'],['f','풍속'],['f','m/s']])}</div>
-      <div class="ns-row"><div class="ns-name">구름</div>${box([['3','번호','fix'],['h','구름'],['h','높이 m'],['h','÷10'],['h','네 자리']])}</div>
-      <div class="ns-ex"><span>예) 영상 5.3℃</span>${box([['1','',''],['0','영상',''],['0','',''],['5','',''],['3','','']])}</div>
-      <p class="ns-pen">보낼 땐 칸 구분 없이 붙여서 10053 — 서윤</p>
+    const box=s=>'<div class="ns-boxes">'+[...s].map((c,i)=>`<div class="ns-cell${i?'':' fix'}"><b>${c}</b></div>`).join('')+'</div>';
+    const row=(n,s,r)=>`<div class="ns-row"><div class="ns-name">${n}</div><div style="flex:1">${box(s)}<p class="ns-rule">${r}</p></div></div>`;
+    openCard('관측실 남쪽 벽에 붙은 종이',`<div class="ns-sheet"><div class="ns-tape"></div>
+      <h4>간이 전보 숫자표</h4>
+      ${row('기온','1sTTT','s 영상 0 · 영하 1　TTT 기온×10')}
+      ${row('바람','2ddff','dd 풍향÷10　ff 풍속 m/s')}
+      ${row('구름','3hhhh','hhhh 구름 높이 m÷10')}
     </div>`)},
   symbols(){say('일기도 운량 기호. 동그라미를 칠한 만큼 하늘이 구름으로 덮였다는 뜻이다.')},
   teletype(){if(dark())return say('전원이 나가 텔레타이프가 죽어 있다.');openTele()},
