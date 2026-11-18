@@ -14,6 +14,9 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
+<script src="../../lang.js"></script>
+<script>window.hn=window.hn||function(){(hn.q=hn.q||[]).push(arguments)}</script>
+<script type="module" src="../../analytics.js"></script>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/hada0127/hada-type-levelup@v2026.10.21/css/levelup-subset.css">
 <link rel="stylesheet" href="../../fonts/fonts.css">
@@ -287,9 +290,10 @@ const fresh=()=>({v:'cover',open:0,seen:0,clear:{},hints:{},ms:0,started:false,d
      7:{pulled:[]},
      8:{dial:[0,0,0,0],tray:[2,0,3,1],slots:[],sp:false,fi:0,crank:false,open:false,out:false}}});
 let S=fresh();
-try{const d=JSON.parse(localStorage.getItem(SAVE_KEY)||'null');if(d){const f=fresh();S={...f,...d,w:{...f.w}};for(const k in f.w)S.w[k]={...f.w[k],...((d.w||{})[k]||{})}}}catch{}
+let resumed=false;
+try{const d=JSON.parse(localStorage.getItem(SAVE_KEY)||'null');if(d){const f=fresh();S={...f,...d,w:{...f.w}};for(const k in f.w)S.w[k]={...f.w[k],...((d.w||{})[k]||{})};resumed=S.started&&!S.done}}catch{}
 const save=()=>{try{localStorage.setItem(SAVE_KEY,JSON.stringify(S))}catch{}};
-addEventListener('pagehide',save);
+addEventListener('pagehide',()=>{save();if(S.started&&!S.done)ana('case_left',{stage:'investigating',location:'chapter_'+pageNo(),clue_count:Object.keys(S.clear).length,minutes_used:anaMinutes(),play_minutes:anaMinutes()},true)});
 let DEV=null,NEWSLOT=null,TX=300,TY=170;
 const pageNo=()=>S.v[0]==='p'?+S.v.slice(1):0;
 const W=()=>S.w[pageNo()];
@@ -307,6 +311,11 @@ const dark=p=>p===3?!S.w[3].brk[2]:p===5?!power():p===6?!(S.w[5].run&&power()):t
 
 const fmt=ms=>{const s=Math.floor(ms/1000);return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`};
 const hintTotal=()=>Object.values(S.hints).reduce((a,b)=>a+b,0);
+const anaMinutes=()=>Math.round(S.ms/60000);
+const ana=(name,params={},beacon=false)=>{if(window.hn)window.hn(name,params,beacon)};
+const anaChapter=(name,p)=>ana(name,{chapter:p,minutes_used:anaMinutes()});
+const anaAttempts={};
+const anaPuzzle=(p,ok)=>{const puzzle='lock_'+p,attempt=anaAttempts[puzzle]=(anaAttempts[puzzle]||0)+1;ana('puzzle_tried',{puzzle,outcome:ok?'solved':'wrong',attempt,minutes_used:anaMinutes()})};
 const frontier=()=>Math.min(Math.max(S.open,1),LAST);
 function hintPage(){const p=pageNo();return p&&p<=S.open&&!S.clear[p]?p:frontier()}
 function renderStats(){$('#time').textContent=fmt(S.ms);$('#hintCount').textContent=hintTotal();$('#btnHint').disabled=!S.started||S.done}
@@ -315,8 +324,10 @@ setInterval(()=>{if(S.started&&!S.done&&!document.hidden){S.ms+=1000;renderStats
 function toast(msg){const t=$('#toast');t.textContent=msg;t.classList.add('on');clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove('on'),Math.min(7500,2600+msg.length*45))}
 function record(ms,ok=true){try{const k='hn.clear.note05',p=JSON.parse(localStorage.getItem(k)||'{}');localStorage.setItem(k,JSON.stringify({ok:ok||!!p.ok,best:ok?Math.min(p.best||Infinity,ms):p.best||null,last:ms,at:Date.now()}))}catch{}}
 function clearP(p){
+  anaChapter('chapter_solved',p);
   S.clear[p]=true;S.open=Math.max(S.open,p+1);
   if(p>=LAST&&!S.done){S.done=true;S.hold=null;record(S.ms)}
+  if(p>=LAST)ana('case_finished',{grade:'solved',points:1,clue_count:LAST,clue_total:LAST,minutes_used:anaMinutes(),play_minutes:anaMinutes()});
   save();refresh();
 }
 
@@ -777,19 +788,20 @@ const ACT={
   dial:b=>{const w=W();const i=+b.dataset.i;w.dial[i]=(w.dial[i]+ +b.dataset.d)%10;save();refresh()},
   pull:()=>{const p=pageNo(),w=W(),c=w.dial.join('');
     if(p===2){
-      if(c==='826'){w.open=true;DEV=null;save();refresh();toast('손잡이가 돌아간다. 열쇠함 문이 열리고, 고리에 열쇠 꾸러미가 걸려 있다.');return}
+      if(c==='826'){anaPuzzle(p,true);w.open=true;DEV=null;save();refresh();toast('손잡이가 돌아간다. 열쇠함 문이 열리고, 고리에 열쇠 꾸러미가 걸려 있다.');return}
       const set=[...c].sort().join('');
+      anaPuzzle(p,false);
       toast(set==='268'?'숫자는 맞는 것 같은데 순서가 틀린 모양이다.'
         :c.includes('1')&&[...c].filter(x=>x!=='1').every(x=>'826'.includes(x))&&c!=='111'?'X 친 자리는 바꾸기 전 번호다.'
         :c.includes('5')&&c.includes('7')?'시트를 거꾸로 댄 것 같다. 파란 글씨가 어느 쪽을 보고 있었더라?'
         :'손잡이가 꿈쩍도 안 한다.');return}
     const P=PULL[p];
-    if(c===P.ok){w.open=true;DEV=null;
+    if(c===P.ok){anaPuzzle(p,true);w.open=true;DEV=null;
       if(p===1){clearP(1);toast('자물쇠가 풀렸다. 셔터를 밀어 올리자 먼지가 쏟아진다. 손전등을 비추니 매표소 바닥 먼지 위에 구두 발자국이 찍혀 있다. 안쪽 열쇠함 앞까지 이어진다. 아직 선명하다.');return}
       if(p===4){save();refresh();toast('자물쇠가 열렸다. 철망 문을 젖히자 317번 캔이 보인다. 다른 캔보다 가볍다.');return}
       if(p===8){save();refresh();toast('빗장이 빠졌다. 끼워져 있던 종이가 손에 떨어졌다. 그런데 문을 밀어도 꿈쩍 않는다. 문틀 옆 작은 상자 「반입문 전기 잠금」의 등이 꺼져 있다.');return}}
-    if(p===4&&!P.msg[c]&&CANS.some(([n,,st])=>String(n)===c&&st)){toast('그 번호 캔은 업체 반출 목록에 있다.');return}
-    toast(P.msg[c]||'자물쇠가 꿈쩍도 안 한다.')},
+    if(p===4&&!P.msg[c]&&CANS.some(([n,,st])=>String(n)===c&&st)){anaPuzzle(p,false);toast('그 번호 캔은 업체 반출 목록에 있다.');return}
+    anaPuzzle(p,false);toast(P.msg[c]||'자물쇠가 꿈쩍도 안 한다.')},
   brk:b=>{const w=S.w[3],i=+b.dataset.i;
     if(w.brk[i]){w.brk[i]=0;save();refresh();return}
     w.brk[i]=1;
@@ -1017,7 +1029,7 @@ function renderBag(){
   $('#bag').querySelectorAll('.slot.has[data-b]').forEach(b=>b.onclick=()=>{if(FD&&FD.skip){FD=null;return}hold(b.dataset.b)});
   const bk=$('#bag [data-book]');if(bk)bk.onclick=openBook;
 }
-function go(v){if(!canView(v))return;if(v!==S.v)DEV=null;S.v=v;save();render(true);scrollTo({top:0,behavior:'smooth'});
+function go(v){if(!canView(v))return;if(v!==S.v)DEV=null;S.v=v;if(v[0]==='p')anaChapter('chapter_opened',+v.slice(1));save();render(true);scrollTo({top:0,behavior:'smooth'});
   if(v[0]==='p'&&S.started&&(S.seen||0)<+v.slice(1))toast('일지에 아직 안 읽은 쪽이 있다. 소지품의 일지를 눌러 펼쳐 보자.')}
 
 // ── 쪽 ──────────────────────────────
@@ -1095,8 +1107,8 @@ function render(anim){
   const pg=$('#page'),v=S.v;
   pg.innerHTML=v==='cover'?pageCover():v==='end'?pageEnd():pageLevel(+v.slice(1));
   if(!anim)pg.querySelectorAll('.turn').forEach(e=>e.classList.remove('turn'));
-  if(v==='cover')$('#start').onclick=()=>{if(!S.started){S.started=true;S.open=1;go('p1');openBook();return}go('p'+frontier())};
-  if(v==='end')$('#again').onclick=()=>{if(confirm('처음부터 다시 할까요? 지금 기록은 지워져요.')){S=fresh();DEV=null;save();render(true)}};
+  if(v==='cover')$('#start').onclick=()=>{if(!S.started){ana('case_started');S.started=true;S.open=1;go('p1');openBook();return}go('p'+frontier())};
+  if(v==='end')$('#again').onclick=()=>{if(confirm('처음부터 다시 할까요? 지금 기록은 지워져요.')){ana('case_restarted');S=fresh();DEV=null;save();render(true)}};
   renderBag();bindScene();bindDev();SND.after();
 }
 const refresh=()=>render(false);
@@ -1118,13 +1130,15 @@ function openHint(){
     <div class="actions"><button class="btn" id="mclose">닫기</button></div>`;
   $('#mbg').classList.add('on');
   $('#mclose').onclick=closeM;
-  const pe=$('#peel');if(pe)pe.onclick=()=>{S.hints[p]=got+1;save();renderStats();openHint()};
+  const pe=$('#peel');if(pe)pe.onclick=()=>{S.hints[p]=got+1;ana('hint_revealed',{chapter:p,level:got+1,minutes_used:anaMinutes()});save();renderStats();openHint()};
 }
 function closeM(){$('#mbg').classList.remove('on')}
 $('#mbg').onclick=e=>{if(e.target.id==='mbg')closeM()};
 addEventListener('keydown',e=>{if(e.key==='Escape'){closeM();if(S.hold){S.hold=null;save();renderBag();const sc=$('#scene');if(sc)sc.classList.forEach(c=>c.startsWith('h-')&&sc.classList.remove(c))}}});
 $('#btnHint').onclick=openHint;
 
+ana('case_intro_viewed');
+if(resumed)ana('case_resumed',{clue_count:Object.keys(S.clear).length,minutes_used:anaMinutes()});
 render(true);
 </script>
 </body>

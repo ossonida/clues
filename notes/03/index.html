@@ -14,6 +14,9 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
+<script src="../../lang.js"></script>
+<script>window.hn=window.hn||function(){(hn.q=hn.q||[]).push(arguments)}</script>
+<script type="module" src="../../analytics.js"></script>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/hada0127/hada-type-levelup@v2026.10.21/css/levelup-subset.css">
 <link rel="stylesheet" href="../../fonts/fonts.css">
@@ -310,14 +313,18 @@ const ROOM_NAME={duty:'숙직실',office:'교무실',class:'교실',store:'창�
 const fresh=()=>({v:'cover',open:0,solved:{},hints:{},wrong:{},ms:0,started:false,done:false,
   rooms:{duty:true,office:false,class:false,store:false,music:false,bell:false,hall:false},tools:{key:false,torch:false,pencil:false,eraser:false},torch:false,held:null,rubbed:false,seatClean:false,cab:[0,0,0],drawer:false});
 let S=fresh();
-try{const d=JSON.parse(localStorage.getItem(SAVE_KEY)||'null');if(d)S={...fresh(),...d,rooms:{...fresh().rooms,...(d.rooms||{})},tools:{...fresh().tools,...(d.tools||{})}}}catch{}
+let resumed=false;
+try{const d=JSON.parse(localStorage.getItem(SAVE_KEY)||'null');if(d){S={...fresh(),...d,rooms:{...fresh().rooms,...(d.rooms||{})},tools:{...fresh().tools,...(d.tools||{})}};resumed=S.started&&!S.done}}catch{}
 const save=()=>{try{localStorage.setItem(SAVE_KEY,JSON.stringify(S))}catch{}};
-addEventListener('pagehide',save);
+addEventListener('pagehide',()=>{save();if(S.started&&!S.done)ana('case_left',{stage:'investigating',location:'view_'+S.v,clue_count:Object.keys(S.solved).length,minutes_used:anaMinutes(),play_minutes:anaMinutes()},true)});
 let NEWTOOL=null,NEWROOM=null;
 
 const fmt=ms=>{const s=Math.floor(ms/1000);return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`};
 const hintTotal=()=>Object.values(S.hints).reduce((a,b)=>a+b,0);
 const wrongTotal=()=>Object.values(S.wrong).reduce((a,b)=>a+b,0);
+const anaMinutes=()=>Math.round(S.ms/60000);
+const ana=(name,params={},beacon=false)=>{if(window.hn)window.hn(name,params,beacon)};
+const anaChapter=(name,p)=>ana(name,{chapter:p,minutes_used:anaMinutes()});
 const frontier=()=>Math.min(S.open,LAST);   // 지금 풀어야 할 장
 // 힌트: 보고 있는 장이나 방에 걸린 장이 열려 있고 아직 못 풀었으면 그 장, 아니면 지금 풀어야 할 장
 const ROOM_PAGE={office:2,class:3,store:4,music:4,bell:6};
@@ -370,7 +377,7 @@ function renderTools(){
     else{S.held=S.held===t?null:t;save();renderTools()}
   });
 }
-function go(v){if(!canView(v))return;S.v=v;if(isRoom(v))S.here=v;save();render(true);scrollTo({top:0,behavior:'smooth'})}
+function go(v){if(!canView(v))return;S.v=v;if(isRoom(v)){S.here=v;ana('location_opened',{location:v,minutes_used:anaMinutes()})}else if(v[0]==='p')anaChapter('chapter_opened',+v.slice(1));save();render(true);scrollTo({top:0,behavior:'smooth'})}
 
 // ── 일지 ──────────────────────────────
 // [시각, 장소, 이상 유무(true=이상 있음), 비고]
@@ -607,9 +614,10 @@ function bindCabinet(){
   $('#pull').onclick=()=>{
     const code=S.cab.join(''),ans=PAGES[2].code,m=$('#lockMsg');
     if(code===ans){
+      ana('puzzle_tried',{puzzle:'chapter_2',outcome:'solved',attempt:(S.wrong[2]||0)+1,minutes_used:anaMinutes()});anaChapter('chapter_solved',2);
       S.solved[2]=ans;S.open=Math.max(S.open,3);S.tools.torch=true;NEWTOOL='torch';openRoom('class');save();
       render(false);toast('캐비닛이 열렸다. 손전등과 「교실」 열쇠를 챙겼다.');return}
-    S.wrong[2]=(S.wrong[2]||0)+1;save();
+    S.wrong[2]=(S.wrong[2]||0)+1;ana('puzzle_tried',{puzzle:'chapter_2',outcome:'wrong',attempt:S.wrong[2],minutes_used:anaMinutes()});save();
     m.textContent=code==='436'?'지각까지 센 것 같다.':sameDigits(code,ans)?'숫자는 맞는 것 같은데… 순서가 아닌가?':'철컥거리기만 하고 안 열린다.';
     lk.classList.remove('shake');void lk.offsetWidth;lk.classList.add('shake');
   };
@@ -657,9 +665,9 @@ function bindRope(){
     cur++;show();$('#ropeMsg').textContent='';clearTimeout(pealT);
     pealT=setTimeout(()=>{
       peal.push(cur);cur=0;show();
-      if(peal.join()===PEAL.join()){finish();return}
+      if(peal.join()===PEAL.join()){ana('puzzle_tried',{puzzle:'chapter_6',outcome:'solved',attempt:(S.wrong[6]||0)+1,minutes_used:anaMinutes()});finish();return}
       if(peal.length>=PEAL.length){
-        S.wrong[6]=(S.wrong[6]||0)+1;save();
+        S.wrong[6]=(S.wrong[6]||0)+1;ana('puzzle_tried',{puzzle:'chapter_6',outcome:'wrong',attempt:S.wrong[6],minutes_used:anaMinutes()});save();
         $('#ropeMsg').textContent=sameDigits(peal.join(''),PEAL.join(''))?'세 사람 종소리 같기는 한데… 순서가 아닌가?':'종소리가 빗속으로 흩어진다. 아무 일도 없다.';
         peal=[];setTimeout(show,1600);
       }else if(peal.length===1&&peal[0]===3){
@@ -671,7 +679,9 @@ function bindRope(){
 // 사건 대장에 보일 내 기록 (hn.clear.noteNN: 깼는지, 가장 빠른 시간, 마지막 시간)
 function record(ms,ok=true){try{const k='hn.clear.note03',p=JSON.parse(localStorage.getItem(k)||'{}');localStorage.setItem(k,JSON.stringify({ok:ok||!!p.ok,best:ok?Math.min(p.best||Infinity,ms):p.best||null,last:ms,at:Date.now()}))}catch{}}
 function finish(){
+  anaChapter('chapter_solved',6);
   S.solved[6]='4-2-3';S.done=true;S.open=LAST;save();record(S.ms);
+  ana('case_finished',{grade:'solved',points:1,clue_count:6,clue_total:6,minutes_used:anaMinutes(),play_minutes:anaMinutes()});
   $('#ropeMsg').textContent='종소리가 멎자, 빗속에서 불빛 하나가 다가온다.';
   $('#pullRope').disabled=true;
   setTimeout(()=>{S.v='end';save();render(true)},2200);
@@ -720,7 +730,7 @@ function render(anim){
   const pg=$('#page');pg.innerHTML=view();
   if(!anim)pg.querySelectorAll('.turn').forEach(e=>e.classList.remove('turn'));
   pg.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
-  if(S.v==='cover')$('#start').onclick=()=>{if(!S.started){S.started=true;S.open=1}go('p'+frontier())};
+  if(S.v==='cover')$('#start').onclick=()=>{if(!S.started){ana('case_started');S.started=true;S.open=1}go('p'+frontier())};
   const f=$('#pw');if(f)f.onsubmit=e=>{e.preventDefault();check(+S.v.slice(1))};
   if(S.v==='map')pg.querySelectorAll('.rm').forEach(g=>{
     const enter=()=>{const r=g.dataset.r;
@@ -741,7 +751,7 @@ function render(anim){
     if(S.v==='bell')bindRope();
   }
   if(S.v==='end'){
-    $('#again').onclick=()=>{if(confirm('처음부터 다시 할까요? 지금 기록은 지워져요.')){S=fresh();save();render(true)}};
+    $('#again').onclick=()=>{if(confirm('처음부터 다시 할까요? 지금 기록은 지워져요.')){ana('case_restarted');S=fresh();save();render(true)}};
   }
   renderTools();applyTorch();
 }
@@ -760,6 +770,7 @@ function check(p){
   const inp=$('#ans'),v=norm(inp.value),pg=PAGES[p],msg=$('#msg');
   if(!v)return;
   if(v===norm(pg.ans)||(pg.alt||[]).some(a=>norm(a)===v)){
+    ana('puzzle_tried',{puzzle:'chapter_'+p,outcome:'solved',attempt:(S.wrong[p]||0)+1,minutes_used:anaMinutes()});anaChapter('chapter_solved',p);
     S.solved[p]=pg.ans;S.open=Math.max(S.open,p+1);
     if(p===5)S.rooms.bell=true;
     save();render(false);
@@ -767,7 +778,7 @@ function check(p){
     if(p===5)NEWROOM='bell';
     return;
   }
-  S.wrong[p]=(S.wrong[p]||0)+1;save();
+  S.wrong[p]=(S.wrong[p]||0)+1;ana('puzzle_tried',{puzzle:'chapter_'+p,outcome:'wrong',attempt:S.wrong[p],minutes_used:anaMinutes()});save();
   const a=norm(pg.ans),said=pg.say&&pg.say[v];
   const near=(pg.near||[]).includes(v)||(a.length>=3&&lev(v,a)<=1);
   msg.className='msg'+(near&&!said?' near':'');
@@ -791,7 +802,7 @@ function openHint(){
     <div class="actions"><button class="btn" id="mclose">닫기</button></div>`;
   $('#mbg').classList.add('on');
   $('#mclose').onclick=closeM;
-  const pe=$('#peel');if(pe)pe.onclick=()=>{S.hints[p]=got+1;save();renderStats();openHint()};
+  const pe=$('#peel');if(pe)pe.onclick=()=>{S.hints[p]=got+1;ana('hint_revealed',{chapter:p,level:got+1,minutes_used:anaMinutes()});save();renderStats();openHint()};
 }
 function closeM(){$('#mbg').classList.remove('on')}
 $('#mbg').onclick=e=>{if(e.target.id==='mbg')closeM()};
@@ -799,6 +810,8 @@ addEventListener('keydown',e=>{if(e.key==='Escape')closeM()});
 $('#btnHint').onclick=openHint;
 addEventListener('resize',applyTorch);
 
+ana('case_intro_viewed');
+if(resumed)ana('case_resumed',{clue_count:Object.keys(S.solved).length,minutes_used:anaMinutes()});
 render(true);
 </script>
 </body>

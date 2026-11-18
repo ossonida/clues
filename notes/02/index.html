@@ -14,6 +14,9 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
+<script src="../../lang.js"></script>
+<script>window.hn=window.hn||function(){(hn.q=hn.q||[]).push(arguments)}</script>
+<script type="module" src="../../analytics.js"></script>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/hada0127/hada-type-levelup@v2026.10.21/css/levelup-subset.css">
 <link rel="stylesheet" href="../../fonts/fonts.css">
@@ -275,9 +278,10 @@ const GRIDF=[[['사','blue'],['랑','blue'],['칠','green'],['구','green']],
 const fresh=()=>({p:0,open:0,solved:{},hints:{},wrong:{},ms:0,started:false,rubbed:false,unfolded:false,
   tools:{bm:false,lamp:false},light:false,torn:{x:.1,y:1.6,r:180,done:false},lock:[0,0,0,0],done:false});
 let S=fresh();
-try{const d=JSON.parse(localStorage.getItem(SAVE_KEY)||'null');if(d)S={...fresh(),...d,tools:{...fresh().tools,...(d.tools||{})}}}catch{}
+let resumed=false;
+try{const d=JSON.parse(localStorage.getItem(SAVE_KEY)||'null');if(d){S={...fresh(),...d,tools:{...fresh().tools,...(d.tools||{})}};resumed=S.started&&!S.done}}catch{}
 const save=()=>{try{localStorage.setItem(SAVE_KEY,JSON.stringify(S))}catch{}};
-addEventListener('pagehide',save);
+addEventListener('pagehide',()=>{save();if(S.started&&!S.done)ana('case_left',{stage:'investigating',location:'chapter_'+S.p,clue_count:Object.keys(S.solved).length,minutes_used:anaMinutes(),play_minutes:anaMinutes()},true)});
 let TOOL=null;          // 지금 손에 든 도구: 'pencil' | 'bm' | null
 const STROKES={};       // 장마다 문지른 자국 (새로고침하면 사라짐, 2장 눌린 자국은 S.rubbed로 기억)
 const BM={};            // 장마다 책갈피 위치 {x,y,turns}
@@ -287,6 +291,9 @@ const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 const fmt=ms=>{const s=Math.floor(ms/1000);return `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`};
 const hintTotal=()=>Object.values(S.hints).reduce((a,b)=>a+b,0);
 const wrongTotal=()=>Object.values(S.wrong).reduce((a,b)=>a+b,0);
+const anaMinutes=()=>Math.round(S.ms/60000);
+const ana=(name,params={},beacon=false)=>{if(window.hn)window.hn(name,params,beacon)};
+const anaChapter=(name,p)=>ana(name,{chapter:p,minutes_used:anaMinutes()});
 function renderStats(){$('#time').textContent=fmt(S.ms);$('#hintCount').textContent=hintTotal();$('#btnHint').disabled=!S.started||S.done||!PAGES[S.p].hints}
 let tick=0;
 setInterval(()=>{if(S.started&&!S.done&&!document.hidden){S.ms+=1000;renderStats();if(++tick%5===0)save()}},1000);
@@ -323,7 +330,7 @@ function renderTools(){
   });
 }
 // 장을 넘기면 들고 있던 연필·책갈피는 내려놓고 스탠드도 끈다 (책갈피는 그 장 제자리로)
-function go(i){if(!canOpen(i))return;if(i!==S.p){TOOL=null;S.light=false;delete BM[S.p]}S.p=i;save();render(true);scrollTo({top:0,behavior:'smooth'})}
+function go(i){if(!canOpen(i))return;if(i!==S.p){TOOL=null;S.light=false;delete BM[S.p]}S.p=i;save();if(i>0&&i<END)anaChapter('chapter_opened',i);render(true);scrollTo({top:0,behavior:'smooth'})}
 
 // ── 페이지 내용 ──────────────────────────────
 const L=(cls,html,no)=>`<p class="ln ${cls}">${no?`<span class="no">${no}</span>`:''}${html}</p>`;
@@ -500,13 +507,13 @@ function render(anim){
   $('#page').innerHTML=VIEWS[p]();
   if(!anim)$('#page').querySelectorAll('.turn').forEach(e=>e.classList.remove('turn'));
   $('#page').querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(+b.dataset.go));
-  if(p===0)$('#start').onclick=()=>{S.started=true;S.open=Math.max(S.open,1);go(1)};
+  if(p===0)$('#start').onclick=()=>{if(!S.started)ana('case_started');S.started=true;S.open=Math.max(S.open,1);go(1)};
   const f=$('#pw');if(f)f.onsubmit=e=>{e.preventDefault();check(p)};
   if(p===3){const c=$('#corner');if(c)c.onclick=()=>{S.unfolded=true;save();render(false);gain('bm','접힌 틈에서 구멍 뚫린 책갈피가 떨어졌다. 소지품에 넣었다.');renderTools()}}
   if(p===6)bindTorn();
   if(p===7)bindLock();
   if(p===END){
-    $('#again').onclick=()=>{if(confirm('처음부터 다시 할까요? 지금 기록은 지워져요.')){S=fresh();for(const k in STROKES)delete STROKES[k];for(const k in BM)delete BM[k];save();render(true)}};
+    $('#again').onclick=()=>{if(confirm('처음부터 다시 할까요? 지금 기록은 지워져요.')){ana('case_restarted');S=fresh();for(const k in STROKES)delete STROKES[k];for(const k in BM)delete BM[k];save();render(true)}};
   }
   setupSheet();
 }
@@ -537,6 +544,8 @@ function check(p){
   const inp=$('#ans'),v=norm(inp.value),pg=PAGES[p],msg=$('#msg');
   if(!v)return;
   if(v===norm(pg.ans)||(pg.alt||[]).some(a=>norm(a)===v)){
+    ana('puzzle_tried',{puzzle:'chapter_'+p,outcome:'solved',attempt:(S.wrong[p]||0)+1,minutes_used:anaMinutes()});
+    anaChapter('chapter_solved',p);
     S.solved[p]=pg.ans;S.open=Math.max(S.open,p+1);save();
     render(false);
     if(p===3&&!S.tools.bm)gain('bm','책상 밑에 떨어져 있던 구멍 뚫린 책갈피를 주웠다. 소지품에 넣었다.');
@@ -545,6 +554,7 @@ function check(p){
     renderTools();return;
   }
   S.wrong[p]=(S.wrong[p]||0)+1;save();
+  ana('puzzle_tried',{puzzle:'chapter_'+p,outcome:'wrong',attempt:S.wrong[p],minutes_used:anaMinutes()});
   const a=norm(pg.ans),said=pg.say&&pg.say[v];
   const near=pg.near.includes(v)||(a.length>=4&&lev(v,a)<=1)||(/^\d{4}$/.test(a)&&/^\d{4}$/.test(v)&&sameDigits(a,v));
   msg.className='msg'+(near&&!said?' near':'');
@@ -558,8 +568,9 @@ function bindLock(){
   $('#lock').querySelectorAll('.dial button').forEach(b=>b.onclick=()=>{const i=+b.dataset.i;S.lock[i]=(S.lock[i]+(+b.dataset.d)+10)%10;b.parentNode.querySelector('b').textContent=S.lock[i];save()});
   $('#pull').onclick=()=>{
     const code=S.lock.join(''),m=$('#lockMsg'),ans=PAGES[7].code;
-    if(code===ans){S.done=true;S.p=END;TOOL=null;S.light=false;save();record(S.ms);toast('철컥!');render(true);return}
+    if(code===ans){ana('puzzle_tried',{puzzle:'chapter_7',outcome:'solved',attempt:(S.wrong[7]||0)+1,minutes_used:anaMinutes()});anaChapter('chapter_solved',7);S.done=true;S.p=END;TOOL=null;S.light=false;save();record(S.ms);ana('case_finished',{grade:'solved',points:1,clue_count:7,clue_total:7,minutes_used:anaMinutes(),play_minutes:anaMinutes()});toast('철컥!');render(true);return}
     S.wrong[7]=(S.wrong[7]||0)+1;save();
+    ana('puzzle_tried',{puzzle:'chapter_7',outcome:'wrong',attempt:S.wrong[7],minutes_used:anaMinutes()});
     m.textContent=code==='9173'?'작년 번호로는 안 열린다. 정말 바뀌었나 보다.':sameDigits(code,ans)?'숫자는 맞는 것 같은데… 순서가 아닌가?':'꿈쩍도 안 한다.';
     $('#lock').classList.remove('shake');void $('#lock').offsetWidth;$('#lock').classList.add('shake');
   };
@@ -678,7 +689,7 @@ function openHint(){
     <div class="actions"><button class="btn" id="mclose">닫기</button></div>`;
   $('#mbg').classList.add('on');
   $('#mclose').onclick=closeM;
-  const pe=$('#peel');if(pe)pe.onclick=()=>{S.hints[p]=got+1;save();renderStats();openHint()};
+  const pe=$('#peel');if(pe)pe.onclick=()=>{S.hints[p]=got+1;ana('hint_revealed',{chapter:p,level:got+1,minutes_used:anaMinutes()});save();renderStats();openHint()};
 }
 function closeM(){$('#mbg').classList.remove('on')}
 $('#mbg').onclick=e=>{if(e.target.id==='mbg')closeM()};
@@ -686,6 +697,8 @@ addEventListener('keydown',e=>{if(e.key==='Escape')closeM()});
 $('#btnHint').onclick=openHint;
 
 if(!canOpen(S.p))S.p=0;
+ana('case_intro_viewed');
+if(resumed)ana('case_resumed',{clue_count:Object.keys(S.solved).length,minutes_used:anaMinutes()});
 render(true);
 </script>
 </body>
