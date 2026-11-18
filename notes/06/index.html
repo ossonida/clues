@@ -414,14 +414,14 @@ function inspect(i){
   if(i==='torch'){
     if(false){S.f.fuseOut=1;give('fuse');save();say('손잡이 끝을 돌리니 건전지 옆 작은 칸에서 예비 퓨즈가 나왔다.');bag();return}
     say(S.f.fuseOut?'묵직한 손전등.':'묵직한 손전등.');return}
-  if(i==='ring')return say('녹슨 열쇠 하나. 손잡이 뒤에 동그라미 넷이 새겨져 있다. ◕ ◔ ● ◑');if(i==='sheet79')return say('1979년 11월 13일 기압 기록지. 18시 무렵 선이 뚝 꺼진다. 가장자리에 연필 자국.');if(i==='book79')return say('정기철의 근무 수첩. 마지막 장: "02시 쉼터로. 사람이 있다."');
+  if(i==='ring')return say('녹슨 열쇠 하나. 손잡이 뒤에 동그라미 네 개가 새겨져 있다. ◕ ◔ ● ◑');if(i==='sheet79')return say('1979년 11월 13일 기압 기록지. 18시 무렵 선이 뚝 꺼진다. 가장자리에 연필 자국.');if(i==='book79')return say('정기철의 근무 수첩. 마지막 장: "02시 쉼터로. 사람이 있다."');
   const T={skey:'탐조등 열쇠.',key:'선배 열쇠고리. "장비"라고 쓴 견출지.',thermos:'빈 보온병.',hot:'주전자 물을 담았다. 뜨겁다.',pencil:'뭉툭한 연필.',driver:'일자 드라이버.',handle:'철문 손잡이. 나사가 없다.',handle2:'손잡이와 드라이버. 문에 다시 달 수 있겠다.',fuse:'유리관 퓨즈.'};
   say(T[i]||'');
 }
 
 /* ---------- 조작 ---------- */
 const TAP={
-  window(){if(dark())return say('창밖이 새카맣다.');if(S.f.thanks)return say('김 서린 유리에 글씨가 남아 있다. 고마워. 이 방엔 나 혼자다.');if(S.t>=2)return say('김이 서렸다. 바깥은 눈보라.');if(!S.f.wiped){S.f.sawDrawing=1;save();return say('김 서린 유리에 누가 손가락으로 그려 놨다. 동그란 계기를 그리고, 그 옆에 오른쪽으로 화살표를 그었다.')}say('맑다. 바깥은 바람.')},
+  window(){if(dark())return say('창밖이 새카맣다.');if(S.f.thanks)return say('김 서린 유리에 글씨가 남아 있다. 고마워. 이 방엔 나 혼자다.');if(S.t>=2)return say('김이 서렸다. 바깥엔 눈보라가 친다.');if(!S.f.wiped){S.f.sawDrawing=1;save();return say('김 서린 유리에 누가 손가락으로 그려 놨다. 동그란 계기를 그리고, 그 옆에 오른쪽으로 화살표를 그었다.')}say('유리가 맑다. 바깥엔 바람이 분다.')},
   stove(){if(S.f.stoveOff){S.f.stoveOff=0;S.f.wiped=0;save();draw();return say('난로를 다시 켰다.')}
     S.f.stoveOff=1;S.f.wiped=0;save();draw();say('난로 밸브를 잠갔다. 방이 금세 식는다.');setTimeout(()=>{if(S.f.stoveOff){S.f.sawDrawing=1;save();if(S.room==='A'&&S.wall.A===0){draw();say('창에 김이 서리면서, 누가 손가락으로 그려 둔 그림이 떠올랐다.')}}},1600)},
   kettle(){if(has('thermos')){take('thermos');give('hot');hold='hot';save();draw();return say('주전자 물을 보온병에 따랐다. 아직 뜨겁다.')}say('난로 위 주전자. 물이 아직 뜨겁다.')},
@@ -429,18 +429,18 @@ const TAP={
   outdoor(){if(dark()&&!has('torch')){SND.wrong();return say('너무 어둡다. 문고리도 안 보인다.')}go('C',3,'문을 열자 바람이 얼굴을 친다.')},
   understove(){if(!has('torch')){SND.wrong();return say('바닥이 안 보인다.')}S.f.handleFound=1;give('handle');SND.found();save();draw();say('난로 밑으로 굴러 들어간 철문 손잡이를 찾았다.')},
   drawer1(){if(!S.f.d1){S.f.d1=1;give('driver');SND.drawer(true);SND.found();save();bag();return say('첫 칸에 일자 드라이버가 있다.')}SND.drawer(true);say('첫 칸은 비었다.')},
-  drawer2(){if(S.f.d2){SND.drawer(true);return say('둘째 칸은 비었다.')}if(!has('key')){SND.drawer(false);return say('잠겨 있다. 열쇠 구멍.')}S.f.d2=1;take('key');give('thermos');give('pencil');SND.drawer(true);SND.found();save();draw();say('열쇠가 맞았다. 안에 보온병과 연필이 들어 있다.')},
+  drawer2(){if(S.f.d2){SND.drawer(true);return say('둘째 칸은 비었다.')}if(!has('key')){SND.drawer(false);return say('잠겨 있다. 열쇠 구멍이 보인다.')}S.f.d2=1;take('key');give('thermos');give('pencil');SND.drawer(true);SND.found();save();draw();say('열쇠가 맞았다. 안에 보온병과 연필이 들어 있다.')},
   drawer3(){openLock()},
   note(){openCard('선배 메모 뒷면',`<p class="hand">전보 보내면 본청에서 바로 확인 답신 와.<br>"수신. 구름재 하나" 이렇게.<br>(구름재 하나 = 우리 관측소 호출부호. 옛날엔 관측원이 둘이라 「둘」도 있었는데 79년에 없어졌대.)<br>안 오면 다시 보내고.</p>`)},
   calendar(){say('11월 13일에 빨간 동그라미. 선배가 쳐 둔 건 아니다. 잉크가 오래됐다.')},
   torch(){S.f.torchTaken=1;give('torch');SND.found();save();draw();say(dark()?'손전등을 켰다.':'손전등을 챙겼다.')},
-  baro(){if(dark()&&!has('torch')){SND.wrong();return say('어둡다.')}if(S.f.baro)return say('기울어진 기압계. 바늘이 계속 내려간다.');S.f.baro=1;SND.fit();save();draw();say('창의 그림처럼 기압계를 밀어 보았다. 액자가 기울며 뒤에서 열쇠가 걸려 있다.')},
+  baro(){if(dark()&&!has('torch')){SND.wrong();return say('어둡다.')}if(S.f.baro)return say('기울어진 기압계. 바늘이 계속 내려간다.');S.f.baro=1;SND.fit();save();draw();say('창의 그림처럼 기압계를 밀어 보았다. 액자가 기울자 뒤에 걸린 열쇠가 보인다.')},
   keyspot(){S.f.keyTaken=1;give('key');SND.found();save();draw();say('장비 열쇠를 챙겼다.')},
   drums(){if(S.t<2)return say('기록계 원통이 두 개 나란히 돈다. 빨간 펜은 기압, 파란 펜은 바람.');if(has('sheet79')&&!S.f.overlay){overlay79();return}openDrums()},
   table(){openCard('간이 전보 숫자표 (선배 손글씨)',`<table class="tbl nt"><tr><th>묶음</th><th>형식</th><th>쓰는 법</th></tr>
     <tr><td>기온</td><td class="nt-f">1 s TTT</td><td>s: 영상 0 · 영하 1<br>TTT: 기온×10 (세 자리)</td></tr>
     <tr><td>바람</td><td class="nt-f">2 dd ff</td><td>dd: 풍향 각도 ÷10<br>ff: 풍속 m/s</td></tr>
-    <tr><td>구름</td><td class="nt-f">3 hhhh</td><td>구름 높이 m ÷10 (네 자리)</td></tr></table><p class="hand">예) 영상 5.3℃ → <b>10053</b></p><p class="hand">정시에 그 시각 것만. 묶음은 다섯 자리.</p>`)},
+    <tr><td>구름</td><td class="nt-f">3 hhhh</td><td>구름 높이 m ÷10 (네 자리)</td></tr></table><p class="hand">예) 영상 5.3℃ → <b>10053</b></p><p class="hand">정시에는 그 시각에 잰 값만 보낸다. 묶음은 다섯 자리.</p>`)},
   symbols(){say('일기도 운량 기호. 동그라미를 칠한 만큼 하늘이 구름으로 덮였다는 뜻이다.')},
   teletype(){if(dark())return say('전원이 나가 텔레타이프가 죽어 있다.');openTele()},
   radio(){if(dark())return say('무전기도 꺼졌다.');if(S.t===3)return openRadio();say(S.t>3?'무전기는 조용하다.':'잡음뿐. 볼륨을 낮춰 켜 두었다.')},
@@ -456,14 +456,14 @@ const TAP={
     </svg><p class="hand">쉼터마다 번호 팻말이 있다. 무전으로 위치를 말할 땐 번호를 쓴다.</p>`)},
   cabinet(){if(S.f.cab79)return say('1979 칸은 비었다.');if(has('ring')){S.f.cab79=1;take('ring');give('sheet79');SND.drawer(true);SND.found();save();return say('열쇠고리의 열쇠가 1979 칸에 맞았다. 상자 안에 1979년 11월 13일 기압 기록지가 있다.')}SND.drawer(false);say('맨 아래 칸 이름표에 「1979」. 잠겨 있다.')},
   cellar(){if(S.t===0){SND.wrong();return say('지하 기계실. 지금은 내려갈 일이 없다.');}
-    if(dark()&&!has('torch')){SND.wrong();return say('계단 문 쪽은 칠흑이다.');}
+    if(dark()&&!has('torch')){SND.wrong();return say('계단 문 쪽은 칠흑같이 어둡다.');}
     if(!S.f.doorFixed){if(has('handle')&&has('driver')){take('handle');give('handle2')}if(has('handle2')){S.f.doorFixed=1;take('handle2');give('driver');save();SND.thud();draw();return say('손잡이를 다시 달고 나사를 조였다. 철문이 열린다.')}
       SND.drawer(false);return say(S.f.handleFound?'손잡이 구멍에 나사가 없다. 그냥 끼우면 헛돈다.':'바람에 쾅 닫히면서 손잡이가 빠져 버렸다. 어디로 굴러갔지?')}
     go('B',0,'계단을 내려갔다. 기름 냄새.')},
   upstairs(){go('A',3,'관측실로 올라왔다.')},
   generator(){if(!S.f.fuse){SND.wrong();return say('시동 버튼을 눌러도 아무 반응이 없다. 전기가 어딘가 끊겼다.')}openGen()},
   checklist(){openCard('발전기 점검표',`<ol class="hand" style="margin:0"><li>연료 밸브 열기</li><li>초크 닫기</li><li>시동줄 당기기</li><li>초크 열기</li></ol><div class="post" style="transform:rotate(3deg)">3번 4번 반대로 하면 바로 걸림 — 서윤</div>`)},
-  fusebox(){if(S.f.fuse)return say('퓨즈 넷 다 멀쩡하다.');if(!S.f.fuseOut){S.f.fuseOut=1;give('fuse')}if(has('fuse')){S.f.fuse=1;take('fuse');SND.fit();save();draw();return say('퓨즈함 문 안쪽 예비 칸의 퓨즈를 2번 자리에 끼웠다.')}SND.wrong();say('넷 중 2번 퓨즈가 끊어져 까맣다.')},
+  fusebox(){if(S.f.fuse)return say('퓨즈가 모두 멀쩡하다.');if(!S.f.fuseOut){S.f.fuseOut=1;give('fuse')}if(has('fuse')){S.f.fuse=1;take('fuse');SND.fit();save();draw();return say('퓨즈함 문 안쪽 예비 칸의 퓨즈를 2번 자리에 끼웠다.')}SND.wrong();say('2번 퓨즈가 끊어져 까맣게 탔다.')},
   pipe(){say('배관 이음새에서 물이 똑똑 떨어진다.')},
   toolbox(){say('공구함. 드라이버 자리만 비었다. 선배가 위로 가져갔나 보다.')},
   locker(){if(!S.f.lockerOpen){SND.wrong();return say('이름표: 정기철. 녹슨 사물함. 손으로는 꿈쩍 않는다.')}if(!S.f.ring){S.f.ring=1;give('ring');SND.found();save();return say('저절로 열린 사물함 안, 고리에 낡은 열쇠고리가 걸려 있다.')}say('빈 사물함. 안쪽에 1979년 근무표가 붙어 있다. 구름재 하나 한상우, 구름재 둘 정기철.')},
@@ -474,7 +474,7 @@ const TAP={
   fence(){if(S.f.rubbed)return say('쪽지: "발전기 점검표, 서윤이 고친 대로"');if(has('pencil')){S.f.rubbed=1;SND.found();save();return say('연필로 문지르자 눌린 글씨가 떠올랐다: "발전기 점검표, 서윤이 고친 대로"')}SND.wrong();say('울타리에 구겨진 쪽지. 아무것도 안 쓰인 것 같은데 눌린 자국이 있다.')},
   lights(){say('산 아래 쉼터에 불이 켜져 있다.')},
   indoor(){go('A',0,S.f.stoveOff||dark()?'관측실로 들어왔다. 바람은 피했지만 방이 차다.':'관측실로 들어왔다. 따뜻하다.')},
-  raincoat(){say('노란 우비. 주머니가 불룩하다… 비었다.')},
+  raincoat(){say('노란 우비. 주머니를 뒤져 봤지만 비었다.')},
   searchlight(){if(S.t<4||(!has('skey')&&!S.f.light)){SND.wrong();return say('탐조등과 각도판. 열쇠로 켜는 식이다.')}if(!S.f.light){S.f.light=1;take('skey');SND.fit();save();draw();return say('탐조등이 켜졌다. 빛줄기가 구름 바닥에 하얀 점을 찍는다.')}openAngle()}
 };
 function go(r,w,msg){S.room=r;S.wall[r]=w;save();draw();say(msg)}
@@ -514,7 +514,7 @@ function openTele(){
   const log=S.tape.join('\n\n');
   if(!T||S.f['sent'+S.t])return openCard('텔레타이프',`<div class="tape">${log||'_'}</div><p class="hand">다음 정시까지 기다린다.</p>`);
   openCard('텔레타이프 · 구름재 하나 → 본청 기상 전보',`<div class="tape" id="tape" style="background:repeating-linear-gradient(#fbfaf3 0 22px,#eef4ea 22px 44px);border-left:10px dotted #cfc8b4;border-right:10px dotted #cfc8b4;line-height:22px">${log?log+'\n\n':''}${T.head}\n_</div>
-    <input id="tin" inputmode="numeric" autocomplete="off" placeholder="${S.t===4?'다섯 자리 묶음 셋':'다섯 자리'}"><div class="gen" style="grid-template-columns:repeat(5,1fr)">${[1,2,3,4,5,6,7,8,9,0].map(n=>`<button data-k="${n}">${n}</button>`).join('')}</div><p><button class="btn" id="tdel">지우기</button> <button class="btn primary" id="tsend">송신</button></p>`);
+    <input id="tin" inputmode="numeric" autocomplete="off" placeholder="${S.t===4?'다섯 자리씩 세 묶음':'다섯 자리'}"><div class="gen" style="grid-template-columns:repeat(5,1fr)">${[1,2,3,4,5,6,7,8,9,0].map(n=>`<button data-k="${n}">${n}</button>`).join('')}</div><p><button class="btn" id="tdel">지우기</button> <button class="btn primary" id="tsend">송신</button></p>`);
   const inp=$('#tin');
   const send=()=>{const v=inp.value.replace(/[^0-9]/g,'');
     if(v===T.ans){S.f['sent'+S.t]=1;const sent=T.head+'\n'+(S.t===4?'11034 22712 30060':v);S.tape.push(sent);save();SND.type(16);$('#tape').textContent=(log?log+'\n\n':'')+sent;
@@ -528,7 +528,7 @@ function openTele(){
         $('#toEnd').onclick=()=>{closeCard();S.room='A';S.wall.A=0;save();draw();say('숨을 내쉬자 창에 천천히 김이 서린다.');setTimeout(finish,9000)}},1600);
       return}
     SND.wrong();
-    if(S.t===4){const g=inp.value.trim().split(/\s+/);if(v.includes('11026')||v.includes('22714'))return say('03시 값을 다시 재야 한다.');if(v.length!==15)return say('묶음 셋, 열다섯 자리다.');if(!v.endsWith('30060'))return say('구름 높이를 다시 보자. 각도판 옆 표.');return say('기온이나 바람이 03시 값이 아니다.')}
+    if(S.t===4){const g=inp.value.trim().split(/\s+/);if(v.includes('11026')||v.includes('22714'))return say('03시 값을 다시 재야 한다.');if(v.length!==15)return say('다섯 자리 묶음 세 개를 보내야 한다.');if(!v.endsWith('30060'))return say('구름 높이를 다시 보자. 각도판 옆 표.');return say('기온이나 바람이 03시 값이 아니다.')}
     say(T.say[v]||(v.length!==5?'다섯 자리 묶음이다.':'답신이 오지 않는다. 숫자를 다시 보자.'))};
   $('#tsend').onclick=send;$('#card').querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>{SND.click();inp.value+=b.dataset.k});$('#tdel').onclick=()=>{inp.value=inp.value.slice(0,-1)};inp.onkeydown=e=>{if(e.key==='Enter')send()};
 }
@@ -596,7 +596,7 @@ function toSlot(t,msg){S.t=t;save();closeCard();draw();if(msg)say(msg)}
 function finish(){S.t=5;if(!S.ms){S.ms=Date.now()-S.start;record(S.ms,true)}S.done=1;save();$('#game').hidden=true;$('#bag').hidden=true;$('#end').hidden=false;const m=Math.round(S.ms/60000);$('#took').textContent=m+'분';window.scrollTo(0,0)}
 
 /* ---------- 힌트 ---------- */
-$('#hint').onclick=()=>{const H=HINTS[S.t]||['다음 업데이트에서.','',''],got=S.hint[S.t]||0;
+$('#hint').onclick=()=>{const H=HINTS[S.t]||['이제 힌트는 필요 없다.','',''],got=S.hint[S.t]||0;
   const lab=['어디를','어떻게','푸는 법'];
   openCard(`${SLOTS[S.t].t} 선배 포스트잇`,H.map((h,i)=>i<got?`<div class="post"><small>${lab[i]}</small>${h}</div>`:i===got?`<button class="post closed" id="peel">포스트잇 ${i+1} 떼어 보기 (${lab[i]})</button>`:`<div class="post closed">포스트잇 ${i+1}</div>`).join(''));
   const p=$('#peel');if(p)p.onclick=()=>{S.hint[S.t]=got+1;save();$('#hint').onclick()}};
