@@ -16,6 +16,7 @@ const SCHEMA = {
   case_link_clicked: {place: {in: ['folder', 'ledger']}},
   recommend_clicked: {action: {in: ['add', 'remove']}},
   language_changed: {to: {in: ['ko', 'en']}},
+  newsletter_signup: {},
   // 사건 진행
   case_intro_viewed: {},
   case_started: {},

@@ -20,6 +20,7 @@
 | `case_link_clicked` | 메인에서 사건 열기 | `place` (folder / ledger) |
 | `recommend_clicked` | 사건 대장의 추천 버튼 | `action` (add / remove) |
 | `language_changed` | 언어 전환 | `to` (ko / en) |
+| `newsletter_signup` | 메인 하단 새 사건 소식 받기 신청 성공 (이메일은 안 보냄) | — |
 | `case_intro_viewed` | 사건 페이지 도착, 도입부 표시 | — |
 | `case_started` | "조사 시작" 누름 | — |
 | `case_resumed` | 새로고침·재방문 시 저장된 진행을 이어서 시작 (`case_left`는 새로고침 때도 찍힘) | `clue_count`, `minutes_used` |
