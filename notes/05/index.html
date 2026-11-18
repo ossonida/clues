@@ -507,10 +507,10 @@ const SC={
       <rect x="40" y="136" width="520" height="12" fill="#3a2a22"/>
       <g data-t="seats">${rows}<rect x="292" y="160" width="14" height="180" fill="#2a1d1f"/></g>
       ${[0,1,2,3,4,5,6].map(i=>`<circle cx="299" cy="${174+i*24}" r="2.5" fill="${on?'#ffd257':'#4a3a2a'}"/>`).join('')}
-      <g data-t="signal"><rect x="452" y="30" width="78" height="50" rx="5" fill="#151215" stroke="#5a5254" stroke-width="2"/><path d="M462 30 Q440 0 420 12" stroke="#3a3436" stroke-width="2" fill="none"/><path d="M466 44 L484 55 L466 66 Z" fill="#2a3a44"/><circle cx="508" cy="55" r="9" fill="#4a3f2a"/></g>`;
+      <g data-t="signal"><rect x="452" y="30" width="78" height="50" rx="5" fill="#151215" stroke="#5a5254" stroke-width="2"/><path d="M462 30 Q440 0 420 12" stroke="#3a3436" stroke-width="2" fill="none"/><path d="M466 44 L484 55 L466 66 Z" fill="#2a3a44"/><circle cx="508" cy="55" r="9" fill="#4a3f2a"/><rect x="436" y="84" width="110" height="24" rx="3" fill="#b8a46a" stroke="#5a4a2a" stroke-width="2"/><text x="491" y="102" text-anchor="middle" font-size="17" font-weight="700" fill="#2a2216">객석 호출등</text></g>`;
     const glow=on&&w.call!==false?`<g data-t="signal" data-glow="1"><rect x="452" y="30" width="78" height="50" rx="5" fill="#151215" stroke="#5a5254" stroke-width="2"/><path d="M462 30 Q440 0 420 12" stroke="#3a3436" stroke-width="2" fill="none"/>
       <g id="play" opacity=".15"><path d="M466 44 L484 55 L466 66 Z" fill="#7fd6ff"/></g>
-      <g id="bulb" opacity=".15"><circle cx="508" cy="55" r="15" fill="#ffd257" opacity=".35"/><circle cx="508" cy="55" r="9" fill="#ffd257"/></g></g>`:'';
+      <g id="bulb" opacity=".15"><circle cx="508" cy="55" r="15" fill="#ffd257" opacity=".35"/><circle cx="508" cy="55" r="9" fill="#ffd257"/></g><g opacity=".75"><rect x="436" y="84" width="110" height="24" rx="3" fill="#b8a46a" stroke="#5a4a2a" stroke-width="2"/><text x="491" y="102" text-anchor="middle" font-size="17" font-weight="700" fill="#2a2216">객석 호출등</text></g></g>`:'';
     return {base,glow:glow+(on?sweepSvg():'')};
   },
   7:w=>{
@@ -707,10 +707,10 @@ const TAP={
       if(h==='skey'){w.door=true;used('skey');clearP(6);return '열쇠가 돌아간다. 문 너머 무대 뒤는 다시 캄캄하다.'}
       return '「무대 뒤」 문이 잠겨 있다. 꾸러미 열쇠는 하나도 안 맞았다.'}
     if(t==='signal'&&S.w[8].out){if(w.call===false)return '호출등 스위치는 내려가 있다.';w.call=false;save();refresh();return S.w[5].run?'상자 뒤 작은 스위치를 내렸다. 빈 객석을 향해 깜빡이던 불이 꺼졌다. 객석이 한층 더 캄캄해졌다.':'상자 뒤 작은 스위치를 내렸다. 영사기가 멈춰서 이미 꺼져 있었지만, 이제 다시 돌려도 켜지지 않는다.'}
-    if(t==='signal'&&!(S.w[5].run&&power()))return '스크린 옆 낡은 상자에 전구 둘. 하나는 ▶ 모양, 하나는 동그랗다. 꺼져 있다.';
+    if(t==='signal'&&!(S.w[5].run&&power()))return '스크린 옆 「객석 호출등」 이름표가 붙은 낡은 상자. 전구 둘. 하나는 ▶ 모양, 하나는 동그랗다. 꺼져 있다.';
     if(t==='screen'||t==='signal'){
       if(h==='loupe')return '루페로 스크린을 들여다보니 필름 가장자리에 구멍이 뚫려 있다.  ▶  ● ● ● ● ●     ▬ ● ●';
-      return t==='signal'?'스크린 옆 낡은 상자에 전구 둘. 하나는 ▶ 모양, 하나는 동그랗다. 빈 객석을 향해 혼자 깜빡이고 있다.':'스크린에 시험 릴 첫 장면이 멈춘 듯 돈다. 오른쪽 위에서 불빛이 혼자 깜빡인다.'}
+      return t==='signal'?'스크린 옆 「객석 호출등」 이름표가 붙은 낡은 상자. 전구 둘. 하나는 ▶ 모양, 하나는 동그랗다. 빈 객석을 향해 혼자 깜빡이고 있다.':'스크린에 시험 릴 첫 장면이 멈춘 듯 돈다. 오른쪽 위에서 불빛이 혼자 깜빡인다.'}
   },
   7:(t,w)=>{
     if(t==='rail'){openDev('rail');return}
