@@ -129,6 +129,14 @@ td.cl{font-family:var(--mono);font-size:12px;white-space:nowrap}
 td.release{font-family:var(--mono);font-size:12px;color:#8a6d1f;font-weight:700}
 @media(max-width:640px){th:nth-child(5),td:nth-child(5),th:nth-child(6),td:nth-child(6){display:none}td.rv{width:auto}}
 
+.news{margin-top:calc(var(--lh) * 1.5);padding:var(--lh) 0;border-top:1px dashed rgba(107,99,88,.65)}
+.news h3{margin:0 0 6px;font-family:var(--hand);font-size:25px;font-weight:400;color:#6b5430}
+.news p{margin:0 0 10px;font-size:14px;color:var(--dim)}
+.news form{display:flex;flex-wrap:wrap;gap:8px;align-items:center;max-width:520px}
+.news input[type=email]{flex:1 1 200px;min-width:0;font:inherit;font-size:15px;padding:8px 10px;border:2px solid #3a322c;border-radius:4px;background:#fffdf4;color:#2a2422}
+.news button{font:inherit;font-size:15px;padding:8px 16px;border:2px solid #3a322c;border-radius:4px;background:#3a322c;color:#fffdf4;cursor:pointer}
+.news .agree{flex-basis:100%;font-size:12px;color:var(--dim);display:flex;gap:6px;align-items:flex-start}
+.news small{flex-basis:100%;font-size:13px;color:#8a3a2a}
 footer{padding-top:var(--lh);padding-bottom:var(--lh);font-family:var(--hand);font-size:20px;line-height:var(--lh);color:var(--dim)}
 </style>
 </head>
@@ -318,6 +326,16 @@ footer{padding-top:var(--lh);padding-bottom:var(--lh);font-family:var(--hand);fo
       </div>
     </section>
   </main>
+  <section class="news align" aria-labelledby="news-title">
+    <h3 id="news-title"><span data-en="Get new cases by email">새 사건 소식 받기</span></h3>
+    <p data-en="One short email when a new case opens. Nothing else.">새 사건이 열리면 메일 한 통으로 알려 드려요. 그 밖의 메일은 보내지 않아요.</p>
+    <form id="newsForm" novalidate>
+      <input type="email" id="newsMail" required maxlength="254" autocomplete="email" placeholder="이메일 주소" data-en-ph="Email address">
+      <button type="submit" data-en="Subscribe">받기</button>
+      <label class="agree"><input type="checkbox" id="newsAgree"> <span data-en="I agree to my email being collected only to send new-case news. It is kept until I unsubscribe by replying to any email.">새 사건 소식을 보내는 데만 이메일을 모으는 것에 동의해요. 받은 메일에 답장해 구독을 그만둘 때까지 보관해요.</span></label>
+      <small id="newsMsg" role="status"></small>
+    </form>
+  </section>
   <footer class="align"><div data-en="Hidden Note">히든노트 · Hidden Note</div></footer>
 </div>
 <script>
@@ -414,6 +432,27 @@ document.querySelectorAll('.rec').forEach(async btn=>{
     }finally{ btn.disabled = false; }
   };
 });
+// 뉴스레터: clueNewsletter 컬렉션에 쓰기만 (읽기 불가, 콘솔에서 봄). 이메일은 GA로 보내지 않는다
+const NL = EN ? {bad:'Please check the email address.', agree:'Please tick the consent box.', ok:"Done! We'll email you when a new case opens.", fail:"Couldn't save that. Try again in a bit.", busy:'Saving…'}
+  : {bad:'이메일 주소를 확인해 주세요.', agree:'동의에 체크해 주세요.', ok:'신청됐어요. 새 사건이 열리면 메일 드릴게요.', fail:'저장하지 못했어요. 잠시 후 다시 눌러 주세요.', busy:'저장하는 중…'};
+const nf = document.getElementById('newsForm');
+if(nf){
+  try{ if(localStorage.getItem('hn.news')) nf.querySelector('#newsMsg').textContent = NL.ok; }catch{}
+  nf.addEventListener('submit', async e=>{
+    e.preventDefault();
+    const mail = nf.querySelector('#newsMail').value.trim().toLowerCase(), msg = nf.querySelector('#newsMsg'), btn = nf.querySelector('button');
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(mail) || mail.length > 254){ msg.textContent = NL.bad; return; }
+    if(!nf.querySelector('#newsAgree').checked){ msg.textContent = NL.agree; return; }
+    btn.disabled = true; msg.textContent = NL.busy;
+    try{
+      const c = await connect();
+      await c.store.addDoc(c.store.collection(c.db, 'clueNewsletter'), {email: mail, lang: EN ? 'en' : 'ko', at: c.store.serverTimestamp()});
+      try{ localStorage.setItem('hn.news', '1'); }catch{}
+      msg.textContent = NL.ok; nf.querySelector('#newsMail').value = ''; hn('newsletter_signup', {});
+    }catch(err){ msg.textContent = NL.fail; console.error(err); }
+    finally{ btn.disabled = false; }
+  });
+}
 </script>
 </body>
 </html>
