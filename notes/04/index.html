@@ -335,7 +335,7 @@ const LV={
     clear:w=>w.opened,why:w=>!w.star?'집이 깜깜하다.':!w.door?'문이 들어갈 자리가 텅 비어 있다.':'문이 꼭 닫혀 있다.',
     items:()=>[],reach:()=>null,
     guides:w=>[...(!w.door?[{id:'door',pts:DOOR,done:w=>{w.door=true},msg:w.read?'문을 그렸다. 문에 흐린 점선 글씨가 떠올랐다.':'문을 그렸다! 그런데 꼭 닫혀서 안 열린다.'}]:[]),
-      ...(w.door&&w.read&&!w.opened?[{id:'hello',pts:HELLO.flat(),tol:11,done:w=>{w.opened=true},msg:'문에 "안녕"이라고 썼다. 문이 활짝 열렸다!'}]:[])],
+      ...(w.door&&w.read&&!w.opened?[{id:'hello',pts:HELLO.flat(),tol:15,done:w=>{w.opened=true},msg:'문에 "안녕"이라고 썼다. 문이 활짝 열렸다!'}]:[])],
     tap:(id,w)=>{
       if(id!=='starspot'||w.star)return null;
       if(S.hold==='star'){w.star=true;delete S.bag.star;S.used.star=true;S.hold=null;return '지붕 꼭대기에 별을 달았다. 창에 불이 켜졌다!'}
@@ -631,11 +631,15 @@ function endStroke(){
   const g=$('#ink').lastElementChild;
   let len=0;for(let i=1;i<pts.length;i++)len+=Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]);
   if(len<14){g&&g.remove();return false}
+  let hit=false;
   for(const gd of LV[p].guides(w)){
-    const c=cover[gd.id]||(cover[gd.id]=new Set());
+    const c=cover[gd.id]||(cover[gd.id]=new Set()),n0=c.size;
     gd.pts.forEach((q,i)=>{if(pts.some(s=>Math.hypot(s[0]-q[0],s[1]-q[1])<(gd.tol||20)))c.add(i)});
+    if(c.size>n0)hit=true;
     if(c.size/gd.pts.length>=.8){const u=update(gd.msg);gd.done(w);delete cover[gd.id];u();return true}
   }
+  // 점선을 따라 그은 획은 남겨 둔다 (안녕처럼 여러 획인 글씨)
+  if(hit)return true;
   if(g){g.classList.add('ink-fade');setTimeout(()=>g.remove(),800)}
   const m=LV[p].miss&&LV[p].miss(w);if(m)toast(m);
   return true;
