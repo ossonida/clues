@@ -36,6 +36,10 @@ header{display:flex;align-items:flex-end;gap:10px 16px;flex-wrap:wrap;margin-bot
 .btn:hover,.btn.primary{background:var(--ink);color:#fffdf4}
 .memo{max-width:640px;background:#fffbe0;border:1px solid #d9cf8a;box-shadow:0 10px 20px -12px rgba(0,0,0,.5);padding:12px 16px;transform:rotate(-.6deg);margin-bottom:14px}
 .memo small{font-family:var(--serif);color:var(--dim);font-size:12px}
+.todo{list-style:none;margin:6px 0 0;padding:0;font-family:var(--mono);font-size:13px;color:#4a4436}
+.todo li::before{content:'□ '}.todo li.ok{text-decoration:line-through;color:#9a917c}.todo li.ok::before{content:'■ '}
+.dot{pointer-events:none;animation:pulse 1.8s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:.15}50%{opacity:.75}}
 .memo p{font-family:var(--hand);font-size:clamp(20px,5vw,25px);line-height:1.35;margin:2px 0}
 .stage{position:relative;background:#0b0f16;border-radius:3px;overflow:hidden;box-shadow:0 16px 30px -14px rgba(0,0,0,.7);user-select:none;-webkit-user-select:none}
 .stage svg{display:block;width:100%;height:auto}
@@ -106,7 +110,7 @@ header{display:flex;align-items:flex-end;gap:10px 16px;flex-wrap:wrap;margin-bot
 </section>
 
 <section id="game" hidden>
-  <div class="memo"><small id="memoT">선배 메모</small><p id="goal"></p></div>
+  <div class="memo"><small id="memoT">선배 메모</small><p id="goal"></p><ul class="todo" id="todo"></ul></div>
   <div class="stage" id="stage">
     <svg id="scene" viewBox="0 0 800 450"></svg>
     <canvas id="dark"></canvas>
@@ -141,6 +145,21 @@ const SLOTS=[
   {t:'22:30',memo:['불 나가면 발전기. 그 점검표 순서 내가 고쳐 적어 놨던가?']},
   {t:'00:00',memo:['(다음 업데이트)']}
 ];
+/* 할 일(목표만, 방법은 안 씀)과 오래 막혔을 때 한 번 건네는 혼잣말 */
+const STEPS=[
+  [{g:'장비 열쇠 찾기',ok:()=>has('key')||S.f.d2,n:'선배는 창에 뭘 그려 놨다고 했지. 창이 김으로 흐려지려면…'},
+   {g:'백엽상 열고 기온 재기',ok:()=>S.f.screen,n:'백엽상은 마당에 있다. 얼어붙은 건 녹이면 된다.'},
+   {g:'21시 전보 보내기',ok:()=>S.f.sent21,n:'숫자표는 관측실 남쪽 벽. 텔레타이프는 서쪽.'}],
+  [{g:'불빛 확보',ok:()=>has('torch'),n:'책상 위에서 뭔가 희미하게 반짝였다.'},
+   {g:'지하 기계실로',ok:()=>S.f.doorFixed,n:'빠진 손잡이는 어디로 굴러갔을까. 바닥 낮은 곳을 비춰 보자.'},
+   {g:'발전기 살리기',ok:()=>S.f.power,n:'발전기가 반응이 없다면 전기가 끊긴 곳부터. 마당 울타리에 뭔가 걸려 있었다.'}],
+  []
+];
+let idleT=0,lastStep=-1;
+function curStep(){const L=STEPS[S.t]||[];return L.findIndex(s=>!s.ok())}
+setInterval(()=>{if($('#game').hidden||$('#modal').classList.contains('on'))return;const c=curStep();if(c<0)return;
+  if(c!==lastStep){lastStep=c;idleT=0;return}idleT+=5;S.nudged=S.nudged||{};const k=S.t+'_'+c;
+  if(idleT>=120&&!S.nudged[k]){S.nudged[k]=1;save();say(STEPS[S.t][c].n)}},5000);
 const HINTS=[
   ['창가 → 난로 → 기압계. 그다음 마당 백엽상.','난로를 끄면 창에 김이 서린다. 얼어붙은 백엽상 문엔 뜨거운 물. 온도계는 둘인데, 젖은 천을 감은 쪽은 기온이 아니다.','난로 끄기 → 창 그림 → 기압계 뒤 열쇠 → 서랍 2칸째 보온병 → 주전자 물 → 백엽상. 건구 -2.6℃ → 텔레타이프에 11026'],
   ['손전등 → 난로 밑 → 마당 울타리 → 지하.','빠진 손잡이는 드라이버로 다시 단다. 울타리 쪽지는 연필로 문질러 본다. 손전등 안을 열어 보자.','손잡이+드라이버로 지하 철문 → 손전등 안 예비 퓨즈 → 퓨즈함 2번 → 발전기 순서 1 → 2 → 4 → 3']
@@ -267,6 +286,8 @@ function draw(){
   $('#where').textContent=`${RN[S.room]} · ${WALLS[S.room][w]}쪽`;
   $('#clk').textContent=SLOTS[S.t].t;
   $('#goal').innerHTML=SLOTS[S.t].memo.join('<br>');
+  $('#todo').innerHTML=(STEPS[S.t]||[]).map(s=>`<li class="${s.ok()?'ok':''}">${s.g}</li>`).join('');
+  S.seen=S.seen||{};$('#scene').querySelectorAll('rect[data-h]').forEach(r=>{if(S.seen[r.dataset.h])return;const x=+r.getAttribute('x')+r.getAttribute('width')/2,y=+r.getAttribute('y')+r.getAttribute('height')/2;$('#scene').insertAdjacentHTML('beforeend',`<circle class="dot" cx="${x}" cy="${y}" r="7" fill="#fff3c4"/>`)});
   drawDark();bag();
 }
 /* 정전: 손전등 빛만 */
@@ -352,9 +373,9 @@ const TAP={
   searchlight(){say('탐조등. 열쇠로 켜는 식이다.')}
 };
 function go(r,w,msg){S.room=r;S.wall[r]=w;save();draw();say(msg)}
-$('#scene').addEventListener('click',e=>{const t=e.target.closest('[data-h]');if(!t)return;const id=t.dataset.h;
+$('#scene').addEventListener('click',e=>{const t=e.target.closest('[data-h]');if(!t)return;const id=t.dataset.h;S.seen=S.seen||{};S.seen[id]=1;idleT=0;
   if(dark()&&!has('torch')&&!['torch','outdoor','cellar','window','clock'].includes(id))return say('너무 어둡다. 아무것도 안 보인다.');
-  (TAP[id]||(()=>{}))();if(hold&&!has(hold))hold=null;bag()});
+  (TAP[id]||(()=>{}))();if(hold&&!has(hold))hold=null;save();draw()});
 $('#prev').onclick=()=>{S.wall[S.room]=(S.wall[S.room]+3)%4;save();draw();say('')};
 $('#next').onclick=()=>{S.wall[S.room]=(S.wall[S.room]+1)%4;save();draw();say('')};
 
