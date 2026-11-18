@@ -29,6 +29,15 @@
   const fmt=ms=>{const m=Math.floor(ms/60000),s=Math.floor(ms/1000)%60;return EN?(m?`${m}m ${s}s`:`${s}s`):(m?`${m}분 ${s}초`:`${s}초`)};
 
   // ── 기록 카드 그리기 (리갈패드 바탕, 사건마다 같은 틀) ──
+  // 메인 사건 노트 카드의 현장 사진(svg)과 설명을 가져온다. 사진은 메인 한 군데에만 두고 여기서 빌려 쓴다
+  async function photo(){
+    try{const html=await (await fetch('../../index.html')).text();
+      const d=new DOMParser().parseFromString(html,'text/html'),p=d.querySelector(`a.note[href="notes/${NUM}/"] .photo`);if(!p)return null;
+      const sv=p.querySelector('svg:not(.clip)'),cap=p.querySelector('.cap');if(!sv)return null;
+      sv.setAttribute('xmlns','http://www.w3.org/2000/svg');const vb=(sv.getAttribute('viewBox')||'0 0 320 240').split(/\s+/).map(Number);
+      sv.setAttribute('width',vb[2]*3);sv.setAttribute('height',vb[3]*3);
+      const img=new Image();img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(new XMLSerializer().serializeToString(sv));
+      await img.decode();return {img,ratio:vb[3]/vb[2],cap:cap?(EN&&cap.dataset.en||cap.textContent):''}}catch{return null}}
   async function draw(){
     const r=rec(),W=1080,c=document.createElement('canvas');c.width=c.height=W;const g=c.getContext('2d');
     try{await Promise.all(['64px LevelUp','64px HEEJOY','40px "Kkakdugi Drafting"'].map(f=>document.fonts.load(f)))}catch{}
@@ -39,8 +48,22 @@
     g.fillStyle='#6e1f2b';g.fillRect(0,0,W,58);
     g.fillStyle='#fbf3b8';g.font=`26px ${mono}`;g.fillText('HIDDEN NOTE',150,39);
     g.fillStyle='#6e1f2b';g.font=`34px ${mono}`;g.fillText(`NOTE ${NUM}`,150,135);
-    g.fillStyle='#2a2422';let fs=96;g.font=`${fs}px LevelUp,serif`;while(g.measureText(TITLE).width>W-210&&fs>48){fs-=4;g.font=`${fs}px LevelUp,serif`}
-    g.fillText(TITLE,150,255);
+    // 현장 사진: 오른쪽 위 폴라로이드 + 클립
+    const ph=await photo();
+    if(ph){const pw=330,phh=Math.round(pw*ph.ratio),fw=pw+28,fh=phh+80;
+      g.save();g.translate(860,250);g.rotate(.07);
+      g.shadowColor='rgba(0,0,0,.35)';g.shadowBlur=24;g.shadowOffsetY=10;g.fillStyle='#fff';g.fillRect(-fw/2,-fh/2,fw,fh);g.shadowColor='transparent';
+      g.drawImage(ph.img,-pw/2,-fh/2+14,pw,phh);
+      g.fillStyle='#333';g.font='30px HEEJOY,cursive';g.fillText(ph.cap,-pw/2+4,fh/2-22,pw-8);
+      g.strokeStyle='#8d969c';g.lineWidth=6;g.lineCap='round';g.beginPath();
+      const cx=-fw/2+60,cy=-fh/2-40,s=3;g.moveTo(cx+11*s,cy+14*s);g.lineTo(cx+11*s,cy+38*s);g.arc(cx+7*s,cy+38*s,4*s,0,Math.PI);g.lineTo(cx+3*s,cy+8*s);g.arc(cx+8.5*s,cy+8*s,5.5*s,Math.PI,0);g.lineTo(cx+14*s,cy+34*s);g.arc(cx+11.5*s,cy+34*s,2.5*s,0,Math.PI);g.lineTo(cx+9*s,cy+14*s);g.stroke();
+      g.restore()}
+    const maxW=ph?W-150-420:W-210;
+    g.fillStyle='#2a2422';let fs=96;g.font=`${fs}px LevelUp,serif`;while(g.measureText(TITLE).width>maxW&&fs>(ph&&TITLE.includes(" ")?88:48)){fs-=4;g.font=`${fs}px LevelUp,serif`}
+    // 사진이 있으면 제목이 길 때 두 줄로
+    const words=TITLE.split(' ');
+    if(ph&&g.measureText(TITLE).width>maxW&&words.length>1){fs=88;g.font=`${fs}px LevelUp,serif`;const k=Math.ceil(words.length/2);g.fillText(words.slice(0,k).join(' '),150,240);g.fillText(words.slice(k).join(' '),150,335)}
+    else g.fillText(TITLE,150,255);
     g.font=`36px ${mono}`;g.fillStyle='#5a5046';g.fillText(T.time,150,400);if(r.hints>=0)g.fillText(T.hints,150,560);
     g.font='110px HEEJOY,cursive';g.fillStyle='#1b3a8a';g.fillText(r.ms?fmt(r.ms):'—',150,500);
     if(r.hints>=0)g.fillText(r.hints===0?T.none:String(r.hints),150,660);
