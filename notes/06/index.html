@@ -84,6 +84,21 @@ header{display:flex;align-items:flex-end;gap:10px 16px;flex-wrap:wrap;margin-bot
 .cover .ph figcaption{font-family:var(--hand);font-size:18px;color:#444}
 .end{text-align:center;padding:16px 0}
 .end h2{font-family:var(--serif);margin:0 0 8px}
+.ns-sheet{position:relative;background:#fbf8ec;padding:26px 18px 14px;box-shadow:0 2px 0 #e2dcc6,0 12px 24px -12px rgba(0,0,0,.45);transform:rotate(-.6deg)}
+.ns-tape{position:absolute;top:-10px;left:50%;width:90px;height:22px;margin-left:-45px;background:rgba(240,226,160,.8);transform:rotate(2deg)}
+.ns-sheet h4{margin:0;text-align:center;font-family:var(--serif);font-size:20px;letter-spacing:4px}
+.ns-sub{margin:2px 0 12px;text-align:center;font-size:12px;color:var(--dim)}
+.ns-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-top:1px dashed #cfc6aa}
+.ns-name{width:42px;font-family:var(--serif);font-weight:800;font-size:16px;text-align:center}
+.ns-boxes{display:flex;gap:4px;flex:1}
+.ns-cell{flex:1;min-width:0;text-align:center}
+.ns-cell b{display:block;border:2px solid #2b2b2b;background:#fff;font-size:20px;line-height:34px;height:38px}
+.ns-cell.fix b{background:#2b2b2b;color:#fff}
+.ns-cell small{display:block;font-size:10.5px;line-height:1.25;color:#5a5345;margin-top:3px;min-height:13px}
+.ns-ex{display:flex;align-items:center;gap:10px;margin-top:6px;padding:10px 8px;background:#f1e7cf;border-left:4px solid var(--stamp)}
+.ns-ex>span{width:72px;font-size:12px;color:#5a3a2a}
+.ns-ex .ns-cell b{border-color:var(--stamp);color:var(--stamp)}
+.ns-pen{font-family:var(--hand);font-size:21px;color:#1d3f8a;margin:10px 0 0;transform:rotate(-1deg)}
 </style>
 </head>
 <body>
@@ -364,11 +379,17 @@ const TAP={
   baro(){if(dark()&&!has('torch')){SND.wrong();return say('어둡다.')}if(S.f.baro)return say('기울어진 기압계. 바늘이 계속 내려간다.');S.f.baro=1;SND.fit();save();draw();say('창의 그림처럼 기압계를 밀어 보았다. 액자가 기울며 뒤에서 열쇠가 걸려 있다.')},
   keyspot(){S.f.keyTaken=1;give('key');SND.found();save();draw();say('장비 열쇠를 챙겼다.')},
   drums(){say('기록계 원통이 두 개 나란히 돈다. 빨간 펜은 기압, 파란 펜은 바람. 원통은 손으로도 돌아간다.')},
-  table(){openCard('간이 전보 숫자표 (선배 손글씨)',`<section class="telecard"><div class="telehead">간이 전보 숫자표<small>정시 관측값 · 묶음 하나는 다섯 자리</small></div>
-    <div class="telerow"><span class="teleno">1</span><div><b>기온</b><div class="telecode">1 s TTT</div><div class="telerule">s: 영상은 0 · 영하는 1<br>TTT: 기온 × 10, 세 자리</div></div></div>
-    <div class="telerow"><span class="teleno">2</span><div><b>바람</b><div class="telecode">2 dd ff</div><div class="telerule">dd: 풍향 각도 ÷ 10<br>ff: 풍속 m/s</div></div></div>
-    <div class="telerow"><span class="teleno">3</span><div><b>구름</b><div class="telecode">3 hhhh</div><div class="telerule">hhhh: 구름 높이 m ÷ 10, 네 자리</div></div></div>
-    <div class="teleexample">예) 영상 5.3℃ → <b>1 0 053</b> → <b>10053</b></div></section><p class="hand">정시에 잰 것만 보낸다.</p>`)},
+  table(){
+    const box=(cells)=>'<div class="ns-boxes">'+cells.map(([c,l,k])=>`<div class="ns-cell${k?' '+k:''}"><b>${c}</b><small>${l}</small></div>`).join('')+'</div>';
+    openCard('관측실 남쪽 벽에 붙은 종이',`<div class="ns-sheet">
+      <div class="ns-tape"></div>
+      <h4>간이 전보 숫자표</h4><p class="ns-sub">정시에 잰 값만, 묶음 하나는 다섯 칸</p>
+      <div class="ns-row"><div class="ns-name">기온</div>${box([['1','번호','fix'],['s','영상 0<br>영하 1'],['T','기온'],['T','×10'],['T','세 자리']])}</div>
+      <div class="ns-row"><div class="ns-name">바람</div>${box([['2','번호','fix'],['d','풍향'],['d','각도÷10'],['f','풍속'],['f','m/s']])}</div>
+      <div class="ns-row"><div class="ns-name">구름</div>${box([['3','번호','fix'],['h','구름'],['h','높이 m'],['h','÷10'],['h','네 자리']])}</div>
+      <div class="ns-ex"><span>예) 영상 5.3℃</span>${box([['1','',''],['0','영상',''],['0','',''],['5','',''],['3','','']])}</div>
+      <p class="ns-pen">보낼 땐 칸 구분 없이 붙여서 10053 — 서윤</p>
+    </div>`)},
   symbols(){say('일기도 운량 기호. 동그라미를 칠한 만큼 하늘이 구름으로 덮였다는 뜻이다.')},
   teletype(){if(dark())return say('전원이 나가 텔레타이프가 죽어 있다.');openTele()},
   radio(){say(dark()?'무전기도 꺼졌다.':'잡음뿐. 볼륨을 낮춰 켜 두었다.')},
