@@ -347,7 +347,7 @@ const TAP={
   raingauge(){say('우량계. 눈이 소복이 쌓였다.')},
   fence(){if(S.f.rubbed)return say('쪽지: "퓨즈 예비는 손전등 안"');if(has('pencil')){S.f.rubbed=1;save();return say('연필로 문지르자 눌린 글씨가 떠올랐다: "퓨즈 예비는 손전등 안"')}say('울타리에 구겨진 쪽지. 아무것도 안 쓰인 것 같은데 눌린 자국이 있다.')},
   lights(){say('산 아래 쉼터 불빛 하나.')},
-  indoor(){go('A',0,'관측실로 들어왔다. 따뜻하다.')},
+  indoor(){go('A',0,S.f.stoveOff||dark()?'관측실로 들어왔다. 바람은 피했지만 방이 차다.':'관측실로 들어왔다. 따뜻하다.')},
   raincoat(){say('노란 우비. 주머니가 불룩하다… 비었다.')},
   searchlight(){say('탐조등. 열쇠로 켜는 식이다.')}
 };
