@@ -217,6 +217,8 @@ header.hud{display:flex;align-items:flex-end;gap:10px 18px;flex-wrap:wrap;margin
 .sweep{animation:sweep 4.2s ease-in-out both;mix-blend-mode:screen}
 @media (prefers-reduced-motion:reduce){.sweep{animation:sweepStill 4.2s both;transform:translate(326px,270px)}}
 @keyframes fr{0%,24%{opacity:1}25%,100%{opacity:0}}
+.viewer .ghost{opacity:.3;animation:ghost 1.3s ease-in-out infinite}
+@keyframes ghost{50%{opacity:.18}}
 @media (prefers-reduced-motion:reduce){.crank .fr{animation:none;opacity:.6}}
 </style>
 <script src="../../feedback.js" defer></script>
@@ -584,7 +586,7 @@ const NOISE=(()=>{const h=(i,j,s)=>{let x=(i*374761393+j*668265263+s*982451653)>
 const frame=k=>`<g mask="url(#mk${k})">${FILM}</g><path d="${NOISE[k]}" fill="#1f1c18" opacity=".8"/>`;
 // 편집대 뷰어: 한 칸씩 보면 줄무늬 조각뿐, 손잡이를 빨리 돌리면 네 칸이 겹쳐 보인다
 function viewerSvg(w){
-  return `<svg class="viewer${w.crank?' crank':''}" viewBox="0 0 470 110" aria-label="편집대 뷰어">${w.crank?[0,1,2,3].map(k=>`<g mask="url(#mk${k})">${FILM}</g>`).join('')+[0,1,2,3].map(k=>`<path class="fr" style="animation-delay:${-k*.04}s" d="${NOISE[k]}" fill="#1f1c18" opacity=".25"/>`).join(''):frame(w.fi)}</svg>
+  return `<svg class="viewer${w.crank?' crank':''}" viewBox="0 0 470 110" aria-label="편집대 뷰어">${w.crank?`<g class="ghost">${[0,1,2,3].map(k=>`<g mask="url(#mk${k})">${FILM}</g>`).join('')}</g>`+[0,1,2,3].map(k=>`<g class="fr" style="animation-delay:${-k*.04}s">${frame(k)}</g>`).join(''):frame(w.fi)}</svg>
     <div class="drow"><button class="btn" data-act="step"${w.crank?' disabled':''}>한 칸 넘기기 (${w.fi+1}/4)</button><button class="btn primary" data-act="crank">${w.crank?'손잡이 멈추기':'손잡이 빨리 돌리기'}</button></div>`}
 function chartBase(){
   let s=`<rect width="356" height="362" fill="#efe6cf"/><rect x="60" y="4" width="236" height="16" fill="#7d766a"/><text x="178" y="16" text-anchor="middle" font-size="11" fill="#fff" letter-spacing="6">SCREEN</text>`;
