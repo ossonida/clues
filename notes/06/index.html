@@ -145,9 +145,17 @@ header{display:flex;align-items:flex-end;gap:10px 16px;flex-wrap:wrap;margin-bot
 </section>
 
 <section id="end" class="end" hidden>
-  <h2>여기까지가 미리보기입니다</h2>
-  <p class="hand">불이 다시 들어왔다. 창 너머 풍향탑 아래, 누가 서 있었다.<br>자정 관측부터는 다음 업데이트에서 이어집니다.</p>
-  <p class="clock">걸린 시간 <b id="took" style="display:inline;border:none"></b></p>
+  <h2>06:00</h2>
+  <div class="memo" style="margin:0 auto 16px;text-align:left;max-width:600px">
+    <p>무전이 울렸다. "구름재, 헬기 떴다. 바위샘 두 사람 내려왔다."</p>
+    <p>창밖이 희게 밝아 온다. 선배가 마스크를 쓰고 올라왔다. 03시 전보를 봤다고 했다.</p>
+    <p>선배 메모 맨 뒷장에는 낯익은 글씨가 있었다. 2001년 11월 13일, 신입 한서윤이 혼자 선 밤. 같은 숫자표, 같은 포스트잇.</p>
+    <p>사흘 뒤, 노인 한 사람이 관측소로 걸어 올라왔다. 정기철.</p>
+    <p>"사고로 처리된 걸 그냥 뒀어. 해마다 쉼터까지 와서 무전기만 켜 놓고 못 눌렀지. 그날 밤엔 눌러야 했고. 받아 줄 사람이 있을 줄은 몰랐네."</p>
+    <p>그가 탁자에 두고 간 것은 1979년 7월 14일 별빛극장 개관 기념 표였다. 뒷면에 서명 하나, 윤만석.</p>
+    <p>나는 새 포스트잇을 하나 꺼내 발전기 옆에 붙였다. 텔레타이프는 조용하다. 21시의 답신을 누가 보냈는지는, 아무도 묻지 않았다.</p>
+  </div>
+  <p class="clock">근무 시간 <b id="took" style="display:inline;border:none"></b></p>
   <button class="btn" id="again">처음부터 다시</button> <a class="btn primary" href="../../" style="text-decoration:none">사건 대장으로</a>
 </section>
 </div>
@@ -160,32 +168,24 @@ const KEY='hn.note06.v1';
 const $=s=>document.querySelector(s);
 const ITEMS={
   key:['🗝','장비 열쇠'],thermos:['🧴','보온병'],hot:['♨','뜨거운 보온병'],pencil:['✏','연필'],driver:['🪛','드라이버'],
-  torch:['🔦','손전등'],handle:['⚙','문손잡이'],handle2:['🔩','손잡이+드라이버'],fuse:['▭','예비 퓨즈']
+  torch:['🔦','손전등'],handle:['⚙','문손잡이'],handle2:['🔩','손잡이+드라이버'],fuse:['▭','예비 퓨즈'],ring:['➰','낡은 열쇠고리'],sheet79:['📜','1979 기압 기록지'],skey:['🔑','탐조등 열쇠'],book79:['📓','1979 근무 수첩']
 };
 const SLOTS=[
   {t:'21:00',memo:['오늘 첫 관측: 21시 기온.','장비 열쇠는 늘 두던 데.']},
   {t:'22:30',memo:['정전되면 발전기부터.']},
-  {t:'00:00',memo:['(다음 업데이트)']}
+  {t:'00:00',memo:['자정 관측: 바람.','바늘 말고 기록지를 믿어.']},
+  {t:'01:40',memo:['무전은 꼭 켜 둬.']},
+  {t:'03:00',memo:['03시 특별 관측: 기온, 바람, 구름 높이.','구름이 500 m 아래면 헬기 못 떠.']},
+  {t:'06:00',memo:['']}
 ];
-/* 할 일(목표만, 방법은 안 씀)과 오래 막혔을 때 한 번 건네는 혼잣말 */
-const STEPS=[
-  [{g:'장비 열쇠 찾기',ok:()=>has('key')||S.f.d2,n:'선배는 창에 뭘 그려 놨다고 했지. 창이 김으로 흐려지려면…'},
-   {g:'백엽상 열고 기온 재기',ok:()=>S.f.screen,n:'백엽상은 마당에 있다. 얼어붙은 건 녹이면 된다.'},
-   {g:'21시 전보 보내기',ok:()=>S.f.sent21,n:'숫자표는 관측실 남쪽 벽. 텔레타이프는 서쪽.'}],
-  [{g:'불빛 확보',ok:()=>has('torch'),n:'책상 위에서 뭔가 희미하게 반짝였다.'},
-   {g:'지하 기계실로',ok:()=>S.f.doorFixed,n:'빠진 손잡이는 어디로 굴러갔을까. 바닥 낮은 곳을 비춰 보자.'},
-   {g:'발전기 살리기',ok:()=>S.f.power,n:'발전기가 반응이 없다면 전기가 끊긴 곳부터. 마당 울타리에 뭔가 걸려 있었다.'}],
-  []
-];
-let idleT=0,lastStep=-1;
-function curStep(){const L=STEPS[S.t]||[];return L.findIndex(s=>!s.ok())}
-setInterval(()=>{if($('#game').hidden||$('#modal').classList.contains('on'))return;const c=curStep();if(c<0)return;
-  if(c!==lastStep){lastStep=c;idleT=0;return}idleT+=5;S.nudged=S.nudged||{};const k=S.t+'_'+c;
-  },5000);
 const HINTS=[
   ['창의 그림 → 기압계. 그다음 마당 백엽상.','얼어붙은 백엽상 문엔 뜨거운 물. 온도계는 둘인데, 젖은 천을 감은 쪽은 기온이 아니다. 숫자표 예시처럼 바꾼다.','기압계 뒤 열쇠 → 서랍 2칸째 보온병 → 주전자 물 → 백엽상. 건구 -2.6℃ → 텔레타이프에 11026'],
-  ['손전등 → 난로 밑 → 지하 퓨즈함 → 발전기.','빠진 손잡이는 드라이버로 다시 단다. 끊어진 퓨즈는 퓨즈함 예비 칸에. 점검표 포스트잇을 읽자.','손잡이+드라이버로 지하 철문 → 퓨즈함 2번 교체 → 발전기 순서 1 → 2 → 4 → 3']
+  ['손전등 → 난로 밑 → 지하 퓨즈함 → 발전기.','빠진 손잡이는 드라이버로 다시 단다. 끊어진 퓨즈는 퓨즈함 예비 칸에. 점검표 포스트잇을 읽자.','손잡이+드라이버로 지하 철문 → 퓨즈함 2번 교체 → 발전기 순서 1 → 2 → 4 → 3'],
+  ['관측실 남쪽 기록계 → 텔레타이프. 그다음 지하 사물함 → 서류장.','기록계 원통을 00시로 돌려 읽는다. 각도는 10으로 나눈다. 열린 사물함의 열쇠고리는 서류장 1979 칸 열쇠.','00시 270°, 14 m/s → 22714. 사물함 열쇠고리 → 서류장 기록지 → 기록계에 겹치기'],
+  ['무전기 → 등산로 지도.','볼륨을 너무 올리면 잡음에 묻힌다. 중간쯤. 끊긴 말 속 쉼터 이름 한 글자를 지도에서 찾는다.','볼륨 4~6 → "…샘… 쉼터" → 바위샘(14)'],
+  ['셋째 서랍 → 운량 기호표. 그다음 마당 탐조등.','바퀴 아래 동그라미를 기호표 숫자로. 탐조등을 구름에 비추고 각도를 잰다. 각도판 옆 표에서 높이를 읽는다. 기온·바람도 03시 것으로 다시.','서랍 6284 → 탐조등 63° → 600 m. 백엽상 -3.4℃, 기록계 03시 270° 12 m/s → 11034 22712 30060']
 ];
+let idleT=0;
 let S;
 function fresh(){return{t:0,room:'A',wall:{A:0,B:0,C:0},inv:[],f:{},hint:[0,0,0],start:0,ms:0}}
 function load(){try{S=Object.assign(fresh(),JSON.parse(localStorage.getItem(KEY)||'null')||{})}catch{S=fresh()}}
@@ -194,6 +194,7 @@ function record(ms,ok=true){try{const k='hn.clear.note06',p=JSON.parse(localStor
 let hold=null;
 const has=i=>S.inv.includes(i), give=i=>{if(!has(i))S.inv.push(i)}, take=i=>{S.inv=S.inv.filter(x=>x!==i);if(hold===i)hold=null};
 const dark=()=>S.t===1&&!S.f.power;
+const TEMPS={0:['-2.6','-3.1'],2:['-3.0','-3.5'],3:['-3.2','-3.6'],4:['-3.4','-3.8']};
 function say(t){const e=$('#toast');if(!t){e.classList.remove('on');return}e.textContent=t;e.classList.add('on');clearTimeout(say.h);say.h=setTimeout(()=>e.classList.remove('on'),Math.min(7500,2600+t.length*45))}
 
 /* ---------- 소리 (Web Audio 합성, 끌 수 있음) ---------- */
@@ -235,22 +236,24 @@ const sceneDefs=()=>`<defs>
 const room=(wall,floor)=>`${sceneDefs()}<rect width="800" height="450" fill="${wall}"/><rect width="800" height="340" fill="url(#speck)"/><rect y="340" width="800" height="110" fill="${floor}"/><rect y="340" width="800" height="110" fill="url(#floorShade)"/><path d="M0 340H800" stroke="#090b0e" stroke-opacity=".72" stroke-width="5"/><path d="M0 346H800" stroke="#d5c5a0" stroke-opacity=".13" stroke-width="2"/>`;
 function drawA(w){
   let s=room('#2b3646','#3a3128');
-  if(w===0){ // 북: 창, 난로, 벽시계, 바깥 문
+  if(w===0){ // 북: 바깥 문(가장 큼), 벽시계, 창, 난로
     const fog=!S.f.wiped;
-    s+=`<rect x="235" y="53" width="280" height="212" rx="3" fill="#171b20"/><rect x="250" y="70" width="250" height="180" fill="#0d1624" stroke="#b9a57d" stroke-width="8"/><rect x="258" y="78" width="234" height="164" fill="url(#moonGlass)"/>
-      <line x1="375" y1="70" x2="375" y2="250" stroke="#b9a57d" stroke-width="5"/><line x1="250" y1="160" x2="500" y2="160" stroke="#b9a57d" stroke-width="5"/>
-      <path d="M258 240 L320 170 L360 200 L420 130 L492 210 V242 H258Z" fill="#18263a"/><path d="M258 235 Q322 198 375 217T492 205" fill="none" stroke="#b3c4ca" stroke-opacity=".18" stroke-width="3"/>
-      ${S.t===1&&S.f.power?'':''}`;
-    if(fog)s+=`<rect x="254" y="74" width="242" height="172" fill="#dfe6ea" opacity=".62"/>
-      <path d="M262 92q45-25 92 4t130-1M267 215q75 18 150-3t70 7" fill="none" stroke="#fff" stroke-width="13" stroke-opacity=".13"/>
-      <g stroke="#687c89" stroke-width="5" fill="none" stroke-linecap="round" opacity=".9"><circle cx="330" cy="150" r="34"/><line x1="330" y1="150" x2="350" y2="128"/><path d="M380 150 h70 m-16 -14 l16 14 -16 14"/></g>`;
-    s+=`${hs('window',250,70,250,180)}
-      <g><ellipse cx="617" cy="338" rx="88" ry="12" fill="#000" opacity=".38"/><rect x="552" y="226" width="126" height="116" rx="8" fill="url(#metal)" stroke="#131619" stroke-width="5"/><rect x="566" y="240" width="98" height="79" rx="5" fill="#202223" stroke="#050607" stroke-width="3"/><rect x="580" y="260" width="70" height="44" rx="4" fill="${S.f.stoveOff?'#29292a':'#d9601a'}"/>
-      ${S.f.stoveOff?'':'<ellipse cx="615" cy="280" rx="48" ry="38" fill="url(#lampGlow)"/>'}<path d="M574 325h84M590 332v10m48-10v10" stroke="#aaa18a" stroke-width="3" opacity=".5"/><rect x="600" y="190" width="50" height="38" rx="10" fill="#676d70" stroke="#30363a" stroke-width="3"/><path d="M650 204q18 0 18 14" stroke="#5a6267" stroke-width="7" fill="none"/></g>
-      ${hs('stove',560,230,110,110)}${hs('kettle',596,190,76,40)}
-      <g><circle cx="140" cy="110" r="44" fill="#25282a"/><circle cx="140" cy="110" r="38" fill="#e8e1cc" stroke="#17191a" stroke-width="5"/><circle cx="140" cy="110" r="31" fill="none" stroke="#7d7667" stroke-dasharray="2 7" stroke-width="2"/><line x1="140" y1="110" x2="140" y2="82" stroke="#222" stroke-width="4"/><line x1="140" y1="110" x2="${S.t?'160':'140'}" y2="${S.t?'122':'134'}" stroke="#222" stroke-width="3"/></g>${hs('clock',94,64,92,92)}
-      <g><rect x="34" y="172" width="124" height="172" fill="#37291e" stroke="#17110c" stroke-width="5"/><rect x="44" y="184" width="104" height="146" fill="#4d3828"/><path d="M52 190v132m40-132v132m48-132v132" stroke="#2b1d14" stroke-opacity=".72" stroke-width="3"/><circle cx="138" cy="262" r="6" fill="#c9a24a"/></g>${hs('outdoor',34,172,124,172)}`;
-    if(S.t===1&&!S.f.handleFound)s+=`<rect x="596" y="336" width="26" height="10" rx="3" fill="#c9a24a"/>`+hs('understove',540,326,150,30);
+    s+=`<ellipse cx="400" cy="345" rx="370" ry="16" fill="#000" opacity=".22"/>
+      <g><rect x="30" y="92" width="132" height="252" fill="#17110c"/><rect x="38" y="100" width="116" height="240" fill="#4d3828" stroke="#2b1d14" stroke-width="3"/><path d="M50 112h92v100H50zM50 226h92v100H50z" fill="none" stroke="#2b1d14" stroke-opacity=".7" stroke-width="3"/><circle cx="140" cy="228" r="6" fill="#c9a24a"/><text x="96" y="86" font-size="11" text-anchor="middle" fill="#9aa3ad">마당</text></g>${hs('outdoor',30,92,132,252)}
+      <g><circle cx="215" cy="104" r="28" fill="#25282a"/><circle cx="215" cy="104" r="23" fill="#e8e1cc" stroke="#17191a" stroke-width="3"/><line x1="215" y1="104" x2="215" y2="86" stroke="#222" stroke-width="3"/><line x1="215" y1="104" x2="${[215,228,215,226,215][S.t]||215}" y2="${[118,112,90,114,118][S.t]||118}" stroke="#222" stroke-width="2.5"/></g>${hs('clock',185,74,60,60)}
+      <rect x="262" y="66" width="246" height="176" rx="3" fill="#171b20"/><rect x="272" y="76" width="226" height="156" fill="#0d1624" stroke="#b9a57d" stroke-width="7"/><rect x="278" y="82" width="214" height="144" fill="url(#moonGlass)"/>
+      <path d="M278 222 L330 160 L366 186 L420 124 L492 196 V226 H278Z" fill="#18263a"/>
+      <line x1="385" y1="76" x2="385" y2="232" stroke="#b9a57d" stroke-width="5"/><line x1="272" y1="154" x2="498" y2="154" stroke="#b9a57d" stroke-width="5"/>
+      <rect x="262" y="240" width="246" height="10" fill="#5b4632"/>`;
+    if(S.t===1&&S.f.power)s+=`<g opacity=".8"><circle cx="452" cy="182" r="5" fill="#05080d"/><rect x="448" y="187" width="8" height="22" fill="#05080d"/></g>`;
+    if(fog)s+=`<rect x="276" y="80" width="218" height="148" fill="#dfe6ea" opacity=".6"/>`+
+      (S.f.thanks?`<text x="385" y="168" font-size="34" text-anchor="middle" fill="#55697a" font-family="HEEJOY,cursive">고마워</text>`
+      :S.t===0?`<g stroke="#687c89" stroke-width="5" fill="none" stroke-linecap="round" opacity=".9"><circle cx="340" cy="150" r="28"/><line x1="340" y1="150" x2="356" y2="132"/><path d="M386 150 h62 m-14 -12 l14 12 -14 12"/></g>`:'');
+    s+=`${hs('window',272,76,226,156)}
+      <g><ellipse cx="622" cy="340" rx="80" ry="10" fill="#000" opacity=".38"/><rect x="566" y="236" width="112" height="104" rx="8" fill="url(#metal)" stroke="#131619" stroke-width="4"/><rect x="580" y="252" width="84" height="64" rx="5" fill="#202223"/><rect x="592" y="268" width="60" height="36" rx="4" fill="${S.f.stoveOff?'#29292a':'#d9601a'}"/>
+      ${S.f.stoveOff?'':'<ellipse cx="622" cy="286" rx="44" ry="34" fill="url(#lampGlow)"/>'}<rect x="612" y="116" width="20" height="88" fill="#3a3f42"/><rect x="600" y="204" width="44" height="32" rx="9" fill="#676d70" stroke="#30363a" stroke-width="3"/><path d="M644 214q14 0 14 12" stroke="#5a6267" stroke-width="6" fill="none"/></g>
+      ${hs('stove',566,236,112,104)}${hs('kettle',596,198,70,40)}`;
+    if(S.t===1&&!S.f.handleFound)s+=`<rect x="598" y="338" width="24" height="9" rx="3" fill="#c9a24a"/>`+hs('understove',556,326,140,28);
   }
   if(w===1){ // 동: 책상, 서랍, 달력, 손전등
     s+=`<path d="M0 92H800M0 156H800M0 220H800" stroke="#d8c39c" stroke-opacity=".08" stroke-width="2"/><ellipse cx="395" cy="350" rx="270" ry="24" fill="#000" opacity=".27"/>
@@ -332,28 +335,42 @@ function drawA(w){
 }
 function drawB(w){
   let s=room('#2d2f2c','#232320');
-  if(w===0)s+=`<path d="M0 92H800M0 156H800M0 220H800" stroke="#c9c2ae" stroke-opacity=".06" stroke-width="2"/><ellipse cx="415" cy="351" rx="180" ry="18" fill="#000" opacity=".32"/><path d="M292 340 L354 112 H476 L538 340Z" fill="#1d1e1c"/><path d="M300 340 L360 120 H470 L530 340Z" fill="#3a3a36" stroke="#111" stroke-width="3"/>${[0,1,2,3,4].map(i=>`<line x1="${318+i*12}" y1="${300-i*40}" x2="${512-i*12}" y2="${300-i*40}" stroke="#171817" stroke-width="5"/><line x1="${320+i*12}" y1="${298-i*40}" x2="${510-i*12}" y2="${298-i*40}" stroke="#77766c" stroke-opacity=".25" stroke-width="1"/>`).join('')}${hs('upstairs',300,120,230,220)}`;
-  if(w===1)s+=`<ellipse cx="365" cy="350" rx="182" ry="22" fill="#000" opacity=".35"/><rect x="218" y="198" width="284" height="148" rx="13" fill="#192015"/><rect x="230" y="210" width="260" height="130" rx="10" fill="#5a6b3a" stroke="#1d2410" stroke-width="5"/><path d="M245 222h228M245 327h228" stroke="#b9c078" stroke-opacity=".24" stroke-width="3"/><circle cx="300" cy="275" r="34" fill="#1b2114"/><circle cx="300" cy="275" r="30" fill="#2d3520"/><circle cx="300" cy="275" r="8" fill="#788545"/><rect x="380" y="240" width="80" height="18" fill="#c9a24a"/><circle cx="452" cy="282" r="7" fill="#ba3f2f"/><path d="M255 310h60m118 0h32" stroke="#1d2410" stroke-width="5"/>
-      ${hs('generator',230,210,260,130)}<rect x="552" y="82" width="136" height="166" fill="#292820" transform="rotate(2 620 165)"/><rect x="560" y="90" width="120" height="150" fill="url(#oldPaper)" transform="rotate(2 620 165)"/><text x="620" y="115" font-size="13" text-anchor="middle" fill="#333">발전기 점검표</text>
-      ${[0,1,2,3].map(i=>`<line x1="575" y1="${140+i*24}" x2="665" y2="${140+i*24}" stroke="#999" stroke-width="2"/>`).join('')}<rect x="640" y="190" width="46" height="40" fill="#ffe86b" transform="rotate(8 663 210)"/>${hs('checklist',560,90,130,150)}`;
-  if(w===2)s+=`<rect x="286" y="76" width="228" height="198" rx="5" fill="#171a1c"/><rect x="300" y="90" width="200" height="170" fill="url(#metal)" stroke="#1d1f22" stroke-width="5"/>${[0,1,2,3].map(i=>`<rect x="${325+i*42}" y="140" width="26" height="70" rx="2" fill="${i===1&&!S.f.fuse?'#202123':'#c9c2ae'}" stroke="#222"/><circle cx="${338+i*42}" cy="150" r="3" fill="#333"/>`).join('')}${hs('fusebox',300,90,200,170)}
-      <path d="M560 54V346" stroke="#171918" stroke-width="22"/><path d="M560 60V340" stroke="#6b6b6b" stroke-width="16"/><path d="M556 72V326" stroke="#a7a7a0" stroke-opacity=".25" stroke-width="3"/><circle cx="560" cy="200" r="5" fill="#7aa7d6"/>${hs('pipe',540,60,40,280)}`;
-  if(w===3)s+=`<ellipse cx="355" cy="349" rx="260" ry="20" fill="#000" opacity=".28"/><rect x="130" y="240" width="200" height="108" rx="4" fill="#531a15"/><rect x="140" y="250" width="180" height="90" fill="#8a2a1f" stroke="#2a0d09" stroke-width="4"/><path d="M155 268h150M155 330h150" stroke="#e0794e" stroke-opacity=".22" stroke-width="2"/>${hs('toolbox',140,250,180,90)}
-      <rect x="430" y="80" width="140" height="270" fill="#25292d"/><rect x="440" y="90" width="120" height="250" fill="url(#metal)" stroke="#222" stroke-width="4"/><path d="M450 110h100M450 322h100" stroke="#d5d5cf" stroke-opacity=".18" stroke-width="2"/><rect x="470" y="130" width="60" height="18" fill="#e9e4d4"/><text x="500" y="144" font-size="11" text-anchor="middle" fill="#333">정기철</text>${hs('locker',440,90,120,250)}`;
+  s+=`<ellipse cx="400" cy="345" rx="370" ry="16" fill="#000" opacity=".25"/>`;
+  if(w===0)s+=`<path d="M300 340 L360 96 H470 L530 340Z" fill="#1d1e1c"/><path d="M308 340 L364 104 H466 L522 340Z" fill="#3a3a36" stroke="#111" stroke-width="3"/>${[0,1,2,3,4,5].map(i=>`<line x1="${320+i*10}" y1="${308-i*40}" x2="${510-i*10}" y2="${308-i*40}" stroke="#171817" stroke-width="5"/>`).join('')}<path d="M560 40 V70" stroke="#555" stroke-width="3"/><circle cx="560" cy="78" r="10" fill="${S.f.power?'#f0d48a':'#444'}"/><text x="415" y="90" font-size="11" text-anchor="middle" fill="#9aa3ad">관측실</text>${hs('upstairs',308,96,214,244)}`;
+  if(w===1)s+=`<rect x="190" y="214" width="300" height="126" rx="12" fill="#192015"/><rect x="200" y="224" width="280" height="112" rx="10" fill="#5a6b3a" stroke="#1d2410" stroke-width="4"/><circle cx="262" cy="282" r="32" fill="#1b2114"/><circle cx="262" cy="282" r="26" fill="#2d3520"/><circle cx="262" cy="282" r="7" fill="#788545"/>
+      <rect x="320" y="242" width="140" height="22" rx="3" fill="#2d3520"/><circle cx="340" cy="253" r="6" fill="#c9a24a"/><circle cx="366" cy="253" r="6" fill="#c9a24a"/><circle cx="440" cy="300" r="7" fill="#ba3f2f"/><path d="M470 250 q30 -10 26 30" stroke="#222" stroke-width="4" fill="none"/>
+      <rect x="250" y="206" width="40" height="18" rx="3" fill="#3a2a1a"/><text x="340" y="322" font-size="12" text-anchor="middle" fill="#cfd5b0">비상 발전기</text>
+      ${hs('generator',190,206,300,134)}
+      <g transform="rotate(2 620 160)"><rect x="566" y="96" width="112" height="140" fill="url(#oldPaper)" stroke="#8a8170"/><circle cx="622" cy="102" r="4" fill="#a3312a"/><text x="622" y="122" font-size="11" text-anchor="middle" fill="#333">발전기 점검표</text>${[0,1,2,3].map(i=>`<text x="578" y="${146+i*20}" font-size="10" fill="#444">${i+1}.</text><line x1="592" y1="${146+i*20}" x2="664" y2="${146+i*20}" stroke="#aaa"/>`).join('')}<rect x="634" y="196" width="40" height="34" fill="#ffe86b" transform="rotate(8 654 213)"/></g>${hs('checklist',560,92,124,148)}`;
+  if(w===2)s+=`<rect x="320" y="104" width="160" height="136" rx="4" fill="#171a1c"/><rect x="328" y="112" width="144" height="120" fill="url(#metal)" stroke="#1d1f22" stroke-width="4"/><text x="400" y="132" font-size="11" text-anchor="middle" fill="#ddd">퓨즈함</text>${[0,1,2,3].map(i=>`<rect x="${344+i*30}" y="146" width="18" height="52" rx="2" fill="${i===1&&!S.f.fuse?'#202123':'#c9c2ae'}" stroke="#222"/><text x="${353+i*30}" y="214" font-size="10" text-anchor="middle" fill="#ddd">${i+1}</text>`).join('')}<path d="M400 240 V340" stroke="#222" stroke-width="6"/>${hs('fusebox',320,104,160,136)}
+      <path d="M600 40V340" stroke="#171918" stroke-width="20"/><path d="M600 40V340" stroke="#6b6b6b" stroke-width="14"/><rect x="590" y="190" width="20" height="14" fill="#555"/><circle cx="600" cy="214" r="4" fill="#7aa7d6"/><ellipse cx="600" cy="340" rx="18" ry="4" fill="#7aa7d6" opacity=".5"/>${hs('pipe',580,40,40,300)}`;
+  if(w===3){s+=`<rect x="120" y="270" width="160" height="70" rx="4" fill="#531a15"/><rect x="128" y="278" width="144" height="56" fill="#8a2a1f" stroke="#2a0d09" stroke-width="3"/><rect x="180" y="258" width="40" height="14" rx="6" fill="none" stroke="#2a0d09" stroke-width="5"/>${hs('toolbox',120,256,160,84)}
+      <rect x="440" y="96" width="130" height="248" fill="#25292d"/><rect x="448" y="104" width="114" height="236" fill="url(#metal)" stroke="#222" stroke-width="3"/><path d="M460 126h90M460 136h90M460 146h90" stroke="#222" stroke-opacity=".5" stroke-width="2"/><rect x="474" y="164" width="62" height="18" fill="#e9e4d4"/><text x="505" y="178" font-size="11" text-anchor="middle" fill="#333">정기철</text><rect x="540" y="214" width="8" height="30" rx="2" fill="#2e3033"/>
+      <path d="M470 300 q20 10 40 -4" stroke="#8a4a20" stroke-width="5" opacity=".55" fill="none"/>`;
+    if(S.f.lockerOpen)s+=`<path d="M448 104 L410 118 V330 L448 340Z" fill="#5b6066" stroke="#222" stroke-width="3"/><rect x="452" y="108" width="106" height="228" fill="#121416"/>${S.f.ring?'':'<circle cx="505" cy="220" r="8" fill="none" stroke="#c9a24a" stroke-width="3"/><rect x="503" y="226" width="4" height="14" fill="#c9a24a"/>'}`;
+    s+=hs('locker',440,96,130,248);}
   return s;
 }
 function drawC(w){
   let s=`${sceneDefs()}<rect width="800" height="450" fill="#0c1728"/><path d="M0 0H800V330H0Z" fill="url(#moonGlass)" opacity=".36"/><rect y="330" width="800" height="120" fill="#d9dee4"/><path d="M0 330q120-26 240-5t260-8t300 9v124H0Z" fill="#b9c4cd" opacity=".72"/>`;
-  for(let i=0;i<40;i++)s+=`<circle cx="${(i*197)%800}" cy="${(i*83)%320}" r="${1+(i%3)}" fill="#fff" opacity=".5"/>`;
-  if(w===0)s+=`<ellipse cx="385" cy="340" rx="65" ry="11" fill="#000" opacity=".26"/><rect x="375" y="54" width="20" height="282" fill="#252d32"/><rect x="380" y="60" width="10" height="270" fill="#555"/><path d="M385 60l40 10-40 10z" fill="#999"/><path d="M390 118h44m-44 54h29m-29 54h50" stroke="#879197" stroke-width="2"/><rect x="368" y="200" width="34" height="20" fill="#c9a24a"/>${hs('tower',350,50,90,280)}`;
-  if(w===1)s+=`<ellipse cx="380" cy="340" rx="120" ry="13" fill="#000" opacity=".2"/><rect x="290" y="160" width="180" height="140" fill="#1f2528"/><rect x="300" y="170" width="160" height="120" fill="${S.f.screen?'#f4f4f0':'#cfe3f0'}" stroke="#8a8f96" stroke-width="5"/>${S.f.screen?'':'<path d="M300 200h160M300 230h160M300 260h160" stroke="#fff" stroke-width="5" opacity=".8"/>'}<rect x="370" y="290" width="20" height="40" fill="#8a8f96"/>${hs('screen',300,170,160,160)}
-      <rect x="560" y="250" width="40" height="80" fill="#7a8794"/>${hs('raingauge',550,240,60,90)}`;
+  for(let i=0;i<40;i++)s+=`<circle cx="${(i*197)%800}" cy="${(i*83)%300}" r="${1+(i%3)}" fill="#fff" opacity=".5"/>`;
+  if(w===0)s+=`<ellipse cx="400" cy="336" rx="70" ry="10" fill="#000" opacity=".26"/><path d="M400 40 L360 334 M400 40 L440 334 M372 250 L428 250 M380 180 L420 180 M388 110 L412 110" stroke="#4a545b" stroke-width="5" fill="none"/><path d="M400 40 l46 10 -46 10z" fill="#aab3b8"/><circle cx="400" cy="40" r="5" fill="#ccc"/>${hs('tower',350,30,100,306)}`;
+  if(w===1)s+=`<ellipse cx="380" cy="336" rx="90" ry="10" fill="#000" opacity=".2"/><path d="M330 270 V334 M430 270 V334 M330 300 H430" stroke="#c9ccd0" stroke-width="6"/>
+      <rect x="316" y="168" width="128" height="104" fill="#f3f3ef" stroke="#8a8f96" stroke-width="3"/><path d="M308 168 L380 146 L452 168Z" fill="#e6e8ea" stroke="#8a8f96" stroke-width="3"/>
+      ${S.f.screen?'<rect x="320" y="172" width="120" height="96" fill="#2a3036"/><rect x="350" y="182" width="6" height="70" fill="#e33"/><rect x="400" y="182" width="6" height="70" fill="#e33"/><rect x="396" y="232" width="14" height="22" fill="#9ab"/>':[0,1,2,3,4,5].map(i=>`<line x1="324" y1="${180+i*15}" x2="436" y2="${186+i*15}" stroke="#b9bec4" stroke-width="3"/>`).join('')+'<path d="M316 168h128v104H316z" fill="#cfe3f0" opacity=".45"/>'}
+      ${hs('screen',308,146,144,190)}
+      <rect x="590" y="288" width="22" height="46" fill="#7a8794" stroke="#4a545b" stroke-width="2"/><ellipse cx="601" cy="288" rx="11" ry="4" fill="#eef2f5"/>${hs('raingauge',580,278,44,60)}`;
   if(w===2)s+=`<path d="M0 330 L120 290 L240 320 L400 280 L560 310 L800 290 V330Z" fill="#1d2738"/><circle cx="520" cy="300" r="4" fill="#e0c060"/>
-      ${[100,180,260,340].map(x=>`<rect x="${x}" y="300" width="8" height="70" fill="#5b4632"/>`).join('')}<line x1="80" y1="320" x2="380" y2="320" stroke="#5b4632" stroke-width="5"/>
-      ${S.t>=1?'<rect x="200" y="306" width="34" height="26" fill="#efece0" transform="rotate(-10 217 319)"/>'+hs('fence',190,296,56,40):''}${hs('lights',480,280,80,40)}`;
-  if(w===3)s+=`<rect x="520" y="120" width="160" height="210" fill="#4a3b2c" stroke="#1e1710" stroke-width="5"/><rect x="560" y="160" width="80" height="60" fill="#e0b060" opacity=".8"/>${hs('indoor',520,120,160,210)}
-      <line x1="200" y1="150" x2="200" y2="330" stroke="#6b4a2c" stroke-width="6"/><line x1="170" y1="150" x2="230" y2="150" stroke="#6b4a2c" stroke-width="6"/><path d="M180 152 L172 270 H228 L220 152Z" fill="#c8a020"/>${hs('raincoat',160,140,80,140)}
-      <rect x="330" y="250" width="40" height="80" fill="#888"/><circle cx="350" cy="240" r="20" fill="#bbb"/>${hs('searchlight',320,220,60,110)}`;
+      ${[100,180,260,340].map(x=>`<rect x="${x}" y="296" width="8" height="70" fill="#5b4632"/>`).join('')}<line x1="80" y1="316" x2="380" y2="316" stroke="#5b4632" stroke-width="5"/>
+      ${S.t>=1?'<rect x="200" y="304" width="30" height="22" fill="#efece0" transform="rotate(-10 215 315)"/>'+hs('fence',190,294,52,38):''}${hs('lights',480,280,80,40)}`;
+  if(w===3){const a=S.f.ang||30;
+    if(S.f.light){const r=a*Math.PI/180;s+=`<path d="M352 240 L${352+Math.cos(r)*520} ${240-Math.sin(r)*520} L${352+Math.cos(r+.07)*520} ${240-Math.sin(r+.07)*520}Z" fill="#fff6c8" opacity=".16"/>`}
+    s+=`<ellipse cx="400" cy="338" rx="360" ry="12" fill="#000" opacity=".2"/><rect x="560" y="96" width="140" height="240" fill="#4a3b2c" stroke="#1e1710" stroke-width="5"/><rect x="590" y="124" width="80" height="60" fill="#e0b060" opacity=".8"/><circle cx="680" cy="236" r="6" fill="#c9a24a"/><text x="630" y="88" font-size="11" text-anchor="middle" fill="#9aa3ad">관측실</text>${hs('indoor',560,96,140,240)}
+      <line x1="140" y1="170" x2="140" y2="334" stroke="#6b4a2c" stroke-width="6"/><line x1="112" y1="170" x2="168" y2="170" stroke="#6b4a2c" stroke-width="6"/><path d="M122 172 L114 280 H166 L158 172Z" fill="#c8a020"/>${hs('raincoat',104,160,72,130)}
+      <path d="M322 334 L352 254 L382 334" stroke="#3a4248" stroke-width="5" fill="none"/>
+      <g transform="rotate(${-a} 352 248)"><rect x="330" y="234" width="64" height="28" rx="8" fill="#5a646b" stroke="#222" stroke-width="2"/><ellipse cx="396" cy="248" rx="7" ry="14" fill="${S.f.light?'#fff3b0':'#9aa4aa'}"/></g>
+      <path d="M402 334 a50 50 0 0 0 -50 -50" stroke="#c9a24a" stroke-width="2" fill="none"/>
+      ${hs('searchlight',300,190,170,146)}`;}
   return s;
 }
 function draw(){
@@ -395,17 +412,18 @@ function inspect(i){
   if(i==='torch'){
     if(false){S.f.fuseOut=1;give('fuse');save();say('손잡이 끝을 돌리니 건전지 옆 작은 칸에서 예비 퓨즈가 나왔다.');bag();return}
     say(S.f.fuseOut?'묵직한 손전등.':'묵직한 손전등.');return}
-  const T={key:'선배 열쇠고리. "장비"라고 쓴 견출지.',thermos:'빈 보온병.',hot:'주전자 물을 담았다. 뜨겁다.',pencil:'뭉툭한 연필.',driver:'일자 드라이버.',handle:'철문 손잡이. 나사가 없다.',handle2:'손잡이와 드라이버. 문에 다시 달 수 있겠다.',fuse:'유리관 퓨즈.'};
+  if(i==='ring')return say('녹슨 열쇠 하나. 손잡이 뒤에 동그라미 넷이 새겨져 있다. ◕ ◔ ● ◑');if(i==='sheet79')return say('1979년 11월 13일 기압 기록지. 18시 무렵 선이 뚝 꺼진다. 가장자리에 연필 자국.');if(i==='book79')return say('정기철의 근무 수첩. 마지막 장: "02시 쉼터로. 사람이 있다."');
+  const T={skey:'탐조등 열쇠.',key:'선배 열쇠고리. "장비"라고 쓴 견출지.',thermos:'빈 보온병.',hot:'주전자 물을 담았다. 뜨겁다.',pencil:'뭉툭한 연필.',driver:'일자 드라이버.',handle:'철문 손잡이. 나사가 없다.',handle2:'손잡이와 드라이버. 문에 다시 달 수 있겠다.',fuse:'유리관 퓨즈.'};
   say(T[i]||'');
 }
 
 /* ---------- 조작 ---------- */
 const TAP={
-  window(){if(dark())return say('창밖이 새카맣다.');if(!S.f.wiped){S.f.sawDrawing=1;save();return say('김 서린 유리에 누가 손가락으로 그려 놨다. 동그란 계기를 그리고, 그 옆에 오른쪽으로 화살표를 그었다.')}say('맑다. 바깥은 바람.')},
+  window(){if(dark())return say('창밖이 새카맣다.');if(S.f.thanks)return say('김 서린 유리에 글씨가 남아 있다. 고마워. 이 방엔 나 혼자다.');if(S.t>=2)return say('김이 서렸다. 바깥은 눈보라.');if(!S.f.wiped){S.f.sawDrawing=1;save();return say('김 서린 유리에 누가 손가락으로 그려 놨다. 동그란 계기를 그리고, 그 옆에 오른쪽으로 화살표를 그었다.')}say('맑다. 바깥은 바람.')},
   stove(){if(S.f.stoveOff){S.f.stoveOff=0;S.f.wiped=0;save();draw();return say('난로를 다시 켰다.')}
     S.f.stoveOff=1;S.f.wiped=0;save();draw();say('난로 밸브를 잠갔다. 방이 금세 식는다.');setTimeout(()=>{if(S.f.stoveOff){S.f.sawDrawing=1;save();if(S.room==='A'&&S.wall.A===0){draw();say('창에 김이 서리면서, 누가 손가락으로 그려 둔 그림이 떠올랐다.')}}},1600)},
   kettle(){if(has('thermos')){take('thermos');give('hot');hold='hot';save();draw();return say('주전자 물을 보온병에 따랐다. 아직 뜨겁다.')}say('난로 위 주전자. 물이 아직 뜨겁다.')},
-  clock(){say(S.t?'22시 30분.':'21시 정각. 관측 시각이다.')},
+  clock(){say(['21시 정각. 관측 시각이다.','22시 30분.','자정.','새벽 1시 40분.','새벽 3시. 특별 관측 시각이다.'][S.t])},
   outdoor(){if(dark()&&!has('torch')){SND.wrong();return say('너무 어둡다. 문고리도 안 보인다.')}go('C',3,'문을 열자 바람이 얼굴을 친다.')},
   understove(){if(!has('torch')){SND.wrong();return say('바닥이 안 보인다.')}S.f.handleFound=1;give('handle');SND.found();save();draw();say('난로 밑으로 굴러 들어간 철문 손잡이를 찾았다.')},
   drawer1(){if(!S.f.d1){S.f.d1=1;give('driver');SND.drawer(true);SND.found();save();bag();return say('첫 칸에 일자 드라이버가 있다.')}SND.drawer(true);say('첫 칸은 비었다.')},
@@ -416,14 +434,14 @@ const TAP={
   torch(){S.f.torchTaken=1;give('torch');SND.found();save();draw();say(dark()?'손전등을 켰다.':'손전등을 챙겼다.')},
   baro(){if(dark()&&!has('torch')){SND.wrong();return say('어둡다.')}if(S.f.baro)return say('기울어진 기압계. 바늘이 계속 내려간다.');S.f.baro=1;SND.fit();save();draw();say('창의 그림처럼 기압계를 밀어 보았다. 액자가 기울며 뒤에서 열쇠가 걸려 있다.')},
   keyspot(){S.f.keyTaken=1;give('key');SND.found();save();draw();say('장비 열쇠를 챙겼다.')},
-  drums(){say('기록계 원통이 두 개 나란히 돈다. 빨간 펜은 기압, 파란 펜은 바람. 원통은 손으로도 돌아간다.')},
+  drums(){if(S.t<2)return say('기록계 원통이 두 개 나란히 돈다. 빨간 펜은 기압, 파란 펜은 바람.');if(has('sheet79')&&!S.f.overlay){overlay79();return}openDrums()},
   table(){openCard('간이 전보 숫자표 (선배 손글씨)',`<table class="tbl nt"><tr><th>묶음</th><th>형식</th><th>쓰는 법</th></tr>
     <tr><td>기온</td><td class="nt-f">1 s TTT</td><td>s: 영상 0 · 영하 1<br>TTT: 기온×10 (세 자리)</td></tr>
     <tr><td>바람</td><td class="nt-f">2 dd ff</td><td>dd: 풍향 각도 ÷10<br>ff: 풍속 m/s</td></tr>
     <tr><td>구름</td><td class="nt-f">3 hhhh</td><td>구름 높이 m ÷10 (네 자리)</td></tr></table><p class="hand">예) 영상 5.3℃ → <b>10053</b></p><p class="hand">정시에 그 시각 것만. 묶음은 다섯 자리.</p>`)},
   symbols(){say('일기도 운량 기호. 동그라미를 칠한 만큼 하늘이 구름으로 덮였다는 뜻이다.')},
   teletype(){if(dark())return say('전원이 나가 텔레타이프가 죽어 있다.');openTele()},
-  radio(){say(dark()?'무전기도 꺼졌다.':'잡음뿐. 볼륨을 낮춰 켜 두었다.')},
+  radio(){if(dark())return say('무전기도 꺼졌다.');if(S.t===3)return openRadio();say(S.t>3?'무전기는 조용하다.':'잡음뿐. 볼륨을 낮춰 켜 두었다.')},
   map(){const P=[[90,300,'07','매봉 쉼터','820 m'],[200,320,'11','칼바위 쉼터','960 m'],[300,215,'14','바위샘 쉼터','1,120 m'],[420,150,'22','구름재 아래 쉼터','1,310 m']];
     openCard('구름재 등산로 안내도',`<svg viewBox="0 0 560 380" style="width:100%;background:#e9e1c6;border:6px solid #6b4a2c">
       <g fill="none" stroke="#b3a57c" stroke-width="1.5">${[0,1,2,3,4,5].map(i=>`<ellipse cx="480" cy="110" rx="${70+i*62}" ry="${45+i*44}"/>`).join('')}</g>
@@ -434,7 +452,7 @@ const TAP={
       <text x="24" y="352" font-size="13" fill="#2a1e12">↓ 매표소·주차장</text>
       <g transform="translate(26 26)"><path d="M0 22 L8 0 L16 22" fill="none" stroke="#2a1e12" stroke-width="2"/><text x="8" y="36" font-size="12" text-anchor="middle">N</text></g>
     </svg><p class="hand">쉼터마다 번호 팻말이 있다. 무전으로 위치를 말할 땐 번호를 쓴다.</p>`)},
-  cabinet(){say('서류장 맨 아래 칸에 「1979」라고 쓴 상자. 칸이 잠겼다.')},
+  cabinet(){if(S.f.cab79)return say('1979 칸은 비었다.');if(has('ring')){S.f.cab79=1;take('ring');give('sheet79');SND.drawer(true);SND.found();save();return say('열쇠고리의 열쇠가 1979 칸에 맞았다. 상자 안에 1979년 11월 13일 기압 기록지가 있다.')}SND.drawer(false);say('맨 아래 칸 이름표에 「1979」. 잠겨 있다.')},
   cellar(){if(S.t===0){SND.wrong();return say('지하 기계실. 지금은 내려갈 일이 없다.');}
     if(dark()&&!has('torch')){SND.wrong();return say('계단 문 쪽은 칠흑이다.');}
     if(!S.f.doorFixed){if(has('handle')&&has('driver')){take('handle');give('handle2')}if(has('handle2')){S.f.doorFixed=1;take('handle2');give('driver');save();SND.thud();draw();return say('손잡이를 다시 달고 나사를 조였다. 철문이 열린다.')}
@@ -446,16 +464,16 @@ const TAP={
   fusebox(){if(S.f.fuse)return say('퓨즈 넷 다 멀쩡하다.');if(!S.f.fuseOut){S.f.fuseOut=1;give('fuse')}if(has('fuse')){S.f.fuse=1;take('fuse');SND.fit();save();draw();return say('퓨즈함 문 안쪽 예비 칸의 퓨즈를 2번 자리에 끼웠다.')}SND.wrong();say('넷 중 2번 퓨즈가 끊어져 까맣다.')},
   pipe(){say('배관 이음새에서 물이 똑똑 떨어진다.')},
   toolbox(){say('공구함. 드라이버 자리만 비었다. 선배가 위로 가져갔나 보다.')},
-  locker(){say('정기철. 녹슨 사물함. 손으로는 꿈쩍 않는다. (다음 업데이트)')},
-  tower(){say('풍향탑. 바늘이 바람에 마구 돈다.')},
-  screen(){if(S.f.screen)return openCard('백엽상 속',`<p class="hand">온도계가 두 개 걸려 있다.<br>왼쪽 (마른 것): <b>-2.6 ℃</b><br>오른쪽 (젖은 천을 감은 것): <b>-3.1 ℃</b></p>`);
+  locker(){if(!S.f.lockerOpen){SND.wrong();return say('이름표: 정기철. 녹슨 사물함. 손으로는 꿈쩍 않는다.')}if(!S.f.ring){S.f.ring=1;give('ring');SND.found();save();return say('저절로 열린 사물함 안, 고리에 낡은 열쇠고리가 걸려 있다.')}say('빈 사물함. 안쪽에 1979년 근무표가 붙어 있다. 구름재 하나 한상우, 구름재 둘 정기철.')},
+  tower(){say(S.t>=2?'풍향 바늘이 바람에 미친 듯이 돈다. 읽을 수가 없다.':'풍향탑. 바늘이 바람에 돈다.')},
+  screen(){if(S.f.screen){const T=TEMPS[S.t]||TEMPS[0];return openCard('백엽상 속',`<p class="hand">온도계가 두 개 걸려 있다.<br>왼쪽 (마른 것): <b>${T[0]} ℃</b><br>오른쪽 (젖은 천을 감은 것): <b>${T[1]} ℃</b></p>`)}
     if(has('hot')){S.f.screen=1;take('hot');SND.drawer(true);SND.found();save();draw();return say('뜨거운 물을 부으니 얼음이 녹아 백엽상 문이 열렸다.')}SND.drawer(false);say('백엽상: 온도계를 넣어 두는 하얀 나무 상자. 바람과 햇빛을 막아 바깥 기온을 잰다. 그런데 문이 얼어붙었다.')},
   raingauge(){say('우량계. 눈이 소복이 쌓였다.')},
   fence(){if(S.f.rubbed)return say('쪽지: "발전기 점검표, 서윤이 고친 대로"');if(has('pencil')){S.f.rubbed=1;SND.found();save();return say('연필로 문지르자 눌린 글씨가 떠올랐다: "발전기 점검표, 서윤이 고친 대로"')}SND.wrong();say('울타리에 구겨진 쪽지. 아무것도 안 쓰인 것 같은데 눌린 자국이 있다.')},
   lights(){say('산 아래 쉼터에 불이 켜져 있다.')},
   indoor(){go('A',0,S.f.stoveOff||dark()?'관측실로 들어왔다. 바람은 피했지만 방이 차다.':'관측실로 들어왔다. 따뜻하다.')},
   raincoat(){say('노란 우비. 주머니가 불룩하다… 비었다.')},
-  searchlight(){say('탐조등. 열쇠로 켜는 식이다.')}
+  searchlight(){if(S.t<4||(!has('skey')&&!S.f.light)){SND.wrong();return say('탐조등과 각도판. 열쇠로 켜는 식이다.')}if(!S.f.light){S.f.light=1;take('skey');SND.fit();save();draw();return say('탐조등이 켜졌다. 빛줄기가 구름 바닥에 하얀 점을 찍는다.')}openAngle()}
 };
 function go(r,w,msg){S.room=r;S.wall[r]=w;save();draw();say(msg)}
 $('#scene').addEventListener('click',e=>{const t=e.target.closest('[data-h]');if(!t)return;const id=t.dataset.h;S.seen=S.seen||{};S.seen[id]=1;idleT=0;
@@ -480,26 +498,87 @@ function openLock(){
     ${LOCK_SYM.map(([,d],i)=>`<g transform="translate(${101+i*66} 165)"><circle r="12" fill="none" stroke="#e9e1c6" stroke-width="2.5"/>${d==='full'?'<circle r="12" fill="#e9e1c6"/>':`<path d="${d}" fill="#e9e1c6"/>`}</g>`).join('')}
   </svg><p class="hand">바퀴를 누르면 숫자가 하나씩 올라간다. 바퀴 아래에는 동그라미가 새겨져 있다.</p>`;
   openCard('셋째 서랍 · 숫자 바퀴 자물쇠',draw());
+  if(S.t<4){/* 03시 전에도 열 수는 있다 */}
   const bind=()=>$('#card').querySelectorAll('[data-w]').forEach(g=>g.onclick=()=>{const i=+g.dataset.w;S.lk[i]=(S.lk[i]+1)%10;SND.click();save();
-    if(S.lk.join('')==='6284'){S.f.d3=1;save();SND.drawer(true);SND.found();closeCard();say('딸깍. 셋째 서랍이 열렸다. 탐조등 열쇠와 1979년 근무 수첩이 들어 있다.');return}
+    if(S.lk.join('')==='6284'){S.f.d3=1;give('skey');give('book79');save();bag();SND.drawer(true);SND.found();closeCard();say('딸깍. 셋째 서랍이 열렸다. 탐조등 열쇠와 1979년 근무 수첩이 들어 있다.');return}
     $('#card svg').outerHTML=draw().split('</svg>')[0]+'</svg>';bind()});
   bind();
 }
+const TELE={0:{ans:'11026',head:'구름재 하나 21시',say:{'11031':'온도계가 둘이다. 젖은 천을 감은 쪽은 기온이 아니다.','01026':'둘째 칸은 영상·영하 표시다.','1026':'다섯 자리라고 했다.','10026':'영하다.','1126':'기온은 ×10, 세 자리.'}},
+  2:{ans:'22714',head:'구름재 하나 00시',say:{'22140':'표에서 방향이 먼저다.','227014':'각도는 10으로 나눈다.','22712':'그건 다른 시각 값이다. 00시를 읽자.'}},
+  4:{ans:'110342271230060',head:'구름재 하나 03시 특별',say:{}}};
 function openTele(){
-  const done=S.f.sent21;
-  openCard('텔레타이프 · 구름재 하나 → 본청 기상 전보',`<div class="tape" id="tape" style="background:repeating-linear-gradient(#fbfaf3 0 22px,#eef4ea 22px 44px);border-left:10px dotted #cfc8b4;border-right:10px dotted #cfc8b4;line-height:22px">${done?'구름재 하나 21시\n11026\n\n수신. 구름재 둘 확인. 791113 2100':'구름재 하나 21시\n_'}</div>
-    ${done?'<p class="hand">다음 정시까지 기다린다.</p>':'<input id="tin" inputmode="numeric" autocomplete="off" placeholder="다섯 자리"><div class="gen" style="grid-template-columns:repeat(5,1fr)">'+[1,2,3,4,5,6,7,8,9,0].map(n=>`<button data-k="${n}">${n}</button>`).join('')+'</div><p><button class="btn" id="tdel">지우기</button> <button class="btn primary" id="tsend">송신</button></p>'}`);
-  if(done)return;const inp=$('#tin');inp.focus();
+  const T=TELE[S.t];S.tape=S.tape||[];
+  const log=S.tape.join('\n\n');
+  if(!T||S.f['sent'+S.t])return openCard('텔레타이프',`<div class="tape">${log||'_'}</div><p class="hand">다음 정시까지 기다린다.</p>`);
+  openCard('텔레타이프 · 구름재 하나 → 본청 기상 전보',`<div class="tape" id="tape" style="background:repeating-linear-gradient(#fbfaf3 0 22px,#eef4ea 22px 44px);border-left:10px dotted #cfc8b4;border-right:10px dotted #cfc8b4;line-height:22px">${log?log+'\n\n':''}${T.head}\n_</div>
+    <input id="tin" inputmode="numeric" autocomplete="off" placeholder="${S.t===4?'다섯 자리 묶음 셋':'다섯 자리'}"><div class="gen" style="grid-template-columns:repeat(5,1fr)">${[1,2,3,4,5,6,7,8,9,0].map(n=>`<button data-k="${n}">${n}</button>`).join('')}</div><p><button class="btn" id="tdel">지우기</button> <button class="btn primary" id="tsend">송신</button></p>`);
+  const inp=$('#tin');
   const send=()=>{const v=inp.value.replace(/[^0-9]/g,'');
-    if(v==='11026'){S.f.sent21=1;save();SND.type(16);$('#tape').textContent='구름재 하나 21시\n11026';
-      setTimeout(()=>{SND.type(22);setTimeout(()=>SND.found(),1950);$('#tape').textContent+='\n\n수신. 구름재 둘 확인. 791113 2100';S.f.reply=1;save();
+    if(v===T.ans){S.f['sent'+S.t]=1;const sent=T.head+'\n'+(S.t===4?'11034 22712 30060':v);S.tape.push(sent);save();SND.type(16);$('#tape').textContent=(log?log+'\n\n':'')+sent;
+      if(S.t===0)setTimeout(()=>{SND.type(22);setTimeout(()=>SND.found(),1950);S.tape[S.tape.length-1]+='\n수신. 구름재 둘 확인. 791113 2100';$('#tape').textContent+='\n수신. 구름재 둘 확인. 791113 2100';S.f.reply=1;save();
         $('#card').insertAdjacentHTML('beforeend','<p class="hand">…구름재 <b>둘</b>? 우리 호출부호는 「구름재 하나」다. 「둘」은 1979년에 없어진 부호라고 했는데.<br>찍힌 날짜는 1979년 11월 13일 21시. 꼭 30년 전 오늘이다.</p><p><button class="btn primary" id="nextSlot">다음 정시까지</button></p>');
-        $('#nextSlot').onclick=()=>{closeCard();toSlot1()}},1800);return}
-    const R={'11031':'온도계가 둘이다. 젖은 천을 감은 쪽은 기온이 아니다.','01026':'둘째 칸은 영상·영하 표시다.','1026':'다섯 자리라고 했다.','10026':'영하다.','1126':'기온은 ×10, 세 자리.'};
-    SND.wrong();say(R[v]||(v.length!==5?'다섯 자리 묶음이다.':'답신이 오지 않는다. 숫자를 다시 보자.'))};
+        $('#nextSlot').onclick=()=>{closeCard();toSlot1()}},1800);
+      if(S.t===2)setTimeout(()=>{SND.type(10);S.tape[S.tape.length-1]+='\n수신. 구름재 하나';$('#tape').textContent+='\n수신. 구름재 하나';S.f.lockerOpen=1;save();
+        $('#card').insertAdjacentHTML('beforeend','<p class="hand">이번엔 제대로 「구름재 하나」다.<br>그때 지하에서 쇠문이 삐걱 열리는 소리가 났다.</p>');SND.thud()},1600);
+      if(S.t===4)setTimeout(()=>{SND.type(14);S.tape[S.tape.length-1]+='\n수신. 구름재 하나. 운고 600. 헬기 출동.';$('#tape').textContent+='\n수신. 구름재 하나. 운고 600. 헬기 출동.';S.f.thanks=1;S.f.wiped=0;save();
+        $('#card').insertAdjacentHTML('beforeend','<p class="hand">헬기가 뜬다. 숨을 내쉬자 창에 김이 서렸다. 그 위로, 아무도 쓰지 않은 글씨가 천천히 떠오른다.</p><p><button class="btn primary" id="toEnd">동이 틀 때까지</button></p>');
+        $('#toEnd').onclick=()=>{closeCard();finish()};S.room='A';S.wall.A=0;draw()},1600);
+      return}
+    SND.wrong();
+    if(S.t===4){const g=inp.value.trim().split(/\s+/);if(v.includes('11026')||v.includes('22714'))return say('03시 값을 다시 재야 한다.');if(v.length!==15)return say('묶음 셋, 열다섯 자리다.');if(!v.endsWith('30060'))return say('구름 높이를 다시 보자. 각도판 옆 표.');return say('기온이나 바람이 03시 값이 아니다.')}
+    say(T.say[v]||(v.length!==5?'다섯 자리 묶음이다.':'답신이 오지 않는다. 숫자를 다시 보자.'))};
   $('#tsend').onclick=send;$('#card').querySelectorAll('[data-k]').forEach(b=>b.onclick=()=>{SND.click();inp.value+=b.dataset.k});$('#tdel').onclick=()=>{inp.value=inp.value.slice(0,-1)};inp.onkeydown=e=>{if(e.key==='Enter')send()};
 }
-function toSlot1(){S.t=1;S.f.handleGone=1;S.room='A';S.wall.A=0;save();SND.thud();SND.hum(false);draw();
+/* 기록계: 원통을 손으로 돌려 시각을 맞춘다 */
+const HOURS=['18','19','20','21','22','23','00','01','02','03'];
+const WIND={'18':[250,9],'19':[250,10],'20':[260,11],'21':[260,12],'22':[270,13],'23':[270,13],'00':[270,14],'01':[270,14],'02':[270,13],'03':[270,12]};
+function openDrums(){S.dh=S.dh??3;const max=S.t>=4?9:S.t>=3?7:6;
+  const H=HOURS[S.dh],w=WIND[H];
+  const xs=i=>30+i*36,baro=i=>i<0?0:(i<1?40:40+Math.min(i,3)*22);
+  openCard('기록계 원통 (손으로 돌린다)',`<svg viewBox="0 0 400 230" style="width:100%;background:#2e3234;border-radius:6px">
+    <rect x="16" y="14" width="368" height="90" rx="8" fill="#e9e4d4"/><text x="24" y="30" font-size="10" fill="#a3312a">기압</text>
+    <path d="${HOURS.map((h,i)=>(i?'L':'M')+xs(i)+' '+(46+baro(i))).join(' ')}" stroke="#a3312a" stroke-width="2.5" fill="none"/>
+    ${S.f.overlay?`<path d="${HOURS.map((h,i)=>(i?'L':'M')+xs(i)+' '+(47+baro(i))).join(' ')}" stroke="#555" stroke-width="2" stroke-dasharray="4 3" fill="none"/>`:''}
+    <rect x="16" y="116" width="368" height="90" rx="8" fill="#e9e4d4"/><text x="24" y="132" font-size="10" fill="#1d4f8a">풍향(°) · 풍속(m/s)</text>
+    ${HOURS.slice(0,max+1).map((h,i)=>`<text x="${xs(i)}" y="${178-WIND[h][1]*2}" font-size="9" text-anchor="middle" fill="#1d4f8a">${WIND[h][0]}</text><circle cx="${xs(i)}" cy="${190-WIND[h][1]*2}" r="3" fill="#1d4f8a"/>`).join('')}
+    ${HOURS.map((h,i)=>`<text x="${xs(i)}" y="222" font-size="10" text-anchor="middle" fill="${i===S.dh?'#ffd27a':'#cfcabc'}">${h}</text>`).join('')}
+    <line x1="${xs(S.dh)}" y1="14" x2="${xs(S.dh)}" y2="206" stroke="#ffd27a" stroke-width="2"/>
+  </svg><p style="display:flex;gap:8px;align-items:center;justify-content:center"><button class="btn" id="dl">◀ 되감기</button><b class="hand">${H}시 · ${w[0]}° · ${w[1]} m/s</b><button class="btn" id="dr">감기 ▶</button></p>`);
+  $('#dl').onclick=()=>{S.dh=Math.max(0,S.dh-1);SND.click();save();openDrums()};
+  $('#dr').onclick=()=>{if(S.dh>=max){SND.wrong();return say('그 뒤는 아직 기록되지 않았다.')}S.dh++;SND.click();save();openDrums()};
+}
+function overlay79(){take('sheet79');S.f.overlay=1;save();SND.found();
+  openCard('1979년 기록지를 겹쳐 끼웠다',`<p class="hand">두 선이 똑같이 꺾인다. 30년 전 오늘과 오늘 밤이 한 줄로 겹쳤다.<br>원통이 저절로 한 바퀴 돌고, 1979년 기록지 가장자리에 연필 글씨가 드러났다.</p>
+    <p class="hand" style="background:#f3ead2;padding:10px">"02시 쉼터로 내려감. 구름재 둘."</p><p class="hand">관측실 불빛이 잠깐 노랗게 바뀌었다가 돌아왔다.</p><p><button class="btn primary" id="toRadio">무전기가 지직거린다</button></p>`);
+  $('#toRadio').onclick=()=>toSlot(3,'새벽 1시 40분. 무전기에서 잡음 섞인 목소리가 들린다.')}
+/* 무전: 볼륨이 너무 크면 잡음, 중간에서만 또렷 */
+function openRadio(){S.vol=S.vol??8;const v=S.vol;
+  const text=v<3?'(너무 작아 거의 안 들린다)':v>6?'치이이익… 잡음에 목소리가 묻힌다.':'"…구름재, 구름재. 여기 구름재 둘.<br>일 일 공 팔 오. 이 삼 육 이 공.<br>두 사람 갇혔다. 위치는… [치직] …샘… 쉼터… [치직]"';
+  openCard('무전기',`<p class="hand" style="min-height:96px;background:#1c2420;color:#cfe8d0;padding:12px;border-radius:4px">${text}</p>
+    <p style="display:flex;gap:8px;align-items:center"><span>볼륨</span><input id="vol" type="range" min="0" max="10" value="${v}" style="flex:1"><b>${v}</b></p>
+    <input id="rin" autocomplete="off" placeholder="쉼터 이름이나 번호로 답하기"><p><button class="btn primary" id="rsend">송신</button></p>`);
+  $('#vol').oninput=e=>{S.vol=+e.target.value;save();SND.noise(.15,1200,S.vol*.01,.6);openRadio()};
+  const send=()=>{const a=$('#rin').value.replace(/\s|쉼터|번/g,'');
+    if(['바위샘','14','90214'].includes(a)){S.f.radio=1;save();SND.found();
+      $('#card').insertAdjacentHTML('beforeend','<p class="hand">"구름재 하나, 수신했다. 바위샘 쉼터로 구조대 요청한다."<br>한참 조용하다가: "…하나. 아직 거기 사람이 있었구나." 끊겼다.</p><p><button class="btn primary" id="to3">03시까지</button></p>');
+      $('#to3').onclick=()=>toSlot(4,'새벽 3시. 본청 연락: 헬기는 구름 높이를 보고 뜬다.');return}
+    SND.wrong();say(a==='구름재'?'구름재는 여기다. 다른 이름이 들렸다.':'지도에서 그 쉼터를 다시 찾아보자.')};
+  $('#rsend').onclick=send;$('#rin').onkeydown=e=>{if(e.key==='Enter')send()};
+}
+/* 탐조등 각도: 빛 점이 구름 바닥에 맞을 때 63° */
+function openAngle(){S.f.ang=S.f.ang||40;const a=S.f.ang,hit=a===63;
+  openCard('탐조등 · 각도판',`<svg viewBox="0 0 400 220" style="width:100%;background:#0c1728;border-radius:6px">
+    <rect x="0" y="40" width="400" height="22" fill="#5b6672" opacity=".7"/><text x="390" y="34" font-size="10" text-anchor="end" fill="#9aa3ad">구름 바닥</text>
+    <path d="M60 200 L${60+Math.cos(a*Math.PI/180)*400} ${200-Math.sin(a*Math.PI/180)*400}" stroke="#fff3b0" stroke-width="3" opacity=".8"/>
+    <circle cx="136" cy="51" r="${hit?9:5}" fill="none" stroke="#ffd27a" stroke-width="2"/><text x="136" y="80" font-size="9" text-anchor="middle" fill="#ffd27a">300 m 앞 관측 표식 위</text>
+    <path d="M100 200 A40 40 0 0 0 ${60+Math.cos(a*Math.PI/180)*40} ${200-Math.sin(a*Math.PI/180)*40}" stroke="#c9a24a" fill="none"/><text x="110" y="190" font-size="12" fill="#c9a24a">${a}°</text>
+  </svg><p style="display:flex;gap:8px;align-items:center"><span>각도</span><input id="ang" type="range" min="40" max="80" value="${a}" style="flex:1"></p>
+  <table class="tbl nt"><tr><th>각도</th><td>60°</td><td>63°</td><td>66°</td><td>70°</td></tr><tr><th>구름 높이</th><td>520 m</td><td>600 m</td><td>670 m</td><td>820 m</td></tr></table>
+  <p class="hand">${hit?'빛 점이 표식 원 안에 들어왔다.':'빛줄기를 300 m 앞 표식 위 구름에 맞춰 본다.'}</p>`);
+  $('#ang').oninput=e=>{S.f.ang=+e.target.value;save();openAngle()};
+}
+function toSlot1(){S.t=1;S.tape=S.tape||[];S.f.handleGone=1;S.room='A';S.wall.A=0;save();SND.thud();SND.hum(false);draw();
   say('22시 30분. 퍽 소리와 함께 불이 나갔다. 지하 철문이 바람에 쾅 닫히는 소리도 났다.')}
 let GEN=[];
 function openGen(){GEN=[];const L=['① 연료 밸브 열기','② 초크 닫기','③ 시동줄 당기기','④ 초크 열기'];
@@ -509,9 +588,10 @@ function openGen(){GEN=[];const L=['① 연료 밸브 열기','② 초크 닫기
     if(!ok){$('#gmsg').textContent=GEN[2]===3&&GEN[3]===4?'털털거리다 멎었다. 점검표 그대로 했는데.':'시동이 안 걸린다.';SND.wrong();
       setTimeout(()=>{GEN=[];$('#card').querySelectorAll('[data-g]').forEach(x=>x.classList.remove('on'))},900);return}
     SND.hum(true);$('#gmsg').textContent='부르릉, 걸렸다!';S.f.power=1;save();setTimeout(()=>{closeCard();powerBack()},900)})}
-function powerBack(){draw();say('불이 들어왔다. 창 너머 풍향탑 아래 사람 그림자가… 다시 보니 없다.');
-  S.ms=Date.now()-S.start;save();setTimeout(finish,2600)}
-function finish(){$('#game').hidden=true;$('#bag').hidden=true;$('#end').hidden=false;const m=Math.round(S.ms/60000);$('#took').textContent=m+'분';window.scrollTo(0,0)}
+function powerBack(){S.room='A';S.wall.A=0;save();draw();say('불이 들어왔다. 창 너머 풍향탑 아래 사람 그림자가… 다시 보니 없다.');
+  setTimeout(()=>toSlot(2,'자정. 바람이 더 세졌다. 바깥 풍향 바늘은 미친 듯이 돈다.'),3800)}
+function toSlot(t,msg){S.t=t;save();closeCard();draw();if(msg)say(msg)}
+function finish(){S.t=5;if(!S.ms){S.ms=Date.now()-S.start;record(S.ms,true)}S.done=1;save();$('#game').hidden=true;$('#bag').hidden=true;$('#end').hidden=false;const m=Math.round(S.ms/60000);$('#took').textContent=m+'분';window.scrollTo(0,0)}
 
 /* ---------- 힌트 ---------- */
 $('#hint').onclick=()=>{const H=HINTS[S.t]||['다음 업데이트에서.','',''],got=S.hint[S.t]||0;
@@ -521,12 +601,13 @@ $('#hint').onclick=()=>{const H=HINTS[S.t]||['다음 업데이트에서.','','']
 
 /* ---------- 시작 ---------- */
 load();
-function begin(){$('#intro').hidden=true;$('#game').hidden=false;if(!S.start)S.start=Date.now();save();SND.startWind();if(S.f.power)SND.hum(true);draw();if(S.f.power)finish()}
+function begin(){$('#intro').hidden=true;$('#game').hidden=false;if(!S.start)S.start=Date.now();save();SND.startWind();if(S.f.power)SND.hum(true);draw();if(S.done)finish()}
 $('#go').onclick=begin;
 if(S.start){$('#go').textContent='이어서 근무'}
 if(location.hash==='#play')begin();
 $('#again').onclick=()=>{try{localStorage.removeItem(KEY)}catch{}location.reload()};
 addEventListener('resize',drawDark);
 </script>
+<script src="../../feedback.js" defer></script>
 </body>
 </html>
