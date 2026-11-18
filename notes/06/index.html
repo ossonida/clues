@@ -98,6 +98,8 @@ header{display:flex;align-items:flex-end;gap:10px 16px;flex-wrap:wrap;margin-bot
 .ns-ex{display:flex;align-items:center;gap:10px;margin-top:6px;padding:10px 8px;background:#f1e7cf;border-left:4px solid var(--stamp)}
 .ns-ex>span{width:72px;font-size:12px;color:#5a3a2a}
 .ns-ex .ns-cell b{border-color:var(--stamp);color:var(--stamp)}
+.nt{width:100%;border-collapse:collapse}.nt th,.nt td{border:1px solid #cfc6aa;padding:7px 9px}.nt th{background:#e4dcc4;font-size:12px;color:#5a5345}.nt td{vertical-align:middle;font-size:12.5px;color:#6b6358}.nt td:first-child{font-family:var(--serif);font-weight:800;font-size:15px;color:var(--ink);text-align:center}
+.nt .nt-f{font-size:20px;font-weight:700;letter-spacing:2px;color:var(--ink);white-space:nowrap;background:#fffdf2}
 .ns-rule{margin:4px 0 0;font-size:11.5px;color:#7a7262}
 .ns-pen{font-family:var(--hand);font-size:21px;color:#1d3f8a;margin:10px 0 0;transform:rotate(-1deg)}
 </style>
@@ -380,15 +382,10 @@ const TAP={
   baro(){if(dark()&&!has('torch')){SND.wrong();return say('어둡다.')}if(S.f.baro)return say('기울어진 기압계. 바늘이 계속 내려간다.');S.f.baro=1;SND.fit();save();draw();say('창의 그림처럼 기압계를 밀어 보았다. 액자가 기울며 뒤에서 열쇠가 걸려 있다.')},
   keyspot(){S.f.keyTaken=1;give('key');SND.found();save();draw();say('장비 열쇠를 챙겼다.')},
   drums(){say('기록계 원통이 두 개 나란히 돈다. 빨간 펜은 기압, 파란 펜은 바람. 원통은 손으로도 돌아간다.')},
-  table(){
-    const box=s=>'<div class="ns-boxes">'+[...s].map((c,i)=>`<div class="ns-cell${i?'':' fix'}"><b>${c}</b></div>`).join('')+'</div>';
-    const row=(n,s,r)=>`<div class="ns-row"><div class="ns-name">${n}</div><div style="flex:1">${box(s)}<p class="ns-rule">${r}</p></div></div>`;
-    openCard('관측실 남쪽 벽에 붙은 종이',`<div class="ns-sheet"><div class="ns-tape"></div>
-      <h4>간이 전보 숫자표</h4>
-      ${row('기온','1sTTT','s 영상 0 · 영하 1　TTT 기온×10')}
-      ${row('바람','2ddff','dd 풍향÷10　ff 풍속 m/s')}
-      ${row('구름','3hhhh','hhhh 구름 높이 m÷10')}
-    </div>`)},
+  table(){openCard('간이 전보 숫자표 (선배 손글씨)',`<table class="tbl nt"><tr><th>묶음</th><th>형식</th><th>쓰는 법</th></tr>
+    <tr><td>기온</td><td class="nt-f">1 s TTT</td><td>s: 영상 0 · 영하 1<br>TTT: 기온×10 (세 자리)</td></tr>
+    <tr><td>바람</td><td class="nt-f">2 dd ff</td><td>dd: 풍향 각도 ÷10<br>ff: 풍속 m/s</td></tr>
+    <tr><td>구름</td><td class="nt-f">3 hhhh</td><td>구름 높이 m ÷10 (네 자리)</td></tr></table><p class="hand">정시에 그 시각 것만. 묶음은 다섯 자리.</p>`)},
   symbols(){say('일기도 운량 기호. 동그라미를 칠한 만큼 하늘이 구름으로 덮였다는 뜻이다.')},
   teletype(){if(dark())return say('전원이 나가 텔레타이프가 죽어 있다.');openTele()},
   radio(){say(dark()?'무전기도 꺼졌다.':'잡음뿐. 볼륨을 낮춰 켜 두었다.')},
