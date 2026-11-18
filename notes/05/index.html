@@ -133,6 +133,9 @@ header.hud{display:flex;align-items:flex-end;gap:10px 18px;flex-wrap:wrap;margin
 .plan svg{display:block;width:100%;height:auto}
 .plan svg text{font-family:"Kkakdugi Drafting",sans-serif}
 .plan .rm.open{cursor:pointer}
+.plan .rm.fresh rect{animation:fresh 1.2s ease-in-out 3}
+@keyframes fresh{50%{fill:#6b8fa3}}
+.mapbtn{float:right;font:inherit;font-family:var(--mono);font-size:13px;background:#d6dbe4;color:#2f3a4a;border:none;padding:4px 10px;cursor:pointer;margin-top:2px}
 .plan .rm.open:hover rect{fill:#3a5466}
 .plan .legend{font-family:var(--mono);font-size:11.5px;color:#93a6b2;margin-top:6px}
 
@@ -966,7 +969,7 @@ function canView(v){
   const n=+v.slice(1);return n>=1&&n<=Math.min(S.open,LAST);
 }
 function renderTabs(){
-  const tabs=[['cover','표지'],...[1,2,3,4,5,6,7,8].map(n=>['p'+n,n+'장']),...(S.done?[['end','끝']]:[])];
+  const tabs=[['cover','표지'],...(S.v[0]==='p'?[[S.v,'📍 '+ROOM[pageNo()]]]:[]),...(S.done?[['end','끝']]:[])];
   $('#tabs').innerHTML=tabs.map(([v,label])=>{const lk=!canView(v),n=v[0]==='p'?+v.slice(1):0;
     return `<button class="tab${v==='map'?' map':''}${S.v===v?' on':''}" data-v="${v}"${lk?' disabled':''}>${lk?'🔒 ':''}${label}${n&&S.clear[n]?'<span class="ok">✓</span>':''}</button>`}).join('');
   $('#tabs').querySelectorAll('.tab').forEach(b=>b.onclick=()=>go(b.dataset.v));
@@ -1000,8 +1003,8 @@ function pageCover(){
 function pageLevel(p){
   const L=LOG[p],w=S.w[p];
   const edge=p===5&&w.door&&(w.thread.length||w.ok)?`<div class="edge">필름 가장자리<b>${w.thread.map(i=>ROL[i].ch).join(' ')}</b></div>`:'';
-  return `<section class="room turn"><h2>${ROOM[p]}${S.clear[p]?'<small>✓ 지나옴</small>':''}</h2>${sceneSvg(p)}${edge}<div id="dev">${devHtml()}</div></section>
-    <div class="nav"><button data-go="${p===1?'cover':'p'+(p-1)}">← 앞 장</button><span></span>${S.clear[p]&&p<LAST?`<button data-go="p${p+1}">다음 장 →</button>`:'<span></span>'}</div>`;
+  return `<section class="room turn"><h2>${ROOM[p]}${S.clear[p]?'<small>✓ 지나옴</small>':''}<button class="mapbtn" data-map>🗺 약도</button></h2>${sceneSvg(p)}${edge}<div id="dev">${devHtml()}</div></section>
+    <div class="nav"><span></span>${S.clear[p]&&p<LAST?`<button data-go="p${p+1}">→ ${ROOM[p+1]}${ro(ROOM[p+1])}</button>`:'<span></span>'}</div>`;
 }
 // ── 상영 일지 책자: 소지품의 일지를 눌러 한 쪽씩 넘겨 본다. 열린 장까지 날짜 쪽, 맨 뒤는 윤 기사가 그린 극장 약도
 const BOOK={i:0,from:0};
@@ -1011,30 +1014,32 @@ function openBook(){
   S.seen=n;save();renderBag();bookPage();$('#mbg').classList.add('on');
 }
 function bookPage(){
-  const n=Math.min(S.open,LAST),last=n,i=Math.max(0,Math.min(BOOK.i,last));BOOK.i=i;
+  const n=Math.min(S.open,LAST),last=n-1,i=Math.max(0,Math.min(BOOK.i,last));BOOK.i=i;
   let body;
-  if(i<n){const p=i+1,L=LOG[p];
+  {const p=i+1,L=LOG[p];
     body=`<article class="log">${p>BOOK.from?'<span class="newtag">새 쪽</span>':''}
     <div class="meta"><span>일자<b>${L.date}</b></span><span>날씨<b>${L.wx}</b></span><span>영사기사<b>윤만석</b></span></div>
     ${L.body.map(([t,x])=>`<div class="${t}">${x}</div>`).join('')}</article>`}
-  else body=pageMap();
   $('#modal').innerHTML=`<div class="bookhd"><h2>상 영 일 지</h2><span>${i+1} / ${last+1}</span></div>${body}
     <div class="bookft"><button class="btn" id="bprev"${i===0?' disabled':''}>‹ 앞 쪽</button><button class="btn primary" id="mclose">덮기</button><button class="btn" id="bnext"${i===last?' disabled':''}>뒤 쪽 ›</button></div>`;
   $('#modal').scrollTop=0;
   $('#bprev').onclick=()=>{BOOK.i--;bookPage()};$('#bnext').onclick=()=>{BOOK.i++;bookPage()};$('#mclose').onclick=closeM;
   $('#modal').querySelectorAll('[data-go]').forEach(g=>g.onclick=()=>{closeM();go(g.dataset.go)});
 }
+// 받침 없거나 ㄹ이면 '로', 아니면 '으로'
+const ro=w=>{const c=(w.charCodeAt(w.length-1)-0xAC00)%28;return c===0||c===8?'로':'으로'};
+function openMap(){$('#modal').innerHTML=pageMap()+'<div class="bookft"><span></span><button class="btn primary" id="mclose">접기</button><span></span></div>';$('#modal').scrollTop=0;$('#mclose').onclick=closeM;$('#modal').querySelectorAll('[data-go]').forEach(g=>g.onclick=()=>{closeM();go(g.dataset.go)});$('#mbg').classList.add('on')}
 function pageMap(){
-  const R=[[7,'무대 뒤',150,18,300,52,0],[8,'2번 출입구',460,18,100,52,0],[6,'객석',150,80,300,140,0],[5,'영사실 (2층)',300,232,140,32,1],[4,'지하 필름 창고',460,232,120,32,1],[2,'매표소',150,288,86,58,0],[1,'로비',240,288,210,58,0],[3,'매점 창고',460,288,120,58,0]];
-  const cur=S.v==='map'?frontier():pageNo();
-  return `<section class="plan"><h3>뒤표지 안쪽 · 윤 기사가 그린 극장 약도</h3><svg viewBox="0 0 600 360">
+  const R=[[7,'무대 뒤',150,18,300,52,0],[8,'2번 출입구',460,18,130,52,0],[6,'객석',150,80,300,140,0],[5,'영사실(2층)',290,230,150,48,1],[4,'지하 창고',460,230,130,48,1],[2,'매표소',150,290,86,58,0],[1,'로비',240,290,210,58,0],[3,'매점 창고',460,290,130,58,0]];
+  const cur=pageNo(),fresh=S.open<=LAST&&!S.clear[S.open]?S.open:0;
+  return `<section class="plan"><h3>윤 기사가 그린 극장 약도 · 일지 뒤표지에 끼워져 있던 종이</h3><svg viewBox="0 0 600 360">
     <rect x="160" y="80" width="280" height="8" fill="#93a6b2"/>
     ${R.map(([n,nm,x,y,w,h,ds])=>{const open=canView('p'+n);
-      return `<g class="rm ${open?'open':'locked'}"${open?` data-go="p${n}" role="button" tabindex="0"`:''} aria-label="${nm}${open?'':' (잠김)'}">
-      <rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${n===cur&&open?'#41606f':open?'#2c3e4a':'#1a2229'}" stroke="${open?'#93a6b2':'#3a4650'}" stroke-width="2"${ds?' stroke-dasharray="6 4"':''}/>
-      <text x="${x+w/2}" y="${y+h/2+5}" text-anchor="middle" font-size="${w<130?12:14}" fill="${open?'#e7eef2':'#55636d'}">${open?'':'🔒 '}${nm}${S.clear[n]?' ✓':''}</text></g>`}).join('')}
+      return `<g class="rm ${open?'open':'locked'}${n===fresh?' fresh':''}"${open?` data-go="p${n}" role="button" tabindex="0"`:''} aria-label="${nm}${open?'':' (잠김)'}">
+      <rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${n===cur&&open?'#41606f':open?'#2c3e4a':'#1a2229'}" stroke="${n===cur&&open?'#ffd257':open?'#93a6b2':'#3a4650'}" stroke-width="${n===cur&&open?4:2}"${ds?' stroke-dasharray="6 4"':''}/>
+      <text x="${x+w/2}" y="${y+h/2+5}" text-anchor="middle" font-size="${Math.min(21,Math.floor((w-10)/(nm.length+(S.clear[n]?1.5:0))))}" fill="${open?'#e7eef2':'#55636d'}">${open?nm+(S.clear[n]?' ✓':''):'?'}</text></g>`}).join('')}
     <text x="300" y="100" text-anchor="middle" font-size="10" fill="#93a6b2" letter-spacing="6">스크린</text>
-  </svg><div class="legend">밝은 방은 갈 수 있는 곳 · 눌러서 그 장으로 · 점선은 2층·지하</div></section>`;
+  </svg><div class="legend">갈 수 있는 방을 누르면 그리로 간다 · ? 는 아직 못 가 본 곳 · 점선은 2층·지하</div></section>`;
 }
 function pageEnd(){
   const h=hintTotal(),ansHints=Object.values(S.hints).filter(n=>n>=3).length;
@@ -1064,6 +1069,7 @@ function render(anim){
 const refresh=()=>render(false);
 $('#page').addEventListener('click',e=>{
   const g=e.target.closest('[data-go]');if(g){go(g.dataset.go);return}
+  if(e.target.closest('[data-map]')){openMap();return}
   const b=e.target.closest('[data-act]');if(b&&ACT[b.dataset.act])ACT[b.dataset.act](b,e);
 });
 $('#page').addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches('[data-go]')){e.preventDefault();go(e.target.dataset.go)}});
