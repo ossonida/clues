@@ -9,6 +9,8 @@ index.html          메인: 사건 노트 카드 + 사건 대장(표) + 추천 �
 lang.js             언어 결정 (?lang= → localStorage hn.lang → 브라우저 언어)
 analytics.js        GA4 전송. 스키마에 없는 이벤트·값은 버린다
 feedback.js         결말 화면 한 줄 피드백 (#again 위에 자동으로 붙음, Firestore clueFeedback, 쓰기만)
+share.js            결말 기록 공유 (기록 카드 PNG·친구에게 링크, feedback.js가 불러옴)
+og/                 링크 미리보기 이미지 (1200×630, card.html을 Edge로 찍어 만듦). 새 노트는 og:* 메타와 og/noteNN.png 추가
 ANALYTICS.md        이벤트 설계 문서
 notes/NN/index.html 사건 하나 = HTML 파일 하나 (CSS·JS 모두 인라인)
 notes/NN/PLAN.md    그 사건의 기획안 (이야기, 장 구성, 정답, 정할 것)
