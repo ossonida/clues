@@ -182,7 +182,7 @@ header{display:flex;align-items:flex-end;gap:10px 16px;flex-wrap:wrap;margin-bot
 const KEY='hn.note06.v1';
 const $=s=>document.querySelector(s);
 const ITEMS={
-  key:['🗝','장비 열쇠'],thermos:['🧴','보온병'],hot:['♨','뜨거운 보온병'],pencil:['✏','연필'],driver:['🪛','드라이버'],
+  key:['<svg viewBox="0 0 40 24" width="32" height="20" style="vertical-align:middle"><circle cx="8" cy="11" r="6" fill="none" stroke="#c9a24a" stroke-width="3.5"/><path d="M14 12 L35 15 M29 14 l-1 6 M34 15 l-1 5" stroke="#c9a24a" stroke-width="3.5" stroke-linecap="round"/></svg>','장비 열쇠'],thermos:['🧴','보온병'],hot:['♨','뜨거운 보온병'],pencil:['✏','연필'],driver:['🪛','드라이버'],
   torch:['🔦','손전등'],handle:['⚙','문손잡이'],handle2:['🔩','손잡이+드라이버'],fuse:['▭','예비 퓨즈'],ring:['➰','낡은 열쇠고리'],sheet79:['📜','1979 기압 기록지'],skey:['🔑','탐조등 열쇠'],book79:['📓','1979 근무 수첩']
 };
 const SLOTS=[
@@ -425,9 +425,20 @@ function drawC(w){
     if(S.f.light){const r=a*Math.PI/180;s+=`<path d="M352 240 L${352+Math.cos(r)*520} ${240-Math.sin(r)*520} L${352+Math.cos(r+.07)*520} ${240-Math.sin(r+.07)*520}Z" fill="#fff6c8" opacity=".16"/>`}
     s+=`<ellipse cx="400" cy="338" rx="360" ry="12" fill="#000" opacity=".2"/><path d="M470 336 V70 L640 22 L810 70 V336Z" fill="#2c3440" stroke="#161b22" stroke-width="4"/><path d="M458 74 L640 16 L812 70 L812 82 L640 30 L458 86Z" fill="#e9eef2"/><path d="M470 120h340M470 170h340M470 220h340M470 270h340" stroke="#202730" stroke-width="2"/><rect x="490" y="130" width="52" height="56" fill="#e0b060" opacity=".75" stroke="#b9a57d" stroke-width="4"/><path d="M516 130V186M490 158H542" stroke="#b9a57d" stroke-width="3"/><path d="M470 336 q60 -12 120 0 M700 336 q50 -10 110 0" stroke="#d9dee4" stroke-width="10" fill="none"/><rect x="560" y="96" width="140" height="240" fill="#4a3b2c" stroke="#1e1710" stroke-width="5"/><rect x="590" y="124" width="80" height="60" fill="#e0b060" opacity=".8"/><circle cx="680" cy="236" r="6" fill="#c9a24a"/><text x="630" y="88" font-size="11" text-anchor="middle" fill="#9aa3ad">관측실</text>${hs('indoor',560,96,140,240)}
       <line x1="140" y1="170" x2="140" y2="334" stroke="#6b4a2c" stroke-width="6"/><line x1="112" y1="170" x2="168" y2="170" stroke="#6b4a2c" stroke-width="6"/><path d="M122 172 L114 280 H166 L158 172Z" fill="#c8a020"/>${hs('raincoat',104,160,72,130)}
-      <path d="M322 334 L352 254 L382 334" stroke="#3a4248" stroke-width="5" fill="none"/>
-      <g transform="rotate(${-a} 352 248)"><rect x="330" y="234" width="64" height="28" rx="8" fill="#5a646b" stroke="#222" stroke-width="2"/><ellipse cx="396" cy="248" rx="7" ry="14" fill="${S.f.light?'#fff3b0':'#9aa4aa'}"/></g>
-      <path d="M402 334 a50 50 0 0 0 -50 -50" stroke="#c9a24a" stroke-width="2" fill="none"/>
+      <path d="M290 248 A62 62 0 0 1 414 248Z" fill="#e7dfc4" stroke="#8a7a52" stroke-width="2" opacity=".92"/>
+      ${Array.from({length:19},(_,i)=>{const r=(180-i*10)*Math.PI/180,l=i%3===0?12:6;return `<path d="M${352+Math.cos(r)*62} ${248-Math.sin(r)*62} L${352+Math.cos(r)*(62-l)} ${248-Math.sin(r)*(62-l)}" stroke="#5b4d33" stroke-width="${i%3===0?2:1.2}"/>`}).join('')}
+      <path d="M352 248 L${352+Math.cos(a*Math.PI/180)*60} ${248-Math.sin(a*Math.PI/180)*60}" stroke="#a3312a" stroke-width="2"/>
+      <path d="M324 334 h56 l-6 -14 h-44z" fill="#3a4248" stroke="#1f2427" stroke-width="2"/><rect x="346" y="262" width="12" height="60" fill="#4a545b" stroke="#1f2427" stroke-width="2"/>
+      <path d="M332 262 V240 M372 262 V240 M332 262 H372" stroke="#4a545b" stroke-width="6" fill="none" stroke-linecap="round"/>
+      <g transform="rotate(${-a} 352 248)">
+        <rect x="318" y="232" width="74" height="32" rx="6" fill="#5f6a71" stroke="#1f2427" stroke-width="2"/>
+        ${[0,1,2,3].map(i=>`<path d="M${326+i*7} 234 v28" stroke="#3d464c" stroke-width="2"/>`).join('')}
+        <rect x="312" y="242" width="8" height="12" rx="2" fill="#3d464c"/>
+        <rect x="390" y="226" width="12" height="44" rx="4" fill="#8a949a" stroke="#1f2427" stroke-width="2"/>
+        <ellipse cx="402" cy="248" rx="6" ry="19" fill="${S.f.light?'#fff3b0':'#aab4ba'}" stroke="#1f2427" stroke-width="1.5"/>
+        <rect x="360" y="226" width="16" height="6" rx="2" fill="#2c3337"/>
+      </g>
+      <circle cx="352" cy="248" r="5" fill="#c9a24a" stroke="#1f2427" stroke-width="1.5"/>
       ${hs('searchlight',300,190,170,146)}`;}
   return s;
 }
@@ -632,11 +643,20 @@ function openRadio(){S.vol=S.vol??8;const v=S.vol;
 }
 /* 탐조등 각도: 빛 점이 구름 바닥에 맞을 때 63° */
 function openAngle(){S.f.ang=S.f.ang||40;const a=S.f.ang,hit=a===63;
-  openCard('탐조등 · 각도판',`<svg viewBox="0 0 400 220" style="width:100%;background:#0c1728;border-radius:6px">
-    <rect x="0" y="40" width="400" height="22" fill="#5b6672" opacity=".7"/><text x="390" y="34" font-size="10" text-anchor="end" fill="#9aa3ad">구름 바닥</text>
-    <path d="M60 200 L${60+Math.cos(a*Math.PI/180)*400} ${200-Math.sin(a*Math.PI/180)*400}" stroke="#fff3b0" stroke-width="3" opacity=".8"/>
-    <circle cx="136" cy="51" r="${hit?9:5}" fill="none" stroke="#ffd27a" stroke-width="2"/><text x="136" y="80" font-size="9" text-anchor="middle" fill="#ffd27a">300 m 앞 관측 표식 위</text>
-    <path d="M100 200 A40 40 0 0 0 ${60+Math.cos(a*Math.PI/180)*40} ${200-Math.sin(a*Math.PI/180)*40}" stroke="#c9a24a" fill="none"/><text x="110" y="190" font-size="12" fill="#c9a24a">${a}°</text>
+  const hx=60+149/Math.tan(a*Math.PI/180),ox=60,oy=200;
+  openCard('탐조등 · 각도판',`<svg viewBox="0 0 400 230" style="width:100%;background:linear-gradient(#0c1728,#1a2a40);border-radius:6px">
+    <path d="M0 40 q40 -10 80 0 t80 0 t80 0 t80 0 t80 0 V64 q-40 8 -80 0 t-80 0 t-80 0 t-80 0 t-80 0Z" fill="#6b7785" opacity=".85"/>
+    <text x="392" y="30" font-size="10" text-anchor="end" fill="#b8c2cc">구름 바닥</text>
+    <path d="M${ox} ${oy} L${hx-7} 51 L${hx+7} 51Z" fill="#fff3b0" opacity=".22"/><path d="M${ox} ${oy} L${hx} 51" stroke="#fff3b0" stroke-width="2" opacity=".85"/>
+    <ellipse cx="${hx}" cy="51" rx="9" ry="4" fill="#fff8d8" opacity=".9"/>
+    <path d="M136 186 V60" stroke="#ffd27a" stroke-width="1.2" stroke-dasharray="3 4" opacity=".7"/>
+    <circle cx="136" cy="51" r="${hit?10:6}" fill="none" stroke="#ffd27a" stroke-width="2"/>
+    <rect x="0" y="200" width="400" height="30" fill="#d9dee4" opacity=".9"/>
+    <rect x="133" y="186" width="6" height="14" fill="#c9a24a"/><text x="136" y="220" font-size="9" text-anchor="middle" fill="#5b4d33">300 m 앞 표식</text>
+    <path d="M10 200 A50 50 0 0 1 110 200" fill="#e7dfc4" fill-opacity=".15" stroke="#c9a24a" stroke-width="1.5"/>
+    ${Array.from({length:10},(_,i)=>{const t=i*10*Math.PI/180;return `<path d="M${ox+Math.cos(t)*50} ${oy-Math.sin(t)*50} L${ox+Math.cos(t)*43} ${oy-Math.sin(t)*43}" stroke="#c9a24a" stroke-width="1.5"/>`+(i>=4&&i<=8?`<text x="${ox+Math.cos(t)*60}" y="${oy-Math.sin(t)*60+3}" font-size="8" text-anchor="middle" fill="#c9a24a">${i*10}</text>`:'')}).join('')}
+    <rect x="${ox-14}" y="${oy-7}" width="26" height="14" rx="3" fill="#5f6a71" stroke="#1f2427" transform="rotate(${-a} ${ox} ${oy})"/>
+    <text x="16" y="120" font-size="16" fill="#ffd27a">${a}°</text>
   </svg><p style="display:flex;gap:8px;align-items:center"><span>각도</span><input id="ang" type="range" min="40" max="80" value="${a}" style="flex:1"></p>
   <table class="tbl nt"><tr><th>각도</th><td>60°</td><td>63°</td><td>66°</td><td>70°</td></tr><tr><th>구름 높이</th><td>520 m</td><td>600 m</td><td>670 m</td><td>820 m</td></tr></table>
   <p class="hand">${hit?'빛 점이 표식 원 안에 들어왔다.':'빛줄기를 300 m 앞 표식 위 구름에 맞춰 본다.'}</p>`);
