@@ -593,11 +593,38 @@ function drawC(w){
       <g transform="rotate(-14 418 348)"><rect x="410" y="343" width="17" height="10" rx="1" fill="#8a2e22" stroke="#3a120c" stroke-width="1"/><rect x="410" y="343" width="5" height="10" fill="#5a1c14"/><path d="M406 342 q12 -4 26 1" stroke="#eef2f4" stroke-width="3" fill="none"/></g>
             ${hs('raincoat',368,330,74,40)}`;
   }
-  if(w===1)s+=`<ellipse cx="380" cy="336" rx="90" ry="10" fill="#000" opacity=".2"/><path d="M330 270 V334 M430 270 V334 M330 300 H430" stroke="#c9ccd0" stroke-width="6"/>
-      <rect x="316" y="168" width="128" height="104" fill="#f3f3ef" stroke="#8a8f96" stroke-width="3"/><path d="M308 168 L380 146 L452 168Z" fill="#e6e8ea" stroke="#8a8f96" stroke-width="3"/><path d="M306 166 L380 143 L454 166" stroke="#fbfdff" stroke-width="5" fill="none" stroke-linecap="round"/>${S.f.screen?'':'<path d="M316 170 H444" stroke="#cfe6f4" stroke-width="5"/><path d="M380 172 V270" stroke="#cfe6f4" stroke-width="4" opacity=".9"/>'+[322,338,352,372,392,410,426,438].map((x,k)=>`<path d="M${x} 172 l3 ${8+(k*7)%12} l3 -${8+(k*7)%12}z" fill="#dff0fa" stroke="#9cc0d6" stroke-width=".8"/>`).join('')}
-      ${S.f.screen?'<rect x="320" y="172" width="120" height="96" fill="#2a3036"/><rect x="350" y="182" width="6" height="70" fill="#e33"/><rect x="400" y="182" width="6" height="70" fill="#e33"/><rect x="396" y="232" width="14" height="22" fill="#9ab"/>':[0,1,2,3,4,5].map(i=>`<line x1="324" y1="${180+i*15}" x2="436" y2="${186+i*15}" stroke="#b9bec4" stroke-width="3"/>`).join('')+'<path d="M316 168h128v104H316z" fill="#cfe3f0" opacity=".45"/>'}
-      ${hs('screen',308,146,144,190)}<rect x="742" y="96" width="70" height="244" fill="#2c3440" stroke="#161b22" stroke-width="3"/>${[136,176,216,256,296].map(y=>`<path d="M742 ${y} H812" stroke="#202730" stroke-width="2"/>`).join('')}<path d="M730 104 L812 86 V100 L734 116Z" fill="#e9eef2"/><path d="M736 336 q30 -10 76 -2 V342 H736Z" fill="#e3e8ec"/>${[[720,420],[680,404],[640,392],[600,380],[560,370],[516,360],[470,352]].map(([x,y],k)=>`<ellipse cx="${x}" cy="${y}" rx="7" ry="3" fill="#9aa6b2" opacity=".7" transform="rotate(${k%2?-14:8} ${x} ${y})"/>`).join('')}
-      <rect x="590" y="288" width="22" height="46" fill="#7a8794" stroke="#4a545b" stroke-width="2"/><ellipse cx="601" cy="288" rx="11" ry="4" fill="#eef2f5"/>${hs('raingauge',580,278,44,60)}`;
+  if(w===1){const op=S.f.screen; // 동: 백엽상(비늘살 상자·다리 넷·버팀대), 우량계(깔때기·받침), 오른쪽 끝 관측실 동쪽 끝
+    s+=`<path d="M0 334 L90 318 L200 326 L330 312 L470 322 L600 310 L740 320 V336 H0Z" fill="#26324a" opacity=".85"/>
+      <g transform="translate(150 0)"><path d="M0 334 V300" stroke="#3a3026" stroke-width="3"/><path d="M-2 300 h4" stroke="#eef2f4" stroke-width="3"/></g><g transform="translate(640 0)"><path d="M0 334 V306" stroke="#3a3026" stroke-width="2.5"/><path d="M-2 306 h4" stroke="#eef2f4" stroke-width="3"/></g>
+      ${Array.from({length:14},(_,i)=>`<circle cx="${(i*131+40)%720}" cy="${300+(i*37)%120}" r="${1+i%2}" fill="#fff" opacity=".45"/>`).join('')}
+      <g filter="url(#blurC)"><ellipse cx="382" cy="344" rx="96" ry="10" fill="#000" opacity=".38"/><ellipse cx="606" cy="344" rx="26" ry="5" fill="#000" opacity=".35"/><ellipse cx="770" cy="346" rx="60" ry="8" fill="#000" opacity=".4"/></g>
+      <!-- 다리 넷 + 버팀대 -->
+      <path d="M334 272 L326 340 M430 272 L438 340 M350 272 L346 336 M414 272 L418 336" stroke="#c9ccd0" stroke-width="6" stroke-linecap="round"/>
+      <path d="M330 300 L434 330 M434 300 L330 330" stroke="#b4b9be" stroke-width="3"/><path d="M328 312 H436" stroke="#c9ccd0" stroke-width="5"/>
+      <path d="M316 340 q10 -8 20 0 M428 340 q10 -8 20 0" fill="#e3e8ec" stroke="#e3e8ec" stroke-width="4"/>
+      <!-- 상자 -->
+      <rect x="316" y="166" width="132" height="108" fill="#f3f3ef" stroke="#8a8f96" stroke-width="3"/><rect x="312" y="268" width="140" height="8" fill="#dfe2e4" stroke="#8a8f96" stroke-width="2"/>
+      <path d="M306 168 L382 140 L458 168Z" fill="#e6e8ea" stroke="#8a8f96" stroke-width="3"/><path d="M304 166 L382 137 L460 166" stroke="#fbfdff" stroke-width="6" fill="none" stroke-linecap="round"/><path d="M372 144 q10 -6 20 0" stroke="#fbfdff" stroke-width="4" fill="none"/>
+      ${op?`<rect x="324" y="174" width="116" height="94" fill="#1e252b"/><path d="M324 174 h116" stroke="#000" stroke-width="5" opacity=".4"/>
+        <rect x="336" y="184" width="92" height="6" fill="#8a7a5a"/>
+        ${[356,404].map((x,k)=>`<rect x="${x-6}" y="190" width="12" height="70" rx="3" fill="#e8ecee" stroke="#5a646c"/>${Array.from({length:9},(_,j)=>`<path d="M${x-5} ${198+j*6} h${j%2?3:5}" stroke="#5a646c" stroke-width=".8"/>`).join('')}<rect x="${x-1.3}" y="196" width="2.6" height="54" fill="#c8302a"/><circle cx="${x}" cy="254" r="4" fill="#c8302a" stroke="#5a1410"/>${k?`<path d="M${x-5} 250 q5 -4 10 0 v10 q-5 4 -10 0z" fill="#d8dde0" stroke="#7a8288"/><path d="M${x} 262 V272" stroke="#d8dde0" stroke-width="2"/>`:''}`).join('')}
+        <path d="M316 166 L262 180 L262 280 L316 274Z" fill="#eceee9" stroke="#8a8f96" stroke-width="2.5"/>${Array.from({length:9},(_,i)=>`<path d="M266 ${190+i*10} L312 ${182+i*10}" stroke="#b9bec4" stroke-width="2"/>`).join('')}<circle cx="270" cy="230" r="2.5" fill="#6a7278"/>`
+      :`${Array.from({length:10},(_,i)=>`<path d="M326 ${178+i*9} H438" stroke="#b9bec4" stroke-width="2.5"/><path d="M326 ${180+i*9} H438" stroke="#fff" stroke-width="1"/>`).join('')}
+        <path d="M382 170 V270" stroke="#8a8f96" stroke-width="2"/><rect x="320" y="170" width="124" height="100" fill="none" stroke="#b0b5ba" stroke-width="3"/>
+        ${[186,250].map(y=>`<rect x="440" y="${y}" width="6" height="12" fill="#6a7278"/>`).join('')}<path d="M374 220 h16" stroke="#6a7278" stroke-width="3"/>
+        <path d="M318 170 H446" stroke="#cfe6f4" stroke-width="5"/><path d="M382 172 V270" stroke="#cfe6f4" stroke-width="4" opacity=".9"/>${[324,340,354,372,392,410,426,440].map((x,k)=>`<path d="M${x} 172 l3 ${8+(k*7)%12} l3 -${8+(k*7)%12}z" fill="#dff0fa" stroke="#9cc0d6" stroke-width=".8"/>`).join('')}`}
+      ${hs('screen',300,136,164,204)}
+      <!-- 우량계: 받침·통·깔때기 테 -->
+      <rect x="590" y="330" width="34" height="10" fill="#4a545b" stroke="#2a3036"/><path d="M588 330 h38" stroke="#eef2f4" stroke-width="3"/>
+      <rect x="596" y="286" width="22" height="46" fill="#7a8794" stroke="#3e464c" stroke-width="2"/><path d="M600 288 V330" stroke="#a9b4be" stroke-width="2" opacity=".7"/><path d="M596 310 h22" stroke="#3e464c" stroke-width="1.5"/>
+      <path d="M592 280 h30 l-4 8 h-22z" fill="#8f9ca8" stroke="#3e464c" stroke-width="1.8"/><ellipse cx="607" cy="280" rx="15" ry="4" fill="#3e464c"/><ellipse cx="607" cy="279" rx="13" ry="3" fill="#eef2f5"/>
+      ${hs('raingauge',580,270,54,72)}
+      <!-- 관측실 동쪽 끝 (남쪽 화면과 같은 벽·처마) -->
+      <rect x="742" y="96" width="80" height="244" fill="#2c3440" stroke="#161b22" stroke-width="3"/>${[136,176,216,256,296].map(y=>`<path d="M742 ${y} H822" stroke="#202730" stroke-width="2"/><path d="M742 ${y+2} H822" stroke="#3e4858" stroke-width="1" opacity=".6"/>`).join('')}
+      <path d="M744 96 V340" stroke="#161b22" stroke-width="5"/>
+      <path d="M726 106 L822 84 L822 96 L730 118Z" fill="#3a3430" stroke="#161b22" stroke-width="2"/><path d="M724 104 L822 80 L822 88 L726 110Z" fill="#e9eef2"/><path d="M732 118 q8 8 16 0" stroke="#e9eef2" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <path d="M730 338 q30 -12 92 -4 V344 H730Z" fill="#e3e8ec"/>
+      ${[[720,420],[680,404],[640,392],[600,380],[560,370],[516,360],[470,352]].map(([x,y],k)=>`<ellipse cx="${x}" cy="${y}" rx="7" ry="3" fill="#9aa6b2" opacity=".7" transform="rotate(${k%2?-14:8} ${x} ${y})"/>`).join('')}`;}
   if(w===2){const warm=!dark()&&(!S.f.stoveOff||S.f.power); // 남: 관측실 건물 북쪽 면(안에서 본 북쪽 벽의 뒤집힌 모습: 왼쪽 연통, 가운데 큰 창, 오른쪽 문) + 울타리 + 산 아래 불빛
     s+=`<g transform="translate(520 0)"><path d="M0 330 L60 300 L140 318 L220 296 L300 330Z" fill="#1d2738"/><circle cx="96" cy="306" r="3" fill="#e0c060"/><circle cx="104" cy="309" r="2" fill="#e0c060" opacity=".7"/>${hs('lights',70,290,50,30)}
       ${[20,90,160,230].map(x=>`<rect x="${x}" y="296" width="8" height="70" fill="#5b4632"/><path d="M${x} 296 h8" stroke="#e8eef2" stroke-width="3" stroke-linecap="round"/>`).join('')}<line x1="0" y1="316" x2="260" y2="316" stroke="#5b4632" stroke-width="5"/><line x1="0" y1="340" x2="260" y2="340" stroke="#5b4632" stroke-width="4"/>
