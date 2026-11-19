@@ -204,7 +204,7 @@ const HINTS=[
   ['창의 그림 → 기압계. 그다음 마당 백엽상.','얼어붙은 백엽상 문엔 뜨거운 물. 온도계는 둘인데, 젖은 천을 감은 쪽은 기온이 아니다. 숫자표 예시처럼 바꾼다.','기압계 뒤 열쇠 → 서랍 2칸째 보온병 → 주전자 물 → 백엽상. 건구 -2.6℃ → 텔레타이프에 11026'],
   ['손전등 → 난로 밑 → 지하 퓨즈함 → 발전기.','빠진 손잡이는 드라이버로 다시 단다. 끊어진 퓨즈는 퓨즈함 예비 칸에. 점검표 포스트잇을 읽자.','손잡이+드라이버로 지하 철문 → 퓨즈함 2번 교체 → 발전기 순서 1 → 2 → 4 → 3'],
   ['관측실 남쪽 기록계 → 텔레타이프. 그다음 지하 사물함 → 서류장.','기록계 원통을 00시로 돌려 읽는다. 각도는 10으로 나눈다. 열린 사물함의 열쇠고리는 서류장 1979 칸 열쇠.','00시 270°, 14 m/s → 22714. 사물함 열쇠고리 → 서류장 기록지 → 기록계에 겹치기'],
-  ['무전기 → 등산로 지도.','볼륨을 너무 올리면 잡음에 묻힌다. 중간쯤. 끊긴 말 속 쉼터 이름 한 글자를 지도에서 찾는다.','볼륨 4~6 → "…샘… 쉼터" → 바위샘(14)'],
+  ['무전기 → 등산로 지도.','볼륨을 너무 올리면 잡음에 묻힌다. 중간쯤. 끊긴 말 속 쉼터 이름 한 글자를 지도에서 찾는다.','볼륨 3~6 → "…샘… 쉼터" → 바위샘(14)'],
   ['셋째 서랍 → 운량 기호표. 그다음 마당 탐조등.','바퀴 아래 동그라미를 기호표 숫자로. 탐조등을 구름에 비추고 각도를 잰다. 각도판 옆 표에서 높이를 읽는다. 기온·바람도 03시 것으로 다시.','서랍 6284 → 탐조등 63° → 600 m. 백엽상 -3.4℃, 기록계 03시 270° 12 m/s → 11034 22712 30060']
 ];
 let idleT=0;
@@ -752,14 +752,14 @@ const TAP={
   baro(){if(dark()&&!has('torch')){SND.wrong();return say('어둡다.')}if(S.f.baro)return say('기울어진 기압계. 바늘이 계속 내려간다.');S.f.baro=1;SND.fit();save();draw();say('창의 그림처럼 기압계를 밀어 보았다. 액자가 기울자 뒤에 걸린 열쇠가 보인다.')},
   keyspot(){S.f.keyTaken=1;give('key');SND.found();save();draw();say('장비 열쇠를 챙겼다.')},
   sidedrawer(){SND.drawer(true);say('빈 기록지 묶음과 말라붙은 잉크병뿐이다.')},
-  drums(){if(S.t<2)return say('기록계 원통이 두 개 나란히 돈다. 빨간 펜은 기압, 파란 펜은 바람.');if(hold==='sheet79'&&!S.f.overlay){overlay79();return}if(S.t===2&&S.f.overlay)return overlayCard();openDrums()},
+  drums(){if(S.t<2)return say('기록계 원통이 두 개 나란히 돈다. 빨간 펜은 기압, 파란 펜은 바람.');if(hold==='sheet79'&&!S.f.overlay){overlay79();return}if(S.t===2&&S.f.overlay&&S.f.sent2)return overlayCard();openDrums()},
   table(){SND.paper();openCard('간이 전보 숫자표 (선배 손글씨)',`<table class="tbl nt"><tr><th>묶음</th><th>형식</th><th>쓰는 법</th></tr>
     <tr><td>기온</td><td class="nt-f">1 s TTT</td><td>s: 영상 0 · 영하 1<br>TTT: 기온×10 (세 자리)</td></tr>
     <tr><td>바람</td><td class="nt-f">2 dd ff</td><td>dd: 풍향 각도 ÷10<br>ff: 풍속 m/s</td></tr>
     <tr><td>구름</td><td class="nt-f">3 hhhh</td><td>구름 높이 m ÷10 (네 자리)</td></tr></table><p class="hand">예) 영상 5.3℃ → <b>10053</b></p><p class="hand">정시에는 그 시각에 잰 값만 보낸다. 묶음은 다섯 자리.</p>`)},
   symbols(){say('일기도 운량 기호. 동그라미를 칠한 만큼 하늘이 구름으로 덮였다는 뜻이다.')},
   teletype(){if(dark())return say('전원이 나가 텔레타이프가 죽어 있다.');openTele()},
-  radio(){if(dark())return say('무전기도 꺼졌다.');SND.radioOpen();if(S.t===3)return openRadio();say(S.t>3?'무전기는 조용하다.':'잡음뿐. 볼륨을 낮춰 켜 두었다.')},
+  radio(){if(dark())return say('무전기도 꺼졌다.');SND.radioOpen();if(S.t===3)return openRadio();say(S.t>3?'무전기는 조용하다.':'잡음뿐. 켜 두었다.')},
   map(){SND.paper();const P=[[90,300,'07','매봉 쉼터','820 m'],[200,320,'11','칼바위 쉼터','960 m'],[300,215,'14','바위샘 쉼터','1,120 m'],[420,150,'22','구름재 아래 쉼터','1,310 m']];
     openCard('구름재 등산로 안내도',`<section class="trail-card"><div class="trail-head"><b>구름재 등산로 안내도</b><small>구름재 산악안전 안내소<br>2009. 11 · 야간 관측 구간</small></div><svg class="trail-svg" viewBox="0 0 560 380" role="img" aria-label="구름재 관측소와 네 쉼터를 표시한 등산로 안내도"><defs><pattern id="mapgrid" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0H0V32" fill="none" stroke="#7e936f" stroke-opacity=".2" stroke-width="1"/></pattern><linearGradient id="maphill" x1="0" y1="1" x2="1" y2="0"><stop stop-color="#a4ba8c"/><stop offset="1" stop-color="#d8e1b7"/></linearGradient></defs><rect width="560" height="380" fill="#dbe4c6"/><rect width="560" height="380" fill="url(#mapgrid)"/><path d="M18 348 Q95 252 182 306 T340 174 T542 50 V380H18Z" fill="url(#maphill)" opacity=".55"/>
       <g fill="none" stroke="#879d77" stroke-width="1.5">${[0,1,2,3,4,5].map(i=>`<ellipse cx="480" cy="110" rx="${70+i*62}" ry="${45+i*44}"/>`).join('')}</g>
