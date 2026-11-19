@@ -64,7 +64,7 @@ header{display:flex;align-items:flex-end;gap:10px 16px;flex-wrap:wrap;margin-bot
 .it i{font-style:normal;font-size:22px}
 .it.on{border-color:var(--orange);background:#3d3226}
 .tools{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
-.modal{position:fixed;inset:0;background:rgba(5,8,12,.78);display:none;align-items:center;justify-content:center;z-index:10;padding:14px}
+.modal{position:fixed;inset:0;background:rgba(5,8,12,.78);display:none;align-items:center;justify-content:center;z-index:60;padding:14px}
 .modal.on{display:flex}
 .card{background:#f6f0dc;max-width:560px;width:100%;max-height:92vh;overflow:auto;padding:18px;border-radius:3px;position:relative}
 .card h3{margin:0 0 8px;font-family:var(--serif);font-size:18px}
@@ -530,6 +530,7 @@ $('#next').onclick=()=>{S.wall[S.room]=(S.wall[S.room]+1)%4;SND.turn();save();dr
 
 /* ---------- 확대 화면 ---------- */
 function openCard(t,html){$('#card').innerHTML=`<button class="x" aria-label="닫기">×</button><h3>${t}</h3>${html}`;$('#modal').classList.add('on');$('#card .x').onclick=closeCard}
+new MutationObserver(ms=>{if(ms.some(m=>m.addedNodes.length&&!m.removedNodes.length)){const c=$('#card');c.scrollTo({top:c.scrollHeight,behavior:'smooth'})}}).observe(document.getElementById('card'),{childList:true});
 function closeCard(){$('#modal').classList.remove('on')}
 $('#modal').addEventListener('click',e=>{if(e.target.id==='modal')closeCard()});
 /* 셋째 서랍: 숫자 바퀴 넷, 바퀴 아래 운량 기호. 정답 6284 (◕6 ◔2 ●8 ◑4) */
