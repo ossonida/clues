@@ -38,7 +38,7 @@ a{color:inherit}
     repeating-linear-gradient(transparent 0 calc(var(--lh) - 1px),var(--line) calc(var(--lh) - 1px) var(--lh));
   background-position:0 0,0 46px;box-shadow:0 30px 60px -20px rgba(0,0,0,.6),0 0 0 1px rgba(0,0,0,.08)}
 .pad>*:not(.binding){padding-left:calc(var(--ml) + 22px);padding-right:28px}
-@media(max-width:640px){.pad>*:not(.binding){padding-left:calc(var(--ml) + 12px);padding-right:14px}}
+@media(max-width:640px){.pad>*:not(.binding){padding-left:calc(var(--ml) + 12px);padding-right:calc(var(--ml) + 12px)}}
 /* 줄 맞춤: .align 구역은 스크립트가 패드 줄 간격(32px)에 맞춰 위치를 조정한다 */
 
 .binding{height:46px;display:flex;justify-content:space-between;align-items:center;padding:0 18px 0 calc(var(--ml) + 22px);
