@@ -245,13 +245,13 @@ const SND={on:true,ctx:null,wind:null,
       const b=c.createBuffer(1,c.sampleRate*2,c.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
       const ns=c.createBufferSource();ns.buffer=b;ns.loop=true;const nf=c.createBiquadFilter();nf.type='bandpass';nf.frequency.value=1600;nf.Q.value=.6;const ng=c.createGain();ns.connect(nf).connect(ng).connect(out);ns.start();
       const o=c.createOscillator();o.type='sawtooth';o.frequency.value=118;const lf=c.createOscillator(),lg=c.createGain();lf.frequency.value=5;lg.gain.value=4;lf.connect(lg).connect(o.frequency);lf.start();
-      const env=c.createGain();env.gain.value=0;const f1=c.createBiquadFilter(),f2=c.createBiquadFilter();f1.type=f2.type='bandpass';f1.Q.value=6;f2.Q.value=8;f1.frequency.value=650;f2.frequency.value=1200;
+      const env=c.createGain();env.gain.value=0;const f1=c.createBiquadFilter(),f2=c.createBiquadFilter();f1.type=f2.type='bandpass';f1.Q.value=2.5;f2.Q.value=3.5;f1.frequency.value=650;f2.frequency.value=1200;
       const vg=c.createGain(),hp=c.createBiquadFilter();hp.type='highpass';hp.frequency.value=300;o.connect(env);env.connect(f1).connect(vg);env.connect(f2).connect(vg);vg.connect(hp).connect(out);o.start();
       let k=0;const syl=()=>{const t=c.currentTime,ph=k%14;k++;if(ph>=10){env.gain.setTargetAtTime(0,t,.05);return}
         f1.frequency.setTargetAtTime(400+Math.random()*500,t,.03);f2.frequency.setTargetAtTime(900+Math.random()*1300,t,.03);o.frequency.setTargetAtTime(105+Math.random()*30,t,.08);
         env.gain.cancelScheduledValues(t);env.gain.setValueAtTime(env.gain.value,t);env.gain.linearRampToValueAtTime(.9,t+.03);env.gain.linearRampToValueAtTime(Math.random()<.3?.05:.5,t+.15)};
       this.vo={out,ng,vg,src:[ns,o,lf],tm:setInterval(syl,190)}}
-    const w=this.vo,t=c.currentTime,clear=v>=3&&v<=6;w.out.gain.setTargetAtTime(.02+v*.013,t,.1);w.ng.gain.setTargetAtTime(clear?.25:.9,t,.1);w.vg.gain.setTargetAtTime(v<3?.35:clear?1.1:.12,t,.1)},
+    const w=this.vo,t=c.currentTime,clear=v>=3&&v<=6;w.out.gain.setTargetAtTime(.02+v*.013,t,.1);w.ng.gain.setTargetAtTime(clear?.12:.9,t,.1);w.vg.gain.setTargetAtTime(v<3?1.2:clear?4.5:.4,t,.1)},
   voiceStop(){const w=this.vo;if(!w)return;this.vo=null;clearInterval(w.tm);const c=this.ctx,t=c.currentTime;w.out.gain.setTargetAtTime(0,t,.08);setTimeout(()=>{w.src.forEach(s=>{try{s.stop()}catch{}});w.out.disconnect()},400)},
   radioOpen(){this.noise(.12,1450,.028,.7);this.tone(760,510,.06,.01,'square')},
   radioSend(){if(!this.on)return;this.noise(.14,1250,.032,.75);this.tone(640,430,.07,.01,'square')},
