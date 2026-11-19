@@ -572,7 +572,7 @@ function drawB(w){
   return s;
 }
 function drawC(w){
-  let s=`${sceneDefs()}<rect width="800" height="450" fill="#0c1728"/><path d="M0 0H800V330H0Z" fill="url(#moonGlass)" opacity=".36"/><rect y="330" width="800" height="120" fill="#d9dee4"/><path d="M0 330q120-26 240-5t260-8t300 9v124H0Z" fill="#b9c4cd" opacity=".72"/>`;
+  let s=`${sceneDefs()}<defs><filter id="blurC" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="8"/></filter></defs><rect width="800" height="450" fill="#0c1728"/><path d="M0 0H800V330H0Z" fill="url(#moonGlass)" opacity=".36"/><rect y="330" width="800" height="120" fill="#d9dee4"/><path d="M0 330q120-26 240-5t260-8t300 9v124H0Z" fill="#b9c4cd" opacity=".72"/>`;
   for(let i=0;i<40;i++)s+=`<circle cx="${(i*197)%800}" cy="${(i*83)%300}" r="${1+(i%3)}" fill="#fff" opacity=".5"/>`;
   if(w===0){const va=[0,6,-14,-14,-8][S.t]||0; // 북: 풍향 기둥(가는 철주 + 지선 + 위 가로대에 풍향계·풍배 풍속계)
     s+=`<ellipse cx="400" cy="338" rx="150" ry="10" fill="#000" opacity=".22"/>
@@ -592,30 +592,58 @@ function drawC(w){
       ${S.f.screen?'<rect x="320" y="172" width="120" height="96" fill="#2a3036"/><rect x="350" y="182" width="6" height="70" fill="#e33"/><rect x="400" y="182" width="6" height="70" fill="#e33"/><rect x="396" y="232" width="14" height="22" fill="#9ab"/>':[0,1,2,3,4,5].map(i=>`<line x1="324" y1="${180+i*15}" x2="436" y2="${186+i*15}" stroke="#b9bec4" stroke-width="3"/>`).join('')+'<path d="M316 168h128v104H316z" fill="#cfe3f0" opacity=".45"/>'}
       ${hs('screen',308,146,144,190)}
       <rect x="590" y="288" width="22" height="46" fill="#7a8794" stroke="#4a545b" stroke-width="2"/><ellipse cx="601" cy="288" rx="11" ry="4" fill="#eef2f5"/>${hs('raingauge',580,278,44,60)}`;
-  if(w===2)s+=`<path d="M0 330 L120 290 L240 320 L400 280 L560 310 L800 290 V330Z" fill="#1d2738"/><circle cx="520" cy="300" r="4" fill="#e0c060"/>
-      ${[100,180,260,340].map(x=>`<rect x="${x}" y="296" width="8" height="70" fill="#5b4632"/>`).join('')}<line x1="80" y1="316" x2="380" y2="316" stroke="#5b4632" stroke-width="5"/>
-      ${S.t>=1?'<rect x="200" y="304" width="30" height="22" fill="#efece0" transform="rotate(-10 215 315)"/>'+hs('fence',190,294,52,38):''}${hs('lights',480,280,80,40)}`;
-  if(w===3){const a=S.f.ang||30;
-    if(S.f.light){const r=a*Math.PI/180;s+=`<path d="M352 240 L${352+Math.cos(r)*520} ${240-Math.sin(r)*520} L${352+Math.cos(r+.07)*520} ${240-Math.sin(r+.07)*520}Z" fill="#fff6c8" opacity=".16"/>`}
-    s+=`<ellipse cx="400" cy="338" rx="360" ry="12" fill="#000" opacity=".2"/><path d="M470 336 V70 L640 22 L810 70 V336Z" fill="#2c3440" stroke="#161b22" stroke-width="4"/><path d="M458 74 L640 16 L812 70 L812 82 L640 30 L458 86Z" fill="#e9eef2"/><path d="M470 120h340M470 170h340M470 220h340M470 270h340" stroke="#202730" stroke-width="2"/><rect x="490" y="130" width="52" height="56" fill="#e0b060" opacity=".75" stroke="#b9a57d" stroke-width="4"/><path d="M516 130V186M490 158H542" stroke="#b9a57d" stroke-width="3"/><path d="M470 336 q60 -12 120 0 M700 336 q50 -10 110 0" stroke="#d9dee4" stroke-width="10" fill="none"/><rect x="552" y="88" width="156" height="248" fill="#17110c"/><rect x="560" y="96" width="140" height="240" fill="#4d3828" stroke="#2b1d14" stroke-width="4"/><path d="M574 110h112v98H574zM574 224h112v98H574z" fill="none" stroke="#2b1d14" stroke-opacity=".72" stroke-width="4"/><circle cx="674" cy="226" r="6" fill="#c9a24a"/><circle cx="672" cy="224" r="1.5" fill="#fff0af" opacity=".75"/><text x="630" y="78" font-size="11" text-anchor="middle" fill="#d8ddd8">관측실</text>${hs('indoor',552,88,156,248)}
-      <line x1="140" y1="170" x2="140" y2="334" stroke="#6b4a2c" stroke-width="6"/><line x1="112" y1="170" x2="168" y2="170" stroke="#6b4a2c" stroke-width="6"/><path d="M122 172 L114 280 H166 L158 172Z" fill="#c8a020"/>${hs('raincoat',104,160,72,130)}
-      <path d="M290 248 A62 62 0 0 1 414 248Z" fill="#e7dfc4" stroke="#8a7a52" stroke-width="2" opacity=".92"/>
-      ${Array.from({length:19},(_,i)=>{const r=(180-i*10)*Math.PI/180,l=i%3===0?12:6;return `<path d="M${352+Math.cos(r)*62} ${248-Math.sin(r)*62} L${352+Math.cos(r)*(62-l)} ${248-Math.sin(r)*(62-l)}" stroke="#5b4d33" stroke-width="${i%3===0?2:1.2}"/>`}).join('')}
-      <path d="M352 248 L${352+Math.cos(a*Math.PI/180)*60} ${248-Math.sin(a*Math.PI/180)*60}" stroke="#a3312a" stroke-width="2"/>
-      <path d="M324 334 h56 l-6 -14 h-44z" fill="#3a4248" stroke="#1f2427" stroke-width="2"/><rect x="346" y="262" width="12" height="60" fill="#4a545b" stroke="#1f2427" stroke-width="2"/>
+  if(w===2){const warm=!dark()&&(!S.f.stoveOff||S.f.power); // 남: 관측실 건물 북쪽 면(안에서 본 북쪽 벽의 뒤집힌 모습: 왼쪽 연통, 가운데 큰 창, 오른쪽 문) + 울타리 + 산 아래 불빛
+    s+=`<path d="M0 330 L60 300 L140 318 L220 296 L300 330Z" fill="#1d2738"/><circle cx="96" cy="306" r="3" fill="#e0c060"/><circle cx="104" cy="309" r="2" fill="#e0c060" opacity=".7"/>${hs('lights',70,290,50,30)}
+      ${[20,90,160,230].map(x=>`<rect x="${x}" y="296" width="8" height="70" fill="#5b4632"/><path d="M${x} 296 h8" stroke="#e8eef2" stroke-width="3" stroke-linecap="round"/>`).join('')}<line x1="0" y1="316" x2="260" y2="316" stroke="#5b4632" stroke-width="5"/><line x1="0" y1="340" x2="260" y2="340" stroke="#5b4632" stroke-width="4"/>
+      ${S.t>=1?'<rect x="120" y="304" width="30" height="22" fill="#efece0" transform="rotate(-10 135 315)"/>'+hs('fence',110,294,52,38):''}
+      <g filter="url(#blurC)"><ellipse cx="560" cy="342" rx="260" ry="12" fill="#000" opacity=".4"/></g>
+      <path d="M300 336 V96 H812 V336Z" fill="#2c3440" stroke="#161b22" stroke-width="3"/>${[136,176,216,256,296].map(y=>`<path d="M300 ${y} H812" stroke="#202730" stroke-width="2"/><path d="M300 ${y+2} H812" stroke="#3e4858" stroke-width="1" opacity=".6"/>`).join('')}
+      <path d="M288 100 L556 40 L824 100 L824 112 L556 52 L288 112Z" fill="#3a3430" stroke="#161b22" stroke-width="2"/><path d="M286 98 L556 36 L826 98 L826 106 L556 46 L286 106Z" fill="#e9eef2"/><path d="M296 110 q20 10 40 0 q20 12 44 2 q30 10 60 0" stroke="#e9eef2" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <rect x="336" y="20" width="18" height="70" fill="#3a3f42" stroke="#161b22" stroke-width="1.5"/><rect x="332" y="16" width="26" height="6" fill="#2c3033"/><path d="M332 16 h26" stroke="#e9eef2" stroke-width="3" stroke-linecap="round"/>${!S.f.stoveOff?'<path d="M345 12 q-10 -10 0 -18 q10 -8 2 -18" stroke="#c9d4de" stroke-width="4" fill="none" opacity=".35"/>':''}
+      <g transform="translate(-28 0)">
+      ${warm?'<g filter="url(#blurC)"><ellipse cx="500" cy="200" rx="120" ry="80" fill="#ffcf7a" opacity=".22"/><ellipse cx="500" cy="352" rx="110" ry="12" fill="#ffcf7a" opacity=".3"/></g>':''}
+      <rect x="402" y="130" width="196" height="140" fill="#4a3624" stroke="#1a120a" stroke-width="2"/><rect x="410" y="138" width="180" height="124" fill="${warm?'#e0b060':'#1a2230'}" opacity="${warm?.8:1}"/>
+      <path d="M500 138 V262 M410 200 H590" stroke="#4a3624" stroke-width="6"/>${warm?'<path d="M416 144 L470 144 L420 200Z" fill="#fff" opacity=".12"/>':''}
+      <path d="M396 270 H604 L598 280 H402Z" fill="#5a4630" stroke="#1a120a" stroke-width="1.5"/><path d="M400 268 q40 -8 90 -2 q40 -6 112 2" stroke="#e9eef2" stroke-width="5" fill="none" stroke-linecap="round"/>
+      <rect x="652" y="98" width="124" height="242" fill="#3a2a1c" stroke="#151008" stroke-width="2"/><rect x="660" y="106" width="108" height="234" fill="#4d3828" stroke="#2b1d14" stroke-width="2"/>
+      <path d="M672 118h84v94H672zM672 226h84v98H672z" fill="none" stroke="#2b1d14" stroke-opacity=".8" stroke-width="3"/>
+      ${[118,214,312].map(y=>`<rect x="762" y="${y}" width="9" height="16" rx="1" fill="#3b4245" stroke="#151008"/><path d="M766.5 ${y} v16" stroke="#151008"/>`).join('')}
+      <g transform="translate(684 230)"><circle cx="0" cy="0" r="9" fill="#7a6438" stroke="#3a2e14" stroke-width="1.5"/><circle cx="0" cy="-5.5" r="1.2" fill="#3a2e14"/><circle cx="0" cy="5.5" r="1.2" fill="#3a2e14"/><path d="M-3 -4 H17 q8 0 8 7 v4 q0 2 -2 2 q-2 0 -2 -2 v-2 q0 -3 -4 -3 H-3Z" fill="#8e7646" stroke="#3a2e14" stroke-width="1.5"/><circle cx="0" cy="0" r="4" fill="#806a3c" stroke="#3a2e14" stroke-width="1.2"/><path d="M2 -2.5 H17" stroke="#c9b27a" stroke-width="1" opacity=".5"/></g>
+      <path d="M646 340 h136 l6 6 h-148z" fill="#4a4540" stroke="#151008" stroke-width="1.2"/><path d="M640 336 q30 -10 70 -4 q40 -6 80 4" fill="#e3e8ec"/>
+      <rect x="690" y="80" width="48" height="14" rx="2" fill="#e9e4d4" stroke="#2a3a5a" stroke-width="1.3"/><text x="714" y="91" font-size="9.5" text-anchor="middle" fill="#2a3a5a">관측실</text>
+      </g>
+      <path d="M300 332 q50 -12 100 -2 q60 -8 120 0 q60 -10 120 4 V340 H300Z" fill="#e3e8ec"/>
+      ${[[714,372],[726,394],[708,418],[722,442]].map(([x,y],i)=>`<ellipse cx="${x}" cy="${y}" rx="8" ry="3.5" fill="#9aa6b2" opacity=".7" transform="rotate(${i%2?-10:10} ${x} ${y})"/>`).join('')}
+      ${hs('indoor',624,98,124,242)}`;}
+  if(w===3){const a=S.f.ang||30,r=a*Math.PI/180; // 서: 우비 걸이, 탐조등과 각도판. 발자국이 탐조등까지 이어진다
+    if(S.f.light){const L=600,o=(d)=>`${352+Math.cos(r+d)*L} ${248-Math.sin(r+d)*L}`;s+=`<path d="M352 248 L${o(.11)} L${o(-.11)}Z" fill="#ffe9a0" opacity=".2"/><path d="M352 248 L${o(.045)} L${o(-.045)}Z" fill="#fff6c8" opacity=".38"/>${[90,170,250,330,410].map((d,i)=>`<circle cx="${352+Math.cos(r+(i%2?.03:-.03))*d}" cy="${248-Math.sin(r+(i%2?.03:-.03))*d}" r="${1.6+i%2}" fill="#fffbe8" opacity=".9"/>`).join('')}`}
+    s+=`<g filter="url(#blurC)"><ellipse cx="352" cy="342" rx="70" ry="9" fill="#000" opacity=".35"/><ellipse cx="140" cy="340" rx="40" ry="7" fill="#000" opacity=".3"/></g>
+      <path d="M560 332 q60 -18 140 -4 q60 -10 100 0 V340 H560Z" fill="#e3e8ec"/><path d="M0 336 q40 -10 90 -2 q20 -4 40 2Z" fill="#e3e8ec"/>
+      ${[[700,372],[650,364],[598,370],[548,360],[498,366],[452,356],[410,360]].map(([x,y],i)=>`<ellipse cx="${x}" cy="${y}" rx="7" ry="3" fill="#9aa6b2" opacity=".7" transform="rotate(${i%2?-12:12} ${x} ${y})"/>`).join('')}
+      <line x1="140" y1="166" x2="140" y2="338" stroke="#5a3e24" stroke-width="7"/><path d="M137 166 V338" stroke="#7a5a3c" stroke-width="2" opacity=".6"/><line x1="110" y1="168" x2="170" y2="168" stroke="#5a3e24" stroke-width="6"/><path d="M110 165 h60" stroke="#e8eef2" stroke-width="3" stroke-linecap="round"/><path d="M128 336 q12 -8 24 0" fill="#e3e8ec"/>
+      <!-- 노란 우비: 후드, 소매, 단추, 주머니, 주름 -->
+      <path d="M140 172 q-14 0 -15 14 q0 10 6 14 h18 q6 -4 6 -14 q-1 -14 -15 -14z" fill="#c8a020" stroke="#6b5410" stroke-width="1.5"/><path d="M131 186 q9 -8 18 0" stroke="#6b5410" stroke-width="1.2" fill="none"/>
+      <path d="M124 196 L112 270 q1 6 6 6 h44 q5 0 6 -6 L156 196 q-16 6 -32 0z" fill="#d4ac28" stroke="#6b5410" stroke-width="1.5"/>
+      <path d="M124 198 q-10 20 -14 58 l8 2 q4 -30 10 -46z M156 198 q10 20 14 58 l-8 2 q-4 -30 -10 -46z" fill="#c09a1e" stroke="#6b5410" stroke-width="1.2"/>
+      <path d="M140 200 V274" stroke="#6b5410" stroke-width="1.2"/>${[212,232,252].map(y=>`<circle cx="143" cy="${y}" r="1.8" fill="#3a2e10"/>`).join('')}
+      <path d="M120 246 h14 v10 h-14z M146 246 h14 v10 h-14z" fill="none" stroke="#6b5410" stroke-width="1.1"/><path d="M128 206 q-4 30 -6 64 M152 206 q4 30 6 64" stroke="#a88818" stroke-width="1" opacity=".7" fill="none"/>
+      <path d="M126 198 q6 4 14 4" stroke="#f0d870" stroke-width="1.2" opacity=".6" fill="none"/>
+      ${hs('raincoat',104,160,72,130)}
+      <path d="M306 248 A46 46 0 0 1 398 248Z" fill="#e7dfc4" stroke="#8a7a52" stroke-width="2" opacity=".92"/>
+      ${Array.from({length:19},(_,i)=>{const t=(180-i*10)*Math.PI/180,l=i%3===0?9:5;return `<path d="M${352+Math.cos(t)*46} ${248-Math.sin(t)*46} L${352+Math.cos(t)*(46-l)} ${248-Math.sin(t)*(46-l)}" stroke="#5b4d33" stroke-width="${i%3===0?1.8:1}"/>`}).join('')}
+      <path d="M352 248 L${352+Math.cos(r)*44} ${248-Math.sin(r)*44}" stroke="#a3312a" stroke-width="2"/>
+      <path d="M324 334 h56 l-6 -14 h-44z" fill="#3a4248" stroke="#1f2427" stroke-width="2"/><path d="M322 334 h60" stroke="#e8eef2" stroke-width="3" stroke-linecap="round"/><rect x="346" y="262" width="12" height="60" fill="#4a545b" stroke="#1f2427" stroke-width="2"/>
       <path d="M332 262 V240 M372 262 V240 M332 262 H372" stroke="#4a545b" stroke-width="6" fill="none" stroke-linecap="round"/>
       <g transform="rotate(${-a} 352 248)">
-        <rect x="318" y="232" width="74" height="32" rx="6" fill="#5f6a71" stroke="#1f2427" stroke-width="2"/>
-        ${[0,1,2,3].map(i=>`<path d="M${326+i*7} 234 v28" stroke="#3d464c" stroke-width="2"/>`).join('')}
-        <rect x="312" y="242" width="8" height="12" rx="2" fill="#3d464c"/>
-        <rect x="390" y="226" width="12" height="44" rx="4" fill="#8a949a" stroke="#1f2427" stroke-width="2"/>
-        <ellipse cx="402" cy="248" rx="6" ry="19" fill="${S.f.light?'#fff3b0':'#aab4ba'}" stroke="#1f2427" stroke-width="1.5"/>
-        <rect x="360" y="226" width="16" height="6" rx="2" fill="#2c3337"/>
+        <rect x="314" y="230" width="80" height="36" rx="6" fill="#5f6a71" stroke="#1f2427" stroke-width="2"/><path d="M318 233 H390" stroke="#9aa6ac" stroke-width="1.5" opacity=".6"/>
+        ${[0,1,2,3].map(i=>`<path d="M${322+i*7} 232 v32" stroke="#3d464c" stroke-width="2"/>`).join('')}
+        <rect x="308" y="241" width="8" height="14" rx="2" fill="#3d464c"/>
+        <rect x="392" y="224" width="13" height="48" rx="4" fill="#8a949a" stroke="#1f2427" stroke-width="2"/>
+        <ellipse cx="405" cy="248" rx="6.5" ry="21" fill="${S.f.light?'#fff3b0':'#aab4ba'}" stroke="#1f2427" stroke-width="1.5"/>${S.f.light?'<ellipse cx="408" cy="248" rx="10" ry="26" fill="#fff3b0" opacity=".35"/>':''}
+        <rect x="358" y="224" width="18" height="6" rx="2" fill="#2c3337"/><path d="M332 230 q0 -10 20 -10 q20 0 20 10" stroke="#e8eef2" stroke-width="3" fill="none" opacity=".85"/>
       </g>
       <circle cx="352" cy="248" r="5" fill="#c9a24a" stroke="#1f2427" stroke-width="1.5"/>
       ${hs('searchlight',300,190,170,146)}`;}
-  if(w===3)s+=`<rect x="548" y="84" width="166" height="258" fill="#2c3440"/><path d="M548 120h166M548 170h166M548 220h166M548 270h166" stroke="#202730" stroke-width="2"/><rect x="590" y="118" width="106" height="218" fill="#17110c"/><rect x="596" y="124" width="94" height="212" fill="#4d3828" stroke="#2b1d14" stroke-width="4"/><path d="M607 138h72v80H607zM607 231h72v90H607z" fill="none" stroke="#2b1d14" stroke-opacity=".72" stroke-width="3"/><circle cx="676" cy="233" r="5" fill="#c9a24a"/><circle cx="674" cy="231" r="1.2" fill="#fff0af" opacity=".75"/><text x="643" y="108" font-size="11" text-anchor="middle" fill="#d8ddd8">관측실</text>${hs('indoor',590,118,106,218)}`;
-  if(w===3)s+=`<rect x="570" y="62" width="142" height="24" fill="#2c3440"/><rect x="570" y="94" width="142" height="20" fill="#2c3440"/>`;
   return s;
 }
 function draw(){
