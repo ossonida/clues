@@ -112,6 +112,7 @@ header{display:flex;align-items:flex-end;gap:10px 16px;flex-wrap:wrap;margin-bot
 .book-cover{margin:0 0 12px;padding:8px 6px 10px;border-bottom:2px solid #716653;text-align:center;font-family:var(--serif);font-size:21px;letter-spacing:3px}.book-cover small{display:block;margin-top:5px;font-family:var(--mono);font-size:10px;letter-spacing:0;color:#6d6558}
 .book-meta{margin:0 0 12px;color:#695f51;font-size:12px;text-align:right}.book-log{margin:0;padding:0;list-style:none;font-family:var(--hand);font-size:21px;line-height:1.3}.book-log li{display:grid;grid-template-columns:50px 1fr;gap:7px;padding:7px 0;border-top:1px dashed #b4a88e}.book-log time{font-family:var(--mono);font-size:12px;color:#7a5140;padding-top:5px}.book-last{margin:13px -5px 0;padding:10px 11px;background:rgba(130,64,43,.12);border-left:4px solid #8d3727;font-family:var(--hand);font-size:24px;line-height:1.2;transform:rotate(.5deg)}.book-last b{font-family:var(--mono);font-size:13px;color:#8d3727}.book-mark{margin:11px 0 0;text-align:right;font-family:var(--hand);font-size:18px;color:#244f77}
 .fogin{animation:fogin 4.5s ease-in both}.fogtx text{animation:fogin 5s 2.5s ease-in both}@keyframes fogin{from{opacity:0}to{opacity:1}}
+.glint{transform-box:fill-box;transform-origin:center;animation:glint 1.8s ease-in-out infinite}@keyframes glint{0%,60%,100%{opacity:0;transform:scale(.3)}75%{opacity:1;transform:scale(1)}}
 </style>
 </head>
 <body>
@@ -274,7 +275,7 @@ function drawA(w){
       <g><ellipse cx="622" cy="340" rx="80" ry="10" fill="#000" opacity=".38"/><rect x="566" y="236" width="112" height="104" rx="8" fill="url(#metal)" stroke="#131619" stroke-width="4"/><rect x="580" y="252" width="84" height="64" rx="5" fill="#202223"/><rect x="592" y="268" width="60" height="36" rx="4" fill="${S.f.stoveOff?'#29292a':'#d9601a'}"/>
       ${S.f.stoveOff?'':'<ellipse cx="622" cy="286" rx="44" ry="34" fill="url(#lampGlow)"/>'}<rect x="612" y="116" width="20" height="88" fill="#3a3f42"/><rect x="600" y="204" width="44" height="32" rx="9" fill="#676d70" stroke="#30363a" stroke-width="3"/><path d="M644 214q14 0 14 12" stroke="#5a6267" stroke-width="6" fill="none"/></g>
       ${hs('stove',566,236,112,104)}${hs('kettle',596,198,70,40)}`;
-    if(S.t===1&&!S.f.handleFound)s+=`<rect x="598" y="338" width="24" height="9" rx="3" fill="#c9a24a"/>`+hs('understove',556,326,140,28);
+    if(S.t===1&&!S.f.handleFound)s+=`<g transform="translate(604 340) rotate(-12)"><ellipse cx="0" cy="3" rx="20" ry="3" fill="#000" opacity=".35"/><circle cx="-10" cy="-2" r="7" fill="#a8842f" stroke="#5e4714" stroke-width="1.5"/><circle cx="-10" cy="-2" r="2.2" fill="#5e4714"/><path d="M-6 -4 H16 q5 0 5 3.5 q0 3.5 -5 3.5 H-6Z" fill="#d6ae4f" stroke="#5e4714" stroke-width="1.5"/><path d="M-3 -2.5 H14" stroke="#fff3c4" stroke-width="1.2" opacity=".8"/><path class="glint" d="M12 -10 l1.5 -5 1.5 5 5 1.5 -5 1.5 -1.5 5 -1.5 -5 -5 -1.5z" fill="#fff8d8"/></g>`+hs('understove',556,326,140,28);
   }
   if(w===1){ // 동: 책상, 서랍, 달력, 손전등
     s+=`<path d="M0 92H800M0 156H800M0 220H800" stroke="#d8c39c" stroke-opacity=".08" stroke-width="2"/><ellipse cx="395" cy="350" rx="270" ry="24" fill="#000" opacity=".27"/>
