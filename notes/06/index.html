@@ -116,6 +116,7 @@ header{display:flex;align-items:flex-end;gap:10px 16px;flex-wrap:wrap;margin-bot
 .fogin{animation:fogin 4.5s ease-in both}.fogtx text{animation:fogin 5s 2.5s ease-in both}@keyframes fogin{from{opacity:0}to{opacity:1}}
 .glint{transform-box:fill-box;transform-origin:center;animation:glint 1.8s ease-in-out infinite}@keyframes glint{0%,60%,100%{opacity:0;transform:scale(.3)}75%{opacity:1;transform:scale(1)}}
 .pc-note{display:inline-block;margin:14px 0 0 4px;padding:4px 10px;font-family:var(--hand);font-size:19px;color:#5b4d33;background:#fff7c2;box-shadow:2px 3px 6px -3px rgba(0,0,0,.35);transform:rotate(-1.2deg)}
+.it.empty{cursor:default;opacity:.55}
 </style>
 </head>
 <body>
@@ -441,7 +442,7 @@ $('#stage').addEventListener('pointerdown',aim);$('#stage').addEventListener('po
 function touchMode(){$('#stage').style.touchAction=dark()&&has('torch')?'none':''}
 function bag(){
   const b=$('#bag');b.hidden=!S.inv.length;document.body.classList.toggle('hasbag',!!S.inv.length);
-  b.innerHTML='<span class="lbl">소지품</span>'+S.inv.map(i=>`<button class="it${hold===i?' on':''}" data-i="${i}"><i>${ITEMS[i][0]}</i>${ITEMS[i][1]}</button>`).join('');
+  b.innerHTML='<span class="lbl">소지품</span>'+S.inv.map(i=>`<button class="it${hold===i?' on':''}" data-i="${i}"><i>${ITEMS[i][0]}</i>${ITEMS[i][1]}</button>`).join('')+'<span class="it empty" aria-hidden="true"></span>'.repeat(Math.max(0,4-S.inv.length));
 }
 $('#bag').addEventListener('click',e=>{const t=e.target.closest('[data-i]');if(!t)return;const i=t.dataset.i;
   if(i==='book79'){hold=null;openBook79();bag();return}
