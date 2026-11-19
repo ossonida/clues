@@ -599,10 +599,10 @@ function drawC(w){
       ${hs('screen',308,146,144,190)}<rect x="742" y="96" width="70" height="244" fill="#2c3440" stroke="#161b22" stroke-width="3"/>${[136,176,216,256,296].map(y=>`<path d="M742 ${y} H812" stroke="#202730" stroke-width="2"/>`).join('')}<path d="M730 104 L812 86 V100 L734 116Z" fill="#e9eef2"/><path d="M736 336 q30 -10 76 -2 V342 H736Z" fill="#e3e8ec"/>${[[720,420],[680,404],[640,392],[600,380],[560,370],[516,360],[470,352]].map(([x,y],k)=>`<ellipse cx="${x}" cy="${y}" rx="7" ry="3" fill="#9aa6b2" opacity=".7" transform="rotate(${k%2?-14:8} ${x} ${y})"/>`).join('')}
       <rect x="590" y="288" width="22" height="46" fill="#7a8794" stroke="#4a545b" stroke-width="2"/><ellipse cx="601" cy="288" rx="11" ry="4" fill="#eef2f5"/>${hs('raingauge',580,278,44,60)}`;
   if(w===2){const warm=!dark()&&(!S.f.stoveOff||S.f.power); // 남: 관측실 건물 북쪽 면(안에서 본 북쪽 벽의 뒤집힌 모습: 왼쪽 연통, 가운데 큰 창, 오른쪽 문) + 울타리 + 산 아래 불빛
-    s+=`<path d="M0 330 L60 300 L140 318 L220 296 L300 330Z" fill="#1d2738"/><circle cx="96" cy="306" r="3" fill="#e0c060"/><circle cx="104" cy="309" r="2" fill="#e0c060" opacity=".7"/>${hs('lights',70,290,50,30)}
+    s+=`<g transform="translate(520 0)"><path d="M0 330 L60 300 L140 318 L220 296 L300 330Z" fill="#1d2738"/><circle cx="96" cy="306" r="3" fill="#e0c060"/><circle cx="104" cy="309" r="2" fill="#e0c060" opacity=".7"/>${hs('lights',70,290,50,30)}
       ${[20,90,160,230].map(x=>`<rect x="${x}" y="296" width="8" height="70" fill="#5b4632"/><path d="M${x} 296 h8" stroke="#e8eef2" stroke-width="3" stroke-linecap="round"/>`).join('')}<line x1="0" y1="316" x2="260" y2="316" stroke="#5b4632" stroke-width="5"/><line x1="0" y1="340" x2="260" y2="340" stroke="#5b4632" stroke-width="4"/>
       ${S.t>=1?'<rect x="120" y="304" width="30" height="22" fill="#efece0" transform="rotate(-10 135 315)"/>'+hs('fence',110,294,52,38):''}
-      <g filter="url(#blurC)"><ellipse cx="560" cy="342" rx="260" ry="12" fill="#000" opacity=".4"/></g>
+      </g><g transform="translate(-300 0)"><g filter="url(#blurC)"><ellipse cx="560" cy="342" rx="260" ry="12" fill="#000" opacity=".4"/></g>
       <path d="M300 336 V96 H812 V336Z" fill="#2c3440" stroke="#161b22" stroke-width="3"/>${[136,176,216,256,296].map(y=>`<path d="M300 ${y} H812" stroke="#202730" stroke-width="2"/><path d="M300 ${y+2} H812" stroke="#3e4858" stroke-width="1" opacity=".6"/>`).join('')}
       <path d="M288 100 L556 40 L824 100 L824 112 L556 52 L288 112Z" fill="#3a3430" stroke="#161b22" stroke-width="2"/><path d="M286 98 L556 36 L826 98 L826 106 L556 46 L286 106Z" fill="#e9eef2"/><path d="M296 110 q20 10 40 0 q20 12 44 2 q30 10 60 0" stroke="#e9eef2" stroke-width="5" fill="none" stroke-linecap="round"/>
       <rect x="336" y="20" width="18" height="70" fill="#3a3f42" stroke="#161b22" stroke-width="1.5"/><rect x="332" y="16" width="26" height="6" fill="#2c3033"/><path d="M332 16 h26" stroke="#e9eef2" stroke-width="3" stroke-linecap="round"/>${!S.f.stoveOff?'<path d="M345 14 q-14 -10 -36 -8 q-26 2 -52 -6 q-20 -6 -44 -2" stroke="#c9d4de" stroke-width="5" fill="none" opacity=".3" stroke-linecap="round"/>':''}
@@ -620,13 +620,13 @@ function drawC(w){
       </g>
       <path d="M300 332 q50 -12 100 -2 q60 -8 120 0 q60 -10 120 4 V340 H300Z" fill="#e3e8ec"/>
       ${[[714,372],[726,394],[708,418],[722,442],[680,380],[630,392],[580,404],[760,384],[800,396]].map(([x,y],i)=>`<ellipse cx="${x}" cy="${y}" rx="8" ry="3.5" fill="#9aa6b2" opacity=".7" transform="rotate(${i%2?-10:10} ${x} ${y})"/>`).join('')}
-      ${hs('indoor',624,98,124,242)}`;}
+      ${hs('indoor',624,98,124,242)}</g>`;}
   if(w===3){const a=S.f.ang||30,r=a*Math.PI/180; // 서: 탐조등과 각도판. 발자국이 탐조등까지 이어진다
     if(S.f.light){const L=600,o=(d)=>`${352+Math.cos(r+d)*L} ${248-Math.sin(r+d)*L}`;s+=`<path d="M352 248 L${o(.11)} L${o(-.11)}Z" fill="#ffe9a0" opacity=".2"/><path d="M352 248 L${o(.045)} L${o(-.045)}Z" fill="#fff6c8" opacity=".38"/>${[90,170,250,330,410].map((d,i)=>`<circle cx="${352+Math.cos(r+(i%2?.03:-.03))*d}" cy="${248-Math.sin(r+(i%2?.03:-.03))*d}" r="${1.6+i%2}" fill="#fffbe8" opacity=".9"/>`).join('')}`}
     s+=`<g filter="url(#blurC)"><ellipse cx="352" cy="342" rx="70" ry="9" fill="#000" opacity=".35"/></g>
       <g transform="translate(560 0)"><path d="M0 330 V296" stroke="#3a3026" stroke-width="2.5"/><rect x="-6" y="290" width="12" height="7" fill="#c9a24a"/><path d="M-7 289 h14" stroke="#eef2f4" stroke-width="2"/></g>
       <path d="M500 332 q80 -14 160 -2 q80 -8 140 2 V340 H500Z" fill="#e3e8ec"/>
-      <rect x="-12" y="96" width="70" height="244" fill="#2c3440" stroke="#161b22" stroke-width="3"/>${[136,176,216,256,296].map(y=>`<path d="M-12 ${y} H58" stroke="#202730" stroke-width="2"/>`).join('')}<path d="M-12 86 L70 104 L66 116 L-12 100Z" fill="#e9eef2"/><path d="M-12 334 q40 -10 80 -2 q30 -4 50 4 V342 H-12Z" fill="#e3e8ec"/>
+      <path d="M0 336 q40 -10 90 -2 q20 -4 40 2Z" fill="#e3e8ec"/>
       ${[[60,440],[110,420],[160,404],[208,392],[252,380],[290,368],[318,356]].map(([x,y],i)=>`<ellipse cx="${x}" cy="${y}" rx="7" ry="3" fill="#9aa6b2" opacity=".7" transform="rotate(${i%2?-12:12} ${x} ${y})"/>`).join('')}
       <path d="M306 248 A46 46 0 0 1 398 248Z" fill="#e7dfc4" stroke="#8a7a52" stroke-width="2" opacity=".92"/>
       ${Array.from({length:19},(_,i)=>{const t=(180-i*10)*Math.PI/180,l=i%3===0?9:5;return `<path d="M${352+Math.cos(t)*46} ${248-Math.sin(t)*46} L${352+Math.cos(t)*(46-l)} ${248-Math.sin(t)*(46-l)}" stroke="#5b4d33" stroke-width="${i%3===0?1.8:1}"/>`}).join('')}
