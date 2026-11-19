@@ -173,7 +173,7 @@ header{display:flex;align-items:flex-end;gap:10px 16px;flex-wrap:wrap;margin-bot
     <p>사흘 뒤, 그 노인이 관측소까지 걸어 올라와 자기 이름을 말했다. 정기철. 1979년에 이 관측소에서 「구름재 둘」이라는 호출부호를 쓰던 관측원이었다.</p>
     <p>30년 전 오늘 밤에도 바위샘 쉼터에 사람들이 갇혔다. 그는 무전을 받고 혼자 내려갔지만, 폭풍 속에서 끝내 그 사람들을 데려오지 못했다. 그는 그 일로 관측소를 그만두었다. 그 밤의 일은 기록에 「사고」라는 두 글자로만 남았고, 「구름재 둘」이라는 호출부호도 그해에 없어졌다.</p>
     <p>"그 뒤로 산 아래 마을에 눌러살면서 바위샘 쉼터 관리를 맡았어. 눈보라 치는 밤이면 쉼터에 올라가 옛날 무전기를 켜 두곤 했지. 그날 밤에도 올라가 보니 등산객 둘이 갇혀 있더라고. 30년 만에 관측소 주파수로 송신을 눌렀는데, 받아 줄 사람이 있을 줄은 몰랐네."</p>
-    <p id="matchLine" hidden>나는 풍향탑 사다리에 걸려 있던 노란 우비와 「1979」가 찍힌 성냥갑 이야기를 꺼냈다. 그는 한참 말이 없다가 "그거 내 거네." 하고만 했다.</p>
+    <p id="matchLine" hidden>나는 그날 밤 풍향탑 밑에서 끊겨 있던 발자국과 「1979」가 찍힌 성냥갑 이야기를 꺼냈다. 그는 한참 말이 없다가 "그거 내 거네." 하고만 했다.</p>
     <p>그는 돌아가면서 낡은 영화표 한 장을 탁자에 두고 갔다. 1979년 7월 14일 별빛극장 개관 기념 표. 그해 여름 관측소 사람들이 다 같이 보러 갔던 영화라고 했다. 뒷면에는 윤만석이라는 서명이 있었다.</p>
     <p>풀리지 않은 것이 하나 남았다. 그날 21시, 내 첫 전보에 「구름재 둘 확인」이라는 답신이 왔다. 그 시각 정기철은 쉼터로 가는 산길에 있었다. 그 답신은 누가 보낸 걸까.</p>
   </div>
@@ -582,27 +582,21 @@ function drawC(w){
       <rect x="395" y="70" width="10" height="250" fill="#5d686e" stroke="#2c3438" stroke-width="2"/>
       ${[0,1,2,3,4,5,6,7,8].map(i=>`<path d="M391 ${300-i*24} h18" stroke="#2c3438" stroke-width="2.5"/>`).join('')}
       <rect x="380" y="232" width="40" height="34" rx="3" fill="#e9ecee" stroke="#6d777c" stroke-width="2.5"/><path d="M380 244 h40" stroke="#b9c0c4" stroke-width="2"/><circle cx="410" cy="255" r="3" fill="${S.f.power?'#7ddc6a':'#55605a'}"/>
-      <rect x="330" y="66" width="140" height="7" rx="2" fill="#4a555b" stroke="#2c3438" stroke-width="1.5"/>
+      <rect x="330" y="66" width="140" height="7" rx="2" fill="#4a555b" stroke="#2c3438" stroke-width="1.5"/><path d="M332 65 h136" stroke="#eef2f4" stroke-width="3" stroke-linecap="round"/>
       <g transform="translate(350 66)"><path d="M0 0 V-22" stroke="#4a555b" stroke-width="3"/><g transform="rotate(${va*2})"><path d="M-22 -24 H22" stroke="#d4dadd" stroke-width="2.5"/><path d="M0 -36 V-12" stroke="#d4dadd" stroke-width="2.5"/>${[[-22,-24],[22,-24],[0,-36],[0,-12]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="5" fill="#e6eaec" stroke="#3c4448" stroke-width="1.5"/>`).join('')}</g><circle cx="0" cy="-24" r="3" fill="#3c4448"/></g>
       <g transform="translate(450 66)"><path d="M0 0 V-20" stroke="#4a555b" stroke-width="3"/><g transform="rotate(${va} 0 -22)"><path d="M-28 -22 H24" stroke="#d4dadd" stroke-width="3"/><path d="M24 -22 l-10 -6 v12z" fill="#c9a24a" stroke="#3c4448" stroke-width="1.2"/><path d="M-28 -22 l-10 -10 h10 z M-28 -22 l-10 10 h10 z" fill="#a3312a" stroke="#3c4448" stroke-width="1.2"/></g><circle cx="0" cy="-22" r="3" fill="#3c4448"/></g>
       <path d="M396 66 q4 -6 8 0" stroke="#eef2f4" stroke-width="3" fill="none"/>
       ${hs('tower',300,20,200,320)}
-      <path d="M405 186 h18 q6 0 6 6" stroke="#2c3438" stroke-width="2.5" fill="none"/>
-      <g transform="translate(289 14)">
-      <!-- 노란 우비: 후드, 소매, 단추, 주머니, 주름 -->
-      <path d="M140 172 q-14 0 -15 14 q0 10 6 14 h18 q6 -4 6 -14 q-1 -14 -15 -14z" fill="#c8a020" stroke="#6b5410" stroke-width="1.5"/><path d="M131 186 q9 -8 18 0" stroke="#6b5410" stroke-width="1.2" fill="none"/>
-      <path d="M124 196 L112 270 q1 6 6 6 h44 q5 0 6 -6 L156 196 q-16 6 -32 0z" fill="#d4ac28" stroke="#6b5410" stroke-width="1.5"/>
-      <path d="M124 198 q-10 20 -14 58 l8 2 q4 -30 10 -46z M156 198 q10 20 14 58 l-8 2 q-4 -30 -10 -46z" fill="#c09a1e" stroke="#6b5410" stroke-width="1.2"/>
-      <path d="M140 200 V274" stroke="#6b5410" stroke-width="1.2"/>${[212,232,252].map(y=>`<circle cx="143" cy="${y}" r="1.8" fill="#3a2e10"/>`).join('')}
-      <path d="M120 246 h14 v10 h-14z M146 246 h14 v10 h-14z" fill="none" stroke="#6b5410" stroke-width="1.1"/><path d="M128 206 q-4 30 -6 64 M152 206 q4 30 6 64" stroke="#a88818" stroke-width="1" opacity=".7" fill="none"/>
-      <path d="M126 198 q6 4 14 4" stroke="#f0d870" stroke-width="1.2" opacity=".6" fill="none"/>
-      </g>
-      ${hs('raincoat',404,180,58,118)}`;
+      <!-- 탑 밑에서 뚝 끊긴 발자국(돌아간 자국 없음), 끝난 자리 눈 속에 성냥갑 -->
+      <ellipse cx="300" cy="446" rx="4" ry="2.4" fill="#8e9aa6" opacity="0.45" transform="rotate(-6 300 446)"/><ellipse cx="318" cy="428" rx="4" ry="2.4" fill="#8e9aa6" opacity="0.49" transform="rotate(-22 318 428)"/><ellipse cx="332" cy="410" rx="4" ry="2.4" fill="#8e9aa6" opacity="0.53" transform="rotate(-6 332 410)"/><ellipse cx="350" cy="394" rx="4" ry="2.4" fill="#8e9aa6" opacity="0.57" transform="rotate(-22 350 394)"/><ellipse cx="362" cy="380" rx="4" ry="2.4" fill="#8e9aa6" opacity="0.61" transform="rotate(-6 362 380)"/><ellipse cx="376" cy="368" rx="4" ry="2.4" fill="#8e9aa6" opacity="0.65" transform="rotate(-22 376 368)"/><ellipse cx="386" cy="358" rx="4" ry="2.4" fill="#8e9aa6" opacity="0.69" transform="rotate(-6 386 358)"/><ellipse cx="396" cy="350" rx="4" ry="2.4" fill="#8e9aa6" opacity="0.73" transform="rotate(-22 396 350)"/>
+      <path d="M380 352 q16 -6 34 0" stroke="#e8eef2" stroke-width="3" fill="none"/>
+      <g transform="rotate(-14 418 348)"><rect x="410" y="343" width="17" height="10" rx="1" fill="#8a2e22" stroke="#3a120c" stroke-width="1"/><rect x="410" y="343" width="5" height="10" fill="#5a1c14"/><path d="M406 342 q12 -4 26 1" stroke="#eef2f4" stroke-width="3" fill="none"/></g>
+            ${hs('raincoat',368,330,74,40)}`;
   }
   if(w===1)s+=`<ellipse cx="380" cy="336" rx="90" ry="10" fill="#000" opacity=".2"/><path d="M330 270 V334 M430 270 V334 M330 300 H430" stroke="#c9ccd0" stroke-width="6"/>
-      <rect x="316" y="168" width="128" height="104" fill="#f3f3ef" stroke="#8a8f96" stroke-width="3"/><path d="M308 168 L380 146 L452 168Z" fill="#e6e8ea" stroke="#8a8f96" stroke-width="3"/>
+      <rect x="316" y="168" width="128" height="104" fill="#f3f3ef" stroke="#8a8f96" stroke-width="3"/><path d="M308 168 L380 146 L452 168Z" fill="#e6e8ea" stroke="#8a8f96" stroke-width="3"/><path d="M306 166 L380 143 L454 166" stroke="#fbfdff" stroke-width="5" fill="none" stroke-linecap="round"/>${S.f.screen?'':'<path d="M316 170 H444" stroke="#cfe6f4" stroke-width="5"/><path d="M380 172 V270" stroke="#cfe6f4" stroke-width="4" opacity=".9"/>'+[322,338,352,372,392,410,426,438].map((x,k)=>`<path d="M${x} 172 l3 ${8+(k*7)%12} l3 -${8+(k*7)%12}z" fill="#dff0fa" stroke="#9cc0d6" stroke-width=".8"/>`).join('')}
       ${S.f.screen?'<rect x="320" y="172" width="120" height="96" fill="#2a3036"/><rect x="350" y="182" width="6" height="70" fill="#e33"/><rect x="400" y="182" width="6" height="70" fill="#e33"/><rect x="396" y="232" width="14" height="22" fill="#9ab"/>':[0,1,2,3,4,5].map(i=>`<line x1="324" y1="${180+i*15}" x2="436" y2="${186+i*15}" stroke="#b9bec4" stroke-width="3"/>`).join('')+'<path d="M316 168h128v104H316z" fill="#cfe3f0" opacity=".45"/>'}
-      ${hs('screen',308,146,144,190)}
+      ${hs('screen',308,146,144,190)}<rect x="742" y="96" width="70" height="244" fill="#2c3440" stroke="#161b22" stroke-width="3"/>${[136,176,216,256,296].map(y=>`<path d="M742 ${y} H812" stroke="#202730" stroke-width="2"/>`).join('')}<path d="M730 104 L812 86 V100 L734 116Z" fill="#e9eef2"/><path d="M736 336 q30 -10 76 -2 V342 H736Z" fill="#e3e8ec"/>${[[720,420],[680,404],[640,392],[600,380],[560,370],[516,360],[470,352]].map(([x,y],k)=>`<ellipse cx="${x}" cy="${y}" rx="7" ry="3" fill="#9aa6b2" opacity=".7" transform="rotate(${k%2?-14:8} ${x} ${y})"/>`).join('')}
       <rect x="590" y="288" width="22" height="46" fill="#7a8794" stroke="#4a545b" stroke-width="2"/><ellipse cx="601" cy="288" rx="11" ry="4" fill="#eef2f5"/>${hs('raingauge',580,278,44,60)}`;
   if(w===2){const warm=!dark()&&(!S.f.stoveOff||S.f.power); // 남: 관측실 건물 북쪽 면(안에서 본 북쪽 벽의 뒤집힌 모습: 왼쪽 연통, 가운데 큰 창, 오른쪽 문) + 울타리 + 산 아래 불빛
     s+=`<path d="M0 330 L60 300 L140 318 L220 296 L300 330Z" fill="#1d2738"/><circle cx="96" cy="306" r="3" fill="#e0c060"/><circle cx="104" cy="309" r="2" fill="#e0c060" opacity=".7"/>${hs('lights',70,290,50,30)}
@@ -611,7 +605,7 @@ function drawC(w){
       <g filter="url(#blurC)"><ellipse cx="560" cy="342" rx="260" ry="12" fill="#000" opacity=".4"/></g>
       <path d="M300 336 V96 H812 V336Z" fill="#2c3440" stroke="#161b22" stroke-width="3"/>${[136,176,216,256,296].map(y=>`<path d="M300 ${y} H812" stroke="#202730" stroke-width="2"/><path d="M300 ${y+2} H812" stroke="#3e4858" stroke-width="1" opacity=".6"/>`).join('')}
       <path d="M288 100 L556 40 L824 100 L824 112 L556 52 L288 112Z" fill="#3a3430" stroke="#161b22" stroke-width="2"/><path d="M286 98 L556 36 L826 98 L826 106 L556 46 L286 106Z" fill="#e9eef2"/><path d="M296 110 q20 10 40 0 q20 12 44 2 q30 10 60 0" stroke="#e9eef2" stroke-width="5" fill="none" stroke-linecap="round"/>
-      <rect x="336" y="20" width="18" height="70" fill="#3a3f42" stroke="#161b22" stroke-width="1.5"/><rect x="332" y="16" width="26" height="6" fill="#2c3033"/><path d="M332 16 h26" stroke="#e9eef2" stroke-width="3" stroke-linecap="round"/>${!S.f.stoveOff?'<path d="M345 12 q-10 -10 0 -18 q10 -8 2 -18" stroke="#c9d4de" stroke-width="4" fill="none" opacity=".35"/>':''}
+      <rect x="336" y="20" width="18" height="70" fill="#3a3f42" stroke="#161b22" stroke-width="1.5"/><rect x="332" y="16" width="26" height="6" fill="#2c3033"/><path d="M332 16 h26" stroke="#e9eef2" stroke-width="3" stroke-linecap="round"/>${!S.f.stoveOff?'<path d="M345 14 q-14 -10 -36 -8 q-26 2 -52 -6 q-20 -6 -44 -2" stroke="#c9d4de" stroke-width="5" fill="none" opacity=".3" stroke-linecap="round"/>':''}
       <g transform="translate(-28 0)">
       ${warm?'<g filter="url(#blurC)"><ellipse cx="500" cy="200" rx="120" ry="80" fill="#ffcf7a" opacity=".22"/><ellipse cx="500" cy="352" rx="110" ry="12" fill="#ffcf7a" opacity=".3"/></g>':''}
       <rect x="402" y="130" width="196" height="140" fill="#4a3624" stroke="#1a120a" stroke-width="2"/><rect x="410" y="138" width="180" height="124" fill="${warm?'#e0b060':'#1a2230'}" opacity="${warm?.8:1}"/>
@@ -630,8 +624,10 @@ function drawC(w){
   if(w===3){const a=S.f.ang||30,r=a*Math.PI/180; // 서: 탐조등과 각도판. 발자국이 탐조등까지 이어진다
     if(S.f.light){const L=600,o=(d)=>`${352+Math.cos(r+d)*L} ${248-Math.sin(r+d)*L}`;s+=`<path d="M352 248 L${o(.11)} L${o(-.11)}Z" fill="#ffe9a0" opacity=".2"/><path d="M352 248 L${o(.045)} L${o(-.045)}Z" fill="#fff6c8" opacity=".38"/>${[90,170,250,330,410].map((d,i)=>`<circle cx="${352+Math.cos(r+(i%2?.03:-.03))*d}" cy="${248-Math.sin(r+(i%2?.03:-.03))*d}" r="${1.6+i%2}" fill="#fffbe8" opacity=".9"/>`).join('')}`}
     s+=`<g filter="url(#blurC)"><ellipse cx="352" cy="342" rx="70" ry="9" fill="#000" opacity=".35"/></g>
-      <path d="M560 332 q60 -18 140 -4 q60 -10 100 0 V340 H560Z" fill="#e3e8ec"/><path d="M0 336 q40 -10 90 -2 q20 -4 40 2Z" fill="#e3e8ec"/>
-      ${[[700,372],[650,364],[598,370],[548,360],[498,366],[452,356],[410,360]].map(([x,y],i)=>`<ellipse cx="${x}" cy="${y}" rx="7" ry="3" fill="#9aa6b2" opacity=".7" transform="rotate(${i%2?-12:12} ${x} ${y})"/>`).join('')}
+      <g transform="translate(560 0)"><path d="M0 330 V296" stroke="#3a3026" stroke-width="2.5"/><rect x="-6" y="290" width="12" height="7" fill="#c9a24a"/><path d="M-7 289 h14" stroke="#eef2f4" stroke-width="2"/></g>
+      <path d="M500 332 q80 -14 160 -2 q80 -8 140 2 V340 H500Z" fill="#e3e8ec"/>
+      <rect x="-12" y="96" width="70" height="244" fill="#2c3440" stroke="#161b22" stroke-width="3"/>${[136,176,216,256,296].map(y=>`<path d="M-12 ${y} H58" stroke="#202730" stroke-width="2"/>`).join('')}<path d="M-12 86 L70 104 L66 116 L-12 100Z" fill="#e9eef2"/><path d="M-12 334 q40 -10 80 -2 q30 -4 50 4 V342 H-12Z" fill="#e3e8ec"/>
+      ${[[60,440],[110,420],[160,404],[208,392],[252,380],[290,368],[318,356]].map(([x,y],i)=>`<ellipse cx="${x}" cy="${y}" rx="7" ry="3" fill="#9aa6b2" opacity=".7" transform="rotate(${i%2?-12:12} ${x} ${y})"/>`).join('')}
       <path d="M306 248 A46 46 0 0 1 398 248Z" fill="#e7dfc4" stroke="#8a7a52" stroke-width="2" opacity=".92"/>
       ${Array.from({length:19},(_,i)=>{const t=(180-i*10)*Math.PI/180,l=i%3===0?9:5;return `<path d="M${352+Math.cos(t)*46} ${248-Math.sin(t)*46} L${352+Math.cos(t)*(46-l)} ${248-Math.sin(t)*(46-l)}" stroke="#5b4d33" stroke-width="${i%3===0?1.8:1}"/>`}).join('')}
       <path d="M352 248 L${352+Math.cos(r)*44} ${248-Math.sin(r)*44}" stroke="#a3312a" stroke-width="2"/>
@@ -761,7 +757,7 @@ const TAP={
       <p>${fresh?'연필심을 눕혀 문지르자 눌린 자국만 하얗게 남았다.':r?'연필로 문질러 둔 쪽지. 눌린 글씨가 하얗게 남아 있다.':'아무것도 안 쓰인 종이. 비스듬히 보면 위에 대고 쓴 자국이 눌려 있다. 무엇으로 문지르면 드러날 것 같다.'}</p>`)},
   lights(){say('산 아래 쉼터에 불이 켜져 있다.')},
   indoor(){SND.door();go('A',2,S.f.stoveOff||dark()?'관측실로 들어왔다. 바람은 피했지만 방이 차다.':'관측실로 들어왔다. 따뜻하다.')},
-  raincoat(){if(!S.f.matches){S.f.matches=1;save();SND.found();return say('풍향탑 사다리 고리에 노란 우비가 걸려 있다. 주머니에서 낡은 성냥갑이 나왔다. 「1979」라고 찍혀 있다.')}say('노란 우비. 누가 언제 걸어 둔 걸까. 성냥갑은 주머니에 도로 넣어 두었다.')},
+  raincoat(){if(!S.f.matches){S.f.matches=1;save();SND.found();return say('발자국이 풍향탑 밑에서 뚝 끊겼다. 끝난 자리 눈 속에 낡은 성냥갑이 반쯤 묻혀 있다. 「1979」라고 찍혀 있다.')}say('발자국은 탑 밑에서 끊겼다. 돌아간 자국은 없다.')},
   searchlight(){if(!S.f.light&&hold!=='skey'){SND.wrong();return say('탐조등과 각도판. 열쇠가 있어야 켤 수 있다.')}if(!S.f.light){S.f.light=1;take('skey');SND.fit();save();draw();return say('탐조등이 켜졌다. 빛줄기가 구름 바닥에 하얀 점을 찍는다.')}openAngle()}
 };
 function go(r,w,msg){S.room=r;S.wall[r]=w;save();draw();say(msg)}
