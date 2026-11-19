@@ -543,7 +543,14 @@ const TAP={
   screen(){if(S.f.screen){const T=TEMPS[S.t]||TEMPS[0];return openCard('백엽상 속',`<p class="hand">온도계가 두 개 걸려 있다.<br>왼쪽 (마른 것): <b>${T[0]} ℃</b><br>오른쪽 (젖은 천을 감은 것): <b>${T[1]} ℃</b></p>`)}
     if(hold==='hot'){S.f.screen=1;take('hot');SND.drawer(true);SND.found();save();draw();return say('뜨거운 물을 부으니 얼음이 녹아 백엽상 문이 열렸다.')}SND.drawer(false);say('백엽상: 온도계를 넣어 두는 하얀 나무 상자. 바람과 햇빛을 막아 바깥 기온을 잰다. 그런데 문이 얼어붙었다.')},
   raingauge(){say('우량계. 눈이 소복이 쌓였다.')},
-  fence(){if(S.f.rubbed)return say('쪽지: "발전기 점검표, 서윤이 고친 대로"');if(hold==='pencil'){S.f.rubbed=1;SND.found();save();return say('연필로 문지르자 눌린 글씨가 떠올랐다: "발전기 점검표, 서윤이 고친 대로"')}SND.wrong();say('울타리에 구겨진 쪽지. 아무것도 안 쓰인 것 같은데 눌린 자국이 있다.')},
+  fence(){const r=S.f.rubbed||hold==='pencil',fresh=!S.f.rubbed&&r;if(fresh){S.f.rubbed=1;SND.found();save()}else if(!r)SND.wrong();
+    const txt='발전기 점검표, 서윤이 고친 대로';
+    openCard('울타리 쪽지',`<svg viewBox="0 0 360 220" style="width:100%;background:#3b3f3a;border-radius:6px"><defs><filter id="crum"><feTurbulence type="fractalNoise" baseFrequency=".035" numOctaves="2" seed="7"/><feDisplacementMap in="SourceGraphic" scale="6"/></filter><pattern id="gph" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(-28)"><rect width="6" height="6" fill="#55585a"/><path d="M0 0 V6" stroke="#2f3133" stroke-width="2.4"/></pattern></defs>
+      <g transform="rotate(-3 180 110)" filter="url(#crum)"><rect x="40" y="30" width="280" height="160" fill="#efece0"/><path d="M40 92 L320 98 M150 30 L160 190" stroke="#d3cebb" stroke-width="1.5"/>
+      ${r?'<path d="M58 70 Q180 50 304 74 L300 160 Q180 178 62 154Z" fill="url(#gph)" opacity=".92"/>':''}
+      <text x="180" y="108" font-size="19" text-anchor="middle" fill="${r?'#f4f1e6':'#e6e2d3'}" opacity="${r?1:.35}" style="font-family:var(--hand)">${txt.slice(0,7)}</text>
+      <text x="180" y="138" font-size="19" text-anchor="middle" fill="${r?'#f4f1e6':'#e6e2d3'}" opacity="${r?1:.35}" style="font-family:var(--hand)">${txt.slice(9)}</text></g></svg>
+      <p>${fresh?'연필심을 눕혀 문지르자 눌린 자국만 하얗게 남았다.':r?'연필로 문질러 둔 쪽지. 눌린 글씨가 하얗게 남아 있다.':'아무것도 안 쓰인 종이. 비스듬히 보면 위에 대고 쓴 자국이 눌려 있다. 무엇으로 문지르면 드러날 것 같다.'}</p>`)},
   lights(){say('산 아래 쉼터에 불이 켜져 있다.')},
   indoor(){SND.door();go('A',0,S.f.stoveOff||dark()?'관측실로 들어왔다. 바람은 피했지만 방이 차다.':'관측실로 들어왔다. 따뜻하다.')},
   raincoat(){say('노란 우비. 주머니를 뒤져 봤지만 비었다.')},
