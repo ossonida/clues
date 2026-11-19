@@ -5,7 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Note 06 · 구름재 | 히든노트</title>
 <meta name="description" content="해발 1,400 m 기상관측소, 처음 혼자 서는 야간 근무. 정시마다 재서 숫자로 바꿔 보내는 방탈출.">
-<meta name="robots" content="noindex">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="히든노트">
+<meta property="og:title" content="Note 06 · 구름재 | 히든노트">
+<meta property="og:description" content="해발 1,400 m 기상관측소, 처음 혼자 서는 야간 근무. 정시마다 재서 숫자로 바꿔 보내는 방탈출.">
+<meta property="og:url" content="https://clues-kappa.vercel.app/notes/06/">
+<meta property="og:image" content="https://clues-kappa.vercel.app/og/note06.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<script src="../../lang.js"></script>
+<script type="module" src="../../analytics.js"></script>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/hada0127/hada-type-levelup@v2026.10.21/css/levelup-subset.css">
 <link rel="stylesheet" href="../../fonts/fonts.css">
@@ -938,7 +948,7 @@ function openAngle(){S.f.ang=S.f.ang||40;const a=S.f.ang,hit=a===63;
   <p class="hand">${hit?'빛 점이 표식 원 안에 들어왔다.':'빛줄기를 300 m 앞 표식 위 구름에 맞춰 본다.'}</p>`);
   $('#ang').oninput=e=>{S.f.ang=+e.target.value;save();openAngle()};
 }
-function toSlot1(){S.t=1;S.tape=S.tape||[];S.f.handleGone=1;S.room='A';S.wall.A=0;save();SND.thud();SND.hum(false);draw();
+function toSlot1(){ana('chapter_solved',{chapter:1,minutes_used:anaMin()});ana('chapter_opened',{chapter:2,minutes_used:anaMin()});S.t=1;S.tape=S.tape||[];S.f.handleGone=1;S.room='A';S.wall.A=0;save();SND.thud();SND.hum(false);draw();
   say('22시 30분. 퍽 소리와 함께 불이 나갔다. 지하 철문이 바람에 쾅 닫히는 소리도 났다.')}
 let GEN=[];
 function openGen(){GEN=[];const L=['① 연료 밸브 열기','② 초크 닫기','③ 시동줄 당기기','④ 초크 열기'];
@@ -950,22 +960,28 @@ function openGen(){GEN=[];const L=['① 연료 밸브 열기','② 초크 닫기
     SND.hum(true);$('#gmsg').textContent='부르릉, 걸렸다!';S.f.power=1;save();setTimeout(()=>{closeCard();powerBack()},900)})}
 function powerBack(){SND.power();save();draw();say('불이 들어왔다. 창 너머 풍향탑 아래 사람 그림자가… 다시 보니 없다.');
   setTimeout(()=>toSlot(2,'자정. 바람이 더 세졌다. 바깥 풍향 바늘은 미친 듯이 돈다.'),3800)}
-function toSlot(t,msg){S.t=t;save();closeCard();draw();if(msg)say(msg)}
-function finish(){S.t=5;$('#matchLine').hidden=!S.f.matches;if(!S.ms){S.ms=Date.now()-S.start;record(S.ms,true)}S.done=1;save();$('#game').hidden=true;$('#bag').hidden=true;$('#end').hidden=false;const m=Math.round(S.ms/60000);$('#took').textContent=m+'분';window.scrollTo(0,0)}
+function toSlot(t,msg){ana('chapter_solved',{chapter:S.t+1,minutes_used:anaMin()});S.t=t;ana('chapter_opened',{chapter:t+1,minutes_used:anaMin()});save();closeCard();draw();if(msg)say(msg)}
+function finish(){S.t=5;$('#matchLine').hidden=!S.f.matches;if(!S.ms){S.ms=Date.now()-S.start;record(S.ms,true);ana('chapter_solved',{chapter:5,minutes_used:anaMin()});ana('case_finished',{grade:'solved',points:1,clue_count:5,clue_total:5,minutes_used:anaMin(),play_minutes:anaMin()})}S.done=1;save();$('#game').hidden=true;$('#bag').hidden=true;$('#end').hidden=false;const m=Math.round(S.ms/60000);$('#took').textContent=m+'분';window.scrollTo(0,0)}
 
 /* ---------- 힌트 ---------- */
 $('#hint').onclick=()=>{const H=HINTS[S.t]||['이제 힌트는 필요 없다.','',''],got=S.hint[S.t]||0;
   const lab=['어디를','어떻게','푸는 법'];
   openCard(`${SLOTS[S.t].t} 선배 포스트잇`,H.map((h,i)=>i<got?`<div class="post"><small>${lab[i]}</small>${h}</div>`:i===got?`<button class="post closed" id="peel">포스트잇 ${i+1} 떼어 보기 (${lab[i]})</button>`:`<div class="post closed">포스트잇 ${i+1}</div>`).join(''));
-  const p=$('#peel');if(p)p.onclick=()=>{S.hint[S.t]=got+1;save();$('#hint').onclick()}};
+  const p=$('#peel');if(p)p.onclick=()=>{S.hint[S.t]=got+1;save();ana('hint_revealed',{chapter:S.t+1,level:got+1,minutes_used:anaMin()});$('#hint').onclick()}};
+
+/* ---------- 분석 (입력한 글은 보내지 않는다) ---------- */
+const ana=(name,params={},beacon=false)=>{if(window.hn)window.hn(name,params,beacon)};
+const anaMin=()=>S&&S.start?Math.min(999,Math.round(((S.ms||Date.now()-S.start))/60000)):0;
+addEventListener('pagehide',()=>{if(S.start&&!S.done)ana('case_left',{stage:'investigating',location:'slot_'+(S.t+1),clue_count:S.t,minutes_used:anaMin(),play_minutes:anaMin()},true)});
 
 /* ---------- 시작 ---------- */
 load();
-function begin(){$('#intro').hidden=true;$('#game').hidden=false;$('#hint').disabled=false;if(!S.start)S.start=Date.now();save();SND.startWind();if(S.f.power)SND.hum(true);draw();if(S.done)finish()}
+ana('case_intro_viewed');
+function begin(){$('#intro').hidden=true;$('#game').hidden=false;$('#hint').disabled=false;if(!S.start){S.start=Date.now();ana('case_started')}else if(!S.done)ana('case_resumed',{clue_count:S.t,minutes_used:anaMin()});save();SND.startWind();if(S.f.power)SND.hum(true);draw();if(S.done)finish()}
 $('#go').onclick=begin;
 if(S.start){$('#go').textContent='이어서 근무'}
 if(location.hash==='#play')begin();
-$('#again').onclick=()=>{try{localStorage.removeItem(KEY)}catch{}location.reload()};
+$('#again').onclick=()=>{ana('case_restarted');try{localStorage.removeItem(KEY)}catch{}location.reload()};
 addEventListener('resize',drawDark);
 </script>
 <script src="../../feedback.js" defer></script>
