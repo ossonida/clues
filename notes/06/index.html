@@ -701,7 +701,7 @@ const TAP={
     S.f.stoveOff=1;S.f.wiped=0;SND.valve();save();draw();say('난로 밸브를 잠갔다. 방이 금세 식는다.');setTimeout(()=>{if(S.f.stoveOff){S.f.sawDrawing=1;save();if(S.room==='A'&&S.wall.A===0){draw();say('창에 김이 서리면서, 누가 손가락으로 그려 둔 그림이 떠올랐다.')}}},1600)},
   kettle(){if(hold==='thermos'){take('thermos');give('hot');hold='hot';SND.pour();save();draw();return say('주전자 물을 보온병에 따랐다. 아직 뜨겁다.')}say(has('thermos')?'난로 위 주전자. 물이 아직 뜨겁다. 담아 갈 그릇을 들고 와야겠다.':'난로 위 주전자. 물이 아직 뜨겁다.')},
   clock(){say(['21시 정각. 관측 시각이다.','22시 30분.','자정.','새벽 1시 40분.','새벽 3시. 특별 관측 시각이다.'][S.t])},
-  outdoor(){if(dark()&&!has('torch')){SND.wrong();return say('너무 어둡다. 문고리도 안 보인다.')}SND.door();go('C',0,'문을 열자 바람이 얼굴을 친다.')},
+  outdoor(){if(dark()&&!has('torch')){SND.wrong();return say('너무 어둡다. 문고리도 안 보인다.')}SND.door();go('C',2,'문을 열고 나왔다. 바람이 얼굴을 친다.')},
   understove(){if(!has('torch')){SND.wrong();return say('바닥이 안 보인다.')}S.f.handleFound=1;give('handle');SND.found();save();draw();say('난로 밑으로 굴러 들어간 철문 손잡이를 찾았다.')},
   drawer1(){if(!S.f.d1){S.f.d1=1;give('driver');SND.drawer(true);SND.found();save();bag();return say('첫 칸에 일자 드라이버가 있다.')}SND.drawer(true);say('첫 칸은 비었다.')},
   drawer2(){if(S.f.d2){SND.drawer(true);return say('둘째 칸은 비었다.')}if(hold!=='key'){SND.drawer(false);return say('잠겨 있다. 열쇠가 있어야 열린다.')}S.f.d2=1;take('key');give('thermos');give('pencil');SND.drawer(true);SND.found();save();draw();say('열쇠가 맞았다. 안에 보온병과 연필이 들어 있다.')},
@@ -756,7 +756,7 @@ const TAP={
       <text x="180" y="138" font-size="19" text-anchor="middle" fill="${r?'#f4f1e6':'#e6e2d3'}" opacity="${r?1:.35}" style="font-family:var(--hand)">${txt.slice(9)}</text></g></svg>
       <p>${fresh?'연필심을 눕혀 문지르자 눌린 자국만 하얗게 남았다.':r?'연필로 문질러 둔 쪽지. 눌린 글씨가 하얗게 남아 있다.':'아무것도 안 쓰인 종이. 비스듬히 보면 위에 대고 쓴 자국이 눌려 있다. 무엇으로 문지르면 드러날 것 같다.'}</p>`)},
   lights(){say('산 아래 쉼터에 불이 켜져 있다.')},
-  indoor(){SND.door();go('A',2,S.f.stoveOff||dark()?'관측실로 들어왔다. 바람은 피했지만 방이 차다.':'관측실로 들어왔다. 따뜻하다.')},
+  indoor(){SND.door();go('A',0,S.f.stoveOff||dark()?'관측실로 들어왔다. 바람은 피했지만 방이 차다.':'관측실로 들어왔다. 따뜻하다.')},
   raincoat(){if(!S.f.matches){S.f.matches=1;save();SND.found();return say('발자국이 풍향탑 밑에서 뚝 끊겼다. 끝난 자리 눈 속에 낡은 성냥갑이 반쯤 묻혀 있다. 「1979」라고 찍혀 있다.')}say('발자국은 탑 밑에서 끊겼다. 돌아간 자국은 없다.')},
   searchlight(){if(!S.f.light&&hold!=='skey'){SND.wrong();return say('탐조등과 각도판. 열쇠가 있어야 켤 수 있다.')}if(!S.f.light){S.f.light=1;take('skey');SND.fit();save();draw();return say('탐조등이 켜졌다. 빛줄기가 구름 바닥에 하얀 점을 찍는다.')}openAngle()}
 };
