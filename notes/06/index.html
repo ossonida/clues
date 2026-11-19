@@ -24,7 +24,7 @@ button{font-family:inherit;cursor:pointer;color:inherit}
     repeating-linear-gradient(transparent 0 calc(var(--lh) - 1px),var(--pline) calc(var(--lh) - 1px) var(--lh));
   background-position:0 0,0 6px}
 .app::before{content:"";display:block;height:34px;margin:0 -22px 22px calc(-1 * (var(--ml) + 22px));background:linear-gradient(#2c4f78,var(--binding) 70%,#0f1f33)}
-@media(max-width:640px){.app{padding:0 calc(var(--ml) + 12px) 140px calc(var(--ml) + 12px)}.app::before{margin:0 calc(-1 * (var(--ml) + 12px)) 18px calc(-1 * (var(--ml) + 12px))}}
+@media(max-width:640px){.app{padding:0 12px 140px calc(var(--ml) + 12px)}.app::before{margin:0 -12px 18px calc(-1 * (var(--ml) + 12px))}}
 header{display:flex;align-items:flex-end;gap:10px 16px;flex-wrap:wrap;margin-bottom:16px}
 .head-tools{display:flex;align-items:center;gap:6px}
 .head-tools .btn{white-space:nowrap}
@@ -84,7 +84,7 @@ header{display:flex;align-items:flex-end;gap:10px 16px;flex-wrap:wrap;margin-bot
 .gen button{padding:12px 6px;border:2px solid #333;background:#e6dfc8;font-size:14px;border-radius:3px}
 .gen button.on{background:#333;color:#fff}
 .cover{text-align:center;padding:10px 0 20px}
-.cover .ph{display:inline-block;background:#fff;padding:10px 10px 26px;transform:rotate(-2deg);box-shadow:0 10px 20px -10px rgba(0,0,0,.6);position:relative;max-width:calc(100% - 24px);box-sizing:border-box}.cover .ph svg{max-width:100%;height:auto}
+.cover .ph{display:inline-block;background:#fff;padding:10px 10px 26px;transform:rotate(-2deg);box-shadow:0 10px 20px -10px rgba(0,0,0,.6);position:relative}
 .cover .ph::before{content:"";position:absolute;top:-12px;left:40%;width:14px;height:36px;border:3px solid #8a8f96;border-radius:8px;background:transparent}
 .cover .ph figcaption{font-family:var(--hand);font-size:18px;color:#444}
 .end{text-align:center;padding:16px 0}
