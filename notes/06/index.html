@@ -874,12 +874,12 @@ function overlay79(){take('sheet79');S.f.overlay=1;save();SND.found();
     <p class="hand" style="background:#f3ead2;padding:10px">"02시 쉼터로 내려감. 구름재 둘."</p><p class="hand">천장 등이 잠깐 누렇게 흐려졌다가 다시 밝아졌다.</p><p><button class="btn primary" id="toRadio">무전기가 지직거린다</button></p>`);
   $('#toRadio').onclick=()=>toSlot(3,'새벽 1시 40분. 무전기에서 잡음 섞인 목소리가 들린다.')}
 /* 무전: 볼륨이 너무 크면 잡음, 중간에서만 또렷 */
-function openRadio(){S.vol=S.vol??8;const v=S.vol;
-  const text=v<3?'(너무 작아 거의 안 들린다)':v>6?'치이이익… 잡음에 목소리가 묻힌다.':'"…구름재, 구름재. 여기 구름재 둘.<br>일 일 공 팔 오. 이 삼 육 이 공.<br>두 사람 갇혔다. 위치는… [치직] …샘… 쉼터… [치직]"';
-  openCard('무전기',`<p class="hand" style="min-height:96px;background:#1c2420;color:#cfe8d0;padding:12px;border-radius:4px">${text}</p>
-    <p style="display:flex;gap:8px;align-items:center"><span>볼륨</span><input id="vol" type="range" min="0" max="10" value="${v}" style="flex:1"><b>${v}</b></p>
+const radioText=v=>v<3?'(너무 작아 거의 안 들린다)':v>6?'치이이익… 잡음에 목소리가 묻힌다.':'"…구름재, 구름재. 여기 구름재 둘.<br>일 일 공 팔 오. 이 삼 육 이 공.<br>두 사람 갇혔다. 위치는… [치직] …샘… 쉼터… [치직]"';
+function openRadio(){S.vol=S.vol??8;const v=S.vol,text=radioText(v);
+  openCard('무전기',`<p id="rtext" class="hand" style="min-height:96px;background:#1c2420;color:#cfe8d0;padding:12px;border-radius:4px">${text}</p>
+    <p style="display:flex;gap:8px;align-items:center"><span>볼륨</span><input id="vol" type="range" min="0" max="10" value="${v}" style="flex:1;accent-color:#3e5a44"><b id="vnum">${v}</b></p>
     <input id="rin" autocomplete="off" placeholder="쉼터 이름이나 번호로 답하기"><p><button class="btn primary" id="rsend">송신</button></p>`);
-  $('#vol').oninput=e=>{S.vol=+e.target.value;save();SND.noise(.15,1200,S.vol*.01,.6);openRadio()};
+  $('#vol').oninput=e=>{S.vol=+e.target.value;save();SND.noise(.15,1200,S.vol*.01,.6);$('#rtext').innerHTML=radioText(S.vol);$('#vnum').textContent=S.vol};
   const send=()=>{const raw=$('#rin').value.trim(),a=raw.replace(/\s|쉼터|번/g,'');SND.radioSend(raw);
     if(['바위샘','14','90214'].includes(a)){S.f.radio=1;save();SND.found();
       $('#card').insertAdjacentHTML('beforeend','<p class="hand">"구름재 하나, 수신했다. 바위샘 쉼터로 구조대 요청한다."<br>한참 조용하다가: "…하나. 아직 거기 사람이 있었구나." 끊겼다.</p><p><button class="btn primary" id="to3">03시까지</button></p>');
