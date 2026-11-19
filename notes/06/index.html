@@ -26,6 +26,11 @@ button{font-family:inherit;cursor:pointer;color:inherit}
 .app::before{content:"";display:block;height:34px;margin:0 -22px 22px calc(-1 * (var(--ml) + 22px));background:linear-gradient(#2c4f78,var(--binding) 70%,#0f1f33)}
 @media(max-width:640px){.app{padding:0 12px 140px calc(var(--ml) + 12px)}.app::before{margin:0 -12px 18px calc(-1 * (var(--ml) + 12px))}}
 header{display:flex;align-items:flex-end;gap:10px 16px;flex-wrap:wrap;margin-bottom:16px}
+.head-tools{display:flex;align-items:center;gap:6px}
+.head-tools .btn{white-space:nowrap}
+.stat{font-family:var(--mono);font-size:12px;color:var(--dim);display:flex;flex-direction:column;line-height:1.3;padding:0 4px}
+.stat b{color:var(--ink);font-size:22px;border-bottom:1px solid var(--ink);min-width:62px}
+.btn:disabled{cursor:default;opacity:.42}
 .brand{font-family:var(--hand);font-size:40px;line-height:1.05}
 .brand a{display:block;font-family:var(--mono);font-size:12px;color:var(--dim);text-decoration:none;margin-bottom:6px}
 .brand small{display:block;font-family:var(--serif);font-size:14px;color:var(--dim);margin-top:4px}
@@ -102,6 +107,10 @@ header{display:flex;align-items:flex-end;gap:10px 16px;flex-wrap:wrap;margin-bot
 .nt .nt-f{font-size:20px;font-weight:700;letter-spacing:2px;color:var(--ink);white-space:nowrap;background:#fffdf2}
 .ns-rule{margin:4px 0 0;font-size:11.5px;color:#7a7262}
 .ns-pen{font-family:var(--hand);font-size:21px;color:#1d3f8a;margin:10px 0 0;transform:rotate(-1deg)}
+.dutybook{position:relative;margin:8px 2px 4px;padding:18px 18px 16px 27px;background:#eee4cc;color:#28251e;box-shadow:3px 3px 0 #95886f,10px 13px 22px -15px rgba(0,0,0,.65);transform:rotate(-.45deg)}
+.dutybook::before{content:"";position:absolute;left:13px;top:0;bottom:0;width:3px;background:#a3312a;box-shadow:6px 0 0 rgba(163,49,42,.22)}
+.book-cover{margin:0 0 12px;padding:8px 6px 10px;border-bottom:2px solid #716653;text-align:center;font-family:var(--serif);font-size:21px;letter-spacing:3px}.book-cover small{display:block;margin-top:5px;font-family:var(--mono);font-size:10px;letter-spacing:0;color:#6d6558}
+.book-meta{margin:0 0 12px;color:#695f51;font-size:12px;text-align:right}.book-log{margin:0;padding:0;list-style:none;font-family:var(--hand);font-size:21px;line-height:1.3}.book-log li{display:grid;grid-template-columns:50px 1fr;gap:7px;padding:7px 0;border-top:1px dashed #b4a88e}.book-log time{font-family:var(--mono);font-size:12px;color:#7a5140;padding-top:5px}.book-last{margin:13px -5px 0;padding:10px 11px;background:rgba(130,64,43,.12);border-left:4px solid #8d3727;font-family:var(--hand);font-size:24px;line-height:1.2;transform:rotate(.5deg)}.book-last b{font-family:var(--mono);font-size:13px;color:#8d3727}.book-mark{margin:11px 0 0;text-align:right;font-family:var(--hand);font-size:18px;color:#244f77}
 .fogin{animation:fogin 4.5s ease-in both}.fogtx text{animation:fogin 5s 2.5s ease-in both}@keyframes fogin{from{opacity:0}to{opacity:1}}
 </style>
 </head>
@@ -111,7 +120,8 @@ header{display:flex;align-items:flex-end;gap:10px 16px;flex-wrap:wrap;margin-bot
   <div class="brand"><a href="../../">← 사건 대장</a><span>구름재</span><small>Note 06 · 구름재 관측소 야간 근무</small></div>
   <div class="spacer"></div>
   <div class="clock">관측 시각<b id="clk">21:00</b></div>
-  <button class="btn" id="snd" aria-pressed="true">소리 켬</button>
+  <div class="stat"><span>걸린 시간</span><b id="time">0:00</b></div>
+  <div class="head-tools"><button class="btn" id="snd" aria-pressed="true" title="소리">🔈</button><button class="btn" id="hint" disabled>힌트</button></div>
 </header>
 
 <section id="intro" class="cover">
@@ -141,8 +151,6 @@ header{display:flex;align-items:flex-end;gap:10px 16px;flex-wrap:wrap;margin-bot
     <button class="nav" id="prev" aria-label="왼쪽 벽">◀</button>
     <button class="nav" id="next" aria-label="오른쪽 벽">▶</button>
   </div>
-  
-  <div class="tools"><button class="btn" id="hint">포스트잇 (힌트)</button></div>
 </section>
 
 <section id="end" class="end" hidden>
@@ -228,7 +236,11 @@ const SND={on:true,ctx:null,wind:null,
     f.connect(out).connect(c.destination);lfo.start();this.wind={out,lfo,parts}},
   stop(){if(this.wind){const w=this.wind,t=this.ctx?this.ctx.currentTime:0;try{w.out.gain.cancelScheduledValues(t);w.out.gain.setValueAtTime(Math.max(.0001,w.out.gain.value),t);w.out.gain.linearRampToValueAtTime(.0001,t+.45);setTimeout(()=>{try{w.lfo.stop();w.parts.forEach(o=>o.stop())}catch{}},500)}catch{}this.wind=null}this.hum(false)}
 };
-$('#snd').onclick=()=>{SND.on=!SND.on;$('#snd').textContent=SND.on?'소리 켬':'소리 끔';$('#snd').setAttribute('aria-pressed',SND.on);if(SND.on){SND.startWind();if(S.f.power)SND.hum(true)}else SND.stop()};
+$('#snd').onclick=()=>{SND.on=!SND.on;const b=$('#snd');b.textContent=SND.on?'🔈':'🔇';b.setAttribute('aria-pressed',SND.on);if(SND.on){SND.startWind();if(S.f.power)SND.hum(true)}else SND.stop()};
+
+/* 걸린 시간 */
+const fmtT=ms=>{const s=Math.max(0,Math.floor(ms/1000)),hh=Math.floor(s/3600),mm=Math.floor(s/60)%60,ss=String(s%60).padStart(2,'0');return hh?hh+':'+String(mm).padStart(2,'0')+':'+ss:mm+':'+ss};
+setInterval(()=>{if(!S||!S.start)return;$('#time').textContent=fmtT(S.ms||Date.now()-S.start)},1000);
 
 /* ---------- 장면 ---------- */
 const WALLS={A:['북','동','남','서'],B:['북','동','남','서'],C:['북','동','남','서']};
@@ -408,6 +420,7 @@ function bag(){
   b.innerHTML='<span class="lbl">소지품</span>'+S.inv.map(i=>`<button class="it${hold===i?' on':''}" data-i="${i}"><i>${ITEMS[i][0]}</i>${ITEMS[i][1]}</button>`).join('');
 }
 $('#bag').addEventListener('click',e=>{const t=e.target.closest('[data-i]');if(!t)return;const i=t.dataset.i;
+  if(i==='book79'){hold=null;openBook79();bag();return}
   if(hold&&hold!==i){combine(hold,i);return}
   if(hold===i){inspect(i);return}
   hold=i;say(ITEMS[i][1]+josa(ITEMS[i][1])+' 들었다. (한 번 더 누르면 살펴보기)');bag()});
@@ -421,9 +434,13 @@ function inspect(i){
   if(i==='torch'){
     if(false){S.f.fuseOut=1;give('fuse');save();say('손잡이 끝을 돌리니 건전지 옆 작은 칸에서 예비 퓨즈가 나왔다.');bag();return}
     say(S.f.fuseOut?'묵직한 손전등.':'묵직한 손전등.');return}
-  if(i==='ring')return say('녹슨 열쇠 하나. 손잡이 뒤에 동그라미 네 개가 새겨져 있다. ◕ ◔ ● ◑');if(i==='sheet79')return say('1979년 11월 13일 기압 기록지. 18시 무렵 선이 뚝 꺼진다. 가장자리에 연필 자국.');if(i==='book79')return say('정기철의 근무 수첩. 마지막 장: "02시 쉼터로. 사람이 있다."');
+  if(i==='ring')return say('녹슨 열쇠 하나. 손잡이 뒤에 동그라미 네 개가 새겨져 있다. ◕ ◔ ● ◑');if(i==='sheet79')return say('1979년 11월 13일 기압 기록지. 18시 무렵 선이 뚝 꺼진다. 가장자리에 연필 자국.');if(i==='book79')return openBook79();
   const T={skey:'탐조등 열쇠.',key:'선배 열쇠고리. "장비"라고 쓴 견출지.',thermos:'빈 보온병.',hot:'주전자 물을 담았다. 뜨겁다.',pencil:'뭉툭한 연필.',driver:'일자 드라이버.',handle:'철문 손잡이. 나사가 없다.',handle2:'손잡이와 드라이버. 문에 다시 달 수 있겠다.',fuse:'유리관 퓨즈.'};
   say(T[i]||'');
+}
+function openBook79(){
+  SND.paper();
+  openCard('1979년 근무 수첩',`<article class="dutybook"><div class="book-cover">구름재 관측소<br>야간 근무 수첩<small>1979 · 기상청 산악관측반</small></div><p class="book-meta">11월 13일 · 숙직 정기철</p><ul class="book-log"><li><time>21:00</time><span>한상우와 관측을 나눠 맡았다. 그는 전보를, 나는 아래 기록을 본다.</span></li><li><time>00:00</time><span>바위샘 쉼터 쪽에서 사람 목소리. 바람에 끊겨 말이 잘 안 들린다.</span></li></ul><div class="book-last"><b>02:00</b><br>바위샘 쉼터에서 구조 요청.<br>한상우는 관측소에 남고, 내가 내려간다.</div><p class="book-mark">— 구름재 둘 · 정기철</p></article>`);
 }
 
 /* ---------- 조작 ---------- */
@@ -610,7 +627,7 @@ $('#hint').onclick=()=>{const H=HINTS[S.t]||['이제 힌트는 필요 없다.','
 
 /* ---------- 시작 ---------- */
 load();
-function begin(){$('#intro').hidden=true;$('#game').hidden=false;if(!S.start)S.start=Date.now();save();SND.startWind();if(S.f.power)SND.hum(true);draw();if(S.done)finish()}
+function begin(){$('#intro').hidden=true;$('#game').hidden=false;$('#hint').disabled=false;if(!S.start)S.start=Date.now();save();SND.startWind();if(S.f.power)SND.hum(true);draw();if(S.done)finish()}
 $('#go').onclick=begin;
 if(S.start){$('#go').textContent='이어서 근무'}
 if(location.hash==='#play')begin();
