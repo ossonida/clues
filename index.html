@@ -73,7 +73,7 @@ a.note:hover{transform:rotate(0) translateY(-3px);box-shadow:0 1px 1px rgba(0,0,
 .fields div{display:flex;border-bottom:1px dotted #cfc6b0;padding:4px 0}
 .fields dt{width:88px;color:var(--dim)}
 .fields dd{margin:0}
-.stamp{position:absolute;right:22px;bottom:28px;border:3px solid var(--stamp);color:var(--stamp);font-family:var(--mono);font-weight:700;font-size:15px;letter-spacing:3px;padding:2px 10px;transform:rotate(-9deg);opacity:.8;mix-blend-mode:multiply}
+.stamp{position:absolute;right:22px;bottom:28px;border:3px solid var(--stamp);color:var(--stamp);font-family:var(--mono);font-weight:700;font-size:15px;letter-spacing:3px;padding:2px 10px;transform:rotate(-9deg);opacity:.8;mix-blend-mode:multiply}.stamp.solved{border-color:#2b7a52;color:#2b7a52}.stamp.newcase{border-color:#8a6d1f;color:#8a6d1f}
 .open{display:inline-block;margin-top:18px;font-family:var(--mono);font-weight:700;font-size:14px;border-bottom:2px solid var(--ink);padding-bottom:1px}
 a.note:hover .open{color:var(--stamp);border-color:var(--stamp)}
 .photo{position:absolute;top:-18px;right:-14px;width:150px;background:#fff;padding:7px 7px 26px;transform:rotate(5deg);box-shadow:0 6px 14px -6px rgba(0,0,0,.5)}
@@ -190,7 +190,7 @@ footer{padding-top:var(--lh);padding-bottom:var(--lh);font-family:var(--hand);fo
           <div><dt data-en="Play time">소요 시간</dt><dd data-en="60–90 min">60~90분</dd></div>
         </dl>
         <span class="open" data-en="Open the case file →">사건 파일 열기 →</span>
-        <div class="stamp" data-en="UNSOLVED">미해결</div>
+        <div class="stamp" data-stamp="note01" data-default="unsolved" data-en="UNSOLVED">미해결</div>
       </a>
       <a class="note n2" href="notes/02/">
         <span class="tape"></span>
@@ -217,7 +217,7 @@ footer{padding-top:var(--lh);padding-bottom:var(--lh);font-family:var(--hand);fo
           <div><dt data-en="Play time">소요 시간</dt><dd data-en="20–30 min · Korean only">20~30분</dd></div>
         </dl>
         <span class="open" data-en="Open the notebook →">노트 펼치기 →</span>
-        <div class="stamp" data-en="LOCKED">잠김</div>
+        <div class="stamp" data-stamp="note02" data-default="unsolved" data-en="UNSOLVED">미해결</div>
       </a>
       <a class="note n3" href="notes/03/">
         <span class="tape"></span>
@@ -246,7 +246,7 @@ footer{padding-top:var(--lh);padding-bottom:var(--lh);font-family:var(--hand);fo
           <div><dt data-en="Play time">소요 시간</dt><dd data-en="30–40 min · Korean only">30~40분</dd></div>
         </dl>
         <span class="open" data-en="Open the log →">일지 펼치기 →</span>
-        <div class="stamp" data-en="ON DUTY">숙직 중</div>
+        <div class="stamp" data-stamp="note03" data-default="unsolved" data-en="UNSOLVED">미해결</div>
       </a>
       <a class="note n4" href="notes/04/">
         <span class="tape"></span>
@@ -281,7 +281,7 @@ footer{padding-top:var(--lh);padding-bottom:var(--lh);font-family:var(--hand);fo
           <div><dt data-en="Play time">소요 시간</dt><dd data-en="25–35 min · Korean only">25~35분</dd></div>
         </dl>
         <span class="open" data-en="Open the notebook →">연습장 펼치기 →</span>
-        <div class="stamp" data-en="DRAFT">시제품</div>
+        <div class="stamp" data-stamp="note04" data-default="unsolved" data-en="UNSOLVED">미해결</div>
       </a>
       <a class="note n5" href="notes/05/">
         <span class="tape"></span>
@@ -309,7 +309,7 @@ footer{padding-top:var(--lh);padding-bottom:var(--lh);font-family:var(--hand);fo
           <div><dt data-en="Play time">소요 시간</dt><dd data-en="35–45 min (est.) · Korean only">35~45분 (예상)</dd></div>
         </dl>
         <span class="open" data-en="Open the log →">일지 펼치기 →</span>
-        <div class="stamp" data-en="CLOSED">폐관</div>
+        <div class="stamp" data-stamp="note05" data-default="unsolved" data-en="UNSOLVED">미해결</div>
       </a>
       <a class="note n6" href="notes/06/">
         <span class="tape"></span>
@@ -340,7 +340,7 @@ footer{padding-top:var(--lh);padding-bottom:var(--lh);font-family:var(--hand);fo
           <div><dt data-en="Play time">소요 시간</dt><dd data-en="40–50 min (est.) · Korean only">40~50분 (예상)</dd></div>
         </dl>
         <span class="open" data-en="Start the shift →">근무 시작 →</span>
-        <div class="stamp" data-en="NEW">새 사건</div>
+        <div class="stamp newcase" data-stamp="note06" data-default="new" data-en="NEW CASE">새 사건</div>
       </a>
     </section>
 
@@ -416,6 +416,14 @@ if(document.fonts)document.fonts.ready.then(alignRules);
     else if(r)td.innerHTML=`<span class="ng">✗ ${en?'Failed':'못 깸'}</span> ${r.last!=null?fmt(r.last):''}`;
     if(playing&&!(r&&r.ok))td.innerHTML=`<span class="ing">${en?'In progress':'하는 중'}</span> ${s.ms?fmt(s.ms):''}`;
     else if(playing)td.title=en?'Replaying':'다시 하는 중';
+  });
+  const stamps={unsolved:{ko:'미해결',en:'UNSOLVED'},solved:{ko:'해결',en:'SOLVED'},new:{ko:'새 사건',en:'NEW CASE'}};
+  document.querySelectorAll('[data-stamp]').forEach(stamp=>{
+    const n=stamp.dataset.stamp,r=get('hn.clear.'+n),s=get(SAVES[n]);
+    const playing=s&&(s.startedAt||(s.started&&!s.done));
+    const state=r&&r.ok?'solved':playing?'unsolved':stamp.dataset.default;
+    stamp.textContent=stamps[state][en?'en':'ko'];stamp.dataset.en=stamps[state].en;
+    stamp.classList.toggle('solved',state==='solved');stamp.classList.toggle('newcase',state==='new');
   });
 })();
 document.querySelectorAll('.langsw button').forEach(b=>{b.classList.toggle('on',b.dataset.l===window.HN_LANG);b.onclick=()=>{if(b.dataset.l!==window.HN_LANG)hnSetLang(b.dataset.l)}});
