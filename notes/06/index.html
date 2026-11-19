@@ -304,31 +304,49 @@ function drawA(w){
       ${hs('calendar',640,70,90,110)}`;
     if(!has('torch')&&!S.f.torchTaken)s+=`<rect x="360" y="214" width="56" height="16" rx="6" fill="#2b2b2b"/><circle cx="416" cy="222" r="9" fill="#c9c2ae"/>${hs('torch',350,204,80,30)}`;
   }
-  if(w===2){ // 남: 기압계, 기록계, 숫자표, 기호표
-    const tilt=S.f.baro?'rotate(12 140 150)':'';
+  if(w===2){ // 남: 기압계, 기록계 두 대(유리 덮개 안 원통 + 펜), 숫자표, 기호표
+    const tilt=S.f.baro?'rotate(12 140 62)':'',lit=!dark();
     const oct=(cx,cy,r,k)=>`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#222" stroke-width="2"/>`+(k===8?`<circle cx="${cx}" cy="${cy}" r="${r}" fill="#222"/>`:k===0?'':`<path d="M${cx} ${cy-r} A${r} ${r} 0 ${k>4?1:0} 1 ${k===2?cx+r:k===4?cx:cx-r} ${k===2?cy:k===4?cy+r:cy} L${cx} ${cy}Z" fill="#222"/>`);
-    s+=`<ellipse cx="400" cy="345" rx="370" ry="16" fill="#000" opacity=".22"/>
-      <!-- 기압계: 왼쪽 벽, 나무 액자 -->
-      <g transform="${tilt}"><rect x="84" y="84" width="112" height="132" rx="6" fill="#2f2015"/><rect x="90" y="90" width="100" height="120" fill="#795333" stroke="#2a1d10" stroke-width="4"/>
-      <circle cx="140" cy="150" r="38" fill="#252827"/><circle cx="140" cy="150" r="34" fill="#efe8d2"/><circle cx="140" cy="150" r="27" fill="none" stroke="#8b8068" stroke-dasharray="2 5"/>
-      <line x1="140" y1="150" x2="122" y2="170" stroke="#222" stroke-width="3"/><circle cx="140" cy="150" r="3" fill="#222"/><text x="140" y="134" font-size="9" text-anchor="middle" fill="#333">hPa</text></g>
+    s+=`${lit?'<g filter="url(#blurA)"><ellipse cx="400" cy="60" rx="320" ry="180" fill="#ffd98a" opacity=".07"/></g>':''}
+      <!-- 기압계: 못에 건 둥근 머리 나무 액자 -->
+      <circle cx="140" cy="62" r="2.5" fill="#8a8d88"/>
+      <g transform="${tilt}"><path d="M140 62 L104 86 M140 62 L176 86" stroke="#2a2a26" stroke-width="1.2"/>
+        <path d="M88 220 V120 a52 40 0 0 1 104 0 V220Z" fill="#000" opacity=".35" transform="translate(4 5)" filter="url(#blurA2)"/>
+        <path d="M84 216 V118 a56 42 0 0 1 112 0 V216Z" fill="#4a2f1c" stroke="#24160c" stroke-width="2"/><path d="M92 208 V120 a48 36 0 0 1 96 0 V208Z" fill="#795333"/><path d="M96 124 a44 32 0 0 1 60 -26" stroke="#a87a50" stroke-width="1.5" fill="none" opacity=".7"/>
+        <circle cx="140" cy="150" r="38" fill="#2a2216" stroke="#a88a4a" stroke-width="2"/><circle cx="140" cy="150" r="33" fill="#efe8d2"/>
+        ${Array.from({length:17},(_,i)=>{const t=(225-i*270/16)*Math.PI/180,l=i%4===0?7:4;return `<path d="M${140+Math.cos(t)*31} ${150-Math.sin(t)*31} L${140+Math.cos(t)*(31-l)} ${150-Math.sin(t)*(31-l)}" stroke="#333" stroke-width="${i%4===0?1.4:.9}"/>`}).join('')}
+        ${[[960,225],[990,157.5],[1020,90],[1050,22.5]].map(([n,d])=>{const t=d*Math.PI/180;return `<text x="${140+Math.cos(t)*19}" y="${150-Math.sin(t)*19+3}" font-size="6.5" text-anchor="middle" fill="#333">${n}</text>`}).join('')}
+        <text x="140" y="172" font-size="7" text-anchor="middle" fill="#555">hPa</text>
+        <path d="M140 150 L118 168" stroke="#222" stroke-width="2.5" stroke-linecap="round"/><path d="M140 150 L126 124" stroke="#b08a3a" stroke-width="1.5"/><circle cx="140" cy="150" r="3" fill="#222"/>
+        <path d="M114 128 a32 32 0 0 1 22 -10" stroke="#fff" stroke-width="2" opacity=".55" fill="none"/></g>
       ${S.f.baro&&!has('key')&&!S.f.keyTaken?`<g transform="translate(130 206) rotate(-8)"><circle cx="0" cy="0" r="2" fill="#555"/><circle cx="0" cy="6" r="6" fill="none" stroke="#c9a24a" stroke-width="3.5"/><path d="M5 9 L26 13" stroke="#c9a24a" stroke-width="3.5" stroke-linecap="round"/><path d="M20 12 l-1 6 M25 13 l-1 5" stroke="#c9a24a" stroke-width="3" stroke-linecap="round"/><path class="glint" d="M-3 1 l1 -3 1 3 3 1 -3 1 -1 3 -1 -3 -3 -1z" fill="#fff8d8"/></g>${hs('keyspot',116,200,50,30)}`:''}
-      ${hs('baro',84,84,112,132)}
+      ${hs('baro',84,60,112,160)}
       <!-- 숫자표: 낡은 종이를 압정 두 개로 고정 -->
       <g transform="rotate(1.2 390 110)"><rect x="304" y="48" width="180" height="134" fill="#171a18" opacity=".22"/><path d="M300 44h180v134H300z" fill="url(#oldPaper)" stroke="#8e8269" stroke-width="1.5"/><path d="M466 44h14v15l-14-4z" fill="#d5c7a4" stroke="#8e8269" stroke-width="1"/><path d="M309 57q34-7 71-1t86-2M307 166q44 7 86 0t78 2" fill="none" stroke="#a99572" stroke-width="1" opacity=".35"/><circle cx="314" cy="51" r="4" fill="#a3312a"/><circle cx="313" cy="50" r="1.2" fill="#f0a090"/><circle cx="466" cy="51" r="3.5" fill="#715a42"/><circle cx="465" cy="50" r="1" fill="#e0c29d"/>
       <text x="390" y="72" font-size="12" text-anchor="middle" font-weight="700" fill="#302d27">간이 전보 숫자표</text><path d="M316 78h148" stroke="#786b53" stroke-width="1" opacity=".65"/>
       ${[['기온','1 s TTT'],['바람','2 dd ff'],['구름','3 hhhh']].map((r,i)=>`<line x1="312" y1="${84+i*30}" x2="468" y2="${84+i*30}" stroke="#bfae88"/><text x="316" y="${103+i*30}" font-size="11" fill="#3b3830">${r[0]}</text><text x="464" y="${103+i*30}" font-size="13" text-anchor="end" font-weight="700" fill="#222">${r[1]}</text>`).join('')}</g>
       ${hs('table',296,40,190,142)}
-      <!-- 낮은 장 위의 기록계 두 대 -->
-      <rect x="252" y="268" width="296" height="72" fill="#5b4632" stroke="#2a2016" stroke-width="3"/><rect x="252" y="264" width="296" height="8" fill="#6b5340"/>
-      <line x1="400" y1="276" x2="400" y2="336" stroke="#2a2016" stroke-width="2"/><rect x="318" y="296" width="20" height="5" rx="2" fill="#c9a24a"/><rect x="462" y="296" width="20" height="5" rx="2" fill="#c9a24a"/>
-      ${[[268,'#a3312a','기압'],[412,'#1d4f8a','풍향·풍속']].map(([x,c,l])=>`<rect x="${x}" y="196" width="120" height="68" rx="4" fill="#2e3234"/><rect x="${x+8}" y="204" width="104" height="44" rx="3" fill="#cfd8d4" opacity=".35"/>
-        <rect x="${x+22}" y="208" width="76" height="36" rx="16" fill="#e9e4d4"/><path d="M${x+26} 228 q12 -8 22 0 t22 3 t22 -6" stroke="${c}" fill="none" stroke-width="2"/><text x="${x+60}" y="259" font-size="8.5" text-anchor="middle" fill="#cfcabc">${l}</text>`).join('')}
-      ${hs('drums',262,190,282,80)}
+      <!-- 장: 윗판 두께 + 서랍 + 짧은 다리, 벽 그림자 -->
+      <rect x="244" y="250" width="320" height="84" fill="#000" opacity=".35" filter="url(#blurA2)"/>
+      <path d="M240 256 H560 L554 266 H246Z" fill="#7a5a3c" stroke="#2e1f12" stroke-width="1.5"/><path d="M262 260 q140 -2 280 0" stroke="#5a3f28" stroke-width="1" opacity=".6" fill="none"/>
+      <rect x="246" y="266" width="308" height="62" fill="#5e432b" stroke="#2e1f12" stroke-width="1.5"/><path d="M246 267 H554" stroke="#a07a52" stroke-width="1" opacity=".6"/>
+      ${[0,1].map(i=>{const x=256+i*152;return `<rect x="${x}" y="274" width="140" height="46" rx="2" fill="#5a3f28" stroke="#2e1f12" stroke-width="1.5"/><path d="M${x+2} 276 H${x+138}" stroke="#8a6a48" stroke-width="1" opacity=".6"/><rect x="${x+58}" y="292" width="24" height="6" rx="3" fill="#7a6438" stroke="#3a2e14"/><path d="M${x+60} 293 h20" stroke="#c9b27a" stroke-width="1" opacity=".4"/>`}).join('')}
+      ${[252,540].map(x=>`<rect x="${x}" y="328" width="10" height="12" fill="#3e2c1c" stroke="#2e1f12"/>`).join('')}
+      <!-- 기록계 두 대: 받침, 원통에 감긴 기록지, 펜 팔, 유리 덮개, 놋쇠 이름판 -->
+      ${[[268,'#a3312a','기압'],[412,'#1d4f8a','풍향·풍속']].map(([x,c,l],k)=>`<rect x="${x}" y="244" width="120" height="14" rx="2" fill="#3a2a1c" stroke="#1a120a" stroke-width="1.5"/><path d="M${x+2} 246 H${x+118}" stroke="#6b4f35" stroke-width="1" opacity=".7"/>
+        <rect x="${x+28}" y="245" width="64" height="12" rx="1" fill="#d9cfae" stroke="#3a2e14" stroke-width=".8"/><circle cx="${x+32}" cy="251" r="1.2" fill="#6a5a3a"/><circle cx="${x+88}" cy="251" r="1.2" fill="#6a5a3a"/><text x="${x+60}" y="254.5" font-size="9.5" text-anchor="middle" font-weight="700" fill="${c}">${l}</text>
+        <rect x="${x+18}" y="204" width="50" height="40" fill="#efe8d2" stroke="#6b6658" stroke-width="1"/><ellipse cx="${x+43}" cy="204" rx="25" ry="4" fill="#d9d2bc" stroke="#6b6658" stroke-width="1"/>
+        ${[0,1,2,3].map(j=>`<path d="M${x+18} ${212+j*8} H${x+68}" stroke="#c9bfa0" stroke-width=".7"/>`).join('')}${[0,1,2,3,4].map(j=>`<path d="M${x+22+j*10} 206 V244" stroke="#c9bfa0" stroke-width=".7"/>`).join('')}
+        <path d="M${x+18} ${k?228:222} q8 ${k?-6:-4} 14 0 t14 ${k?5:3} t14 -6 t8 2" stroke="${c}" fill="none" stroke-width="1.8"/>
+        <path d="M${x+40} 204 V244" stroke="#000" stroke-width="10" opacity=".06"/><path d="M${x+62} 204 V244" stroke="#000" stroke-width="6" opacity=".12"/>
+        <rect x="${x+92}" y="214" width="14" height="30" rx="2" fill="#4a4d4f" stroke="#1a1c1d" stroke-width="1"/><circle cx="${x+99}" cy="222" r="3" fill="#8e7646"/>
+        <path d="M${x+99} 222 L${x+66} ${k?227:221}" stroke="#2a2a2a" stroke-width="1.6"/><path d="M${x+66} ${k?225:219} l-4 2 4 2z" fill="${c}"/>
+        <rect x="${x+8}" y="190" width="104" height="56" rx="10" fill="#cfe0e6" fill-opacity=".14" stroke="#9fb4bc" stroke-width="1.5" stroke-opacity=".7"/><path d="M${x+16} 196 q30 -4 50 0" stroke="#fff" stroke-width="2" opacity=".35" fill="none"/><path d="M${x+100} 198 V236" stroke="#fff" stroke-width="1.5" opacity=".25"/>`).join('')}
+      ${hs('drums',262,186,282,74)}
       <!-- 일기도 운량 기호표: 누렇게 바랜 인쇄 참고표 -->
-      <g transform="rotate(-.8 661 160)"><rect x="590" y="84" width="150" height="160" fill="#151716" opacity=".2"/><rect x="586" y="80" width="150" height="160" fill="#e4ddc9" stroke="#817866" stroke-width="1.5"/><path d="M596 88h130M596 126h130" stroke="#a89c83" stroke-width="1" opacity=".6"/><circle cx="598" cy="88" r="3" fill="#6a5540"/><circle cx="724" cy="88" r="3" fill="#6a5540"/><text x="661" y="105" font-size="12" text-anchor="middle" font-weight="700" fill="#333">일기도 운량 기호</text>
+      <g transform="rotate(-.8 661 160)"><rect x="592" y="86" width="150" height="160" fill="#000" opacity=".3" filter="url(#blurA2)"/><path d="M586 80 h150 v148 l-12 12 h-138z" fill="#e4ddc9" stroke="#817866" stroke-width="1.5"/><path d="M736 228 l-12 12 v-10 q4 0 12 -2z" fill="#c9bd9a" stroke="#817866"/><path d="M596 88h130M596 126h130" stroke="#a89c83" stroke-width="1" opacity=".6"/><circle cx="598" cy="88" r="3" fill="#6a5540"/><circle cx="724" cy="88" r="3" fill="#6a5540"/><text x="661" y="105" font-size="12" text-anchor="middle" font-weight="700" fill="#333">일기도 운량 기호</text>
       <text x="661" y="119" font-size="8" text-anchor="middle" fill="#6b6358">하늘을 8로 나눈 구름 양</text>
-      ${[0,2,4,6,8].map((k,i)=>oct(610+(i%3)*50,148+Math.floor(i/3)*48,11,k)+`<text x="${610+(i%3)*50}" y="${174+Math.floor(i/3)*48}" font-size="11" text-anchor="middle" fill="#222">${k}</text>`).join('')}</g>
+      ${[0,2,4,6,8].map((k,i)=>{const cx=i<3?611+i*50:636+(i-3)*50,cy=i<3?148:196;return oct(cx,cy,11,k)+`<text x="${cx}" y="${cy+26}" font-size="11" text-anchor="middle" fill="#222">${k}</text>`}).join('')}</g>
       ${hs('symbols',586,80,150,160)}`;
   }
   if(w===3){const lit=!dark(); // 서: 텔레타이프, 무전기, 지도, 서류장, 지하 문. 책상 스탠드 불빛
