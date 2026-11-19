@@ -60,11 +60,14 @@ header{display:flex;align-items:flex-end;gap:10px 16px;flex-wrap:wrap;margin-bot
 .toast{position:fixed;left:50%;bottom:86px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fffdf4;padding:10px 18px;font-size:14px;line-height:1.5;opacity:0;transition:.25s;pointer-events:none;z-index:60;width:max-content;max-width:min(560px,90vw);text-align:center}
 .toast.on{opacity:1;transform:translateX(-50%)}
 .say-old{min-height:52px;margin:10px 0 0;font-family:var(--hand);font-size:clamp(19px,4.8vw,23px);line-height:1.35;color:var(--pen)}
-.bag{position:fixed;left:0;right:0;bottom:0;background:#20262f;border-top:3px solid #0f141b;padding:8px 10px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap;z-index:5}
-.bag .lbl{color:#9aa3ad;font-size:12px;align-self:center}
-.it{min-width:64px;height:58px;padding:2px 6px;background:#2d3540;border:2px solid #3c4655;border-radius:4px;color:#ece6d4;font-size:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.15}
-.it i{font-style:normal;font-size:22px}
-.it.on{border-color:var(--orange);background:#3d3226}
+.bag{position:fixed;left:0;right:0;bottom:0;z-index:40;display:flex;justify-content:center;pointer-events:none}
+.bag .in{pointer-events:auto;display:flex;align-items:flex-end;gap:6px;background:#1f3a5a;padding:9px 14px 11px;border-radius:14px 14px 0 0;box-shadow:0 -6px 18px rgba(0,0,0,.35);border:2px dashed rgba(235,224,192,.35);border-bottom:none}
+.bag .lbl{font-family:var(--hand);font-size:22px;color:#f5edd8;margin:0 4px 18px 0;white-space:nowrap}
+.it{position:relative;width:72px;height:70px;padding:4px;border:1.5px dashed rgba(235,224,192,.35);border-radius:7px;background:transparent;color:#f5edd8;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;transition:transform .15s}
+.it i{font-style:normal;font-size:25px;line-height:1}
+.item-name{width:100%;min-height:22px;display:grid;place-items:center;text-align:center;font-size:10px;line-height:1.1;white-space:normal;overflow-wrap:anywhere}
+.it.on{background:#ffe680;border-color:#c9a04a;color:var(--ink);transform:translateY(-8px) rotate(-5deg);box-shadow:0 6px 10px rgba(0,0,0,.3)}
+@media(max-width:420px){.bag .lbl{display:none}.bag .in{gap:4px;padding:7px 8px 9px;max-width:calc(100vw - 8px);overflow-x:auto}.it{flex:0 0 58px;width:58px;height:62px;padding:3px;gap:2px}.it i{font-size:22px}.item-name{min-height:20px;font-size:9px}}
 .tools{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
 .modal{position:fixed;inset:0;background:rgba(5,8,12,.78);display:none;align-items:center;justify-content:center;z-index:60;padding:14px}
 .modal.on{display:flex}
@@ -117,6 +120,7 @@ header{display:flex;align-items:flex-end;gap:10px 16px;flex-wrap:wrap;margin-bot
 .book-meta{margin:0 0 12px;color:#695f51;font-size:12px;text-align:right}.book-log{margin:0;padding:0;list-style:none;font-family:var(--hand);font-size:21px;line-height:1.3}.book-log li{display:grid;grid-template-columns:50px 1fr;gap:7px;padding:7px 0;border-top:1px dashed #b4a88e}.book-log time{font-family:var(--mono);font-size:12px;color:#7a5140;padding-top:5px}.book-last{margin:13px -5px 0;padding:10px 11px;background:rgba(130,64,43,.12);border-left:4px solid #8d3727;font-family:var(--hand);font-size:24px;line-height:1.2;transform:rotate(.5deg)}.book-last b{font-family:var(--mono);font-size:13px;color:#8d3727}.book-mark{margin:11px 0 0;text-align:right;font-family:var(--hand);font-size:18px;color:#244f77}
 .fogin{animation:fogin 4.5s ease-in both}.fogtx text{animation:fogin 5s 2.5s ease-in both}@keyframes fogin{from{opacity:0}to{opacity:1}}
 .glint{transform-box:fill-box;transform-origin:center;animation:glint 1.8s ease-in-out infinite}@keyframes glint{0%,60%,100%{opacity:0;transform:scale(.3)}75%{opacity:1;transform:scale(1)}}
+.trail-card{margin:2px 0 10px;background:#e7dfbf;border:5px solid #66503a;box-shadow:inset 0 0 0 2px #f7efd4,2px 3px 0 rgba(69,52,33,.24);color:#2d2b25}.trail-head{display:flex;justify-content:space-between;gap:10px;padding:10px 12px 8px;border-bottom:2px solid #675440;background:#f5eed4}.trail-head b{font-family:var(--serif);font-size:18px;letter-spacing:3px}.trail-head small{align-self:end;font-size:10px;color:#655d50;text-align:right}.trail-svg{display:block;width:100%;height:auto;background:#d4dec1}.trail-foot{display:flex;justify-content:space-between;gap:8px;padding:7px 10px;background:#f5eed4;border-top:1px solid #9b8d70;font-size:11px;line-height:1.35;color:#4d493e}.trail-key{display:flex;gap:8px;align-items:center;white-space:nowrap}.trail-key i{display:inline-block;width:22px;border-top:3px dashed #873f25}.trail-key i.river{border-color:#3d7193;border-style:solid}.trail-note{margin:7px 9px 9px;padding:6px 8px;border-left:4px solid #a3312a;background:rgba(163,49,42,.09);font-family:var(--hand);font-size:18px;line-height:1.2;color:#453429}
 .pc-note{display:inline-block;margin:14px 0 0 4px;padding:4px 10px;font-family:var(--hand);font-size:19px;color:#5b4d33;background:#fff7c2;box-shadow:2px 3px 6px -3px rgba(0,0,0,.35);transform:rotate(-1.2deg)}
 .it.empty{cursor:default;opacity:.55}
 </style>
@@ -235,6 +239,8 @@ const SND={on:true,ctx:null,wind:null,
   steps(up=false){this.tone(up?165:145,up?120:105,.07,.014,'triangle');setTimeout(()=>this.tone(up?150:130,up?108:92,.07,.012,'triangle'),115)},
   paper(){this.noise(.055,1350,.014,.55);this.tone(520,440,.06,.009,'sine')},
   turn(){this.noise(.035,720,.012,2);this.tone(270,238,.055,.008,'triangle')},
+  radioOpen(){this.noise(.12,1450,.028,.7);this.tone(760,510,.06,.01,'square')},
+  radioSend(){if(!this.on)return;this.noise(.14,1250,.032,.75);this.tone(640,430,.07,.01,'square')},
   power(){this.noise(.12,170,.04,1);this.tone(86,122,.18,.018,'triangle');setTimeout(()=>this.tone(440,570,.13,.014,'sine'),120)},
   hum(on){const c=this.ac();if(!c)return;if(this.h){try{this.h.stop()}catch{}this.h=null}if(!on||!this.on)return;const o=c.createOscillator(),f=c.createBiquadFilter(),g=c.createGain();o.type='triangle';o.frequency.value=48;f.type='lowpass';f.frequency.value=110;g.gain.value=.012;o.connect(f).connect(g).connect(c.destination);o.start();this.h=o},
   // 난수 노이즈 대신, 고역 없는 두 저음이 아주 천천히 흔들리는 밤 공기.
@@ -242,7 +248,7 @@ const SND={on:true,ctx:null,wind:null,
     out.gain.setValueAtTime(.0001,t);out.gain.linearRampToValueAtTime(.022,t+1.8);f.type='lowpass';f.frequency.value=180;lfo.type='sine';lfo.frequency.value=.035;lg.gain.value=.008;lfo.connect(lg).connect(out.gain);
     [[55,'sine',.52],[82.4,'triangle',.18]].forEach(([freq,type,level])=>{const o=c.createOscillator(),g=c.createGain();o.type=type;o.frequency.value=freq;g.gain.value=level;o.connect(g).connect(f);o.start();parts.push(o)});
     f.connect(out).connect(c.destination);lfo.start();this.wind={out,lfo,parts}},
-  stop(){if(this.wind){const w=this.wind,t=this.ctx?this.ctx.currentTime:0;try{w.out.gain.cancelScheduledValues(t);w.out.gain.setValueAtTime(Math.max(.0001,w.out.gain.value),t);w.out.gain.linearRampToValueAtTime(.0001,t+.45);setTimeout(()=>{try{w.lfo.stop();w.parts.forEach(o=>o.stop())}catch{}},500)}catch{}this.wind=null}this.hum(false)}
+  stop(){if(this.wind){const w=this.wind,t=this.ctx?this.ctx.currentTime:0;try{w.out.gain.cancelScheduledValues(t);w.out.gain.setValueAtTime(Math.max(.0001,w.out.gain.value),t);w.out.gain.linearRampToValueAtTime(.0001,t+.45);setTimeout(()=>{try{w.lfo.stop();w.parts.forEach(o=>o.stop())}catch{}},500)}catch{}this.wind=null}this.hum(false);try{if('speechSynthesis' in window)window.speechSynthesis.cancel()}catch{}}
 };
 $('#snd').onclick=()=>{SND.on=!SND.on;const b=$('#snd');b.textContent=SND.on?'🔈':'🔇';b.setAttribute('aria-pressed',SND.on);if(SND.on){SND.startWind();if(S.f.power)SND.hum(true)}else SND.stop()};
 
@@ -546,7 +552,7 @@ function drawC(w){
       ${S.t>=1?'<rect x="200" y="304" width="30" height="22" fill="#efece0" transform="rotate(-10 215 315)"/>'+hs('fence',190,294,52,38):''}${hs('lights',480,280,80,40)}`;
   if(w===3){const a=S.f.ang||30;
     if(S.f.light){const r=a*Math.PI/180;s+=`<path d="M352 240 L${352+Math.cos(r)*520} ${240-Math.sin(r)*520} L${352+Math.cos(r+.07)*520} ${240-Math.sin(r+.07)*520}Z" fill="#fff6c8" opacity=".16"/>`}
-    s+=`<ellipse cx="400" cy="338" rx="360" ry="12" fill="#000" opacity=".2"/><path d="M470 336 V70 L640 22 L810 70 V336Z" fill="#2c3440" stroke="#161b22" stroke-width="4"/><path d="M458 74 L640 16 L812 70 L812 82 L640 30 L458 86Z" fill="#e9eef2"/><path d="M470 120h340M470 170h340M470 220h340M470 270h340" stroke="#202730" stroke-width="2"/><rect x="490" y="130" width="52" height="56" fill="#e0b060" opacity=".75" stroke="#b9a57d" stroke-width="4"/><path d="M516 130V186M490 158H542" stroke="#b9a57d" stroke-width="3"/><path d="M470 336 q60 -12 120 0 M700 336 q50 -10 110 0" stroke="#d9dee4" stroke-width="10" fill="none"/><rect x="560" y="96" width="140" height="240" fill="#4a3b2c" stroke="#1e1710" stroke-width="5"/><rect x="590" y="124" width="80" height="60" fill="#e0b060" opacity=".8"/><circle cx="680" cy="236" r="6" fill="#c9a24a"/><text x="630" y="88" font-size="11" text-anchor="middle" fill="#9aa3ad">관측실</text>${hs('indoor',560,96,140,240)}
+    s+=`<ellipse cx="400" cy="338" rx="360" ry="12" fill="#000" opacity=".2"/><path d="M470 336 V70 L640 22 L810 70 V336Z" fill="#2c3440" stroke="#161b22" stroke-width="4"/><path d="M458 74 L640 16 L812 70 L812 82 L640 30 L458 86Z" fill="#e9eef2"/><path d="M470 120h340M470 170h340M470 220h340M470 270h340" stroke="#202730" stroke-width="2"/><rect x="490" y="130" width="52" height="56" fill="#e0b060" opacity=".75" stroke="#b9a57d" stroke-width="4"/><path d="M516 130V186M490 158H542" stroke="#b9a57d" stroke-width="3"/><path d="M470 336 q60 -12 120 0 M700 336 q50 -10 110 0" stroke="#d9dee4" stroke-width="10" fill="none"/><rect x="552" y="88" width="156" height="248" fill="#17110c"/><rect x="560" y="96" width="140" height="240" fill="#4d3828" stroke="#2b1d14" stroke-width="4"/><path d="M574 110h112v98H574zM574 224h112v98H574z" fill="none" stroke="#2b1d14" stroke-opacity=".72" stroke-width="4"/><circle cx="674" cy="226" r="6" fill="#c9a24a"/><circle cx="672" cy="224" r="1.5" fill="#fff0af" opacity=".75"/><text x="630" y="78" font-size="11" text-anchor="middle" fill="#d8ddd8">관측실</text>${hs('indoor',552,88,156,248)}
       <line x1="140" y1="170" x2="140" y2="334" stroke="#6b4a2c" stroke-width="6"/><line x1="112" y1="170" x2="168" y2="170" stroke="#6b4a2c" stroke-width="6"/><path d="M122 172 L114 280 H166 L158 172Z" fill="#c8a020"/>${hs('raincoat',104,160,72,130)}
       <path d="M290 248 A62 62 0 0 1 414 248Z" fill="#e7dfc4" stroke="#8a7a52" stroke-width="2" opacity=".92"/>
       ${Array.from({length:19},(_,i)=>{const r=(180-i*10)*Math.PI/180,l=i%3===0?12:6;return `<path d="M${352+Math.cos(r)*62} ${248-Math.sin(r)*62} L${352+Math.cos(r)*(62-l)} ${248-Math.sin(r)*(62-l)}" stroke="#5b4d33" stroke-width="${i%3===0?2:1.2}"/>`}).join('')}
@@ -563,6 +569,8 @@ function drawC(w){
       </g>
       <circle cx="352" cy="248" r="5" fill="#c9a24a" stroke="#1f2427" stroke-width="1.5"/>
       ${hs('searchlight',300,190,170,146)}`;}
+  if(w===3)s+=`<rect x="548" y="84" width="166" height="258" fill="#2c3440"/><path d="M548 120h166M548 170h166M548 220h166M548 270h166" stroke="#202730" stroke-width="2"/><rect x="590" y="118" width="106" height="218" fill="#17110c"/><rect x="596" y="124" width="94" height="212" fill="#4d3828" stroke="#2b1d14" stroke-width="4"/><path d="M607 138h72v80H607zM607 231h72v90H607z" fill="none" stroke="#2b1d14" stroke-opacity=".72" stroke-width="3"/><circle cx="676" cy="233" r="5" fill="#c9a24a"/><circle cx="674" cy="231" r="1.2" fill="#fff0af" opacity=".75"/><text x="643" y="108" font-size="11" text-anchor="middle" fill="#d8ddd8">관측실</text>${hs('indoor',590,118,106,218)}`;
+  if(w===3)s+=`<rect x="570" y="62" width="142" height="24" fill="#2c3440"/><rect x="570" y="94" width="142" height="20" fill="#2c3440"/>`;
   return s;
 }
 function draw(){
@@ -588,13 +596,13 @@ $('#stage').addEventListener('pointerdown',aim);$('#stage').addEventListener('po
 function touchMode(){$('#stage').style.touchAction=dark()&&has('torch')?'none':''}
 function bag(){
   const b=$('#bag');b.hidden=!S.inv.length;document.body.classList.toggle('hasbag',!!S.inv.length);
-  b.innerHTML='<span class="lbl">소지품</span>'+S.inv.map(i=>`<button class="it${hold===i?' on':''}" data-i="${i}"><i>${ITEMS[i][0]}</i>${ITEMS[i][1]}</button>`).join('')+'<span class="it empty" aria-hidden="true"></span>'.repeat(Math.max(0,4-S.inv.length));
+  b.innerHTML=`<div class="in"><span class="lbl">소지품</span>${S.inv.map(i=>`<button class="it${hold===i?' on':''}" data-i="${i}" aria-label="${ITEMS[i][1]}" title="${ITEMS[i][1]}"><i aria-hidden="true">${ITEMS[i][0]}</i><span class="item-name">${ITEMS[i][1]}</span></button>`).join('')}${'<span class="it empty" aria-hidden="true"></span>'.repeat(Math.max(0,4-S.inv.length))}</div>`;
 }
 $('#bag').addEventListener('click',e=>{const t=e.target.closest('[data-i]');if(!t)return;const i=t.dataset.i;
-  if(i==='book79'){hold=null;openBook79();bag();return}
+  if(hold===i){hold=null;if(i==='book79')closeCard();bag();return}
+  if(i==='book79'){hold=i;bag();setTimeout(()=>{if(hold!==i)return;openBook79();bag()},140);return}
   if(hold&&hold!==i){combine(hold,i);return}
-  if(hold===i){inspect(i);return}
-  hold=i;say(ITEMS[i][1]+josa(ITEMS[i][1])+' 들었다. (한 번 더 누르면 살펴보기)');bag()});
+  hold=i;say(ITEMS[i][1]+josa(ITEMS[i][1])+' 들었다.');bag()});
 function josa(w){const c=w.charCodeAt(w.length-1)-44032;return c>=0&&c<11172&&c%28?"을":"를"}
 function combine(a,b){
   const p=[a,b].sort().join('+');
@@ -639,17 +647,17 @@ const TAP={
     <tr><td>구름</td><td class="nt-f">3 hhhh</td><td>구름 높이 m ÷10 (네 자리)</td></tr></table><p class="hand">예) 영상 5.3℃ → <b>10053</b></p><p class="hand">정시에는 그 시각에 잰 값만 보낸다. 묶음은 다섯 자리.</p>`)},
   symbols(){say('일기도 운량 기호. 동그라미를 칠한 만큼 하늘이 구름으로 덮였다는 뜻이다.')},
   teletype(){if(dark())return say('전원이 나가 텔레타이프가 죽어 있다.');openTele()},
-  radio(){if(dark())return say('무전기도 꺼졌다.');if(S.t===3)return openRadio();say(S.t>3?'무전기는 조용하다.':'잡음뿐. 볼륨을 낮춰 켜 두었다.')},
+  radio(){if(dark())return say('무전기도 꺼졌다.');SND.radioOpen();if(S.t===3)return openRadio();say(S.t>3?'무전기는 조용하다.':'잡음뿐. 볼륨을 낮춰 켜 두었다.')},
   map(){SND.paper();const P=[[90,300,'07','매봉 쉼터','820 m'],[200,320,'11','칼바위 쉼터','960 m'],[300,215,'14','바위샘 쉼터','1,120 m'],[420,150,'22','구름재 아래 쉼터','1,310 m']];
-    openCard('구름재 등산로 안내도',`<svg viewBox="0 0 560 380" style="width:100%;background:#e9e1c6;border:6px solid #6b4a2c">
-      <g fill="none" stroke="#b3a57c" stroke-width="1.5">${[0,1,2,3,4,5].map(i=>`<ellipse cx="480" cy="110" rx="${70+i*62}" ry="${45+i*44}"/>`).join('')}</g>
+    openCard('구름재 등산로 안내도',`<section class="trail-card"><div class="trail-head"><b>구름재 등산로 안내도</b><small>구름재 산악안전 안내소<br>2009. 11 · 야간 관측 구간</small></div><svg class="trail-svg" viewBox="0 0 560 380" role="img" aria-label="구름재 관측소와 네 쉼터를 표시한 등산로 안내도"><defs><pattern id="mapgrid" width="32" height="32" patternUnits="userSpaceOnUse"><path d="M32 0H0V32" fill="none" stroke="#7e936f" stroke-opacity=".2" stroke-width="1"/></pattern><linearGradient id="maphill" x1="0" y1="1" x2="1" y2="0"><stop stop-color="#a4ba8c"/><stop offset="1" stop-color="#d8e1b7"/></linearGradient></defs><rect width="560" height="380" fill="#dbe4c6"/><rect width="560" height="380" fill="url(#mapgrid)"/><path d="M18 348 Q95 252 182 306 T340 174 T542 50 V380H18Z" fill="url(#maphill)" opacity=".55"/>
+      <g fill="none" stroke="#879d77" stroke-width="1.5">${[0,1,2,3,4,5].map(i=>`<ellipse cx="480" cy="110" rx="${70+i*62}" ry="${45+i*44}"/>`).join('')}</g>
       <path d="M20 360 C60 330 70 310 90 300 S170 330 200 320 S270 250 300 215 S380 170 420 150 S460 115 480 100" stroke="#7a3b1e" stroke-width="4" fill="none" stroke-dasharray="10 7"/>
       <path d="M300 215 C330 260 380 300 470 330" stroke="#3d6ea8" stroke-width="3" fill="none"/><text x="420" y="345" font-size="13" fill="#3d6ea8">바위샘 계곡</text>
       ${P.map(([x,y,n,nm,el])=>`<circle cx="${x}" cy="${y}" r="11" fill="#fff" stroke="#7a3b1e" stroke-width="3"/><text x="${x}" y="${y+4}" font-size="11" text-anchor="middle" font-weight="700">${n}</text><text x="${x+16}" y="${y-8}" font-size="14" fill="#2a1e12">${nm}</text><text x="${x+16}" y="${y+9}" font-size="11" fill="#6b5a40">${el}</text>`).join('')}
       <path d="M480 82 l14 24 h-28z" fill="#a3312a"/><text x="470" y="72" font-size="15" text-anchor="end" fill="#2a1e12">구름재 관측소 1,400 m</text>
       <text x="24" y="352" font-size="13" fill="#2a1e12">↓ 매표소·주차장</text>
       <g transform="translate(26 26)"><path d="M0 22 L8 0 L16 22" fill="none" stroke="#2a1e12" stroke-width="2"/><text x="8" y="36" font-size="12" text-anchor="middle">N</text></g>
-    </svg><p class="hand">쉼터마다 번호 팻말이 있다. 무전으로 위치를 말할 땐 번호를 쓴다.</p>`)},
+    </svg><div class="trail-foot"><span class="trail-key"><i></i>주 등산로</span><span class="trail-key"><i class="river"></i>계곡</span><span>축척 1 : 25,000</span></div><p class="trail-note">쉼터마다 번호 팻말이 있다. 무전으로 위치를 말할 땐 번호를 쓴다.</p></section>`)},
   cabinet(){if(S.f.cab79)return say('1979 칸은 비었다.');if(hold==='ring'){S.f.cab79=1;take('ring');give('sheet79');SND.drawer(true);SND.found();save();return say('열쇠고리의 열쇠가 1979 칸에 맞았다. 상자 안에 1979년 11월 13일 기압 기록지가 있다.')}SND.drawer(false);say('맨 아래 칸 이름표에 「1979」. 잠겨 있다. 열쇠가 있어야 열린다.')},
   cellar(){if(S.t===0){SND.wrong();return say('지하 기계실. 지금은 내려갈 일이 없다.');}
     if(dark()&&!has('torch')){SND.wrong();return say('계단 문 쪽은 칠흑같이 어둡다.');}
@@ -765,7 +773,7 @@ function openRadio(){S.vol=S.vol??8;const v=S.vol;
     <p style="display:flex;gap:8px;align-items:center"><span>볼륨</span><input id="vol" type="range" min="0" max="10" value="${v}" style="flex:1"><b>${v}</b></p>
     <input id="rin" autocomplete="off" placeholder="쉼터 이름이나 번호로 답하기"><p><button class="btn primary" id="rsend">송신</button></p>`);
   $('#vol').oninput=e=>{S.vol=+e.target.value;save();SND.noise(.15,1200,S.vol*.01,.6);openRadio()};
-  const send=()=>{const a=$('#rin').value.replace(/\s|쉼터|번/g,'');
+  const send=()=>{const raw=$('#rin').value.trim(),a=raw.replace(/\s|쉼터|번/g,'');SND.radioSend(raw);
     if(['바위샘','14','90214'].includes(a)){S.f.radio=1;save();SND.found();
       $('#card').insertAdjacentHTML('beforeend','<p class="hand">"구름재 하나, 수신했다. 바위샘 쉼터로 구조대 요청한다."<br>한참 조용하다가: "…하나. 아직 거기 사람이 있었구나." 끊겼다.</p><p><button class="btn primary" id="to3">03시까지</button></p>');
       $('#to3').onclick=()=>toSlot(4,'새벽 3시. 본청 연락: 헬기는 구름 높이를 보고 뜬다.');return}
