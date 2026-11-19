@@ -213,6 +213,13 @@ const SND={on:true,ctx:null,wind:null,
   found(){this.tone(440,560,.09,.022,'sine');setTimeout(()=>this.tone(660,790,.11,.018,'sine'),70)},
   fit(){this.noise(.08,900,.045,2);this.tone(300,390,.12,.022,'triangle')},
   wrong(){this.noise(.09,330,.045,2);this.tone(180,112,.14,.025,'triangle')},
+  valve(){this.noise(.09,560,.035,4);this.tone(260,175,.13,.018,'triangle')},
+  pour(){this.noise(.22,1050,.018,.45);this.tone(360,235,.18,.012,'sine')},
+  door(metal=false){this.noise(.14,metal?170:280,metal?.075:.04,metal?1.1:1.8);this.tone(metal?118:210,metal?78:150,.16,.02,'triangle')},
+  steps(up=false){this.tone(up?165:145,up?120:105,.07,.014,'triangle');setTimeout(()=>this.tone(up?150:130,up?108:92,.07,.012,'triangle'),115)},
+  paper(){this.noise(.055,1350,.014,.55);this.tone(520,440,.06,.009,'sine')},
+  turn(){this.noise(.035,720,.012,2);this.tone(270,238,.055,.008,'triangle')},
+  power(){this.noise(.12,170,.04,1);this.tone(86,122,.18,.018,'triangle');setTimeout(()=>this.tone(440,570,.13,.014,'sine'),120)},
   hum(on){const c=this.ac();if(!c)return;if(this.h){try{this.h.stop()}catch{}this.h=null}if(!on||!this.on)return;const o=c.createOscillator(),f=c.createBiquadFilter(),g=c.createGain();o.type='triangle';o.frequency.value=48;f.type='lowpass';f.frequency.value=110;g.gain.value=.012;o.connect(f).connect(g).connect(c.destination);o.start();this.h=o},
   // 난수 노이즈 대신, 고역 없는 두 저음이 아주 천천히 흔들리는 밤 공기.
   startWind(){const c=this.ac();if(!c||this.wind||!this.on)return;const t=c.currentTime,out=c.createGain(),f=c.createBiquadFilter(),lfo=c.createOscillator(),lg=c.createGain(),parts=[];
@@ -367,7 +374,7 @@ function drawC(w){
       ${S.t>=1?'<rect x="200" y="304" width="30" height="22" fill="#efece0" transform="rotate(-10 215 315)"/>'+hs('fence',190,294,52,38):''}${hs('lights',480,280,80,40)}`;
   if(w===3){const a=S.f.ang||30;
     if(S.f.light){const r=a*Math.PI/180;s+=`<path d="M352 240 L${352+Math.cos(r)*520} ${240-Math.sin(r)*520} L${352+Math.cos(r+.07)*520} ${240-Math.sin(r+.07)*520}Z" fill="#fff6c8" opacity=".16"/>`}
-    s+=`<ellipse cx="400" cy="338" rx="360" ry="12" fill="#000" opacity=".2"/><rect x="560" y="96" width="140" height="240" fill="#4a3b2c" stroke="#1e1710" stroke-width="5"/><rect x="590" y="124" width="80" height="60" fill="#e0b060" opacity=".8"/><circle cx="680" cy="236" r="6" fill="#c9a24a"/><text x="630" y="88" font-size="11" text-anchor="middle" fill="#9aa3ad">관측실</text>${hs('indoor',560,96,140,240)}
+    s+=`<ellipse cx="400" cy="338" rx="360" ry="12" fill="#000" opacity=".2"/><path d="M470 336 V70 L640 22 L810 70 V336Z" fill="#2c3440" stroke="#161b22" stroke-width="4"/><path d="M458 74 L640 16 L812 70 L812 82 L640 30 L458 86Z" fill="#e9eef2"/><path d="M470 120h340M470 170h340M470 220h340M470 270h340" stroke="#202730" stroke-width="2"/><rect x="490" y="130" width="52" height="56" fill="#e0b060" opacity=".75" stroke="#b9a57d" stroke-width="4"/><path d="M516 130V186M490 158H542" stroke="#b9a57d" stroke-width="3"/><path d="M470 336 q60 -12 120 0 M700 336 q50 -10 110 0" stroke="#d9dee4" stroke-width="10" fill="none"/><rect x="560" y="96" width="140" height="240" fill="#4a3b2c" stroke="#1e1710" stroke-width="5"/><rect x="590" y="124" width="80" height="60" fill="#e0b060" opacity=".8"/><circle cx="680" cy="236" r="6" fill="#c9a24a"/><text x="630" y="88" font-size="11" text-anchor="middle" fill="#9aa3ad">관측실</text>${hs('indoor',560,96,140,240)}
       <line x1="140" y1="170" x2="140" y2="334" stroke="#6b4a2c" stroke-width="6"/><line x1="112" y1="170" x2="168" y2="170" stroke="#6b4a2c" stroke-width="6"/><path d="M122 172 L114 280 H166 L158 172Z" fill="#c8a020"/>${hs('raincoat',104,160,72,130)}
       <path d="M322 334 L352 254 L382 334" stroke="#3a4248" stroke-width="5" fill="none"/>
       <g transform="rotate(${-a} 352 248)"><rect x="330" y="234" width="64" height="28" rx="8" fill="#5a646b" stroke="#222" stroke-width="2"/><ellipse cx="396" cy="248" rx="7" ry="14" fill="${S.f.light?'#fff3b0':'#9aa4aa'}"/></g>
@@ -421,30 +428,30 @@ function inspect(i){
 
 /* ---------- 조작 ---------- */
 const TAP={
-  window(){if(dark())return say('창밖이 새카맣다.');if(S.f.thanks)return say('김 서린 유리에 글씨가 남아 있다. 고마워. 이 방엔 나 혼자다.');if(S.t>=2)return say('김이 서렸다. 바깥엔 눈보라가 친다.');if(!S.f.wiped){S.f.sawDrawing=1;save();return say('김 서린 유리에 누가 손가락으로 그려 놨다. 동그란 계기를 그리고, 그 옆에 오른쪽으로 화살표를 그었다.')}say('유리가 맑다. 바깥엔 바람이 분다.')},
-  stove(){if(S.f.stoveOff){S.f.stoveOff=0;S.f.wiped=0;save();draw();return say('난로를 다시 켰다.')}
-    S.f.stoveOff=1;S.f.wiped=0;save();draw();say('난로 밸브를 잠갔다. 방이 금세 식는다.');setTimeout(()=>{if(S.f.stoveOff){S.f.sawDrawing=1;save();if(S.room==='A'&&S.wall.A===0){draw();say('창에 김이 서리면서, 누가 손가락으로 그려 둔 그림이 떠올랐다.')}}},1600)},
-  kettle(){if(has('thermos')){take('thermos');give('hot');hold='hot';save();draw();return say('주전자 물을 보온병에 따랐다. 아직 뜨겁다.')}say('난로 위 주전자. 물이 아직 뜨겁다.')},
+  window(){if(dark())return say('창밖이 새카맣다.');if(S.f.thanks)return say('김 서린 유리에 글씨가 남아 있다. 고마워. 이 방엔 나 혼자다.');if(S.t>=2)return say('김이 서렸다. 바깥엔 눈보라가 친다.');if(!S.f.wiped){S.f.sawDrawing=1;SND.found();save();return say('김 서린 유리에 누가 손가락으로 그려 놨다. 동그란 계기를 그리고, 그 옆에 오른쪽으로 화살표를 그었다.')}say('유리가 맑다. 바깥엔 바람이 분다.')},
+  stove(){if(S.f.stoveOff){S.f.stoveOff=0;S.f.wiped=0;SND.valve();save();draw();return say('난로를 다시 켰다.')}
+    S.f.stoveOff=1;S.f.wiped=0;SND.valve();save();draw();say('난로 밸브를 잠갔다. 방이 금세 식는다.');setTimeout(()=>{if(S.f.stoveOff){S.f.sawDrawing=1;save();if(S.room==='A'&&S.wall.A===0){draw();say('창에 김이 서리면서, 누가 손가락으로 그려 둔 그림이 떠올랐다.')}}},1600)},
+  kettle(){if(has('thermos')){take('thermos');give('hot');hold='hot';SND.pour();save();draw();return say('주전자 물을 보온병에 따랐다. 아직 뜨겁다.')}say('난로 위 주전자. 물이 아직 뜨겁다.')},
   clock(){say(['21시 정각. 관측 시각이다.','22시 30분.','자정.','새벽 1시 40분.','새벽 3시. 특별 관측 시각이다.'][S.t])},
-  outdoor(){if(dark()&&!has('torch')){SND.wrong();return say('너무 어둡다. 문고리도 안 보인다.')}go('C',3,'문을 열자 바람이 얼굴을 친다.')},
+  outdoor(){if(dark()&&!has('torch')){SND.wrong();return say('너무 어둡다. 문고리도 안 보인다.')}SND.door();go('C',3,'문을 열자 바람이 얼굴을 친다.')},
   understove(){if(!has('torch')){SND.wrong();return say('바닥이 안 보인다.')}S.f.handleFound=1;give('handle');SND.found();save();draw();say('난로 밑으로 굴러 들어간 철문 손잡이를 찾았다.')},
   drawer1(){if(!S.f.d1){S.f.d1=1;give('driver');SND.drawer(true);SND.found();save();bag();return say('첫 칸에 일자 드라이버가 있다.')}SND.drawer(true);say('첫 칸은 비었다.')},
   drawer2(){if(S.f.d2){SND.drawer(true);return say('둘째 칸은 비었다.')}if(!has('key')){SND.drawer(false);return say('잠겨 있다. 열쇠 구멍이 보인다.')}S.f.d2=1;take('key');give('thermos');give('pencil');SND.drawer(true);SND.found();save();draw();say('열쇠가 맞았다. 안에 보온병과 연필이 들어 있다.')},
   drawer3(){openLock()},
-  note(){openCard('선배 메모 뒷면',`<p class="hand">전보 보내면 본청에서 바로 확인 답신 와.<br>"수신. 구름재 하나" 이렇게.<br>(구름재 하나 = 우리 관측소 호출부호. 옛날엔 관측원이 둘이라 「둘」도 있었는데 79년에 없어졌대.)<br>안 오면 다시 보내고.</p>`)},
+  note(){SND.paper();openCard('선배 메모 뒷면',`<p class="hand">전보 보내면 본청에서 바로 확인 답신 와.<br>"수신. 구름재 하나" 이렇게.<br>(구름재 하나 = 우리 관측소 호출부호. 옛날엔 관측원이 둘이라 「둘」도 있었는데 79년에 없어졌대.)<br>안 오면 다시 보내고.</p>`)},
   calendar(){say('11월 13일에 빨간 동그라미. 선배가 쳐 둔 건 아니다. 잉크가 오래됐다.')},
   torch(){S.f.torchTaken=1;give('torch');SND.found();save();draw();say(dark()?'손전등을 켰다.':'손전등을 챙겼다.')},
   baro(){if(dark()&&!has('torch')){SND.wrong();return say('어둡다.')}if(S.f.baro)return say('기울어진 기압계. 바늘이 계속 내려간다.');S.f.baro=1;SND.fit();save();draw();say('창의 그림처럼 기압계를 밀어 보았다. 액자가 기울자 뒤에 걸린 열쇠가 보인다.')},
   keyspot(){S.f.keyTaken=1;give('key');SND.found();save();draw();say('장비 열쇠를 챙겼다.')},
   drums(){if(S.t<2)return say('기록계 원통이 두 개 나란히 돈다. 빨간 펜은 기압, 파란 펜은 바람.');if(has('sheet79')&&!S.f.overlay){overlay79();return}openDrums()},
-  table(){openCard('간이 전보 숫자표 (선배 손글씨)',`<table class="tbl nt"><tr><th>묶음</th><th>형식</th><th>쓰는 법</th></tr>
+  table(){SND.paper();openCard('간이 전보 숫자표 (선배 손글씨)',`<table class="tbl nt"><tr><th>묶음</th><th>형식</th><th>쓰는 법</th></tr>
     <tr><td>기온</td><td class="nt-f">1 s TTT</td><td>s: 영상 0 · 영하 1<br>TTT: 기온×10 (세 자리)</td></tr>
     <tr><td>바람</td><td class="nt-f">2 dd ff</td><td>dd: 풍향 각도 ÷10<br>ff: 풍속 m/s</td></tr>
     <tr><td>구름</td><td class="nt-f">3 hhhh</td><td>구름 높이 m ÷10 (네 자리)</td></tr></table><p class="hand">예) 영상 5.3℃ → <b>10053</b></p><p class="hand">정시에는 그 시각에 잰 값만 보낸다. 묶음은 다섯 자리.</p>`)},
   symbols(){say('일기도 운량 기호. 동그라미를 칠한 만큼 하늘이 구름으로 덮였다는 뜻이다.')},
   teletype(){if(dark())return say('전원이 나가 텔레타이프가 죽어 있다.');openTele()},
   radio(){if(dark())return say('무전기도 꺼졌다.');if(S.t===3)return openRadio();say(S.t>3?'무전기는 조용하다.':'잡음뿐. 볼륨을 낮춰 켜 두었다.')},
-  map(){const P=[[90,300,'07','매봉 쉼터','820 m'],[200,320,'11','칼바위 쉼터','960 m'],[300,215,'14','바위샘 쉼터','1,120 m'],[420,150,'22','구름재 아래 쉼터','1,310 m']];
+  map(){SND.paper();const P=[[90,300,'07','매봉 쉼터','820 m'],[200,320,'11','칼바위 쉼터','960 m'],[300,215,'14','바위샘 쉼터','1,120 m'],[420,150,'22','구름재 아래 쉼터','1,310 m']];
     openCard('구름재 등산로 안내도',`<svg viewBox="0 0 560 380" style="width:100%;background:#e9e1c6;border:6px solid #6b4a2c">
       <g fill="none" stroke="#b3a57c" stroke-width="1.5">${[0,1,2,3,4,5].map(i=>`<ellipse cx="480" cy="110" rx="${70+i*62}" ry="${45+i*44}"/>`).join('')}</g>
       <path d="M20 360 C60 330 70 310 90 300 S170 330 200 320 S270 250 300 215 S380 170 420 150 S460 115 480 100" stroke="#7a3b1e" stroke-width="4" fill="none" stroke-dasharray="10 7"/>
@@ -457,12 +464,12 @@ const TAP={
   cabinet(){if(S.f.cab79)return say('1979 칸은 비었다.');if(has('ring')){S.f.cab79=1;take('ring');give('sheet79');SND.drawer(true);SND.found();save();return say('열쇠고리의 열쇠가 1979 칸에 맞았다. 상자 안에 1979년 11월 13일 기압 기록지가 있다.')}SND.drawer(false);say('맨 아래 칸 이름표에 「1979」. 잠겨 있다.')},
   cellar(){if(S.t===0){SND.wrong();return say('지하 기계실. 지금은 내려갈 일이 없다.');}
     if(dark()&&!has('torch')){SND.wrong();return say('계단 문 쪽은 칠흑같이 어둡다.');}
-    if(!S.f.doorFixed){if(has('handle')&&has('driver')){take('handle');give('handle2')}if(has('handle2')){S.f.doorFixed=1;take('handle2');give('driver');save();SND.thud();draw();return say('손잡이를 다시 달고 나사를 조였다. 철문이 열린다.')}
+    if(!S.f.doorFixed){if(has('handle')&&has('driver')){take('handle');give('handle2')}if(has('handle2')){S.f.doorFixed=1;take('handle2');give('driver');save();SND.fit();SND.door(true);draw();return say('손잡이를 다시 달고 나사를 조였다. 철문이 열린다.')}
       SND.drawer(false);return say(S.f.handleFound?'손잡이 구멍에 나사가 없다. 그냥 끼우면 헛돈다.':'바람에 쾅 닫히면서 손잡이가 빠져 버렸다. 어디로 굴러갔지?')}
-    go('B',0,'계단을 내려갔다. 기름 냄새.')},
-  upstairs(){go('A',3,'관측실로 올라왔다.')},
+    SND.door(true);SND.steps(false);go('B',0,'계단을 내려갔다. 기름 냄새.')},
+  upstairs(){SND.steps(true);SND.door(true);go('A',3,'관측실로 올라왔다.')},
   generator(){if(!S.f.fuse){SND.wrong();return say('시동 버튼을 눌러도 아무 반응이 없다. 전기가 어딘가 끊겼다.')}openGen()},
-  checklist(){openCard('발전기 점검표',`<ol class="hand" style="margin:0"><li>연료 밸브 열기</li><li>초크 닫기</li><li>시동줄 당기기</li><li>초크 열기</li></ol><div class="post" style="transform:rotate(3deg)">3번 4번 반대로 하면 바로 걸림 — 서윤</div>`)},
+  checklist(){SND.paper();openCard('발전기 점검표',`<ol class="hand" style="margin:0"><li>연료 밸브 열기</li><li>초크 닫기</li><li>시동줄 당기기</li><li>초크 열기</li></ol><div class="post" style="transform:rotate(3deg)">3번 4번 반대로 하면 바로 걸림 — 서윤</div>`)},
   fusebox(){if(S.f.fuse)return say('퓨즈가 모두 멀쩡하다.');if(!S.f.fuseOut){S.f.fuseOut=1;give('fuse')}if(has('fuse')){S.f.fuse=1;take('fuse');SND.fit();save();draw();return say('퓨즈함 문 안쪽 예비 칸의 퓨즈를 2번 자리에 끼웠다.')}SND.wrong();say('2번 퓨즈가 끊어져 까맣게 탔다.')},
   pipe(){say('배관 이음새에서 물이 똑똑 떨어진다.')},
   toolbox(){say('공구함. 드라이버 자리만 비었다. 선배가 위로 가져갔나 보다.')},
@@ -473,7 +480,7 @@ const TAP={
   raingauge(){say('우량계. 눈이 소복이 쌓였다.')},
   fence(){if(S.f.rubbed)return say('쪽지: "발전기 점검표, 서윤이 고친 대로"');if(has('pencil')){S.f.rubbed=1;SND.found();save();return say('연필로 문지르자 눌린 글씨가 떠올랐다: "발전기 점검표, 서윤이 고친 대로"')}SND.wrong();say('울타리에 구겨진 쪽지. 아무것도 안 쓰인 것 같은데 눌린 자국이 있다.')},
   lights(){say('산 아래 쉼터에 불이 켜져 있다.')},
-  indoor(){go('A',0,S.f.stoveOff||dark()?'관측실로 들어왔다. 바람은 피했지만 방이 차다.':'관측실로 들어왔다. 따뜻하다.')},
+  indoor(){SND.door();go('A',0,S.f.stoveOff||dark()?'관측실로 들어왔다. 바람은 피했지만 방이 차다.':'관측실로 들어왔다. 따뜻하다.')},
   raincoat(){say('노란 우비. 주머니를 뒤져 봤지만 비었다.')},
   searchlight(){if(S.t<4||(!has('skey')&&!S.f.light)){SND.wrong();return say('탐조등과 각도판. 열쇠로 켜는 식이다.')}if(!S.f.light){S.f.light=1;take('skey');SND.fit();save();draw();return say('탐조등이 켜졌다. 빛줄기가 구름 바닥에 하얀 점을 찍는다.')}openAngle()}
 };
@@ -481,8 +488,8 @@ function go(r,w,msg){S.room=r;S.wall[r]=w;save();draw();say(msg)}
 $('#scene').addEventListener('click',e=>{const t=e.target.closest('[data-h]');if(!t)return;const id=t.dataset.h;S.seen=S.seen||{};S.seen[id]=1;idleT=0;
   if(dark()&&!has('torch')&&!['torch','outdoor','cellar','window','clock'].includes(id))return say('너무 어둡다. 아무것도 안 보인다.');
   (TAP[id]||(()=>{}))();if(hold&&!has(hold))hold=null;save();draw()});
-$('#prev').onclick=()=>{S.wall[S.room]=(S.wall[S.room]+3)%4;save();draw();say('')};
-$('#next').onclick=()=>{S.wall[S.room]=(S.wall[S.room]+1)%4;save();draw();say('')};
+$('#prev').onclick=()=>{S.wall[S.room]=(S.wall[S.room]+3)%4;SND.turn();save();draw();say('')};
+$('#next').onclick=()=>{S.wall[S.room]=(S.wall[S.room]+1)%4;SND.turn();save();draw();say('')};
 
 /* ---------- 확대 화면 ---------- */
 function openCard(t,html){$('#card').innerHTML=`<button class="x" aria-label="닫기">×</button><h3>${t}</h3>${html}`;$('#modal').classList.add('on');$('#card .x').onclick=closeCard}
@@ -590,7 +597,7 @@ function openGen(){GEN=[];const L=['① 연료 밸브 열기','② 초크 닫기
     if(!ok){$('#gmsg').textContent=GEN[2]===3&&GEN[3]===4?'털털거리다 멎었다. 점검표 그대로 했는데.':'시동이 안 걸린다.';SND.wrong();
       setTimeout(()=>{GEN=[];$('#card').querySelectorAll('[data-g]').forEach(x=>x.classList.remove('on'))},900);return}
     SND.hum(true);$('#gmsg').textContent='부르릉, 걸렸다!';S.f.power=1;save();setTimeout(()=>{closeCard();powerBack()},900)})}
-function powerBack(){save();draw();say('불이 들어왔다. 창 너머 풍향탑 아래 사람 그림자가… 다시 보니 없다.');
+function powerBack(){SND.power();save();draw();say('불이 들어왔다. 창 너머 풍향탑 아래 사람 그림자가… 다시 보니 없다.');
   setTimeout(()=>toSlot(2,'자정. 바람이 더 세졌다. 바깥 풍향 바늘은 미친 듯이 돈다.'),3800)}
 function toSlot(t,msg){S.t=t;save();closeCard();draw();if(msg)say(msg)}
 function finish(){S.t=5;if(!S.ms){S.ms=Date.now()-S.start;record(S.ms,true)}S.done=1;save();$('#game').hidden=true;$('#bag').hidden=true;$('#end').hidden=false;const m=Math.round(S.ms/60000);$('#took').textContent=m+'분';window.scrollTo(0,0)}
