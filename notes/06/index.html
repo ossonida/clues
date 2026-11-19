@@ -359,7 +359,7 @@ function drawB(w){
   let s=room('#2d2f2c','#232320');
   s+=`<ellipse cx="400" cy="345" rx="370" ry="16" fill="#000" opacity=".25"/>`;
   if(w===0){ // 북: 계단 위 철문. 계단은 바닥에서 문턱까지, 문은 계단 폭에 맞춘다
-    s+=`<rect x="330" y="30" width="170" height="162" fill="#191a18"/><rect x="345" y="40" width="140" height="150" fill="url(#metal)" stroke="#1d2024" stroke-width="4"/><path d="M358 54h114v54H358zM358 120h114v58H358z" fill="none" stroke="#2a2e33" stroke-opacity=".55" stroke-width="3"/><rect x="452" y="112" width="18" height="8" rx="2" fill="#c9a24a"/><circle cx="452" cy="116" r="5" fill="#a8842f"/>
+    s+=`<rect x="342" y="30" width="146" height="162" fill="#1a1d20"/><rect x="350" y="38" width="130" height="154" fill="url(#metal)" stroke="#1d1f22" stroke-width="4"/><path d="M362 52h106M362 178h106" stroke="#d5d2c8" stroke-opacity=".17" stroke-width="2"/><text x="415" y="70" font-size="13" text-anchor="middle" fill="#ddd">관측실 ↑</text><rect x="448" y="112" width="24" height="10" rx="2" fill="#c9a24a"/>
       <rect x="300" y="188" width="230" height="6" fill="#55564e"/>
       ${[5,4,3,2,1,0].map(i=>{const y=340-i*25,l=300+i*8,r=530-i*8;return `<rect x="${l}" y="${y-25}" width="${r-l}" height="25" fill="#34352f" stroke="#141513" stroke-width="2"/><rect x="${l}" y="${y-25}" width="${r-l}" height="6" fill="#5a5b53"/>`}).join('')}
       <path d="M300 340 V190 M530 340 V190" stroke="#202220" stroke-width="6"/>
