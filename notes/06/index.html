@@ -240,6 +240,19 @@ const SND={on:true,ctx:null,wind:null,
   steps(up=false){this.tone(up?165:145,up?120:105,.07,.014,'triangle');setTimeout(()=>this.tone(up?150:130,up?108:92,.07,.012,'triangle'),115)},
   paper(){this.noise(.055,1350,.014,.55);this.tone(520,440,.06,.009,'sine')},
   turn(){this.noise(.035,720,.012,2);this.tone(270,238,.055,.008,'triangle')},
+  /* 무전 속 목소리: 파일 없이 톱니파 + 포먼트 필터로 웅얼거림을 만들고 잡음과 섞는다. 볼륨 3~6에서만 목소리가 잡음 위로 올라온다 */
+  voice(v){const c=this.ac();if(!c||!this.on)return;if(!this.vo){const out=c.createGain();out.gain.value=0;out.connect(c.destination);
+      const b=c.createBuffer(1,c.sampleRate*2,c.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
+      const ns=c.createBufferSource();ns.buffer=b;ns.loop=true;const nf=c.createBiquadFilter();nf.type='bandpass';nf.frequency.value=1600;nf.Q.value=.6;const ng=c.createGain();ns.connect(nf).connect(ng).connect(out);ns.start();
+      const o=c.createOscillator();o.type='sawtooth';o.frequency.value=118;const lf=c.createOscillator(),lg=c.createGain();lf.frequency.value=5;lg.gain.value=4;lf.connect(lg).connect(o.frequency);lf.start();
+      const env=c.createGain();env.gain.value=0;const f1=c.createBiquadFilter(),f2=c.createBiquadFilter();f1.type=f2.type='bandpass';f1.Q.value=6;f2.Q.value=8;f1.frequency.value=650;f2.frequency.value=1200;
+      const vg=c.createGain(),hp=c.createBiquadFilter();hp.type='highpass';hp.frequency.value=300;o.connect(env);env.connect(f1).connect(vg);env.connect(f2).connect(vg);vg.connect(hp).connect(out);o.start();
+      let k=0;const syl=()=>{const t=c.currentTime,ph=k%14;k++;if(ph>=10){env.gain.setTargetAtTime(0,t,.05);return}
+        f1.frequency.setTargetAtTime(400+Math.random()*500,t,.03);f2.frequency.setTargetAtTime(900+Math.random()*1300,t,.03);o.frequency.setTargetAtTime(105+Math.random()*30,t,.08);
+        env.gain.cancelScheduledValues(t);env.gain.setValueAtTime(env.gain.value,t);env.gain.linearRampToValueAtTime(.9,t+.03);env.gain.linearRampToValueAtTime(Math.random()<.3?.05:.5,t+.15)};
+      this.vo={out,ng,vg,src:[ns,o,lf],tm:setInterval(syl,190)}}
+    const w=this.vo,t=c.currentTime,clear=v>=3&&v<=6;w.out.gain.setTargetAtTime(.02+v*.013,t,.1);w.ng.gain.setTargetAtTime(clear?.25:.9,t,.1);w.vg.gain.setTargetAtTime(v<3?.35:clear?1.1:.12,t,.1)},
+  voiceStop(){const w=this.vo;if(!w)return;this.vo=null;clearInterval(w.tm);const c=this.ctx,t=c.currentTime;w.out.gain.setTargetAtTime(0,t,.08);setTimeout(()=>{w.src.forEach(s=>{try{s.stop()}catch{}});w.out.disconnect()},400)},
   radioOpen(){this.noise(.12,1450,.028,.7);this.tone(760,510,.06,.01,'square')},
   radioSend(){if(!this.on)return;this.noise(.14,1250,.032,.75);this.tone(640,430,.07,.01,'square')},
   power(){this.noise(.12,170,.04,1);this.tone(86,122,.18,.018,'triangle');setTimeout(()=>this.tone(440,570,.13,.014,'sine'),120)},
@@ -797,7 +810,7 @@ $('#next').onclick=()=>{S.wall[S.room]=(S.wall[S.room]+1)%4;SND.turn();save();dr
 /* ---------- 확대 화면 ---------- */
 function openCard(t,html){$('#card').innerHTML=`<button class="x" aria-label="닫기">×</button><h3>${t}</h3>${html}`;$('#modal').classList.add('on');$('#card .x').onclick=closeCard}
 new MutationObserver(ms=>{if(ms.some(m=>m.addedNodes.length&&!m.removedNodes.length)){const c=$('#card');c.scrollTo({top:c.scrollHeight,behavior:'smooth'})}}).observe(document.getElementById('card'),{childList:true});
-function closeCard(){$('#modal').classList.remove('on')}
+function closeCard(){SND.voiceStop();$('#modal').classList.remove('on')}
 $('#modal').addEventListener('click',e=>{if(e.target.id==='modal')closeCard()});
 /* 셋째 서랍: 숫자 바퀴 넷, 바퀴 아래 운량 기호. 정답 6284 (◕6 ◔2 ●8 ◑4) */
 const LOCK_SYM=[[6,'M0 -12 A12 12 0 1 1 -12 0 L0 0Z'],[2,'M0 -12 A12 12 0 0 1 12 0 L0 0Z'],[8,'full'],[4,'M0 -12 A12 12 0 0 1 0 12 L0 0Z']];
@@ -876,13 +889,13 @@ function overlayCard(){
   if(S.f.sent2)$('#toRadio').onclick=()=>toSlot(3,'새벽 1시 40분. 무전기에서 잡음 섞인 목소리가 들린다.')}
 /* 무전: 볼륨이 너무 크면 잡음, 중간에서만 또렷 */
 const radioText=v=>v<3?'(너무 작아 거의 안 들린다)':v>6?'치이이익… 잡음에 목소리가 묻힌다.':'"…구름재, 구름재. 여기 구름재 둘.<br>일 일 공 팔 오. 이 삼 육 이 공.<br>두 사람 갇혔다. 위치는… [치직] …샘… 쉼터… [치직]"';
-function openRadio(){S.vol=S.vol??8;const v=S.vol,text=radioText(v);
+function openRadio(){S.vol=S.vol??8;const v=S.vol,text=radioText(v);if(!S.f.radio)SND.voice(v);
   openCard('무전기',`<p id="rtext" class="hand" style="min-height:96px;background:#1c2420;color:#cfe8d0;padding:12px;border-radius:4px">${text}</p>
     <p style="display:flex;gap:8px;align-items:center"><span>볼륨</span><input id="vol" type="range" min="0" max="10" value="${v}" style="flex:1;accent-color:#3e5a44"><b id="vnum">${v}</b></p>
     <input id="rin" autocomplete="off" placeholder="쉼터 이름이나 번호로 답하기"><p><button class="btn primary" id="rsend">송신</button></p>`);
-  $('#vol').oninput=e=>{S.vol=+e.target.value;save();SND.noise(.15,1200,S.vol*.01,.6);$('#rtext').innerHTML=radioText(S.vol);$('#vnum').textContent=S.vol};
+  $('#vol').oninput=e=>{S.vol=+e.target.value;save();SND.noise(.15,1200,S.vol*.01,.6);$('#rtext').innerHTML=radioText(S.vol);if(!S.f.radio)SND.voice(S.vol);$('#vnum').textContent=S.vol};
   const send=()=>{const raw=$('#rin').value.trim(),a=raw.replace(/\s|쉼터|번/g,'');SND.radioSend(raw);
-    if(['바위샘','14','90214'].includes(a)){S.f.radio=1;save();SND.found();
+    if(['바위샘','14','90214'].includes(a)){S.f.radio=1;SND.voiceStop();save();SND.found();
       $('#card').insertAdjacentHTML('beforeend','<p class="hand">"구름재 하나, 수신했다. 바위샘 쉼터로 구조대 요청한다."<br>한참 조용하다가: "…하나. 아직 거기 사람이 있었구나." 끊겼다.</p><p><button class="btn primary" id="to3">03시까지</button></p>');
       $('#to3').onclick=()=>toSlot(4,'새벽 3시. 본청 연락: 헬기는 구름 높이를 보고 뜬다.');return}
     SND.wrong();say(a==='구름재'?'구름재는 여기다. 다른 이름이 들렸다.':'지도에서 그 쉼터를 다시 찾아보자.')};
