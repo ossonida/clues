@@ -304,7 +304,7 @@ function drawA(w){
       <!-- 창: 나무 창틀, 걸쇠, 눈 덮인 산, 유리에 쌓인 눈, 깊은 창턱 -->
       <rect x="266" y="70" width="246" height="176" fill="#000" opacity=".35" filter="url(#blurA2)"/>
       <rect x="262" y="66" width="246" height="176" rx="2" fill="#5a4630" stroke="#2a1d10" stroke-width="2"/><rect x="272" y="76" width="226" height="156" fill="#0d1624"/><rect x="278" y="82" width="214" height="144" fill="url(#moonGlass)"/>
-      <path d="M278 226 L278 200 L318 158 L340 172 L382 128 L420 152 L452 120 L492 170 V226Z" fill="#18263a"/><path d="M310 166 L318 158 L326 164 L320 168Z M374 136 L382 128 L392 136 L384 139Z M444 128 L452 120 L462 132 L454 134Z" fill="#c9d4de" opacity=".8"/>
+      <path d="M278 226 L278 206 Q380 196 492 208 V226Z" fill="#c4ccd4" opacity=".55"/><path d="M380 214 L452 210 M524 214 L452 132" stroke="#5a646c" stroke-width=".8"/><path d="M452 210 L384 214" stroke="#5a646c" stroke-width=".8"/><rect x="450" y="128" width="4" height="84" fill="#2a333a"/><rect x="434" y="127" width="36" height="3" fill="#2a333a"/><path d="M434 126 h36" stroke="#dde4ea" stroke-width="1.5"/><rect x="446" y="176" width="12" height="9" fill="#9aa4ab"/>
       ${[[300,100],[330,130],[360,96],[410,110],[440,96],[470,140],[296,170],[400,186],[470,200]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="1.4" fill="#e8eef2" opacity=".7"/>`).join('')}
       <path d="M278 226 q30 -10 60 -4 q20 -6 44 -1 V226Z M388 226 q30 -8 56 -3 q24 -6 48 -2 V226Z" fill="#e8eef2" opacity=".9"/>`;
     s+=`<path d="M266 70 h238 v4 h-234 v164 h-4z" fill="#7a6040" opacity=".6"/>
@@ -574,7 +574,7 @@ function drawB(w){
 }
 function drawC(w){
   let s=`${sceneDefs()}<defs><filter id="blurC" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="8"/></filter></defs><rect width="800" height="450" fill="#0c1728"/><path d="M0 0H800V330H0Z" fill="url(#moonGlass)" opacity=".36"/><rect y="330" width="800" height="120" fill="#d9dee4"/><path d="M0 330q120-26 240-5t260-8t300 9v124H0Z" fill="#b9c4cd" opacity=".72"/>`;
-  for(let i=0;i<40;i++)s+=`<circle cx="${(i*197)%800}" cy="${(i*83)%300}" r="${1+(i%3)}" fill="#fff" opacity=".5"/>`;
+  {const dx=[7,0,-7,0][w],dy=w%2?2:3;for(let i=0;i<46;i++){const x=(i*i*53+i*197)%800,y=(i*i*29+i*61)%320;s+=dx?`<path d="M${x} ${y} l${dx} ${dy}" stroke="#fff" stroke-width="${1+(i%3)*.6}" stroke-linecap="round" opacity=".5"/>`:`<circle cx="${x}" cy="${y}" r="${1+(i%3)*.6}" fill="#fff" opacity=".5"/>`}}
   if(w===0){const va=[0,6,-14,-14,-8][S.t]||0; // 북: 풍향 기둥(가는 철주 + 지선 + 위 가로대에 풍향계·풍배 풍속계)
     s+=`<ellipse cx="400" cy="338" rx="150" ry="10" fill="#000" opacity=".22"/>
       <path d="M400 92 L262 334 M400 92 L538 334" stroke="#8d989e" stroke-width="1.6" opacity=".7"/>
@@ -584,11 +584,11 @@ function drawC(w){
       <rect x="380" y="232" width="40" height="34" rx="3" fill="#e9ecee" stroke="#6d777c" stroke-width="2.5"/><path d="M380 244 h40" stroke="#b9c0c4" stroke-width="2"/><circle cx="410" cy="255" r="3" fill="${S.f.power?'#7ddc6a':'#55605a'}"/>
       <rect x="330" y="66" width="140" height="7" rx="2" fill="#4a555b" stroke="#2c3438" stroke-width="1.5"/><path d="M332 65 h136" stroke="#eef2f4" stroke-width="3" stroke-linecap="round"/>
       <g transform="translate(350 66)"><path d="M0 0 V-22" stroke="#4a555b" stroke-width="3"/><g transform="rotate(${va*2})"><path d="M-22 -24 H22" stroke="#d4dadd" stroke-width="2.5"/><path d="M0 -36 V-12" stroke="#d4dadd" stroke-width="2.5"/>${[[-22,-24],[22,-24],[0,-36],[0,-12]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="5" fill="#e6eaec" stroke="#3c4448" stroke-width="1.5"/>`).join('')}</g><circle cx="0" cy="-24" r="3" fill="#3c4448"/></g>
-      <g transform="translate(450 66)"><path d="M0 0 V-20" stroke="#4a555b" stroke-width="3"/><g transform="rotate(${va} 0 -22)"><path d="M-28 -22 H24" stroke="#d4dadd" stroke-width="3"/><path d="M24 -22 l-10 -6 v12z" fill="#c9a24a" stroke="#3c4448" stroke-width="1.2"/><path d="M-28 -22 l-10 -10 h10 z M-28 -22 l-10 10 h10 z" fill="#a3312a" stroke="#3c4448" stroke-width="1.2"/></g><circle cx="0" cy="-22" r="3" fill="#3c4448"/></g>
+      <g transform="translate(450 66)"><path d="M0 0 V-20" stroke="#4a555b" stroke-width="3"/><g transform="rotate(${va} 0 -22)"><path d="M-28 -22 H24" stroke="#d4dadd" stroke-width="3"/><path d="M-28 -22 l10 -6 v12z" fill="#c9a24a" stroke="#3c4448" stroke-width="1.2"/><path d="M24 -22 l10 -10 h-10 z M24 -22 l10 10 h-10 z" fill="#a3312a" stroke="#3c4448" stroke-width="1.2"/></g><circle cx="0" cy="-22" r="3" fill="#3c4448"/></g>
       <path d="M396 66 q4 -6 8 0" stroke="#eef2f4" stroke-width="3" fill="none"/>
       ${hs('tower',300,20,200,320)}
-      <!-- 탑 밑에서 뚝 끊긴 발자국(돌아간 자국 없음), 끝난 자리 눈 속에 성냥갑 -->
-      <ellipse cx="300" cy="446" rx="4" ry="2.4" fill="#8e9aa6" opacity="0.45" transform="rotate(-6 300 446)"/><ellipse cx="318" cy="428" rx="4" ry="2.4" fill="#8e9aa6" opacity="0.49" transform="rotate(-22 318 428)"/><ellipse cx="332" cy="410" rx="4" ry="2.4" fill="#8e9aa6" opacity="0.53" transform="rotate(-6 332 410)"/><ellipse cx="350" cy="394" rx="4" ry="2.4" fill="#8e9aa6" opacity="0.57" transform="rotate(-22 350 394)"/><ellipse cx="362" cy="380" rx="4" ry="2.4" fill="#8e9aa6" opacity="0.61" transform="rotate(-6 362 380)"/><ellipse cx="376" cy="368" rx="4" ry="2.4" fill="#8e9aa6" opacity="0.65" transform="rotate(-22 376 368)"/><ellipse cx="386" cy="358" rx="4" ry="2.4" fill="#8e9aa6" opacity="0.69" transform="rotate(-6 386 358)"/><ellipse cx="396" cy="350" rx="4" ry="2.4" fill="#8e9aa6" opacity="0.73" transform="rotate(-22 396 350)"/>
+      <!-- 산 쪽에서 와서 탑 밑에서 끊긴 오래된 발자국(눈에 반쯤 덮임) -->
+      <ellipse cx="-10" cy="372" rx="5" ry="2" fill="#9aa6b2" opacity=".38" transform="rotate(-8 -10 372)"/><ellipse cx="40" cy="366" rx="5" ry="2" fill="#9aa6b2" opacity=".38" transform="rotate(6 40 366)"/><ellipse cx="92" cy="362" rx="5" ry="2" fill="#9aa6b2" opacity=".38" transform="rotate(-8 92 362)"/><ellipse cx="146" cy="358" rx="5" ry="2" fill="#9aa6b2" opacity=".38" transform="rotate(6 146 358)"/><ellipse cx="200" cy="356" rx="5" ry="2" fill="#9aa6b2" opacity=".38" transform="rotate(-8 200 356)"/><ellipse cx="252" cy="354" rx="5" ry="2" fill="#9aa6b2" opacity=".38" transform="rotate(6 252 354)"/><ellipse cx="304" cy="352" rx="5" ry="2" fill="#9aa6b2" opacity=".38" transform="rotate(-8 304 352)"/><ellipse cx="352" cy="350" rx="5" ry="2" fill="#9aa6b2" opacity=".38" transform="rotate(6 352 350)"/><ellipse cx="392" cy="348" rx="5" ry="2" fill="#9aa6b2" opacity=".38" transform="rotate(-8 392 348)"/>
       <path d="M380 352 q16 -6 34 0" stroke="#e8eef2" stroke-width="3" fill="none"/>
       <g transform="rotate(-14 418 348)"><rect x="410" y="343" width="17" height="10" rx="1" fill="#8a2e22" stroke="#3a120c" stroke-width="1"/><rect x="410" y="343" width="5" height="10" fill="#5a1c14"/><path d="M406 342 q12 -4 26 1" stroke="#eef2f4" stroke-width="3" fill="none"/></g>
             ${hs('raincoat',368,330,74,40)}`;
@@ -619,7 +619,7 @@ function drawC(w){
       <rect x="690" y="80" width="48" height="14" rx="2" fill="#e9e4d4" stroke="#2a3a5a" stroke-width="1.3"/><text x="714" y="91" font-size="9.5" text-anchor="middle" fill="#2a3a5a">관측실</text>
       </g>
       <path d="M300 332 q50 -12 100 -2 q60 -8 120 0 q60 -10 120 4 V340 H300Z" fill="#e3e8ec"/>
-      ${[[714,372],[726,394],[708,418],[722,442]].map(([x,y],i)=>`<ellipse cx="${x}" cy="${y}" rx="8" ry="3.5" fill="#9aa6b2" opacity=".7" transform="rotate(${i%2?-10:10} ${x} ${y})"/>`).join('')}
+      ${[[714,372],[726,394],[708,418],[722,442],[680,380],[630,392],[580,404],[760,384],[800,396]].map(([x,y],i)=>`<ellipse cx="${x}" cy="${y}" rx="8" ry="3.5" fill="#9aa6b2" opacity=".7" transform="rotate(${i%2?-10:10} ${x} ${y})"/>`).join('')}
       ${hs('indoor',624,98,124,242)}`;}
   if(w===3){const a=S.f.ang||30,r=a*Math.PI/180; // 서: 탐조등과 각도판. 발자국이 탐조등까지 이어진다
     if(S.f.light){const L=600,o=(d)=>`${352+Math.cos(r+d)*L} ${248-Math.sin(r+d)*L}`;s+=`<path d="M352 248 L${o(.11)} L${o(-.11)}Z" fill="#ffe9a0" opacity=".2"/><path d="M352 248 L${o(.045)} L${o(-.045)}Z" fill="#fff6c8" opacity=".38"/>${[90,170,250,330,410].map((d,i)=>`<circle cx="${352+Math.cos(r+(i%2?.03:-.03))*d}" cy="${248-Math.sin(r+(i%2?.03:-.03))*d}" r="${1.6+i%2}" fill="#fffbe8" opacity=".9"/>`).join('')}`}
