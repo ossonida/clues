@@ -93,6 +93,9 @@ a.note:hover .open{color:var(--stamp);border-color:var(--stamp)}
 .note.n5{transform:rotate(-1.2deg)}
 .note.n5 h2{max-width:calc(100% - 120px)}
 .note.n5 .photo{width:124px}
+.note.n6{transform:rotate(.8deg)}
+.note.n6 h2{max-width:calc(100% - 120px)}
+.note.n6 .photo{width:124px}
 .note.blank{background:#fde98a;transform:rotate(2deg);padding:22px 22px 26px;min-height:190px;box-shadow:0 1px 1px rgba(0,0,0,.1),0 10px 20px -12px rgba(40,30,0,.5)}
 .note.blank::before{display:none}
 .note.blank .no{color:#8a7a3a}
@@ -306,6 +309,37 @@ footer{padding-top:var(--lh);padding-bottom:var(--lh);font-family:var(--hand);fo
           <div><dt data-en="Play time">소요 시간</dt><dd data-en="35–45 min (est.) · Korean only">35~45분 (예상)</dd></div>
         </dl>
         <span class="open" data-en="Open the log →">일지 펼치기 →</span>
+        <div class="stamp" data-en="CLOSED">폐관</div>
+      </a>
+      <a class="note n6" href="notes/06/">
+        <span class="tape"></span>
+        <div class="photo">
+          <svg viewBox="0 0 320 240" aria-hidden="true">
+            <rect width="320" height="240" fill="#16233a"/>
+            <circle cx="262" cy="46" r="14" fill="#e9e1c6" opacity=".85"/>
+            <path d="M0 150 L60 96 L104 124 L170 62 L230 110 L280 84 L320 108 V240 H0Z" fill="#26364f"/>
+            <path d="M160 72 L170 62 L182 74 L172 78Z M272 90 L280 84 L290 94Z" fill="#c9d3e0"/>
+            <path d="M0 196 Q100 182 200 190 T320 186 V240 H0Z" fill="#d9dee4"/>
+            <rect x="96" y="146" width="128" height="48" fill="#3a3a3e"/>
+            <path d="M88 148 L160 118 L232 148 L226 152 L160 124 L94 152Z" fill="#22262c"/><path d="M90 146 L160 117 L230 146" stroke="#e9eef4" stroke-width="3" fill="none"/>
+            <rect x="110" y="110" width="8" height="26" fill="#22262c"/>
+            <rect x="132" y="158" width="40" height="24" fill="#ffd27a"/><path d="M152 158 v24 M132 170 h40" stroke="#5a4a2a" stroke-width="2"/>
+            <rect x="186" y="160" width="20" height="34" fill="#2a2420"/>
+            <path d="M262 194 V120" stroke="#9aa4b0" stroke-width="3"/><path d="M250 124 h24" stroke="#9aa4b0" stroke-width="3"/><path d="M274 120 l10 4 -10 4z" fill="#e07a1f"/>
+            <g fill="#fff" opacity=".7"><circle cx="40" cy="60" r="1.6"/><circle cx="80" cy="30" r="1.4"/><circle cx="200" cy="40" r="1.6"/><circle cx="130" cy="90" r="1.3"/><circle cx="300" cy="150" r="1.5"/><circle cx="30" cy="170" r="1.4"/></g>
+          </svg>
+          <span class="cap" data-en="Gureumjae station, 1,400 m">구름재 관측소, 해발 1,400 m</span>
+        </div>
+        <span class="no">NOTE 06</span>
+        <h2 data-en-html="Gureumjae">구름재</h2>
+        <div class="sub" data-en="Your first night shift alone at a mountain weather station">해발 1,400 m 기상관측소, 처음 혼자 서는 야간 근무</div>
+        <dl class="fields">
+          <div><dt data-en="Genre">장르</dt><dd data-en="Escape room">방탈출</dd></div>
+          <div><dt data-en="Difficulty">난이도</dt><dd data-en="●●●○○ Medium">●●●○○ 보통</dd></div>
+          <div><dt data-en="Players">인원</dt><dd data-en="1+">1인 이상</dd></div>
+          <div><dt data-en="Play time">소요 시간</dt><dd data-en="40–50 min (est.) · Korean only">40~50분 (예상)</dd></div>
+        </dl>
+        <span class="open" data-en="Start the shift →">근무 시작 →</span>
         <div class="stamp" data-en="NEW">새 사건</div>
       </a>
     </section>
@@ -326,8 +360,11 @@ footer{padding-top:var(--lh);padding-bottom:var(--lh);font-family:var(--hand);fo
             <td class="cl" data-cl="note04">—</td><td class="me" data-rec="note04">—</td><td class="rc"><button class="rec" data-note="note04" aria-pressed="false"><span class="ico">★</span><span class="lbl">추천</span><b>·</b></button></td></tr>
           <tr><td class="n">NOTE 05</td><td><a href="notes/05/" data-en="Exit 2 of the Closed Cinema">폐극장 2번 출구</a></td><td class="g" data-en="Escape room">방탈출</td><td class="lv" title="3/5"><span class="dots">●●●○○</span> <span data-en="Medium">보통</span></td><td data-en="1+">1인~</td><td data-en="35–45 min (est.)">35~45분 (예상)</td>
             <td class="cl" data-cl="note05">—</td><td class="me" data-rec="note05">—</td><td class="rc"><button class="rec" data-note="note05" aria-pressed="false"><span class="ico">★</span><span class="lbl">추천</span><b>·</b></button></td></tr>
-          <tr class="off"><td class="n">NEXT</td><td class="t" data-en="Gureumjae">구름재</td><td class="g" data-en="Escape room">방탈출</td><td class="lv">—</td><td>—</td><td>—</td><td>—</td><td class="release" colspan="2" data-en="Coming soon">다음 출시 · 추후 공개</td></tr>
-          <tr class="off"><td class="n">—</td><td class="t" data-en="Next case">다음 사건</td><td class="g" data-en="In planning">기획 중</td><td class="lv">—</td><td>—</td><td>—</td><td>—</td><td class="release" colspan="2" data-en="TBA">추후 공개</td></tr>
+          <tr><td class="n">NOTE 06</td><td><a href="notes/06/" data-en="Gureumjae">구름재</a></td><td class="g" data-en="Escape room">방탈출</td><td class="lv" title="3/5"><span class="dots">●●●○○</span> <span data-en="Medium">보통</span></td><td data-en="1+">1인~</td><td data-en="40–50 min (est.)">40~50분 (예상)</td>
+            <td class="cl" data-cl="note06">—</td><td class="me" data-rec="note06">—</td><td class="rc"><button class="rec" data-note="note06" aria-pressed="false"><span class="ico">★</span><span class="lbl">추천</span><b>·</b></button></td></tr>
+          <tr class="off"><td class="n">NOTE 07</td><td class="t" data-en="The Night Before the Exam">수능 전날 밤 독서실</td><td class="g" data-en="In planning">기획 중</td><td class="lv">—</td><td>—</td><td>—</td><td>—</td><td class="release" colspan="2" data-en="Coming soon">출시 예정</td></tr>
+          <tr class="off"><td class="n">NOTE 08</td><td class="t" data-en="The Lost-and-Found Bag">분실물 센터 가방</td><td class="g" data-en="In planning">기획 중</td><td class="lv">—</td><td>—</td><td>—</td><td>—</td><td class="release" colspan="2" data-en="Coming soon">출시 예정</td></tr>
+          <tr class="off"><td class="n">NOTE 09</td><td class="t" data-en="The Group Chat, D-1">상장폐지 D-1 단톡방</td><td class="g" data-en="In planning">기획 중</td><td class="lv">—</td><td>—</td><td>—</td><td>—</td><td class="release" colspan="2" data-en="Coming soon">출시 예정</td></tr>
         </tbody>
       </table>
       </div>
@@ -369,7 +406,7 @@ if(document.fonts)document.fonts.ready.then(alignRules);
 // 내 기록: 사건을 끝내면 각 노트가 hn.clear.noteNN에 남긴다. 아직 안 끝났으면 진행 저장을 보고 "하는 중".
 (function(){
   const en=window.HN_LANG==='en';
-  const SAVES={note01:'hn.note01.save.v1',note02:'hn.note02.v2',note03:'hn.note03.v2',note04:'hn.note04.v4',note05:'hn.note05.v4'};
+  const SAVES={note01:'hn.note01.save.v1',note02:'hn.note02.v2',note03:'hn.note03.v2',note04:'hn.note04.v4',note05:'hn.note05.v4',note06:'hn.note06.v1'};
   const fmt=ms=>{const s=Math.round(ms/1000),h=Math.floor(s/3600),m=Math.floor(s/60)%60;return h?`${h}:${String(m).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`:`${m}:${String(s%60).padStart(2,'0')}`};
   const get=k=>{try{return JSON.parse(localStorage.getItem(k)||'null')}catch{return null}};
   document.querySelectorAll('td.me').forEach(td=>{
