@@ -262,7 +262,7 @@ const MSGS=[
   [4,'me','23:12','네 성적표 봤어. 5월 12일에 「수험생용 아날로그 시계 세트」 택배 받고 나서부터 갑자기 올랐더라'],
   [4,'서윤','23:13','그게 무슨 상관이야'],
   [4,'서윤','23:13','시계 산 게 죄야? 수능엔 아날로그 시계만 되잖아. 카메라라도 찾았어? 그런 거 없어'],
-  [5,'me','23:16','교복 셔츠 둘째 단추. 빛에 비춰 보니까 뒤에 렌즈가 있어'],
+  [5,'me','23:16','네 필통 반짇고리에 든 여분 단추. 하나만 빛에 비춰 보니까 뒤에 렌즈가 있어. 내일 아침에 다시 달려고 떼어 둔 거지?'],
   [5,'서윤','23:17','…'],
   [5,'서윤','23:17','그건 그냥 시계야. 수능 때 차라고 하는 그 시계. 폰은 시험 전에 다 냈고, 폰 들고 간 적 없어'],
   [6,'me','23:21','시계 뒷뚜껑 열어 봤어. 톱니 대신 수신 기판이야. 초침이 3, 1, 5, 2, 4를 차례로 가리켰어. 사진 속 로그랑 똑같아'],
@@ -305,7 +305,7 @@ const HINTS={
   1:['총무실 CCTV 모니터. 찾았으면 📱 카톡의 「반박하기」.','슬라이더를 사진이 찍힌 22:46 근처로 끌고, 서윤 자리(27) 앞에 선 사람을 눌러 본다.','22:46의 민재를 누른다 → 반박하기 → CCTV 22:46'],
   2:['서윤이 보낸 사진 (📱 카톡의 「사진 크게 보기」 또는 주머니).','사진 위를 누른 채 끌면 돋보기가 뜬다. 폰 화면의 맨 위 줄을 읽고 누른다.','맨 위 줄 「22:40 TEST 수학 1~5」 → 반박하기 → 송출 로그'],
   3:['서윤 자리의 가방과 책상 밑 휴지통.','가방 속 성적표의 날짜와 휴지통 택배 송장의 날짜를 나란히 놓는다. 성적이 언제부터 올랐나?','가방 → 성적표, 휴지통 → 송장 → 반박하기 → 성적표 + 택배 송장'],
-  4:['서윤 자리 왼쪽 벽에 걸린 교복 셔츠. 스탠드는 켜 둔다.','셔츠를 열고 스탠드 각도를 바꿔 본다. 단추 하나만 빛을 다르게 튕긴다.','스탠드를 셔츠 쪽으로 기울여 반짝이는 둘째 단추를 누른다 → 반박하기 → 셔츠 단추'],
+  4:['서윤 책상 위 필통. 스탠드는 켜 둔다.','필통 속 반짇고리의 여분 단추들에 스탠드 각도를 바꿔 비춰 본다. 하나만 빛을 다르게 튕긴다.','스탠드 각도를 60쯤으로 두고 번쩍이는 단추를 누른다 → 반박하기 → 반짇고리 속 단추'],
   5:['책상 위 손목시계, 그리고 서윤의 폰.','시계 뒷뚜껑 나사 네 개를 풀고, 다시 감아서 초침이 가리키는 숫자를 차례로 읽는다. 폰은 설정 → 데이터 사용량에서 이상한 앱을 찾는다.','나사 4개 → 다시 켜기 → ③①⑤②④ / 설정 → 데이터 사용량 → 계산기 → 열기 → 반박하기 → 손목시계 + 폰 연결 화면'],
   6:['복도 27번 사물함.','사물함 안 내일 가져갈 수능 가방을 열어 본다. 그리고 오늘 밤 22:40 기록.','사물함 → 수능 가방 → 반박하기 → 수능 가방 + 송출 로그']
 };
@@ -316,10 +316,10 @@ const ITEMS={
   log:'송출 로그 (22:40 TEST 수학 1~5 → ③①⑤②④)',
   grades:'성적표 세 장 (3모 4등급 → 6모 2등급 → 9모 만점)',
   parcel:'택배 송장 (5/12 · 수험생용 아날로그 시계 세트)',
-  button:'셔츠 둘째 단추 (뒷면에 렌즈)',
+  button:'반짇고리 속 단추 (뒷면에 렌즈)',
   bank:'손목시계 (안은 수신 기판, 초침 ③①⑤②④)',
   link:'폰 연결 화면 (계산기 앱 · 카메라 연결됨 · 단말 연결됨)',
-  kit:'수능 가방 (수험표 옆 시계 충전 케이블 · 셔츠)'
+  kit:'수능 가방 (둘째 단추만 빈 교복 · 시계 충전 케이블)'
 };
 const SHORT=k=>ITEMS[k].split(' (')[0];
 /* ---------- 장면 ---------- */
@@ -346,7 +346,7 @@ function sceneSeat(){
   ${lit?`<path d="M560 168 L470 302 L700 302 L640 168Z" fill="url(#cone)"/>`:''}
   ${hs('lamp',540,120,140,170,`<rect x="596" y="290" width="70" height="12" rx="3" fill="#333"/><path d="M630 290 L612 190 L590 168" stroke="#444" stroke-width="7" fill="none"/><path d="M548 160 L630 160 L612 136 L566 136Z" fill="${lit?'#e8e2d0':'#555'}"/><circle cx="650" cy="296" r="4" fill="${lit?'#e07a1f':'#333'}"/>`)}
   ${hs('bag',690,370,90,70,`<path d="M700 440 L706 386 Q735 372 764 386 L770 440Z" fill="#3b4a6b"/><path d="M718 386 Q735 362 752 386" stroke="#2a3550" stroke-width="5" fill="none"/><rect x="742" y="398" width="16" height="22" fill="#c9d6ea" transform="rotate(8 750 409)"/>`)}
-  ${hs('shirt',44,96,74,200,`<path d="M58 110 L72 102 L81 112 L90 102 L104 110 L112 140 L104 146 L104 280 L58 280 L58 146 L50 140Z" fill="#eef2f7" stroke="#9aa4b4" stroke-width="2"/><path d="M81 112 V280" stroke="#c9d1dc"/>${[130,160,190,220].map(y=>`<circle cx="81" cy="${y}" r="2.6" fill="#ccd"/>`).join('')}`)}
+  ${hs('shirt',590,308,96,46,`<g transform="translate(596 316) rotate(3)"><rect width="84" height="28" rx="12" fill="#3f6b8c"/><path d="M8 4 H76" stroke="#2c4f69" stroke-width="3"/><rect x="58" y="-4" width="20" height="14" rx="3" fill="#c94f4f"/><circle cx="68" cy="3" r="2" fill="#f8f8f4"/></g>`)}
   ${hs('pbank',280,308,40,48,`<g transform="translate(300 332) rotate(-10)"><rect x="-7" y="-24" width="14" height="48" rx="3" fill="#5a3d2b"/><circle r="13" fill="#fbf8ef" stroke="#8a8f9a" stroke-width="3"/><path d="M0 0 V-8 M0 0 L6 3" stroke="#222" stroke-width="1.6"/><rect x="12" y="-2" width="4" height="4" fill="#8a8f9a"/></g>`)}
   ${hs('trash',300,384,64,58,`<path d="M306 392 L358 392 L352 442 L312 442Z" fill="#55506a"/><path d="M318 392 Q324 380 338 386" stroke="#f4efe2" stroke-width="5" fill="none"/>`)}
   ${lit?'':`<rect width="800" height="450" fill="#05040c" opacity=".6" pointer-events="none"/>`}
@@ -478,23 +478,23 @@ function openPhoto(){
     tried('photo',false);SND.wrong();m.textContent=['','「단추 카메라 · 연결됨」… 무슨 카메라?','「단말 (시계) · 연결됨」… 시계가 왜 폰에 연결돼?','「다음 일정 11/13 08:40」… 내일, 수능 1교시 시작 시각이다.'][row]};
 }
 
-/* ---------- 4장: 셔츠 단추 (스탠드 빛 각도) ---------- */
+/* ---------- 4장: 반짇고리 단추 (스탠드 빛 각도) ---------- */
+const BTNS=[[70,70],[125,58],[190,80],[96,140],[160,130],[222,150]]; // 3번(0부터)이 카메라
 function openShirt(){
-  if(!S.lamp){showM('교복 셔츠',`<p>의자 등받이에 걸린 서윤의 교복 셔츠. 내일 입으려고 다려 두었다. 스탠드가 꺼져 있어 잘 안 보인다.</p>`);return}
+  if(!S.lamp){showM('필통 속 반짇고리',`<p>서윤의 필통 안에 작은 반짇고리 통. 스탠드가 꺼져 있어 안이 잘 안 보인다.</p>`);return}
   const ang=S.ang??20,hit=ang>=58&&ang<=72;
-  showM('교복 셔츠 · 스탠드 비추기',`<div class="shirt"><svg viewBox="0 0 300 260"><defs><radialGradient id="glint"><stop offset="0" stop-color="#fff"/><stop offset=".4" stop-color="#bfe3ff" stop-opacity=".9"/><stop offset="1" stop-color="#bfe3ff" stop-opacity="0"/></radialGradient></defs>
-    <rect width="300" height="260" fill="#2a2440"/>
-    <path d="M70 30 L120 18 L150 40 L180 18 L230 30 L270 90 L240 110 L225 90 L225 250 L75 250 L75 90 L60 110 L30 90Z" fill="#eef2f7" stroke="#b8c2d0" stroke-width="2"/>
-    <path d="M150 40 L150 250" stroke="#c9d1dc" stroke-width="2"/>
-    <polygon points="${300-ang*2.6},0 ${330-ang*2.6},0 170,260 130,260" fill="#fff6c8" opacity=".12"/>
-    ${[70,110,150,190,230].map((y,i)=>`<g data-b="${i}" style="cursor:pointer"><circle cx="150" cy="${y}" r="7" fill="#f4f4f0" stroke="#aab" stroke-width="1.5"/><circle cx="148" cy="${y-1}" r="1.2" fill="#99a"/><circle cx="152" cy="${y+1}" r="1.2" fill="#99a"/>${i===1&&hit?`<circle cx="150" cy="${y}" r="26" fill="url(#glint)"/><path d="M150 ${y-30} V${y+30} M120 ${y} H180" stroke="#fff" stroke-width="2" opacity=".9"/>`:''}<rect x="132" y="${y-16}" width="36" height="32" fill="transparent"/></g>`).join('')}</svg></div>
+  showM('필통 속 반짇고리 · 스탠드 비추기',`<div class="shirt"><svg viewBox="0 0 300 220"><defs><radialGradient id="glint"><stop offset="0" stop-color="#fff"/><stop offset=".4" stop-color="#bfe3ff" stop-opacity=".9"/><stop offset="1" stop-color="#bfe3ff" stop-opacity="0"/></radialGradient></defs>
+    <rect width="300" height="220" fill="#2a2440"/><rect x="30" y="20" width="240" height="180" rx="18" fill="#c94f4f"/><rect x="42" y="32" width="216" height="156" rx="12" fill="#f3e6d0"/>
+    <path d="M60 180 Q120 120 250 176" stroke="#fff" stroke-width="2" fill="none"/><path d="M200 40 L250 100" stroke="#999" stroke-width="2.5"/><circle cx="200" cy="40" r="3" fill="none" stroke="#999"/>
+    <polygon points="${300-ang*2.6},0 ${330-ang*2.6},0 200,220 120,220" fill="#fff6c8" opacity=".14"/>
+    ${BTNS.map(([x,y],i)=>`<g data-b="${i}" style="cursor:pointer"><circle cx="${x}" cy="${y}" r="10" fill="#f8f8f4" stroke="#aab" stroke-width="1.5"/><circle cx="${x-2.5}" cy="${y-1.5}" r="1.6" fill="#99a"/><circle cx="${x+2.5}" cy="${y+1.5}" r="1.6" fill="#99a"/>${i===3&&hit?`<circle cx="${x}" cy="${y}" r="28" fill="url(#glint)"/><path d="M${x} ${y-32} V${y+32} M${x-32} ${y} H${x+32}" stroke="#fff" stroke-width="2" opacity=".9"/>`:''}<rect x="${x-18}" y="${y-18}" width="36" height="36" fill="transparent"/></g>`).join('')}</svg></div>
     <label style="display:block;font-size:14px;margin-top:8px">스탠드 각도 <input type="range" id="ang" min="0" max="90" value="${ang}" style="width:100%"></label>
-    <p class="lockmsg" id="smsg">${S.f.button?'둘째 단추 뒷면에 바늘구멍만 한 렌즈.':''}</p>`);
+    <p class="lockmsg" id="smsg">${S.f.button?'뒷면에 바늘구멍만 한 렌즈가 달린 단추.':'교복 여분 단추 여섯 개, 흰 실, 바늘. 필통에 왜 반짇고리가?'}</p>`);
   $('#ang').oninput=e=>{S.ang=+e.target.value;save();SND.tap();openShirt()};
   $('#modal').querySelectorAll('[data-b]').forEach(g=>g.onclick=()=>{const i=+g.dataset.b,m=$('#smsg');
-    if(i!==1){m.textContent='평범한 플라스틱 단추다.';SND.click();return}
-    if(!hit){m.textContent='둘째 단추. 다른 단추보다 조금 두껍다…? 빛을 비춰 봐야 알겠다.';SND.click();return}
-    m.innerHTML='빛을 받은 둘째 단추만 <b>유리처럼</b> 번쩍인다. 뒤집어 보니 바늘구멍만 한 <b>렌즈</b>와 얇은 선.';
+    if(i!==3){m.textContent='평범한 플라스틱 단추다.';SND.click();return}
+    if(!hit){m.textContent='다른 단추보다 조금 두껍다…? 빛을 비춰 봐야 알겠다.';SND.click();return}
+    m.innerHTML='빛을 받은 단추 하나만 <b>유리처럼</b> 번쩍인다. 뒤집어 보니 바늘구멍만 한 <b>렌즈</b>와 실처럼 가는 선.';
     if(!S.f.button){S.f.button=1;give('button');tried('button',true);SND.ok();renderBag()}});
 }
 
@@ -546,7 +546,7 @@ function openSP(){
 /* ---------- 6장: 사물함 · 수능 가방 ---------- */
 function openLocker(){
   if(S.ch<6){showM('27번 사물함',`<p>잠겨 있지 않다. 안에 쇼핑백과 수능 가방. 서윤이 "내일 가져갈 거야, 건드리지 마"라고 했었다.</p><p style="font-size:13px;color:#6b6358">지금은 먼저 확인할 게 있다.</p>`);return}
-  showM('27번 사물함 · 수능 가방',`<p>지퍼를 연다. 맨 위에 수험표와 컴퓨터용 사인펜.</p><ul style="line-height:1.8"><li>다려서 접어 둔 교복 셔츠 한 벌 더 (둘째 단추가 두껍다)</li><li>충전 케이블 한 가닥, 끝이 시계 뒷면 단자 모양. 시계는 원래 충전하지 않는다</li><li>포스트잇: <span class="hand" style="font-size:20px">"06:30 시계 충전 확인 / 폰 제출 전 앱 켜기"</span></li></ul><p style="font-size:13px;color:#6b6358">내일 들고 갈 준비가 끝나 있다.</p>`);
+  showM('27번 사물함 · 수능 가방',`<p>지퍼를 연다. 맨 위에 수험표와 컴퓨터용 사인펜.</p><ul style="line-height:1.8"><li>다려서 접어 둔 교복 셔츠. <b>둘째 단추 자리만 비어 있고</b>, 흰 실을 꿴 바늘이 옷깃에 꽂혀 있다</li><li>충전 케이블 한 가닥, 끝이 시계 뒷면 단자 모양. 시계는 원래 충전하지 않는다</li><li>포스트잇: <span class="hand" style="font-size:20px">"06:30 단추 달기 · 시계 충전 확인 / 폰 제출 전 앱 켜기"</span></li></ul><p style="font-size:13px;color:#6b6358">내일 들고 갈 준비가 끝나 있다.</p>`);
   if(!S.f.kit){S.f.kit=1;give('kit');tried('kit',true);SND.ok();renderBag()}
 }
 
@@ -621,7 +621,7 @@ function pageEnd(){
     <p class="hand" style="font-size:26px;margin:4px 0 10px">진실: 서윤의 만점은 단추 카메라와 AI, 그리고 아날로그 시계였다.</p>
     <p>5월 12일, 서윤은 개인 판매자에게 「수험생용 아날로그 시계 세트」를 샀다. 교복 둘째 단추로 위장한 카메라가 시험지를 찍어 보내면, 시험 전에 제출한 서윤의 폰이 제출함 안에서 켜진 채 AI로 문제를 풀었다. 답은 아날로그 손목시계로 위장한 수신기로 돌아왔다. 초침이 잠깐 멈췄다가 가리키는 숫자가 답 번호였다. 시험장에 차고 들어가도 되는 단 하나의 기계. 6월 모의평가 2등급, 9월 모의평가 전 과목 만점.</p>
     <p>오늘 밤 22:40, 서윤은 내일을 위한 마지막 테스트를 돌렸다. 화면을 켜 둔 채 컵라면을 사러 간 사이, 22:46 민재가 손대지 않고 그 화면을 찍었다. 모함이 아니라 제보였다.</p>
-    <p>23시 25분, 순찰에서 돌아온 도윤 쌤에게 셔츠와 시계, 폰을 그대로 넘겼다. 쌤은 한참 말이 없다가 112에 전화를 걸었다. 경찰은 장비를 압수했고, 서윤은 부모님과 함께 경찰서로 갔다. 서윤은 <b>내일 수능을 보지 못한다.</b> 6월·9월 성적은 무효가 되고, 위계에 의한 업무방해로 수사를 받는다. 송장 속 판매자 계정도 넘겨졌다. 장비를 팔던 업자는 다음 주 구속됐고, 같은 세트를 산 수험생이 전국에 서른 명 넘게 있었다.</p>
+    <p>23시 25분, 순찰에서 돌아온 도윤 쌤에게 단추와 시계, 폰, 수능 가방을 그대로 넘겼다. 쌤은 한참 말이 없다가 112에 전화를 걸었다. 경찰은 장비를 압수했고, 서윤은 부모님과 함께 경찰서로 갔다. 서윤은 <b>내일 수능을 보지 못한다.</b> 6월·9월 성적은 무효가 되고, 위계에 의한 업무방해로 수사를 받는다. 송장 속 판매자 계정도 넘겨졌다. 장비를 팔던 업자는 다음 주 구속됐고, 같은 세트를 산 수험생이 전국에 서른 명 넘게 있었다.</p>
     <p>경찰차에 타기 전, 서윤이 처음으로 내 눈을 봤다. <span class="hand" style="font-size:22px">"한 번만 오르면 그만두려고 했어. 근데 만점이 나오니까… 못 멈추겠더라."</span></p>
     <p>민재는 아무 말 없이 글을 지웠다. 대신 이렇게 남겼다. 「모함이라고 한 사람들, 사과는 안 바람. 내일 시험 잘 보셈.」</p>
     <p>내일 아침이면 전국의 수험생 수십만 명이 같은 시각에 같은 시험지를 펼친다. 모르는 문제 앞에서도 끝까지 연필을 놓지 않는 사람, 틀린 답이라도 자기 손으로 고른 사람. <b>그 사람들의 1점을 지키는 게, 오늘 밤 내가 할 수 있는 전부였다.</b></p>
