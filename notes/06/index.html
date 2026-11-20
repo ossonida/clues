@@ -746,7 +746,7 @@ $('#bag').addEventListener('click',e=>{const t=e.target.closest('[data-i]');if(!
 function josa(w){const c=w.charCodeAt(w.length-1)-44032;return c>=0&&c<11172&&c%28?"을":"를"}
 function combine(a,b){
   const p=[a,b].sort().join('+');
-  if(p==='driver+handle'){take('driver');take('handle');give('handle2');hold='handle2';SND.fit();say('손잡이에 나사를 맞춰 드라이버와 함께 챙겼다.');save();draw();return}
+  if(p==='driver+handle'){take('driver');take('handle');give('handle2');hold=null;SND.fit();say('손잡이에 나사를 맞춰 드라이버와 함께 챙겼다.');save();draw();return}
   hold=b;say(ITEMS[b][1]+josa(ITEMS[b][1])+' 들었다.');bag();
 }
 function inspect(i){
@@ -767,7 +767,7 @@ const TAP={
   window(){if(dark())return say('창밖이 새카맣다.');if(S.f.thanks)return say('김 서린 유리에 글씨가 남아 있다. 고마워. 이 방엔 나 혼자다.');if(S.t>=2)return say('김이 서렸다. 바깥엔 눈보라가 친다.');if(!S.f.wiped){S.f.sawDrawing=1;SND.found();save();return say('김 서린 유리에 누가 손가락으로 그려 놨다. 동그란 계기를 그리고, 그 옆에 오른쪽으로 화살표를 그었다.')}say('유리가 맑다. 바깥엔 바람이 분다.')},
   stove(){if(S.f.stoveOff){S.f.stoveOff=0;S.f.wiped=0;SND.valve();save();draw();return say('난로를 다시 켰다.')}
     S.f.stoveOff=1;S.f.wiped=0;SND.valve();save();draw();say('난로 밸브를 잠갔다. 방이 금세 식는다.');setTimeout(()=>{if(S.f.stoveOff){S.f.sawDrawing=1;save();if(S.room==='A'&&S.wall.A===0){draw();say('창에 김이 서리면서, 누가 손가락으로 그려 둔 그림이 떠올랐다.')}}},1600)},
-  kettle(){if(hold==='thermos'){take('thermos');give('hot');hold='hot';SND.pour();save();draw();return say('주전자 물을 보온병에 따랐다. 아직 뜨겁다.')}say(has('thermos')?'난로 위 주전자. 물이 아직 뜨겁다. 담아 갈 그릇을 들고 와야겠다.':'난로 위 주전자. 물이 아직 뜨겁다.')},
+  kettle(){if(hold==='thermos'){take('thermos');give('hot');hold=null;SND.pour();save();draw();return say('주전자 물을 보온병에 따랐다. 아직 뜨겁다.')}say(has('thermos')?'난로 위 주전자. 물이 아직 뜨겁다. 담아 갈 그릇을 들고 와야겠다.':'난로 위 주전자. 물이 아직 뜨겁다.')},
   clock(){say(['21시 정각. 관측 시각이다.','22시 30분.','자정.','새벽 1시 40분.','새벽 3시. 특별 관측 시각이다.'][S.t])},
   outdoor(){if(dark()&&!has('torch')){SND.wrong();return say('너무 어둡다. 문고리도 안 보인다.')}SND.door();go('C',2,'문을 열고 나왔다. 바람이 얼굴을 친다.')},
   understove(){if(!has('torch')){SND.wrong();return say('바닥이 안 보인다.')}S.f.handleFound=1;give('handle');SND.found();save();draw();say('난로 밑으로 굴러 들어간 철문 손잡이를 찾았다.')},
@@ -801,7 +801,7 @@ const TAP={
   cabinet(){if(S.f.cab79)return say('1979 칸은 비었다.');if(hold==='ring'){S.f.cab79=1;take('ring');give('sheet79');SND.drawer(true);SND.found();save();return say('열쇠고리의 열쇠가 1979 칸에 맞았다. 상자 안에 1979년 11월 13일 기압 기록지가 있다.')}SND.drawer(false);say('맨 아래 칸 이름표에 「1979」. 잠겨 있다. 열쇠가 있어야 열린다.')},
   cellar(){if(S.t===0){SND.wrong();return say('지하 기계실. 지금은 내려갈 일이 없다.');}
     if(dark()&&!has('torch')){SND.wrong();return say('계단 문 쪽은 칠흑같이 어둡다.');}
-    if(!S.f.doorFixed){if(hold==='handle'&&has('driver')){take('handle');give('handle2');hold='handle2'}if(hold==='handle'){SND.wrong();return say('손잡이 구멍에 나사가 없다. 그냥 끼우면 헛돈다.')}if(hold==='handle2'){S.f.doorFixed=1;take('handle2');give('driver');save();SND.fit();SND.door(true);draw();return say('손잡이를 다시 달고 나사를 조였다. 철문이 열린다.')}
+    if(!S.f.doorFixed){if(hold==='handle'){SND.wrong();return say('손잡이 구멍에 나사가 없다. 그냥 끼우면 헛돈다.')}if(hold==='handle2'){S.f.doorFixed=1;take('handle2');give('driver');save();SND.fit();SND.door(true);draw();return say('손잡이를 다시 달고 나사를 조였다. 철문이 열린다.')}
       SND.drawer(false);return say(S.f.handleFound?'손잡이가 빠진 철문. 손으로는 안 열린다.':'바람에 쾅 닫히면서 손잡이가 빠져 버렸다. 어디로 굴러갔지?')}
     SND.door(true);SND.steps(false);go('B',0,'계단을 내려갔다. 기름 냄새.')},
   upstairs(){SND.steps(true);SND.door(true);go('A',3,'관측실로 올라왔다.')},
