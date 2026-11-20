@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="ko" data-note="note07">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Note 07 · 수능 전날 밤 독서실 | 히든노트</title>
+<meta name="description" content="수능 전날 밤 11시, 독서실. 단짝의 9월 모의고사 만점이 AI 부정이라는 글이 올라왔다. 정말일까.">
+<meta name="robots" content="noindex">
+<script src="../../lang.js"></script>
+<script>window.hn=window.hn||function(){(hn.q=hn.q||[]).push(arguments)}</script>
+<script type="module" src="../../analytics.js"></script>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/hada0127/hada-type-levelup@v2026.10.21/css/levelup-subset.css">
+<link rel="stylesheet" href="../../fonts/fonts.css">
+<style>
+:root{
+  --desk:#1d1a2b;--pad:#fbf2a6;--pline:#a9c3e0;--margin:rgba(214,69,65,.55);--lh:32px;--ml:56px;--binding:#3a2f66;
+  --ink:#1f1c18;--dim:#6b6358;--stamp:#a3312a;--pen:#1a1a1a;--blue:#1b3c9e;--glow:#d6ff3a;--hl:#fff27a;
+  --mono:"Kkakdugi Drafting",monospace;--serif:"LevelUp",serif;--hand:"HEEJOY",cursive;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--desk);color:var(--ink);font-family:var(--mono);font-size:15px;line-height:1.6}
+@media(max-width:640px){:root{--ml:26px}}
+button{font-family:inherit;cursor:pointer;color:inherit}
+.app{max-width:900px;min-height:100vh;margin:0 auto;padding:0 22px 60px calc(var(--ml) + 22px);background-color:var(--pad);
+  background-image:linear-gradient(90deg,transparent calc(var(--ml) - 5px),var(--margin) calc(var(--ml) - 5px),var(--margin) calc(var(--ml) - 4px),transparent calc(var(--ml) - 4px),transparent var(--ml),var(--margin) var(--ml),var(--margin) calc(var(--ml) + 1px),transparent calc(var(--ml) + 1px)),
+    repeating-linear-gradient(transparent 0 calc(var(--lh) - 1px),var(--pline) calc(var(--lh) - 1px) var(--lh));
+  background-position:0 0,0 6px;box-shadow:0 30px 60px -20px rgba(0,0,0,.6)}
+.app::before{content:"";display:block;height:34px;margin:0 -22px 22px calc(-1 * (var(--ml) + 22px));background:linear-gradient(#5a4c90,var(--binding) 70%,#1f1838)}
+@media(max-width:640px){.app{padding:0 12px 44px calc(var(--ml) + 12px)}.app::before{margin:0 -12px 18px calc(-1 * (var(--ml) + 12px))}}
+
+header.hud{display:flex;align-items:flex-end;gap:10px 14px;flex-wrap:wrap;margin-bottom:18px}
+.brand{font-family:var(--hand);font-size:38px;line-height:1.05}
+.brand .back{display:block;font-family:var(--mono);font-size:12px;color:var(--dim);text-decoration:none;margin-bottom:6px}
+.brand small{display:block;font-family:var(--serif);font-size:14px;color:var(--dim);margin-top:4px}
+.spacer{flex:1}
+.stat{font-size:12px;color:var(--dim);display:flex;flex-direction:column;line-height:1.3}
+.stat b{color:var(--ink);font-size:20px;border-bottom:1px solid var(--ink);min-width:54px}
+.btn{white-space:nowrap;background:transparent;color:var(--ink);border:1.5px solid var(--ink);border-radius:2px;padding:7px 13px;font-size:14px;font-weight:700}
+.btn:hover{background:var(--ink);color:#fffdf4}
+.btn.primary{background:var(--ink);color:#fffdf4}
+.btn.primary:hover{background:var(--stamp);border-color:var(--stamp)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+#btnPhone{position:relative}
+#btnPhone .dot{position:absolute;top:-6px;right:-6px;min-width:18px;height:18px;border-radius:9px;background:var(--stamp);color:#fff;font-size:11px;line-height:18px;padding:0 4px;display:none}
+#btnPhone.new .dot{display:block}
+#btnPhone.new{animation:buzz 1.2s ease-in-out 2}
+@keyframes buzz{0%,100%{transform:none}20%{transform:rotate(-4deg)}40%{transform:rotate(4deg)}60%{transform:rotate(-3deg)}}
+
+.tabs{display:flex;gap:6px;flex-wrap:wrap;padding-left:10px;margin-bottom:-4px;position:relative;z-index:1}
+.tab{border:none;background:#d8d2e8;color:#2d2748;padding:7px 14px 9px;font-size:13px;font-weight:700;box-shadow:0 1px 1px rgba(0,0,0,.12)}
+.tab.on{background:#fffdf4;padding-top:11px}
+.scene{position:relative;background:#14111f;border:2px solid #2a2440;box-shadow:0 16px 30px -14px rgba(20,10,40,.6)}
+.scene svg{display:block;width:100%;height:auto}
+.hs{cursor:pointer}
+.hs .hit{fill:transparent}
+.hs:hover .hit,.hs:focus .hit{fill:rgba(255,242,122,.12);stroke:rgba(255,242,122,.55);stroke-width:2;stroke-dasharray:6 5}
+.where{position:absolute;left:10px;top:8px;font-size:12px;color:#d8d2e8;background:rgba(0,0,0,.45);padding:2px 8px;pointer-events:none}
+.clock{position:absolute;right:10px;top:8px;font-size:12px;color:#d8d2e8;background:rgba(0,0,0,.45);padding:2px 8px;pointer-events:none}
+.bag{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:12px;min-height:40px}
+.bag>span{font-size:12px;color:var(--dim)}
+.it{border:1.5px dashed #6b6358;background:#fffdf4;padding:4px 10px;font-size:13px;border-radius:3px}
+.it.new{border-style:solid;border-color:var(--stamp);animation:pop .5s}
+@keyframes pop{50%{transform:scale(1.12)}}
+
+/* 표지 */
+.cover{max-width:640px;background:#fffdf4;padding:24px 24px 28px;box-shadow:0 16px 30px -14px rgba(40,30,0,.5)}
+.cover h2{font-family:var(--serif);font-size:30px;margin:0 0 6px}
+.cover .story{font-size:15px;line-height:1.8}
+.board{background:#f2f0f7;border-left:4px solid #5a4c90;padding:10px 14px;margin:14px 0;font-size:14px}
+.board b{display:block;font-size:12px;color:#5a4c90}
+.board q{display:block;font-family:var(--hand);font-size:25px;line-height:1.3;quotes:none;margin:4px 0}
+.board small{color:var(--dim)}
+
+/* 모달 */
+.modal-bg{position:fixed;inset:0;background:rgba(10,8,20,.6);display:none;align-items:center;justify-content:center;z-index:50;padding:14px}
+.modal-bg.on{display:flex}
+.modal{background:#fffdf4;max-width:560px;width:100%;max-height:92vh;overflow:auto;padding:18px 18px 16px;box-shadow:0 20px 40px rgba(0,0,0,.4)}
+.modal h2{font-family:var(--serif);font-size:20px;margin:0 0 10px}
+.modal .actions{display:flex;justify-content:flex-end;gap:8px;margin-top:14px}
+.hand{font-family:var(--hand);font-size:clamp(21px,5vw,25px);line-height:1.35}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fffdf4;padding:10px 18px;font-size:14px;opacity:0;transition:.25s;pointer-events:none;z-index:60;max-width:90vw}
+.toast.on{opacity:1;transform:translateX(-50%)}
+
+/* 칸막이 확대 */
+.wall{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:14px;background:#8f8a9c;border-radius:3px}
+.wall.dark{background:#0b0914}
+.pi{position:relative;background:#f7e27a;min-height:96px;padding:8px 9px;box-shadow:0 2px 3px rgba(0,0,0,.25);font-family:var(--hand);font-size:clamp(18px,4.6vw,22px);line-height:1.2;color:var(--pen)}
+.pi:nth-child(2n){transform:rotate(-2deg)}.pi:nth-child(3n){transform:rotate(1.5deg)}
+.pi.dy{color:var(--blue);font-weight:700;font-size:clamp(20px,5vw,24px)}
+.pi .d{display:block;font-family:var(--mono);font-size:12px;color:var(--blue);font-weight:700;text-decoration:underline}
+.pi .sg{display:block;text-align:right;font-size:15px}
+.wall.dark .pi{background:#1a1726;color:#1a1726;box-shadow:none}
+.wall.dark .pi .d,.wall.dark .pi .sg{color:#1a1726}
+.wall.dark .pi.dy .d{color:#3a3650}
+.gc{position:absolute;right:6px;bottom:4px;width:30px;height:30px;border:3px solid var(--glow);border-radius:50%;color:var(--glow);font-family:var(--hand);font-size:22px;line-height:24px;text-align:center;text-shadow:0 0 6px var(--glow);box-shadow:0 0 8px var(--glow);display:none}
+.wall.dark .gc{display:block}
+.wall .gt{grid-column:1/-1;text-align:center;font-family:var(--hand);font-size:30px;color:var(--glow);text-shadow:0 0 8px var(--glow);display:none;transform:rotate(-4deg)}
+.wall.dark .gt{display:block}
+
+/* 다이얼 */
+.dials{display:flex;gap:10px;justify-content:center;padding:18px 10px;background:#3b3550;border-radius:6px}
+.dial{display:flex;flex-direction:column;align-items:center;gap:4px}
+.dial button{width:52px;height:30px;background:#5a5270;color:#fff;border:0;border-radius:3px;font-size:14px}
+.dial b{width:52px;height:60px;background:#e9e3d0;color:#222;font-size:36px;display:flex;align-items:center;justify-content:center;border-radius:4px;box-shadow:inset 0 3px 6px rgba(0,0,0,.35)}
+.lockmsg{min-height:1.5em;text-align:center;margin:8px 0 0}
+
+/* 폰 */
+.phone{background:#b9c7d6;border-radius:18px;padding:12px 10px;max-height:58vh;overflow:auto;display:flex;flex-direction:column;gap:7px}
+.msg{max-width:82%;padding:7px 11px;border-radius:12px;font-size:14px;line-height:1.45;background:#fff}
+.msg.me{align-self:flex-end;background:#fde84d}
+.msg small{display:block;font-size:11px;color:#6b6358}
+.msg.cap{background:#f2f0f7;border-left:4px solid #5a4c90;font-size:13px}
+.msg.cap q{display:block;font-family:var(--hand);font-size:20px;quotes:none}
+.who{font-size:11px;color:#374050;margin:4px 0 -4px 4px}
+
+/* CCTV */
+.cctv{background:#0c0f0c;border-radius:6px;padding:8px}
+.cctv svg{display:block;width:100%;filter:grayscale(1) contrast(1.1)}
+.cctv .ts{color:#bfe8bf;font-size:13px;text-align:right;letter-spacing:1px}
+.cctv input{width:100%;accent-color:#5a4c90}
+
+/* 후드 */
+
+/* 지목 */
+.pick{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 12px}
+.pick button{border:1.5px solid var(--ink);background:#fff;padding:6px 12px;font-size:14px}
+.pick button.on{background:var(--ink);color:#fff}
+
+/* 힌트 */
+.posts{display:grid;gap:10px}
+.post{background:#fde98a;padding:10px 12px;font-family:var(--hand);font-size:22px;line-height:1.3;box-shadow:0 2px 3px rgba(0,0,0,.2);text-align:left;border:0;width:100%}
+.post small{display:block;font-family:var(--mono);font-size:11px;color:var(--dim)}
+.post.closed{background:#efe3a8;color:#7a6f50;font-family:var(--mono);font-size:14px}
+
+/* 결말 */
+.result{max-width:640px;background:#fffdf4;padding:24px;box-shadow:0 16px 30px -14px rgba(40,30,0,.5)}
+.result .seal{display:inline-block;border:4px solid var(--stamp);color:var(--stamp);font-family:var(--serif);font-size:30px;padding:4px 18px;transform:rotate(-6deg);margin:6px 0 12px}
+.result dl{display:flex;gap:22px;margin:0 0 14px}
+.result dt{font-size:12px;color:var(--dim)}.result dd{margin:0;font-size:20px;font-weight:700}
+.result p{line-height:1.8}
+.leave{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.leave input{flex:1;min-width:200px;font-family:var(--hand);font-size:22px;padding:6px 10px;border:0;border-bottom:2px solid var(--ink);background:#fde98a}
+.left{display:inline-block;background:#fde98a;font-family:var(--hand);font-size:24px;padding:12px 16px;transform:rotate(-2deg);box-shadow:0 3px 5px rgba(0,0,0,.2);margin-top:8px}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+
+/* 사진 돋보기 */
+.photo{position:relative;touch-action:none;cursor:zoom-in;border:6px solid #fff;box-shadow:0 3px 8px rgba(0,0,0,.3);background:#3a3326;user-select:none;-webkit-user-select:none}
+.photo svg{display:block;width:100%;height:auto}
+.photo .base{filter:blur(1.1px) saturate(.7)}
+.photo .lens{position:absolute;inset:0;overflow:hidden;clip-path:circle(0 at 50% 50%);pointer-events:none}
+.photo .ring{position:absolute;width:150px;height:150px;margin:-75px 0 0 -75px;border:3px solid #222;border-radius:50%;box-shadow:0 0 0 2px #fff,0 4px 10px rgba(0,0,0,.4);pointer-events:none;display:none}
+.ansrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.ansrow input{flex:1;min-width:160px;font-family:var(--hand);font-size:22px;padding:4px 10px;border:0;border-bottom:2px solid var(--ink);background:#fff8c8}
+
+/* 서윤 폰 */
+.sp{max-width:320px;margin:0 auto;background:#111;border-radius:28px;padding:14px 10px 18px}
+.sp .scr{background:#f4f5f8;border-radius:16px;min-height:380px;overflow:hidden;display:flex;flex-direction:column;font-size:14px}
+.sp .bar{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:#fff;border-bottom:1px solid #dde;font-weight:700}
+.sp .bar button{border:0;background:none;font-size:18px;padding:2px 6px}
+.sp .apps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;padding:22px 14px}
+.sp .app-i{border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:6px;font-size:12px}
+.sp .app-i i{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-style:normal;font-size:24px;color:#fff;font-weight:700}
+.sp .li{display:block;width:100%;text-align:left;border:0;border-bottom:1px solid #e3e4ea;background:#fff;padding:12px 14px;font-size:14px}
+.sp .li small{display:block;color:#6b6f7a;font-size:12px}
+.sp .empty{padding:30px 16px;color:#6b6f7a;text-align:center;font-size:13px}
+.sp .chat{padding:12px;display:flex;flex-direction:column;gap:8px}
+.sp .chat .u{align-self:flex-end;background:#1b3c9e;color:#fff;padding:7px 11px;border-radius:12px 12px 2px 12px;max-width:85%}
+.sp .chat .a{background:#fff;border:1px solid #dde;padding:8px 11px;border-radius:12px 12px 12px 2px;max-width:92%;font-size:13px;line-height:1.5}
+.sp .chat time{font-size:12px;color:#444;align-self:flex-end;font-weight:700}
+.sp .arch{margin-top:auto;background:#fff1c2;border-top:2px dashed #a3312a;padding:8px 12px;font-size:13px;font-weight:700}
+
+/* 시험지 */
+.exam{background:#fdfdf8;border:1px solid #bbb;box-shadow:0 3px 6px rgba(0,0,0,.2);padding:12px 14px;display:grid;grid-template-columns:1fr 1fr;gap:10px;min-height:260px;cursor:pointer;text-align:left;width:100%;font:inherit}
+.exam .q{font-size:13px;line-height:1.5}
+.exam .q b{font-size:18px;font-family:var(--serif)}
+.exam .ln{height:7px;background:#d5d3cc;margin:7px 0;border-radius:2px}
+.exam .mg{border-left:1px dashed #ccc;padding-left:8px;min-height:200px}
+.exam .mg svg{width:100%;height:auto}
+.exam .cp{font-family:var(--hand);font-size:17px;line-height:1.35;color:#2d3f8f;margin:2px 0 0}
+.shirt svg,.pb svg{display:block;width:100%;max-width:340px;margin:0 auto;height:auto;border-radius:6px}
+.exam .an{grid-column:1/-1;text-align:right;font-size:14px}
+.exam .an span{display:inline-block;border:2px solid #333;min-width:44px;text-align:center;font-family:var(--hand);font-size:24px;margin-left:6px}
+.flip{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
+
+/* 판정 */
+.slot{border:2px dashed var(--ink);padding:8px 10px;margin:8px 0;background:#fff}
+.slot>b{display:block;font-size:13px;margin-bottom:4px}
+.slot .pick{margin:0}
+.slot .pick button{font-size:13px;padding:5px 9px}
+.card{max-width:300px;margin:0 auto;background:linear-gradient(135deg,#e8eef8,#c9d6ea);border-radius:10px;padding:14px;box-shadow:0 3px 6px rgba(0,0,0,.25);display:grid;grid-template-columns:80px 1fr;gap:10px;font-size:13px}
+.card .ph{background:#9aa7bd;height:100px;border-radius:4px}
+.card big{display:block;font-size:20px;font-weight:700;letter-spacing:2px}
+</style>
+<script src="../../feedback.js" defer></script>
+</head>
+<body>
+<div class="app">
+  <header class="hud">
+    <div class="brand"><a class="back" href="../../">← 사건 대장 / NOTE 07</a>수능 전날 밤 독서실<small>독서실 추리 · 시제품</small></div>
+    <div class="spacer"></div>
+    <div class="stat"><span>걸린 시간</span><b id="time">0:00</b></div>
+    <div class="stat"><span>힌트</span><b id="hintCount">0</b></div>
+    <button class="btn" id="btnSnd" title="소리">🔈</button>
+    <button class="btn" id="btnPhone">📱 폰<span class="dot">!</span></button>
+    <button class="btn" id="btnHint">힌트</button>
+  </header>
+  <nav class="tabs" id="tabs"></nav>
+  <main id="page"></main>
+</div>
+<div class="modal-bg" id="mbg"><div class="modal" id="modal"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const $=s=>document.querySelector(s);
+const SAVE_KEY='hn.note07.v4';
+const PLACES={seat:'서윤 자리 27번',hall:'복도',office:'총무실',lounge:'휴게실'};
+const CLOCK=['','23:02','23:06','23:10','23:14','23:19','23:24'];
+function fresh(){return{v:'cover',ch:1,lamp:true,lock:[0,0,0,0],cctv:30,ph:'home',pg:0,f:{},obj:[],screws:[0,0,0,0],ang:20,items:['receipt'],newItem:null,hints:{},started:false,done:false,ms:0,unread:0,note:''}}
+let S;try{S=Object.assign(fresh(),JSON.parse(localStorage.getItem(SAVE_KEY)||'null')||{})}catch{S=fresh()}
+const resumed=S.started&&!S.done;
+const save=()=>{try{localStorage.setItem(SAVE_KEY,JSON.stringify(S))}catch{}};
+const fmt=ms=>{const s=Math.floor(ms/1000);return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')};
+const hintTotal=()=>Object.values(S.hints).reduce((a,b)=>a+b,0);
+const anaMin=()=>Math.min(999,Math.round(S.ms/60000));
+const ana=(n,p={},b=false)=>{if(window.hn)window.hn(n,p,b)};
+const norm=s=>String(s).toLowerCase().replace(/[\s.,!?·~'"「」()\-]/g,'');
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove('on'),Math.min(7000,2400+m.length*45))}
+function give(k){if(!S.items.includes(k)){S.items.push(k);S.newItem=k}save()}
+const tries={};
+const tried=(p,ok)=>{tries[p]=(tries[p]||0)+1;ana('puzzle_tried',{puzzle:p,outcome:ok?'solved':'wrong',attempt:tries[p],minutes_used:anaMin()})};
+
+/* ---------- 소리 (Web Audio 합성, 끌 수 있음) ---------- */
+const SND={on:true,c:null,
+  ac(){if(!this.c){try{this.c=new (window.AudioContext||window.webkitAudioContext)()}catch{}}return this.c},
+  tone(f,e,d,g=.03,type='sine',delay=0){const c=this.ac();if(!c||!this.on)return;const t=c.currentTime+delay,o=c.createOscillator(),v=c.createGain();o.type=type;o.frequency.setValueAtTime(f,t);o.frequency.exponentialRampToValueAtTime(Math.max(1,e),t+d);v.gain.setValueAtTime(.0001,t);v.gain.linearRampToValueAtTime(g,t+.01);v.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(v).connect(c.destination);o.start(t);o.stop(t+d+.02)},
+  noise(d,f,g,q=1){const c=this.ac();if(!c||!this.on)return;const b=c.createBuffer(1,c.sampleRate*d,c.sampleRate),x=b.getChannelData(0);for(let i=0;i<x.length;i++)x[i]=Math.random()*2-1;const s=c.createBufferSource();s.buffer=b;const fl=c.createBiquadFilter();fl.type='bandpass';fl.frequency.value=f;fl.Q.value=q;const v=c.createGain();v.gain.setValueAtTime(g,c.currentTime);v.gain.exponentialRampToValueAtTime(.001,c.currentTime+d);s.connect(fl).connect(v).connect(c.destination);s.start()},
+  click(){this.noise(.04,2200,.08,2)},
+  tap(){this.noise(.02,3200,.05,3)},
+  sw(){this.noise(.05,1400,.1,3);this.tone(900,600,.04,.015,'square')},
+  clunk(){this.noise(.18,260,.12,1);this.tone(160,90,.18,.03,'triangle')},
+  page(){this.noise(.16,1800,.05,.7)},
+  ding(){this.tone(880,880,.12,.025);this.tone(1175,1175,.18,.022,'sine',.11)},
+  wrong(){this.tone(220,140,.16,.03,'triangle')},
+  ok(){this.tone(523,523,.1,.025);this.tone(784,784,.18,.022,'sine',.09)},
+  hum:null,
+  humOn(on){const c=this.ac();if(!c)return;if(this.hum){try{this.hum.o.stop()}catch{}this.hum=null}if(!on||!this.on)return;const o=c.createOscillator(),v=c.createGain();o.type='sine';o.frequency.value=100;v.gain.value=.006;o.connect(v).connect(c.destination);o.start();this.hum={o}}
+};
+
+/* ---------- 카톡 (목표는 여기서만 나온다) ---------- */
+const MSGS=[
+  [1,'서윤','23:00','지수야 그 글 봤지? 사진 속 책상 내 자리 맞아'],
+  [1,'서윤','23:00','근데 나 진짜 아니야. 민재가 쓴 거 맞지? 걔가 꾸민 거야'],
+  [1,'me','23:01','일단 확인해 볼게'],
+  [1,'서윤','23:01','총무실 CCTV 보면 다 나올 거야. 도윤 쌤은 순찰 나갔대'],
+  [2,'me','23:04','CCTV 봤어. 22:46에 민재는 네 책상 앞에서 자기 폰으로 찍기만 했어. 네 폰엔 손 안 댔고'],
+  [2,'서윤','23:05','…그래도 사진 봐 봐. 흐려서 아무것도 안 보이잖아. 그냥 공부하던 화면이야'],
+  [2,'cap','23:05','[사진] 27번 책상 위의 서윤 폰 · 커뮤니티 글 첨부|서윤 → 나'],
+  [3,'me','23:08','크게 보니까 보여. 공부 화면 아니야. 「22:40 TEST 수학 1~5 → ③①⑤②④ 전송 완료」. 이게 뭐야?'],
+  [3,'서윤','23:09','그거 그냥 문제 푸는 앱이야'],
+  [3,'서윤','23:09','그리고 내 성적은 내가 노력해서 오른 거야. 너도 봤잖아, 나 매일 여기 있었던 거'],
+  [4,'me','23:12','네 성적표 봤어. 5월 12일에 「수험생용 아날로그 시계 세트」 택배 받고 나서부터 갑자기 올랐더라'],
+  [4,'서윤','23:13','그게 무슨 상관이야'],
+  [4,'서윤','23:13','시계 산 게 죄야? 수능엔 아날로그 시계만 되잖아. 카메라라도 찾았어? 그런 거 없어'],
+  [5,'me','23:16','교복 셔츠 둘째 단추. 빛에 비춰 보니까 뒤에 렌즈가 있어'],
+  [5,'서윤','23:17','…'],
+  [5,'서윤','23:17','그건 그냥 시계야. 수능 때 차라고 하는 그 시계. 폰은 시험 전에 다 냈고, 폰 들고 간 적 없어'],
+  [6,'me','23:21','시계 뒷뚜껑 열어 봤어. 톱니 대신 수신 기판이야. 초침이 3, 1, 5, 2, 4를 차례로 가리켰어. 사진 속 로그랑 똑같아'],
+  [6,'me','23:21','네 폰 계산기 앱이 「카메라 연결됨 · 단말 연결됨」이더라. 낸 폰이 제출함 안에서 풀고 있었던 거지'],
+  [6,'서윤','23:22','…알았어. 맞아'],
+  [6,'서윤','23:22','근데 이제 끝이야. 내일은 안 써. 진짜야']
+];
+
+/* ---------- 반박 (장마다 서윤의 말 하나를 모은 증거로 깬다) ---------- */
+const CLAIM={
+  1:{q:'민재가 꾸민 거야',need:['cctv']},
+  2:{q:'흐려서 아무것도 안 보여. 그냥 공부하던 화면이야',need:['log']},
+  3:{q:'내 성적은 내가 노력해서 오른 거야',need:['grades','parcel']},
+  4:{q:'카메라? 그런 거 없어',need:['button']},
+  5:{q:'그건 그냥 시계야. 폰은 시험 전에 다 냈고',need:['bank','link']},
+  6:{q:'내일은 안 써. 진짜야',need:['kit','log']}
+};
+const CLAIM_SAY={
+  3:{grades:'성적이 오른 것만으론 부족하다. 오르기 직전에 무슨 일이 있었지?',parcel:'택배만으론 성적과 이어지지 않는다. 언제부터 올랐는지가 필요하다.'},
+  5:{bank:'단말이 답을 받았다는 건 알았다. 그 답은 누가 보냈지? 「폰은 냈다」는 말을 깰 게 필요하다.',link:'폰이 연결돼 있던 건 알았다. 받는 쪽, 시계 속을 같이 보여 줘야 한다.',log:'로그는 이미 보여 줬다. 기계 자체를 열어 봐야 한다.'},
+  6:{kit:'가방만으론 「예전에 쓰던 거」라고 할 수 있다. 오늘 밤에도 썼다는 게 필요하다.',log:'오늘 밤 테스트는 알았다. 내일 가져갈 준비를 했다는 게 필요하다.'}
+};
+function openObj(){
+  const c=CLAIM[S.ch];if(!c)return;
+  showM('반박하기',`<div class="msg" style="max-width:none"><small>서윤</small> 「${c.q}」</div>
+    <p style="font-size:14px;color:#6b6358;margin:10px 0 4px">이 말을 깰 증거를 고른다 (${c.need.length>1?'두 개':'하나'})</p>
+    <div class="pick">${S.items.map(i=>`<button data-i="${i}" class="${S.obj.includes(i)?'on':''}">${SHORT(i)}</button>`).join('')}</div>
+    <p class="lockmsg" id="omsg"></p><div class="actions"><button class="btn primary" id="ook" ${S.obj.length?'':'disabled'}>이걸로 반박</button></div>`);
+  $('#modal').querySelectorAll('[data-i]').forEach(b=>b.onclick=()=>{const k=b.dataset.i;S.obj=S.obj.includes(k)?S.obj.filter(x=>x!==k):[...S.obj,k].slice(-2);SND.tap();save();openObj()});
+  $('#ook').onclick=()=>{const m=$('#omsg'),sel=S.obj,ok=sel.length===c.need.length&&c.need.every(k=>sel.includes(k));
+    tried('rebut'+S.ch,ok);
+    if(!ok){SND.wrong();const say=CLAIM_SAY[S.ch]||{},hit=sel.find(k=>say[k]);
+      m.textContent=sel.length>c.need.length?'필요한 것만 골라야 한다.':hit?say[hit]:'서윤: "그게 왜? 그게 뭐가 이상한데?"';return}
+    SND.ok();S.obj=[];save();m.innerHTML='<b>서윤의 말이 깨졌다.</b>';
+    setTimeout(()=>{closeM();if(S.ch===6)finish();else adv(S.ch+1)},900)};
+}
+
+/* ---------- 힌트 (지금 장 기준) ---------- */
+const HINTS={
+  1:['총무실 CCTV 모니터. 찾았으면 📱 카톡의 「반박하기」.','슬라이더를 사진이 찍힌 22:46 근처로 끌고, 서윤 자리(27) 앞에 선 사람을 눌러 본다.','22:46의 민재를 누른다 → 반박하기 → CCTV 22:46'],
+  2:['서윤이 보낸 사진 (📱 카톡의 「사진 크게 보기」 또는 주머니).','사진 위를 누른 채 끌면 돋보기가 뜬다. 폰 화면의 맨 위 줄을 읽고 누른다.','맨 위 줄 「22:40 TEST 수학 1~5」 → 반박하기 → 송출 로그'],
+  3:['서윤 자리의 가방과 책상 밑 휴지통.','가방 속 성적표의 날짜와 휴지통 택배 송장의 날짜를 나란히 놓는다. 성적이 언제부터 올랐나?','가방 → 성적표, 휴지통 → 송장 → 반박하기 → 성적표 + 택배 송장'],
+  4:['서윤 자리 왼쪽 벽에 걸린 교복 셔츠. 스탠드는 켜 둔다.','셔츠를 열고 스탠드 각도를 바꿔 본다. 단추 하나만 빛을 다르게 튕긴다.','스탠드를 셔츠 쪽으로 기울여 반짝이는 둘째 단추를 누른다 → 반박하기 → 셔츠 단추'],
+  5:['책상 위 손목시계, 그리고 서윤의 폰.','시계 뒷뚜껑 나사 네 개를 풀고, 다시 감아서 초침이 가리키는 숫자를 차례로 읽는다. 폰은 설정 → 데이터 사용량에서 이상한 앱을 찾는다.','나사 4개 → 다시 켜기 → ③①⑤②④ / 설정 → 데이터 사용량 → 계산기 → 열기 → 반박하기 → 손목시계 + 폰 연결 화면'],
+  6:['복도 27번 사물함.','사물함 안 내일 가져갈 수능 가방을 열어 본다. 그리고 오늘 밤 22:40 기록.','사물함 → 수능 가방 → 반박하기 → 수능 가방 + 송출 로그']
+};
+const ITEMS={
+  receipt:'컵라면 영수증 (22:44, 2개)',
+  cctv:'CCTV 22:46 (민재는 자기 폰으로 찍기만 했다)',
+  photo:'커뮤니티 글 사진 (27번 책상 위 서윤 폰)',
+  log:'송출 로그 (22:40 TEST 수학 1~5 → ③①⑤②④)',
+  grades:'성적표 세 장 (3모 4등급 → 6모 2등급 → 9모 만점)',
+  parcel:'택배 송장 (5/12 · 수험생용 아날로그 시계 세트)',
+  button:'셔츠 둘째 단추 (뒷면에 렌즈)',
+  bank:'손목시계 (안은 수신 기판, 초침 ③①⑤②④)',
+  link:'폰 연결 화면 (계산기 앱 · 카메라 연결됨 · 단말 연결됨)',
+  kit:'수능 가방 (수험표 옆 시계 충전 케이블 · 셔츠)'
+};
+const SHORT=k=>ITEMS[k].split(' (')[0];
+/* ---------- 장면 ---------- */
+const hs=(id,x,y,w,h,inner='')=>`<g class="hs" data-h="${id}" tabindex="0">${inner}<rect class="hit" x="${x}" y="${y}" width="${w}" height="${h}" rx="6"/></g>`;
+const POSTS=[
+  {x:140,y:88,l:['국어 EBS','2회독 ✓']},{x:250,y:88,l:['수학 오답','21·22·30']},{x:360,y:88,l:['영어 듣기','✓']},
+  {x:470,y:88,l:['컴싸','챙기기!!']},{x:140,y:186,l:['아는 문제','부터']},{x:250,y:186,l:['D-1','일찍 자기']}
+];
+function sceneSeat(){
+  const lit=S.lamp;
+  const posts=POSTS.map((p,i)=>`<g transform="translate(${p.x} ${p.y}) rotate(${i%2?-2:2} 45 40)"><rect width="92" height="80" fill="#f7e27a"/><rect width="92" height="12" fill="#efd45e"/><text x="8" y="40" font-size="15" fill="#222" style="font-family:var(--hand)">${p.l[0]}</text><text x="8" y="60" font-size="15" fill="#222" style="font-family:var(--hand)">${p.l[1]}</text></g>`).join('');
+  return `<svg viewBox="0 0 800 450" role="img" aria-label="서윤의 27번 자리">
+  <defs><radialGradient id="cone" cx=".5" cy="0" r="1"><stop offset="0" stop-color="#fff6c8" stop-opacity=".55"/><stop offset="1" stop-color="#fff6c8" stop-opacity="0"/></radialGradient>
+    <pattern id="fab" width="6" height="6" patternUnits="userSpaceOnUse"><rect width="6" height="6" fill="#8b869a"/><path d="M0 0 L6 6" stroke="#7e7990" stroke-width="1"/></pattern></defs>
+  <rect width="800" height="450" fill="#2a2440"/><rect y="390" width="800" height="60" fill="#1a1628"/>
+  <path d="M40 30 L118 66 L118 392 L40 436Z" fill="#cfc8b8"/><path d="M760 30 L682 66 L682 392 L760 436Z" fill="#c4bdac"/>
+  <rect x="118" y="66" width="564" height="236" fill="url(#fab)"/>
+  <g transform="translate(600 72)"><rect width="56" height="26" fill="#f4efe2" stroke="#5a4c90" stroke-width="2"/><text x="28" y="19" font-size="16" text-anchor="middle" font-weight="700" fill="#3a2f66">27</text></g>
+  ${hs('wall',130,80,450,200,posts)}
+  <path d="M40 302 L760 302 L780 360 L20 360Z" fill="#c9a876"/><rect x="20" y="360" width="760" height="18" fill="#9c7f55"/>
+  ${hs('planner',130,306,150,48,`<g transform="translate(140 308) rotate(-3)"><rect width="128" height="40" rx="3" fill="#5a4c90"/><rect x="6" y="5" width="116" height="30" fill="#efeaf6"/><text x="64" y="26" font-size="13" text-anchor="middle" fill="#3a2f66">PLANNER D-1</text></g>`)}
+  ${hs('sphone',320,310,100,46,`<g transform="translate(340 316) rotate(6)"><rect width="60" height="32" rx="6" fill="#111"/><rect x="4" y="4" width="52" height="24" rx="3" fill="${S.ch>=3?'#7fa4e8':'#283040'}"/></g>`)}
+  ${hs('book',450,306,130,48,`<g transform="translate(456 312)"><rect width="112" height="34" fill="#c0392b"/><rect y="28" width="112" height="6" fill="#efe8d6"/><text x="56" y="22" font-size="12" text-anchor="middle" fill="#fff">수능특강 수학</text></g>`)}
+  ${lit?`<path d="M560 168 L470 302 L700 302 L640 168Z" fill="url(#cone)"/>`:''}
+  ${hs('lamp',540,120,140,170,`<rect x="596" y="290" width="70" height="12" rx="3" fill="#333"/><path d="M630 290 L612 190 L590 168" stroke="#444" stroke-width="7" fill="none"/><path d="M548 160 L630 160 L612 136 L566 136Z" fill="${lit?'#e8e2d0':'#555'}"/><circle cx="650" cy="296" r="4" fill="${lit?'#e07a1f':'#333'}"/>`)}
+  ${hs('bag',690,370,90,70,`<path d="M700 440 L706 386 Q735 372 764 386 L770 440Z" fill="#3b4a6b"/><path d="M718 386 Q735 362 752 386" stroke="#2a3550" stroke-width="5" fill="none"/><rect x="742" y="398" width="16" height="22" fill="#c9d6ea" transform="rotate(8 750 409)"/>`)}
+  ${hs('shirt',44,96,74,200,`<path d="M58 110 L72 102 L81 112 L90 102 L104 110 L112 140 L104 146 L104 280 L58 280 L58 146 L50 140Z" fill="#eef2f7" stroke="#9aa4b4" stroke-width="2"/><path d="M81 112 V280" stroke="#c9d1dc"/>${[130,160,190,220].map(y=>`<circle cx="81" cy="${y}" r="2.6" fill="#ccd"/>`).join('')}`)}
+  ${hs('pbank',280,308,40,48,`<g transform="translate(300 332) rotate(-10)"><rect x="-7" y="-24" width="14" height="48" rx="3" fill="#5a3d2b"/><circle r="13" fill="#fbf8ef" stroke="#8a8f9a" stroke-width="3"/><path d="M0 0 V-8 M0 0 L6 3" stroke="#222" stroke-width="1.6"/><rect x="12" y="-2" width="4" height="4" fill="#8a8f9a"/></g>`)}
+  ${hs('trash',300,384,64,58,`<path d="M306 392 L358 392 L352 442 L312 442Z" fill="#55506a"/><path d="M318 392 Q324 380 338 386" stroke="#f4efe2" stroke-width="5" fill="none"/>`)}
+  ${lit?'':`<rect width="800" height="450" fill="#05040c" opacity=".6" pointer-events="none"/>`}
+</svg>`}
+function sceneHall(){
+  const lk=(i)=>{const n=21+i,x=80+(i%4)*90,y=100+Math.floor(i/4)*120,me=n===27;
+    return `<g><rect x="${x}" y="${y}" width="84" height="114" fill="${me?'#8e8aa8':'#7b7794'}" stroke="#4a4660" stroke-width="2"/><path d="M${x+10} ${y+14} h30 M${x+10} ${y+20} h30 M${x+10} ${y+26} h30" stroke="#5a5670" stroke-width="2"/><rect x="${x+54}" y="${y+8}" width="24" height="16" fill="#f4efe2"/><text x="${x+66}" y="${y+20}" font-size="11" text-anchor="middle" fill="#222">${n}</text>
+      ${me?`<rect x="${x+24}" y="${y+56}" width="36" height="26" rx="3" fill="#222" stroke="#bbb" stroke-width="2"/><text x="${x+42}" y="${y+74}" font-size="11" text-anchor="middle" fill="#ddd">27</text>${S.f.locker?`<rect x="${x}" y="${y}" width="10" height="114" fill="#2a2440"/>`:''}`:`<circle cx="${x+42}" cy="${y+70}" r="5" fill="#4a4660"/>`}</g>`};
+  return `<svg viewBox="0 0 800 450" role="img" aria-label="독서실 복도">
+  <rect width="800" height="450" fill="#34304a"/><rect y="350" width="800" height="100" fill="#22202f"/><path d="M0 350 L800 350" stroke="#4a4660" stroke-width="3"/>
+  ${Array.from({length:8},(_,i)=>i===6?'':lk(i)).join('')}
+  ${hs('others',80,100,350,234)}
+  ${hs('locker',80+2*90,220,84,114,lk(6))}
+  ${hs('board',520,70,200,140,`<rect x="520" y="70" width="200" height="140" fill="#b88a55" stroke="#7a5a35" stroke-width="4"/><rect x="536" y="84" width="80" height="100" fill="#fffdf4" transform="rotate(-3 576 134)"/><text x="576" y="108" font-size="11" text-anchor="middle" fill="#a3312a" font-weight="700">9월 모의고사</text><path d="M548 120 h56 M548 132 h56 M548 144 h56 M548 156 h40" stroke="#888" stroke-width="3"/><rect x="628" y="92" width="76" height="60" fill="#f7e27a" transform="rotate(4 666 122)"/><text x="666" y="120" font-size="11" text-anchor="middle">23:30 소등</text><text x="666" y="136" font-size="11" text-anchor="middle">수능 대박!</text>`)}
+  ${hs('printer',520,240,150,110,`<rect x="510" y="320" width="180" height="30" fill="#5a4a3a"/><rect x="530" y="250" width="140" height="70" rx="6" fill="#d8d6de"/><rect x="545" y="240" width="110" height="14" fill="#bdbac6"/><rect x="556" y="300" width="88" height="10" fill="#333"/><circle cx="650" cy="268" r="4" fill="#3c3"/>`)}
+  <text x="760" y="300" font-size="14" text-anchor="end" fill="#d8d2e8">열람실 →</text>
+</svg>`}
+function sceneOffice(){
+  return `<svg viewBox="0 0 800 450" role="img" aria-label="총무실 창구">
+  <rect width="800" height="450" fill="#3b3550"/><rect y="370" width="800" height="80" fill="#24202f"/>
+  <rect x="90" y="70" width="460" height="230" fill="#1d1a28" stroke="#6b6585" stroke-width="10"/>
+  <rect x="100" y="80" width="440" height="210" fill="#2a2638"/><rect x="100" y="230" width="440" height="60" fill="#6b4f35"/>
+  ${hs('monitor',280,120,170,120,`<rect x="290" y="128" width="150" height="100" rx="4" fill="#111"/><rect x="298" y="136" width="134" height="80" fill="#2f4a3a"/><path d="M310 160 h40 M310 180 h60 M380 150 v50" stroke="#5f8a6a" stroke-width="3"/><text x="365" y="210" font-size="10" text-anchor="middle" fill="#bfe8bf">CCTV</text><rect x="352" y="228" width="26" height="10" fill="#333"/>`)}
+  ${hs('sign',140,110,130,90,`<g transform="rotate(-4 205 150)"><rect x="146" y="116" width="118" height="70" fill="#fffdf4" stroke="#a3312a" stroke-width="3"/><text x="205" y="146" font-size="18" text-anchor="middle" fill="#a3312a" font-weight="700">순찰 중</text><text x="205" y="170" font-size="13" text-anchor="middle" fill="#333">금방 옴 — 총무</text></g>`)}
+  <rect x="80" y="300" width="480" height="20" fill="#8a6a48"/>
+  ${hs('duty',590,80,140,130,`<rect x="600" y="80" width="120" height="120" fill="#fffdf4"/><text x="660" y="110" font-size="12" text-anchor="middle">근무표</text><text x="660" y="134" font-size="12" text-anchor="middle">야간: 도윤</text><text x="660" y="156" font-size="11" text-anchor="middle" fill="#6b6358">(작년 27번 ㅋ)</text>`)}
+  ${hs('lost',590,250,140,110,`<rect x="600" y="270" width="120" height="90" fill="#8a7a5a"/><rect x="600" y="262" width="120" height="12" fill="#6a5a3a"/><text x="660" y="322" font-size="13" text-anchor="middle" fill="#fffdf4">분실물</text>`)}
+</svg>`}
+function sceneLounge(){
+  return `<svg viewBox="0 0 800 450" role="img" aria-label="휴게실">
+  <rect width="800" height="450" fill="#403a58"/><rect y="370" width="800" height="80" fill="#2a2638"/>
+  <rect x="80" y="70" width="300" height="150" fill="#1e2a40" stroke="#6b6585" stroke-width="8"/><circle cx="300" cy="110" r="18" fill="#e8e2c8" opacity=".8"/><text x="230" y="205" font-size="12" text-anchor="middle" fill="#8a94b0">창밖, 11월 12일 밤</text>
+  ${hs('yoon',90,230,280,170,`<rect x="100" y="330" width="260" height="14" fill="#9c7f55"/><rect x="120" y="344" width="10" height="56" fill="#6b5a40"/><rect x="330" y="344" width="10" height="56" fill="#6b5a40"/>
+    <circle cx="230" cy="262" r="24" fill="#e9c9a8"/><path d="M204 258 Q206 228 230 230 Q256 228 256 260 L256 300 L204 300Z" fill="#2a2030"/><path d="M194 334 Q196 290 230 290 Q264 290 266 334Z" fill="#c9cdd8"/>
+    <rect x="160" y="316" width="34" height="18" rx="3" fill="#f4efe2"/><rect x="270" y="318" width="30" height="16" rx="3" fill="#f4efe2"/>`)}
+  ${hs('vend',460,70,150,300,`<rect x="470" y="76" width="130" height="294" rx="6" fill="#a3312a"/><rect x="482" y="92" width="80" height="170" fill="#1c1a24"/>${[0,1,2,3].map(r=>[0,1,2].map(c=>`<rect x="${488+c*25}" y="${100+r*40}" width="18" height="30" fill="${['#e9c46a','#2a9d8f','#e76f51','#f4f1de'][(r+c)%4]}"/>`).join('')).join('')}<rect x="568" y="110" width="22" height="80" fill="#2a2a2a"/><rect x="490" y="290" width="70" height="30" fill="#111"/><text x="535" y="355" font-size="12" text-anchor="middle" fill="#fff">컵라면 · 음료</text>`)}
+  ${hs('water',640,160,90,210,`<rect x="650" y="230" width="70" height="140" fill="#dfe6ee"/><rect x="660" y="160" width="50" height="74" rx="8" fill="#9cc3e6" opacity=".8"/><rect x="676" y="290" width="18" height="10" fill="#2a6fd6"/>`)}
+  <text x="40" y="430" font-size="13" fill="#d8d2e8">← 열람실</text>
+</svg>`}
+const SCENES={seat:sceneSeat,hall:sceneHall,office:sceneOffice,lounge:sceneLounge};
+
+/* ---------- 만지는 것 ---------- */
+const YOON=['','서윤이 컵라면 국물만 내려다보고 있다. "CCTV 보면 다 나올 거야."','서윤이 고개를 든다. "사진 봤어? 아무것도 안 보이지?"','서윤이 팔짱을 낀다. "나 3월부터 하루도 안 빠지고 여기 왔어."','서윤이 내 눈을 피한다. 젓가락만 만지작거린다.','서윤이 주머니 속에서 뭔가를 꽉 쥐고 있다.','서윤이 소매로 눈가를 누른다. "내일만… 내일만 지나면 되는데."'];
+const TAP={
+  wall(){showM('칸막이 포스트잇',`<div class="wall">${POSTS.map(p=>`<div class="pi">${p.l.join(' ')}</div>`).join('')}</div><p style="font-size:13px;color:#6b6358">서윤 글씨. 「수학 오답 21·22·30」에 별표가 세 개다.</p>`)},
+  lamp(){S.lamp=!S.lamp;SND.sw();save();render()},
+  planner(){showM('플래너 · 이번 주',`<table style="width:100%;border-collapse:collapse;font-size:15px">${[['11/10 (월)','D-3','국어 실전 ✓'],['11/11 (화)','D-2','충전 확인 ✓'],['11/12 (수)','D-1','← 오늘. 22:40 테스트']].map(r=>`<tr>${r.map((c,i)=>`<td style="border-bottom:1px dashed #bbb;padding:7px 4px;${i===1?'color:#a3312a;font-weight:700':''}${i===2?';font-family:var(--hand);font-size:21px':''}">${c}</td>`).join('')}</tr>`).join('')}</table><p style="font-size:13px;color:#6b6358;margin-top:8px">「충전 확인」, 「테스트」. 공부 계획표에 어울리지 않는 말이다.</p>`)},
+  sphone(){if(S.ch<5){toast('서윤의 폰. 서윤이 "그거 내 거야, 만지지 마" 했다. 아직은 손댈 이유가 없다.');return}openSP()},
+  pbank(){if(S.ch<5){toast('책상 위에 풀어 둔 서윤의 손목시계. 수능 때 차려고 산 아날로그 시계다. 그런데 초침이 멈춰 있다.');return}openBank()},
+  book(){toast('서윤의 수능특강 수학. 앞쪽 몇 장만 풀려 있고 뒤는 새 책이다.')},
+  bag(){showM('서윤의 가방',`<p>문제집, 필통, 핫팩. 앞주머니에 학생증과 접힌 성적표 세 장.</p>
+    <table style="width:100%;border-collapse:collapse;font-size:15px;background:#fffdf4">${[['3월 모의고사','3/26','국·수·영 4등급'],['6월 모의평가','6/4','2등급'],['9월 모의평가','9/3','전 과목 만점']].map(r=>`<tr>${r.map(c=>`<td style="border:1px solid #cfc6b0;padding:5px 6px">${c}</td>`).join('')}</tr>`).join('')}</table>
+    <p style="font-size:13px;color:#6b6358">석 달 만에 4등급에서 만점. 성적표를 사진으로 찍어 두었다.</p>`);give('grades');renderBag()},
+  trash(){showM('책상 밑 휴지통',`<p>컵라면 뚜껑, 귤껍질, 구겨진 택배 송장 한 장.</p><div class="pi" style="min-height:0;transform:rotate(-2deg);font-family:var(--mono);font-size:15px;background:#fff">배송 완료 <b>2025. 5. 12.</b><br>받는 분: 한서윤 (독서실 27번)<br>품명: <b>수험생용 아날로그 시계 세트</b><br>보낸 곳: (개인 판매자)</div><p style="font-size:13px;color:#6b6358">독서실로 받았다. 집으로 받기 싫었던 걸까.</p>`);give('parcel');renderBag()},
+  shirt(){openShirt()},
+  locker(){openLocker()},
+  others(){toast('다른 사람 사물함. 다 잠겨 있다.')},
+  board(){showM('복도 게시판',`<p class="hand">독서실 23:30 소등.<br>수능 응원 포스트잇은 자유롭게!</p><p style="font-size:14px">「D-1 수험생 여러분, 오늘은 일찍 주무세요 — 총무」<br>그 아래 교육청 안내문: 시험장 반입 가능 — 신분증, 컴퓨터용 사인펜, <b>아날로그 시계</b>(통신·결제 기능 없는 것)</p>`)},
+  printer(){toast('공용 프린터. 출력함이 비었다.')},
+  monitor(){openCCTV()},
+  sign(){toast('「순찰 중. 금방 옴 — 총무」 도윤 쌤 글씨다.')},
+  duty(){toast('야간 근무: 도윤. 누가 옆에 「작년 27번 ㅋ」라고 적어 놨다.')},
+  lost(){toast('분실물 상자. 우산, 이어폰, 짝 잃은 실내화.')},
+  yoon(){toast(YOON[S.ch]||YOON[6])},
+  vend(){toast('컵라면 버튼에 「품절」 불. 22:44에 서윤이 마지막 두 개를 뽑아 왔다. 하나는 내 몫이었다.')},
+  water(){toast('정수기. 종이컵이 다 떨어졌다.')}
+};
+/* ---------- 1장: CCTV ---------- */
+const SEATS={12:[150,70],14:[250,70],22:[150,170],27:[350,170]};
+function who(m){ // 22:30~23:00 (분)
+  const P=[];
+  if(m<45||m>=48)P.push(['12',...SEATS[12]]);else if(m===45)P.push(['mjwalk',230,130]);else if(m===46)P.push(['mjshoot',300,150]);else P.push(['mjwalk',220,120]);
+  if(m<43||m>=58)P.push(['14',...SEATS[14]]);else if(m===43)P.push(['mewalk',200,200]);
+  P.push(['22',...SEATS[22]]);
+  if(m<44||m>=59)P.push(['yoon',...SEATS[27]]);else if(m===44)P.push(['yoonwalk',230,210]);
+  return P;
+}
+function openCCTV(){
+  showM('CCTV · 열람실',`<div class="cctv"><div class="ts" id="cts"></div>
+    <svg viewBox="0 0 420 240" id="csv"></svg>
+    <input type="range" id="cv" min="30" max="60" value="${S.cctv}" aria-label="되감기"><div class="ts" style="display:flex;justify-content:space-between"><span>22:30</span><span>23:00</span></div></div>
+    <p class="lockmsg" id="cmsg">${S.f.cctv?'22:46, 민재는 자기 폰으로 찍기만 했다. 서윤 폰엔 손대지 않았다.':''}</p>`);
+  $('#cv').oninput=e=>{S.cctv=+e.target.value;save();SND.tap();drawCCTV()};
+  drawCCTV();
+}
+function drawCCTV(){
+  const m=S.cctv,away=m>=44&&m<59;
+  const fig=([k,x,y])=>`<g data-p="${k}" style="cursor:pointer"><circle cx="${x}" cy="${y-16}" r="10" fill="#ddd"/><rect x="${x-14}" y="${y-6}" width="28" height="26" rx="8" fill="#bbb"/>${k==='mjshoot'?`<path d="M${x+12} ${y} L${x+30} ${y-14}" stroke="#ddd" stroke-width="6"/><rect x="${x+26}" y="${y-30}" width="12" height="18" fill="#fff" stroke="#000"/>`:''}<rect x="${x-24}" y="${y-40}" width="${k==='mjshoot'?66:48}" height="66" fill="transparent"/></g>`;
+  const desk=(n,[x,y])=>`<rect x="${x-34}" y="${y+14}" width="68" height="22" fill="#777"/><text x="${x}" y="${y+30}" font-size="12" text-anchor="middle" fill="#111">${n}</text>`;
+  $('#cts').textContent=`CAM 2 · 열람실 · 2025-11-12 ${m===60?'23:00':'22:'+String(m).padStart(2,'0')}`;
+  $('#csv').innerHTML=`<rect width="420" height="240" fill="#3a3a3a"/><rect x="0" y="180" width="40" height="60" fill="#1a1a1a"/><text x="20" y="232" font-size="10" text-anchor="middle" fill="#ccc">휴게실</text>
+    ${Object.entries(SEATS).map(([n,p])=>desk(n,p)).join('')}${away?`<rect x="364" y="186" width="10" height="7" fill="#eee"/>`:''}${who(m).map(fig).join('')}`;
+  $('#modal').querySelectorAll('[data-p]').forEach(g=>g.onclick=()=>{const k=g.dataset.p,msg=$('#cmsg');
+    const T={'12':'12번 자리. 민재다. 늘 2등 하는 애.','14':'14번 자리. 나다.','mewalk':'나다. 서윤이랑 컵라면 먹으러 휴게실로.','22':'22번. 처음 보는 사람. 계속 엎드려 자고 있다.','yoon':S.cctv>=40&&S.cctv<44?'27번 자리. 서윤이 손목시계를 풀어 폰 옆에 두고 화면을 들여다본다.':'27번 자리. 서윤이다.','yoonwalk':'서윤이 휴게실로 간다. 폰은 책상에 두고.','mjwalk':'12번 자리에서 일어난 민재가 걷고 있다.'};
+    if(k!=='mjshoot'){msg.textContent=T[k];SND.click();return}
+    msg.innerHTML='화면을 키웠다. 민재가 27번 책상 앞에 서서 <b>자기 폰</b>을 들고 있다. 서윤의 폰은 책상 위 그대로. <b>손이 닿지 않는다.</b>';
+    if(!S.f.cctv){S.f.cctv=1;give('cctv');give('photo');tried('cctv',true);SND.ok();renderBag();toast('주머니에 담았다. 📱 카톡에서 서윤의 말을 반박할 수 있다.')}});
+}
+
+/* ---------- 2장: 사진 돋보기 ---------- */
+const LOGROWS=[['22:40 TEST 수학 1~5','③①⑤②④ 전송 완료'],['단추 카메라','연결됨'],['단말 (시계)','연결됨'],['다음 일정','11/13 08:40']];
+function photoSvg(){
+  return `<svg viewBox="0 0 400 260"><rect width="400" height="260" fill="#b08a5a"/><rect x="0" y="0" width="400" height="40" fill="#8b867a"/>
+  <rect x="20" y="70" width="110" height="150" fill="#f2efe4" transform="rotate(-8 75 145)"/><path d="M30 100 h80 M30 115 h80 M30 130 h70" stroke="#bbb" stroke-width="3" transform="rotate(-8 75 145)"/>
+  <g transform="rotate(4 240 150)"><rect x="170" y="56" width="140" height="190" rx="14" fill="#111"/><rect x="178" y="66" width="124" height="170" rx="6" fill="#1d2230"/>
+  <rect x="178" y="66" width="124" height="14" fill="#2b3245"/><text x="184" y="76" font-size="6" font-weight="700" fill="#cfd6e6">계산기 · 송출</text>
+  ${LOGROWS.map((r,i)=>`<rect x="178" y="${82+i*20}" width="124" height="19" fill="${i?'#232a3a':'#2f3a55'}"/><text x="184" y="${92+i*20}" font-size="${i?4.6:5}" font-weight="${i?400:700}" fill="#e6ebf5">${r[0]}</text><text x="296" y="${97+i*20}" font-size="3.8" text-anchor="end" fill="#9fb0d0">${r[1]}</text>`).join('')}
+  <circle cx="240" cy="215" r="8" fill="#2f3a55"/></g>
+  <g transform="rotate(-6 345 200)"><rect x="318" y="168" width="54" height="80" rx="8" fill="#e8e8ec"/>${[0,1,2,3].map(i=>`<rect x="${327+i*10}" y="236" width="6" height="4" fill="#4ad66d"/>`).join('')}<path d="M345 168 Q330 140 300 150" stroke="#ddd" stroke-width="3" fill="none"/></g></svg>`;
+}
+function openPhoto(){
+  const can=S.ch===2;
+  showM('커뮤니티 글 사진',`<div class="photo" id="pho"><div class="base">${photoSvg()}</div><div class="lens" id="lens"><div id="lin">${photoSvg()}</div></div><div class="ring" id="ring"></div></div>
+    <p style="font-size:13px;color:#6b6358">22:46 · 27번 책상 · 「직접 찍음」${can?' · 읽은 줄을 누르면 주머니에 담는다':''}</p>
+    ${can?'<p class="lockmsg" id="pmsg"></p>':S.f.log?'<p class="hand">맨 위 줄: 「22:40 TEST 수학 1~5 → ③①⑤②④ 전송 완료」</p>':''}`);
+  const box=$('#pho'),lens=$('#lens'),lin=$('#lin'),ring=$('#ring'),Z=3.2;
+  const pos=e=>{const r=box.getBoundingClientRect();return [e.clientX-r.left-box.clientLeft,e.clientY-r.top-box.clientTop,box.clientWidth]};
+  const mv=e=>{const [x,y]=pos(e),touch=e.pointerType!=='mouse',R=touch?80:72;
+    const cx=x,cy=touch?Math.max(R-20,y-110):y; // 손가락에 가리지 않게 돋보기를 위로
+    lens.style.clipPath=`circle(${R}px at ${cx}px ${cy}px)`;lin.style.transformOrigin=`${x}px ${y}px`;lin.style.transform=`translate(${cx-x}px,${cy-y}px) scale(${Z})`;
+    ring.style.display='block';ring.style.width=ring.style.height=R*2+6+'px';ring.style.margin=`${-R-3}px 0 0 ${-R-3}px`;ring.style.left=cx+'px';ring.style.top=cy+'px'};
+  box.onpointerdown=e=>{box.setPointerCapture(e.pointerId);mv(e)};
+  box.onpointermove=e=>{if(e.pointerType==='mouse'||e.buttons)mv(e)};
+  box.onpointerup=e=>{if(!can)return;const [x,y,w]=pos(e);
+    let px=x/w*400,py=y/w*400;const a=-4*Math.PI/180,dx=px-240,dy=py-150;px=240+dx*Math.cos(a)-dy*Math.sin(a);py=150+dx*Math.sin(a)+dy*Math.cos(a);
+    if(px<178||px>302||py<82||py>162)return;
+    const row=Math.floor((py-82)/20),m=$('#pmsg');
+    if(row===0){S.f.log=1;give('log');tried('photo',true);SND.ok();m.textContent='「22:40 TEST 수학 1~5 → ③①⑤②④ 전송 완료」. 공부 화면이 아니다. 주머니에 담았다.';renderBag();return}
+    tried('photo',false);SND.wrong();m.textContent=['','「단추 카메라 · 연결됨」… 무슨 카메라?','「단말 (시계) · 연결됨」… 시계가 왜 폰에 연결돼?','「다음 일정 11/13 08:40」… 내일, 수능 1교시 시작 시각이다.'][row]};
+}
+
+/* ---------- 4장: 셔츠 단추 (스탠드 빛 각도) ---------- */
+function openShirt(){
+  if(!S.lamp){showM('교복 셔츠',`<p>의자 등받이에 걸린 서윤의 교복 셔츠. 내일 입으려고 다려 두었다. 스탠드가 꺼져 있어 잘 안 보인다.</p>`);return}
+  const ang=S.ang??20,hit=ang>=58&&ang<=72;
+  showM('교복 셔츠 · 스탠드 비추기',`<div class="shirt"><svg viewBox="0 0 300 260"><defs><radialGradient id="glint"><stop offset="0" stop-color="#fff"/><stop offset=".4" stop-color="#bfe3ff" stop-opacity=".9"/><stop offset="1" stop-color="#bfe3ff" stop-opacity="0"/></radialGradient></defs>
+    <rect width="300" height="260" fill="#2a2440"/>
+    <path d="M70 30 L120 18 L150 40 L180 18 L230 30 L270 90 L240 110 L225 90 L225 250 L75 250 L75 90 L60 110 L30 90Z" fill="#eef2f7" stroke="#b8c2d0" stroke-width="2"/>
+    <path d="M150 40 L150 250" stroke="#c9d1dc" stroke-width="2"/>
+    <polygon points="${300-ang*2.6},0 ${330-ang*2.6},0 170,260 130,260" fill="#fff6c8" opacity=".12"/>
+    ${[70,110,150,190,230].map((y,i)=>`<g data-b="${i}" style="cursor:pointer"><circle cx="150" cy="${y}" r="7" fill="#f4f4f0" stroke="#aab" stroke-width="1.5"/><circle cx="148" cy="${y-1}" r="1.2" fill="#99a"/><circle cx="152" cy="${y+1}" r="1.2" fill="#99a"/>${i===1&&hit?`<circle cx="150" cy="${y}" r="26" fill="url(#glint)"/><path d="M150 ${y-30} V${y+30} M120 ${y} H180" stroke="#fff" stroke-width="2" opacity=".9"/>`:''}<rect x="132" y="${y-16}" width="36" height="32" fill="transparent"/></g>`).join('')}</svg></div>
+    <label style="display:block;font-size:14px;margin-top:8px">스탠드 각도 <input type="range" id="ang" min="0" max="90" value="${ang}" style="width:100%"></label>
+    <p class="lockmsg" id="smsg">${S.f.button?'둘째 단추 뒷면에 바늘구멍만 한 렌즈.':''}</p>`);
+  $('#ang').oninput=e=>{S.ang=+e.target.value;save();SND.tap();openShirt()};
+  $('#modal').querySelectorAll('[data-b]').forEach(g=>g.onclick=()=>{const i=+g.dataset.b,m=$('#smsg');
+    if(i!==1){m.textContent='평범한 플라스틱 단추다.';SND.click();return}
+    if(!hit){m.textContent='둘째 단추. 다른 단추보다 조금 두껍다…? 빛을 비춰 봐야 알겠다.';SND.click();return}
+    m.innerHTML='빛을 받은 둘째 단추만 <b>유리처럼</b> 번쩍인다. 뒤집어 보니 바늘구멍만 한 <b>렌즈</b>와 얇은 선.';
+    if(!S.f.button){S.f.button=1;give('button');tried('button',true);SND.ok();renderBag()}});
+}
+
+/* ---------- 5장: 손목시계 · 서윤의 폰 ---------- */
+const SEQ=[3,1,5,2,4];
+function openBank(){
+  const sc=S.screws||[0,0,0,0],open=sc.every(Boolean);
+  if(!open){
+    showM('손목시계 · 뒷면',`<div class="pb"><svg viewBox="0 0 240 240"><rect x="90" y="0" width="60" height="40" fill="#5a3d2b"/><rect x="90" y="200" width="60" height="40" fill="#5a3d2b"/><circle cx="120" cy="120" r="92" fill="#c9ccd4" stroke="#8a8f9a" stroke-width="6"/><circle cx="120" cy="120" r="70" fill="none" stroke="#a9adb6" stroke-width="2"/><text x="120" y="116" font-size="11" text-anchor="middle" fill="#6b707a">QUARTZ · 수험생용</text><text x="120" y="132" font-size="8" text-anchor="middle" fill="#8a8f9a">WATER RESIST</text>
+      ${[[120,46],[194,120],[120,194],[46,120]].map(([x,y],i)=>sc[i]?`<circle cx="${x}" cy="${y}" r="6" fill="#8a8f9a" opacity=".4"/>`:`<g data-sc="${i}" style="cursor:pointer"><circle cx="${x}" cy="${y}" r="8" fill="#b4b8c0" stroke="#5c616b" stroke-width="2"/><path d="M${x-4} ${y} h8" stroke="#4a4f58" stroke-width="2"/><circle cx="${x}" cy="${y}" r="20" fill="transparent"/></g>`).join('')}</svg></div>
+      <p class="lockmsg" id="bmsg">싸구려 쿼츠 시계 뒷뚜껑에 나사가 네 개. 돌려 본다.</p>`);
+    $('#modal').querySelectorAll('[data-sc]').forEach(g=>g.onclick=()=>{sc[+g.dataset.sc]=1;S.screws=sc;SND.click();save();openBank()});return}
+  const num=[...Array(12)].map((_,i)=>{const n=i+1,a=n*Math.PI/6;return `<text x="${120+70*Math.sin(a)}" y="${125-70*Math.cos(a)}" font-size="16" text-anchor="middle" fill="#222" style="font-family:var(--serif)">${n}</text>`}).join('');
+  showM('손목시계 · 속',`<div class="pb" style="display:flex;gap:8px"><svg viewBox="0 0 240 240"><circle cx="120" cy="120" r="92" fill="#2c3a2c" stroke="#8a8f9a" stroke-width="6"/><rect x="70" y="70" width="100" height="70" fill="#1f5a34"/><rect x="82" y="82" width="30" height="30" fill="#111"/><text x="97" y="101" font-size="8" text-anchor="middle" fill="#ccc">RX</text><path d="M120 86 h38 M120 98 h30 M120 110 h40 M82 128 h76" stroke="#c9a43a" stroke-width="2"/><circle cx="120" cy="175" r="16" fill="#9aa" /><text x="120" y="179" font-size="8" text-anchor="middle" fill="#334">전지</text></svg>
+    <svg viewBox="0 0 240 240"><circle cx="120" cy="120" r="92" fill="#fbf8ef" stroke="#8a8f9a" stroke-width="6"/>${num}<line x1="120" y1="120" x2="120" y2="76" stroke="#222" stroke-width="5" stroke-linecap="round" transform="rotate(300 120 120)"/><line x1="120" y1="120" x2="120" y2="60" stroke="#222" stroke-width="3.5" stroke-linecap="round" transform="rotate(60 120 120)"/><line id="sec" x1="120" y1="132" x2="120" y2="42" stroke="#c0392b" stroke-width="2" style="transition:transform .35s" transform="rotate(0 120 120)"/><circle cx="120" cy="120" r="4" fill="#c0392b"/></svg></div>
+    <p style="font-size:14px">톱니바퀴 대신 <b>수신 기판</b>이 들어 있다. 앞면 초침이 째깍째깍 가지 않고 가만히 있다.</p>
+    <div class="actions" style="justify-content:flex-start"><button class="btn" id="play">▶ 용두를 당겼다 눌러 보기</button></div>
+    <div id="bq" style="display:none"><p>초침이 멈춰 선 숫자를 차례로 적으면?</p><div class="pick">${['③①⑤②④','③①④②⑤','⑨③⑤②④'].map(o=>`<button data-o="${o}">${o}</button>`).join('')}</div></div>
+    <p class="lockmsg" id="bmsg">${S.f.bank?'③①⑤②④. 사진 속 로그와 똑같다.':''}</p>`);
+  $('#play').onclick=async()=>{const sec=$('#sec'),b=$('#play');b.disabled=true;
+    const w=ms=>new Promise(r=>setTimeout(r,ms)),to=d=>sec.setAttribute('transform',`rotate(${d} 120 120)`);
+    for(const n of SEQ){if(!sec.isConnected)return;to(n*30);SND.tap();await w(1300);to(0);await w(500)}
+    if(!sec.isConnected)return;b.disabled=false;$('#bq').style.display='block'};
+  $('#modal').querySelectorAll('[data-o]').forEach(x=>x.onclick=()=>{const m=$('#bmsg');
+    if(x.dataset.o!=='③①⑤②④'){tried('bank',false);SND.wrong();m.textContent='다시 보자. 초침은 12에서 출발해 숫자 하나에 멈췄다가 12로 돌아온다.';return}
+    m.innerHTML='③①⑤②④. <b>사진 속 송출 로그와 똑같다.</b> 이건 시간을 재는 시계가 아니라 답을 받는 기계다.';
+    if(!S.f.bank){S.f.bank=1;give('bank');tried('bank',true);SND.ok();renderBag()}});
+}
+function openSP(){
+  const v=S.ph;let bar='',body='';
+  const back=to=>`<button data-go="${to}" aria-label="뒤로">‹</button>`;
+  if(v==='home'){bar='<span>23:18</span><span>🔋 41%</span>';
+    body=`<div class="apps">${[['kakao','#f2c200','💬','카톡'],['gallery','#3a7bd5','▣','사진'],['calc','#ff9f0a','±','계산기'],['set','#6b6f7a','⚙','설정']].map(([k,c,i,n])=>`<button class="app-i" data-go="${k}"><i style="background:${c}">${i}</i>${n}</button>`).join('')}</div><p class="empty">사진 속 그 화면 앱이 홈에 없다.</p>`}
+  else if(v==='calc'){bar=`${back('home')}<span>계산기</span><span></span>`;body='<div style="font-size:40px;text-align:right;padding:20px 10px;font-family:var(--mono)">0</div><p class="empty">평범한 계산기다. 눌러도 숫자만 나온다.</p>'}
+  else if(v==='set'){bar=`${back('home')}<span>설정</span><span></span>`;
+    body=[['set','디스플레이',''],['data','데이터 사용량',''],['set','배터리',''],['set','블루투스','기기 2개']].map(([k,n,s])=>`<button class="li" data-go="${k}">${n}<small>${s}</small></button>`).join('')}
+  else if(v==='data'){bar=`${back('set')}<span>데이터 사용량 · 이번 달</span><span></span>`;
+    body=[['계산기','4.2GB'],['유튜브','1.1GB'],['카톡','310MB'],['사진','12MB']].map(([n,s])=>`<button class="li" data-go="${n==='계산기'?'calcinfo':'data'}">${n}<small>${s}</small></button>`).join('')}
+  else if(v==='calcinfo'){bar=`${back('data')}<span>앱 정보 · 계산기</span><span></span>`;body='<p class="empty">데이터 4.2GB · 백그라운드 실행 허용 · 카메라·블루투스 권한</p><button class="li" data-go="hidden"><b>열기</b><small>›</small></button>'}
+  else if(v==='hidden'){bar=`${back('calcinfo')}<span>송출</span><span></span>`;
+    body=`<div class="chat">${LOGROWS.slice(1,3).map(r=>`<div class="a">${r[0]} · <b>${r[1]}</b></div>`).join('')}<div class="a">자동 풀이: <b>켜짐</b> · 사진 받으면 바로 풀어서 단말로 보냄</div><time>기록: 6/4 · 9/3 · 오늘 22:40 TEST</time></div>`}
+  else if(v==='kakao'){bar=`${back('home')}<span>카톡</span><span></span>`;body='<p class="empty">서윤의 개인 대화까지 보지는 않기로 했다.</p>'}
+  else if(v==='gallery'){bar=`${back('home')}<span>사진</span><span></span>`;body='<p class="empty">시험지 사진이 수백 장. 전부 위에서 내려다본 각도로, 조금씩 기울어 있다.</p>'}
+  showM('서윤의 폰',`<div class="sp"><div class="scr"><div class="bar">${bar}</div>${body}</div></div>`);
+  $('#modal').querySelectorAll('.sp [data-go]').forEach(b=>b.onclick=()=>{S.ph=b.dataset.go;SND.tap();save();openSP()});
+  if(v==='hidden'&&!S.f.link){S.f.link=1;give('link');tried('phone',true);SND.ok();renderBag()}
+}
+
+/* ---------- 6장: 사물함 · 수능 가방 ---------- */
+function openLocker(){
+  if(S.ch<6){showM('27번 사물함',`<p>잠겨 있지 않다. 안에 쇼핑백과 수능 가방. 서윤이 "내일 가져갈 거야, 건드리지 마"라고 했었다.</p><p style="font-size:13px;color:#6b6358">지금은 먼저 확인할 게 있다.</p>`);return}
+  showM('27번 사물함 · 수능 가방',`<p>지퍼를 연다. 맨 위에 수험표와 컴퓨터용 사인펜.</p><ul style="line-height:1.8"><li>다려서 접어 둔 교복 셔츠 한 벌 더 (둘째 단추가 두껍다)</li><li>충전 케이블 한 가닥, 끝이 시계 뒷면 단자 모양. 시계는 원래 충전하지 않는다</li><li>포스트잇: <span class="hand" style="font-size:20px">"06:30 시계 충전 확인 / 폰 제출 전 앱 켜기"</span></li></ul><p style="font-size:13px;color:#6b6358">내일 들고 갈 준비가 끝나 있다.</p>`);
+  if(!S.f.kit){S.f.kit=1;give('kit');tried('kit',true);SND.ok();renderBag()}
+}
+
+/* ---------- 폰 (카톡) ---------- */
+function openPhone(){
+  S.unread=0;save();renderHud();
+  let last='';
+  const html=MSGS.filter(m=>m[0]<=S.ch).map(([,w,t,x])=>{
+    if(w==='cap'){const [q,s]=x.split('|');return `<div class="msg cap"><small>사진</small><q>${q}</q><small>${s}</small></div>`}
+    const head=w!=='me'&&w!==last?`<div class="who">${w}</div>`:'';last=w;
+    return `${head}<div class="msg ${w==='me'?'me':''}">${x.replace(/\n/g,'<br>')}<small>${t}</small></div>`}).join('');
+  showM('📱 카톡',`<div class="phone" id="ph">${html}</div><div class="actions" style="justify-content:flex-start">${S.ch>=2?'<button class="btn" id="toPho">📷 사진 크게 보기</button>':''}${CLAIM[S.ch]?'<button class="btn primary" id="toVer">반박하기</button>':''}</div>`);
+  const ph=$('#ph');ph.scrollTop=ph.scrollHeight;
+  const a=$('#toPho');if(a)a.onclick=openPhoto;
+  const v=$('#toVer');if(v)v.onclick=openObj;
+}
+const OPEN_ITEM={photo:openPhoto,log:openPhoto,cctv:openCCTV,grades:()=>TAP.bag(),parcel:()=>TAP.trash(),button:openShirt,bank:()=>{if(S.ch>=5)openBank();else toast(ITEMS.bank)},link:()=>{S.ph='hidden';openSP()},kit:openLocker};
+
+/* ---------- 진행 ---------- */
+function adv(n){
+  ana('chapter_solved',{chapter:S.ch,minutes_used:anaMin()});
+  S.ch=n;S.unread=1;ana('chapter_opened',{chapter:n,minutes_used:anaMin()});save();SND.ding();renderHud();render();
+  toast('📱 카톡이 왔다.');
+}
+function record(ms,ok=true){try{const k='hn.clear.note07',p=JSON.parse(localStorage.getItem(k)||'{}');localStorage.setItem(k,JSON.stringify({ok:ok||!!p.ok,best:ok?Math.min(p.best||Infinity,ms):p.best||null,last:ms,at:Date.now()}))}catch{}}
+function finish(){
+  if(S.done)return;
+  ana('chapter_solved',{chapter:6,minutes_used:anaMin()});
+  S.done=true;S.v='end';save();record(S.ms);SND.humOn(false);
+  ana('case_finished',{grade:'solved',points:1,clue_count:6,clue_total:6,minutes_used:anaMin(),play_minutes:anaMin()});
+  render();window.scrollTo(0,0);
+}
+
+/* ---------- 화면 ---------- */
+function renderHud(){
+  $('#time').textContent=fmt(S.ms);$('#hintCount').textContent=hintTotal();
+  $('#btnHint').disabled=!S.started||S.done;$('#btnPhone').disabled=!S.started||S.done;
+  $('#btnPhone').classList.toggle('new',!!S.unread&&S.started&&!S.done);
+  $('#btnSnd').textContent=SND.on?'🔈':'🔇';
+}
+function renderBag(){const b=$('#bag');if(!b)return;b.innerHTML='<span>주머니</span>'+S.items.map(i=>`<button class="it ${S.newItem===i?'new':''}" data-i="${i}">${ITEMS[i].split(' (')[0]}</button>`).join('');
+  b.querySelectorAll('[data-i]').forEach(x=>x.onclick=()=>{S.newItem=null;save();const k=x.dataset.i;if(OPEN_ITEM[k])OPEN_ITEM[k]();else toast(ITEMS[k])})}
+function render(){
+  renderHud();
+  const tabs=$('#tabs'),pg=$('#page');
+  if(S.v==='cover'){tabs.innerHTML='';pg.innerHTML=pageCover();$('#start').onclick=start;return}
+  if(S.v==='end'){tabs.innerHTML='';pg.innerHTML=pageEnd();bindEnd();return}
+  tabs.innerHTML=Object.entries(PLACES).map(([k,n])=>`<button class="tab ${S.v===k?'on':''}" data-go="${k}">${n}</button>`).join('');
+  tabs.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{if(S.v===b.dataset.go)return;S.v=b.dataset.go;SND.click();save();ana('location_opened',{location:S.v,minutes_used:anaMin()});render()});
+  pg.innerHTML=`<div class="scene"><span class="where">${PLACES[S.v]}</span><span class="clock">${CLOCK[S.ch]}</span>${SCENES[S.v]()}</div><div class="bag" id="bag"></div>`;
+  pg.querySelectorAll('.hs[data-h]').forEach(g=>{const go=()=>{const f=TAP[g.dataset.h];if(f)f()};g.onclick=go;g.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}}});
+  renderBag();
+}
+function pageCover(){
+  return `<section class="cover">
+    <h2>내일이 수능이다.</h2>
+    <p class="story">밤 11시, 동네 독서실. 내 자리는 14번이고, 27번은 단짝 <b>서윤</b>의 자리다. 서윤은 9월 모의고사에서 <b>전 과목 만점</b>을 받았다.</p>
+    <p class="story">그런데 22:47, 학교 커뮤니티에 이런 글이 올라왔다.</p>
+    <div class="board"><b>학교 커뮤니티 · 익명 · 오늘 22:47 · 댓글 132</b><q>"9모 만점자 그거 AI임. 독서실에서 직접 찍음"</q><small>[첨부 사진] 27번 책상 위에 놓인 서윤의 폰. 화면에 무슨 앱이 켜져 있는데, 흐려서 잘 안 보인다.</small></div>
+    <p class="story">사진 속 책상은 틀림없이 서윤 자리다. 서윤은 울먹이며 말한다. <span class="hand" style="font-size:22px">"나 진짜 아니야. 누가 꾸민 거야."</span></p>
+    <p class="story">나는 서윤을 믿는다. 독서실이 문을 닫는 11시 30분 전에, <b>서윤이 정말 AI를 썼는지</b> 내 눈으로 확인하기로 했다.</p>
+    <p style="font-size:13px;color:#6b6358">위쪽 탭으로 독서실 곳곳을 오가고, 그림 속 물건을 눌러 살펴본다. 서윤의 카톡은 📱 폰으로 온다.</p>
+    <button class="btn primary" id="start">${S.started?'이어서 조사':'조사 시작'}</button>
+    <p style="font-size:12px;color:#6b6358;margin-top:14px">시제품 · 진행 상황은 이 브라우저에 저장돼요 · 소리가 나요</p>
+  </section>`}
+function pageEnd(){
+  const h=hintTotal(),ansH=Object.values(S.hints).filter(n=>n>=3).length;
+  const grade=h===0?'수석':ansH===0?'합격':'수험생';
+  return `<article class="result">
+    <div class="seal">${grade}</div>
+    <dl><div><dt>걸린 시간</dt><dd>${fmt(S.ms)}</dd></div><div><dt>힌트</dt><dd>${h}장</dd></div></dl>
+    <p class="hand" style="font-size:26px;margin:4px 0 10px">진실: 서윤의 만점은 단추 카메라와 AI, 그리고 아날로그 시계였다.</p>
+    <p>5월 12일, 서윤은 개인 판매자에게 「수험생용 아날로그 시계 세트」를 샀다. 교복 둘째 단추로 위장한 카메라가 시험지를 찍어 보내면, 시험 전에 제출한 서윤의 폰이 제출함 안에서 켜진 채 AI로 문제를 풀었다. 답은 아날로그 손목시계로 위장한 수신기로 돌아왔다. 초침이 잠깐 멈췄다가 가리키는 숫자가 답 번호였다. 시험장에 차고 들어가도 되는 단 하나의 기계. 6월 모의평가 2등급, 9월 모의평가 전 과목 만점.</p>
+    <p>오늘 밤 22:40, 서윤은 내일을 위한 마지막 테스트를 돌렸다. 화면을 켜 둔 채 컵라면을 사러 간 사이, 22:46 민재가 손대지 않고 그 화면을 찍었다. 모함이 아니라 제보였다.</p>
+    <p>23시 25분, 순찰에서 돌아온 도윤 쌤에게 셔츠와 시계, 폰을 그대로 넘겼다. 쌤은 한참 말이 없다가 112에 전화를 걸었다. 경찰은 장비를 압수했고, 서윤은 부모님과 함께 경찰서로 갔다. 서윤은 <b>내일 수능을 보지 못한다.</b> 6월·9월 성적은 무효가 되고, 위계에 의한 업무방해로 수사를 받는다. 송장 속 판매자 계정도 넘겨졌다. 장비를 팔던 업자는 다음 주 구속됐고, 같은 세트를 산 수험생이 전국에 서른 명 넘게 있었다.</p>
+    <p>경찰차에 타기 전, 서윤이 처음으로 내 눈을 봤다. <span class="hand" style="font-size:22px">"한 번만 오르면 그만두려고 했어. 근데 만점이 나오니까… 못 멈추겠더라."</span></p>
+    <p>민재는 아무 말 없이 글을 지웠다. 대신 이렇게 남겼다. 「모함이라고 한 사람들, 사과는 안 바람. 내일 시험 잘 보셈.」</p>
+    <p>내일 아침이면 전국의 수험생 수십만 명이 같은 시각에 같은 시험지를 펼친다. 모르는 문제 앞에서도 끝까지 연필을 놓지 않는 사람, 틀린 답이라도 자기 손으로 고른 사람. <b>그 사람들의 1점을 지키는 게, 오늘 밤 내가 할 수 있는 전부였다.</b></p>
+    <p>소등. 텅 빈 27번 칸막이에 포스트잇 한 장을 붙였다.</p>
+    ${S.note?`<div class="left">${esc(S.note)}<br><small style="font-size:15px">— 14번 지수</small></div>`:`<div class="leave"><input id="noteIn" maxlength="40" placeholder="서윤에게 한 줄"><button class="btn" id="noteOk">붙이기</button></div>`}
+    <div class="row"><button class="btn" id="again">처음부터 다시</button><a class="btn primary" href="../../" style="text-decoration:none">사건 대장으로</a></div>
+  </article>`}
+const esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function bindEnd(){
+  const ok=$('#noteOk');if(ok)ok.onclick=()=>{const v=$('#noteIn').value.trim();if(!v)return;S.note=v;save();SND.ok();render()};
+  $('#again').onclick=()=>{if(confirm('처음부터 다시 할까요? 지금 기록은 지워져요.')){ana('case_restarted');S=fresh();save();render()}};
+}
+function start(){
+  if(!S.started){S.started=true;ana('case_started');ana('chapter_opened',{chapter:1,minutes_used:0});S.unread=1}
+  S.v=S.v==='cover'?'seat':S.v;save();SND.ac();SND.humOn(true);render();
+  if(S.unread)setTimeout(()=>{SND.ding();toast('📱 카톡이 왔다.')},500);
+}
+
+/* ---------- 모달 · 힌트 ---------- */
+function showM(t,html){$('#modal').innerHTML=`<h2>${t}</h2>${html}<div class="actions"><button class="btn" id="mclose">닫기</button></div>`;$('#mbg').classList.add('on');$('#mclose').onclick=closeM}
+function closeM(){$('#mbg').classList.remove('on');if(S.v!=='end'&&S.v!=='cover')render()}
+$('#mbg').onclick=e=>{if(e.target.id==='mbg')closeM()};
+addEventListener('keydown',e=>{if(e.key==='Escape'&&$('#mbg').classList.contains('on'))closeM()});
+function openHint(){
+  const c=S.ch,H=HINTS[c],got=S.hints[c]||0,lab=['어디를','어떻게','정답'];
+  showM(`${CLOCK[c]} 힌트`,`<div class="posts">${H.map((h,i)=>i<got?`<div class="post"><small>${lab[i]}</small>${h}</div>`:i===got?`<button class="post closed" id="peel">포스트잇 ${i+1} 떼어 보기 (${lab[i]})</button>`:`<div class="post closed">포스트잇 ${i+1}</div>`).join('')}</div>`);
+  const p=$('#peel');if(p)p.onclick=()=>{S.hints[c]=got+1;ana('hint_revealed',{chapter:c,level:got+1,minutes_used:anaMin()});save();renderHud();openHint()};
+}
+$('#btnHint').onclick=openHint;
+$('#btnPhone').onclick=openPhone;
+$('#btnSnd').onclick=()=>{SND.on=!SND.on;if(!SND.on)SND.humOn(false);else if(S.started&&!S.done)SND.humOn(true);renderHud()};
+
+setInterval(()=>{if(S.started&&!S.done&&S.v!=='cover'&&document.visibilityState==='visible'){S.ms+=1000;$('#time').textContent=fmt(S.ms);if(S.ms%10000===0)save()}},1000);
+addEventListener('pagehide',()=>{save();if(S.started&&!S.done)ana('case_left',{stage:'investigating',location:S.v,clue_count:S.ch-1,minutes_used:anaMin(),play_minutes:anaMin()},true)});
+
+ana('case_intro_viewed');
+if(resumed)ana('case_resumed',{clue_count:S.ch-1,minutes_used:anaMin()});
+if(S.v!=='cover'&&S.v!=='end'&&S.started)S.v='cover';
+render();
+</script>
+</body>
+</html>
