@@ -23,7 +23,8 @@ module.exports=(req,res)=>{
   const p=new URLSearchParams();if(en)p.set('lang','en');if(grade)p.set('r',grade);stat.forEach((v,k)=>p.set(k,v));
   const to=`${BASE}/notes/${n}/?${p}`;
   const title=`「${note.t}」 ${grade||'기록'}`;
-  const desc=[t>=0&&`${Math.floor(t/60)}:${String(t%60).padStart(2,'0')}`,h>=0&&`힌트 ${h}장`].filter(Boolean).join(' · ')+' — 너도 해 볼래?';
+  const clock=s=>s>=3600?`${Math.floor(s/3600)}:${String(Math.floor(s/60)%60).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`:`${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
+  const desc=[t>=0&&clock(t),h>=0&&`힌트 ${h}개`].filter(Boolean).join(' · ')+' — 너도 해 볼래?';
   res.statusCode=200;
   res.setHeader('Content-Type','text/html; charset=utf-8');
   res.setHeader('Cache-Control','public, max-age=86400');

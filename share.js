@@ -31,7 +31,7 @@
     try{const w=localStorage.getItem('hn.wrong.'+NOTE);if(w!==null&&/^\d+$/.test(w))wrong=+w}catch{}
     return {ok,ms,hints,wrong};
   }
-  const fmt=ms=>{const m=Math.floor(ms/60000),s=Math.floor(ms/1000)%60;return EN?(m?`${m}m ${s}s`:`${s}s`):(m?`${m}분 ${s}초`:`${s}초`)};
+  const fmt=ms=>{const H=Math.floor(ms/3600000),m=Math.floor(ms/60000)%60,s=Math.floor(ms/1000)%60;return EN?(H?`${H}h ${m}m`:m?`${m}m ${s}s`:`${s}s`):(H?`${H}시간 ${m}분`:m?`${m}분 ${s}초`:`${s}초`)};
   // 공유 문구: 카톡 등에 글로 보이는 기록 (걸린 시간 · 힌트 · 틀린 암호) + 주소(미리보기 카드는 og 이미지)
   function recordText(){
     const r=rec(),g=grade()||(r.ok?T.done:T.open);
@@ -71,8 +71,8 @@
     const q=new URLSearchParams(location.search),r=q.get('r');if(!r)return;
     const num=k=>{const v=q.get(k);return v!==null&&/^\d{1,6}$/.test(v)?+v:-1};
     const t=num('t'),h=num('h'),w=num('w'),esc=s=>s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-    const clock=s=>`${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
-    const rows=[t>=0&&[T.time,clock(t)],h>=0&&[T.hints,EN?h:h+'장'],w>=0&&[T.wrong,EN?w:w+'번']].filter(Boolean);
+    const clock=s=>s>=3600?`${Math.floor(s/3600)}:${String(Math.floor(s/60)%60).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`:`${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
+    const rows=[t>=0&&[T.time,clock(t)],h>=0&&[T.hints,EN?h:h+'개'],w>=0&&[T.wrong,EN?w:w+'번']].filter(Boolean);
     const css=document.createElement('style');css.textContent=`.hnfr{position:fixed;inset:0;z-index:9999;background:rgba(20,16,12,.62);display:flex;align-items:center;justify-content:center;padding:16px}
 .hnfr .c{width:100%;max-width:420px;background-color:#fffdf4;background-image:repeating-linear-gradient(transparent 0 37px,#c9d3e6 37px 38px);border-left:3px solid #e6a3a0;padding:20px 22px 18px;box-shadow:0 20px 40px rgba(0,0,0,.4);color:#2a2422;font-family:"Kkakdugi Drafting",var(--mono,monospace)}
 .hnfr .who{font-size:13px;color:#6b6358;margin:0 0 10px}
