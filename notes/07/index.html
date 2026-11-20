@@ -216,7 +216,7 @@ const $=s=>document.querySelector(s);
 const SAVE_KEY='hn.note07.v4';
 const PLACES={seat:'서윤 자리 27번',hall:'복도',office:'총무실',lounge:'휴게실'};
 const CLOCK=['','23:02','23:06','23:10','23:14','23:19','23:24'];
-function fresh(){return{v:'cover',ch:1,lamp:true,lock:[0,0,0,0],cctv:30,ph:'home',pg:0,f:{},obj:[],screws:[0,0,0,0],ang:20,items:['receipt'],newItem:null,hints:{},started:false,done:false,ms:0,unread:0,note:''}}
+function fresh(){return{v:'cover',ch:1,lamp:true,lock:[0,0,0,0],cctv:30,ph:'home',pg:0,f:{},obj:[],screws:[0,0,0,0],cam:false,items:['receipt'],newItem:null,hints:{},started:false,done:false,ms:0,unread:0,note:''}}
 let S;try{S=Object.assign(fresh(),JSON.parse(localStorage.getItem(SAVE_KEY)||'null')||{})}catch{S=fresh()}
 const resumed=S.started&&!S.done;
 const save=()=>{try{localStorage.setItem(SAVE_KEY,JSON.stringify(S))}catch{}};
@@ -262,7 +262,7 @@ const MSGS=[
   [4,'me','23:12','네 성적표 봤어. 5월 12일에 「수험생용 아날로그 시계 세트」 택배 받고 나서부터 갑자기 올랐더라'],
   [4,'서윤','23:13','그게 무슨 상관이야'],
   [4,'서윤','23:13','시계 산 게 죄야? 수능엔 아날로그 시계만 되잖아. 카메라라도 찾았어? 그런 거 없어'],
-  [5,'me','23:16','네 필통 반짇고리에 든 여분 단추. 하나만 빛에 비춰 보니까 뒤에 렌즈가 있어. 내일 아침에 다시 달려고 떼어 둔 거지?'],
+  [5,'me','23:16','네 지갑 동전 칸에 교복 단추가 있더라. 폰 카메라로 비추니까 그것만 빛이 튀어. 뒤에 렌즈가 있어. 내일 아침에 다시 달려고 떼어 둔 거지?'],
   [5,'서윤','23:17','…'],
   [5,'서윤','23:17','그건 그냥 시계야. 수능 때 차라고 하는 그 시계. 폰은 시험 전에 다 냈고, 폰 들고 간 적 없어'],
   [6,'me','23:21','시계 뒷뚜껑 열어 봤어. 톱니 대신 수신 기판이야. 초침이 3, 1, 5, 2, 4를 차례로 가리켰어. 사진 속 로그랑 똑같아'],
@@ -305,7 +305,7 @@ const HINTS={
   1:['총무실 CCTV 모니터. 찾았으면 📱 카톡의 「반박하기」.','슬라이더를 사진이 찍힌 22:46 근처로 끌고, 서윤 자리(27) 앞에 선 사람을 눌러 본다.','22:46의 민재를 누른다 → 반박하기 → CCTV 22:46'],
   2:['서윤이 보낸 사진 (📱 카톡의 「사진 크게 보기」 또는 주머니).','사진 위를 누른 채 끌면 돋보기가 뜬다. 폰 화면의 맨 위 줄을 읽고 누른다.','맨 위 줄 「22:40 TEST 수학 1~5」 → 반박하기 → 송출 로그'],
   3:['서윤 자리의 가방과 책상 밑 휴지통.','가방 속 성적표의 날짜와 휴지통 택배 송장의 날짜를 나란히 놓는다. 성적이 언제부터 올랐나?','가방 → 성적표, 휴지통 → 송장 → 반박하기 → 성적표 + 택배 송장'],
-  4:['서윤 책상 위 필통. 스탠드는 켜 둔다.','필통 속 반짇고리의 여분 단추들에 스탠드 각도를 바꿔 비춰 본다. 하나만 빛을 다르게 튕긴다.','스탠드 각도를 60쯤으로 두고 번쩍이는 단추를 누른다 → 반박하기 → 반짇고리 속 단추'],
+  4:['서윤 책상 위 지갑.','동전 칸에 단추가 하나 섞여 있다. 몰래카메라는 렌즈가 빛을 튕긴다. 내 폰 카메라(플래시)로 비춰 본다.','지갑 → 📷 카메라로 비춰 보기 → 하얗게 빛나는 단추 누르기 → 반박하기 → 지갑 속 단추'],
   5:['책상 위 손목시계, 그리고 서윤의 폰.','시계 뒷뚜껑 나사 네 개를 풀고, 다시 감아서 초침이 가리키는 숫자를 차례로 읽는다. 폰은 설정 → 데이터 사용량에서 이상한 앱을 찾는다.','나사 4개 → 다시 켜기 → ③①⑤②④ / 설정 → 데이터 사용량 → 계산기 → 열기 → 반박하기 → 손목시계 + 폰 연결 화면'],
   6:['복도 27번 사물함.','사물함 안 내일 가져갈 수능 가방을 열어 본다. 그리고 오늘 밤 22:40 기록.','사물함 → 수능 가방 → 반박하기 → 수능 가방 + 송출 로그']
 };
@@ -316,7 +316,7 @@ const ITEMS={
   log:'송출 로그 (22:40 TEST 수학 1~5 → ③①⑤②④)',
   grades:'성적표 세 장 (3모 4등급 → 6모 2등급 → 9모 만점)',
   parcel:'택배 송장 (5/12 · 수험생용 아날로그 시계 세트)',
-  button:'반짇고리 속 단추 (뒷면에 렌즈)',
+  button:'지갑 속 단추 (뒷면에 렌즈)',
   bank:'손목시계 (안은 수신 기판, 초침 ③①⑤②④)',
   link:'폰 연결 화면 (계산기 앱 · 카메라 연결됨 · 단말 연결됨)',
   kit:'수능 가방 (둘째 단추만 빈 교복 · 시계 충전 케이블)'
@@ -346,7 +346,7 @@ function sceneSeat(){
   ${lit?`<path d="M560 168 L470 302 L700 302 L640 168Z" fill="url(#cone)"/>`:''}
   ${hs('lamp',540,120,140,170,`<rect x="596" y="290" width="70" height="12" rx="3" fill="#333"/><path d="M630 290 L612 190 L590 168" stroke="#444" stroke-width="7" fill="none"/><path d="M548 160 L630 160 L612 136 L566 136Z" fill="${lit?'#e8e2d0':'#555'}"/><circle cx="650" cy="296" r="4" fill="${lit?'#e07a1f':'#333'}"/>`)}
   ${hs('bag',690,370,90,70,`<path d="M700 440 L706 386 Q735 372 764 386 L770 440Z" fill="#3b4a6b"/><path d="M718 386 Q735 362 752 386" stroke="#2a3550" stroke-width="5" fill="none"/><rect x="742" y="398" width="16" height="22" fill="#c9d6ea" transform="rotate(8 750 409)"/>`)}
-  ${hs('shirt',590,308,96,46,`<g transform="translate(596 316) rotate(3)"><rect width="84" height="28" rx="12" fill="#3f6b8c"/><path d="M8 4 H76" stroke="#2c4f69" stroke-width="3"/><rect x="58" y="-4" width="20" height="14" rx="3" fill="#c94f4f"/><circle cx="68" cy="3" r="2" fill="#f8f8f4"/></g>`)}
+  ${hs('shirt',590,308,96,46,`<g transform="translate(604 314) rotate(4)"><rect width="66" height="34" rx="6" fill="#8a5a3c"/><rect y="12" width="66" height="22" rx="4" fill="#6b4332"/><circle cx="56" cy="22" r="3" fill="#d9c08a"/></g>`)}
   ${hs('pbank',280,308,40,48,`<g transform="translate(300 332) rotate(-10)"><rect x="-7" y="-24" width="14" height="48" rx="3" fill="#5a3d2b"/><circle r="13" fill="#fbf8ef" stroke="#8a8f9a" stroke-width="3"/><path d="M0 0 V-8 M0 0 L6 3" stroke="#222" stroke-width="1.6"/><rect x="12" y="-2" width="4" height="4" fill="#8a8f9a"/></g>`)}
   ${hs('trash',300,384,64,58,`<path d="M306 392 L358 392 L352 442 L312 442Z" fill="#55506a"/><path d="M318 392 Q324 380 338 386" stroke="#f4efe2" stroke-width="5" fill="none"/>`)}
   ${lit?'':`<rect width="800" height="450" fill="#05040c" opacity=".6" pointer-events="none"/>`}
@@ -478,24 +478,26 @@ function openPhoto(){
     tried('photo',false);SND.wrong();m.textContent=['','「단추 카메라 · 연결됨」… 무슨 카메라?','「단말 (시계) · 연결됨」… 시계가 왜 폰에 연결돼?','「다음 일정 11/13 08:40」… 내일, 수능 1교시 시작 시각이다.'][row]};
 }
 
-/* ---------- 4장: 반짇고리 단추 (스탠드 빛 각도) ---------- */
-const BTNS=[[70,70],[125,58],[190,80],[96,140],[160,130],[222,150]]; // 3번(0부터)이 카메라
+/* ---------- 4장: 지갑 동전 칸 (내 폰 카메라로 비추기) ---------- */
+// 동전 사이에 교복 단추 하나. 카메라 화면으로 보면 렌즈만 빛을 튕겨 하얀 점이 찍힌다.
+const COINS=[[70,80,26,'500'],[130,60,22,'100'],[190,90,22,'100'],[95,150,18,'50'],[165,150,26,'500'],[228,140,18,'10']];
+const CAMBTN=[214,58];
 function openShirt(){
-  if(!S.lamp){showM('필통 속 반짇고리',`<p>서윤의 필통 안에 작은 반짇고리 통. 스탠드가 꺼져 있어 안이 잘 안 보인다.</p>`);return}
-  const ang=S.ang??20,hit=ang>=58&&ang<=72;
-  showM('필통 속 반짇고리 · 스탠드 비추기',`<div class="shirt"><svg viewBox="0 0 300 220"><defs><radialGradient id="glint"><stop offset="0" stop-color="#fff"/><stop offset=".4" stop-color="#bfe3ff" stop-opacity=".9"/><stop offset="1" stop-color="#bfe3ff" stop-opacity="0"/></radialGradient></defs>
-    <rect width="300" height="220" fill="#2a2440"/><rect x="30" y="20" width="240" height="180" rx="18" fill="#c94f4f"/><rect x="42" y="32" width="216" height="156" rx="12" fill="#f3e6d0"/>
-    <path d="M60 180 Q120 120 250 176" stroke="#fff" stroke-width="2" fill="none"/><path d="M200 40 L250 100" stroke="#999" stroke-width="2.5"/><circle cx="200" cy="40" r="3" fill="none" stroke="#999"/>
-    <polygon points="${300-ang*2.6},0 ${330-ang*2.6},0 200,220 120,220" fill="#fff6c8" opacity=".14"/>
-    ${BTNS.map(([x,y],i)=>`<g data-b="${i}" style="cursor:pointer"><circle cx="${x}" cy="${y}" r="10" fill="#f8f8f4" stroke="#aab" stroke-width="1.5"/><circle cx="${x-2.5}" cy="${y-1.5}" r="1.6" fill="#99a"/><circle cx="${x+2.5}" cy="${y+1.5}" r="1.6" fill="#99a"/>${i===3&&hit?`<circle cx="${x}" cy="${y}" r="28" fill="url(#glint)"/><path d="M${x} ${y-32} V${y+32} M${x-32} ${y} H${x+32}" stroke="#fff" stroke-width="2" opacity=".9"/>`:''}<rect x="${x-18}" y="${y-18}" width="36" height="36" fill="transparent"/></g>`).join('')}</svg></div>
-    <label style="display:block;font-size:14px;margin-top:8px">스탠드 각도 <input type="range" id="ang" min="0" max="90" value="${ang}" style="width:100%"></label>
-    <p class="lockmsg" id="smsg">${S.f.button?'뒷면에 바늘구멍만 한 렌즈가 달린 단추.':'교복 여분 단추 여섯 개, 흰 실, 바늘. 필통에 왜 반짇고리가?'}</p>`);
-  $('#ang').oninput=e=>{S.ang=+e.target.value;save();SND.tap();openShirt()};
-  $('#modal').querySelectorAll('[data-b]').forEach(g=>g.onclick=()=>{const i=+g.dataset.b,m=$('#smsg');
-    if(i!==3){m.textContent='평범한 플라스틱 단추다.';SND.click();return}
-    if(!hit){m.textContent='다른 단추보다 조금 두껍다…? 빛을 비춰 봐야 알겠다.';SND.click();return}
-    m.innerHTML='빛을 받은 단추 하나만 <b>유리처럼</b> 번쩍인다. 뒤집어 보니 바늘구멍만 한 <b>렌즈</b>와 실처럼 가는 선.';
-    if(!S.f.button){S.f.button=1;give('button');tried('button',true);SND.ok();renderBag()}});
+  const cam=!!S.cam;
+  const coin=([x,y,r,t])=>`<circle cx="${x}" cy="${y}" r="${r}" fill="${t==='10'?'#c98a4a':'#cfd2d8'}" stroke="#8a8f9a" stroke-width="2"/><text x="${x}" y="${y+4}" font-size="${r*.6}" text-anchor="middle" fill="#666">${t}</text>`;
+  const [bx,by]=CAMBTN;
+  showM('서윤의 지갑 · 동전 칸',`<div class="shirt" style="position:relative"><svg viewBox="0 0 300 210" id="wsv"><rect width="300" height="210" fill="#4a2f22"/><rect x="24" y="20" width="252" height="170" rx="14" fill="#6b4332"/><rect x="34" y="30" width="232" height="150" rx="10" fill="#3a241a"/>
+    ${COINS.map(coin).join('')}
+    <g data-b="1" style="cursor:pointer"><circle cx="${bx}" cy="${by}" r="10" fill="#f8f8f4" stroke="#aab" stroke-width="1.5"/><circle cx="${bx-2.5}" cy="${by-1.5}" r="1.6" fill="#99a"/><circle cx="${bx+2.5}" cy="${by+1.5}" r="1.6" fill="#99a"/>
+      ${cam?`<circle cx="${bx+1}" cy="${by}" r="9" fill="#e9f4ff" opacity=".95"/><circle cx="${bx+1}" cy="${by}" r="3.5" fill="#fff"/><path d="M${bx-16} ${by} H${bx+18} M${bx+1} ${by-16} V${by+16}" stroke="#fff" stroke-width="1.4" opacity=".8"/>`:''}<rect x="${bx-18}" y="${by-18}" width="36" height="36" fill="transparent"/></g>
+    ${cam?`<rect width="300" height="210" fill="#0a1a0a" opacity=".55" pointer-events="none"/><circle cx="${bx+1}" cy="${by}" r="5" fill="#fff" pointer-events="none"/><g fill="none" stroke="#fff" stroke-width="2" pointer-events="none"><path d="M14 30 V14 H30 M270 14 H286 V30 M286 180 V196 H270 M30 196 H14 V180"/></g><text x="150" y="202" font-size="10" text-anchor="middle" fill="#fff" pointer-events="none">● 카메라 · 플래시 켬</text>`:''}</svg></div>
+    <div class="actions" style="justify-content:flex-start"><button class="btn" id="camT">${cam?'카메라 끄기':'📷 내 폰 카메라로 비춰 보기'}</button></div>
+    <p class="lockmsg" id="smsg">${S.f.button?'단추 뒷면에 바늘구멍만 한 렌즈.':cam?'화면 속에 하얀 점 하나가 찍힌다.':'동전 사이에 교복 단추 하나. 지갑에 단추가 왜?'}</p>`);
+  $('#camT').onclick=()=>{S.cam=!cam;SND.click();save();openShirt()};
+  $('#modal').querySelector('[data-b]').onclick=()=>{const m=$('#smsg');
+    if(!cam){m.textContent='평범한 교복 단추 같다. 조금 두꺼운가…? 렌즈라면 빛을 튕길 텐데.';SND.click();tried('button',false);return}
+    m.innerHTML='카메라 화면 속에서 이 단추만 <b>하얗게 빛을 튕긴다.</b> 뒤집어 보니 바늘구멍만 한 <b>렌즈</b>와 실처럼 가는 선.';
+    if(!S.f.button){S.f.button=1;give('button');tried('button',true);SND.ok();renderBag()}};
 }
 
 /* ---------- 5장: 손목시계 · 서윤의 폰 ---------- */
