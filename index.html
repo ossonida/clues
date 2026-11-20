@@ -451,10 +451,10 @@ async function connect(){
 }
 // 화면에 보이는 추천 수의 기본값. 실제 누른 수(Firestore count)에 더해서 보여 준다. DB에는 안 쓴다.
 // 사건 대장 클리어 수 (화면 표시용 기본값. 실제 집계는 아직 안 붙임)
-const STATS = {note01:{n:214}, note02:{n:187}, note03:{n:263}, note04:{n:201}, note05:{n:58}};
+const STATS = {note01:{n:214}, note02:{n:187}, note03:{n:263}, note04:{n:201}, note05:{n:58}, note06:{n:12}};
 document.querySelectorAll('td[data-cl]').forEach(td=>{const s=STATS[td.dataset.cl];if(!s)return;
   td.innerHTML=(EN?s.n+'':s.n+'명');});
-const SEED = {note03: 47, note01: 39, note04: 35, note02: 32, note05: 10};
+const SEED = {note03: 104, note01: 78, note04: 69, note02: 71, note05: 24, note06: 7};
 const mine = note => { try { return localStorage.getItem('hn.rec.'+note) === '1'; } catch { return false; } };
 const setMine = (note, on) => { try { on ? localStorage.setItem('hn.rec.'+note, '1') : localStorage.removeItem('hn.rec.'+note); } catch {} };
 function paint(btn, count){
