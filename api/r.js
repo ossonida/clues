@@ -1,6 +1,6 @@
-// 기록 공유 링크: 메신저 미리보기(og)에 친구 기록을 넣고, 사람은 노트로 보낸다.
-// /api/r?n=02&r=명예 문예부원&t=132&h=0&w=0  →  /notes/02/?r=…&t=…&h=…&w=…
-// 의존성 없음. 이미지는 og/rec/noteNN-I.png (등급별로 미리 찍어 둔 것), 모르는 등급은 og/noteNN.png.
+// 기록 공유 링크: 메신저 미리보기(og)에 친구 기록 이미지를 넣고, 사람은 노트로 보낸다.
+// /api/r?n=02&g=0&t=132&h=0&w=0  (g = 등급 번호, 예전 링크의 r=등급 이름도 받음)
+// 이미지는 /api/og (og/rec/noteNN-G.png 바탕에 기록 숫자를 찍음). 노트·등급이 바뀌면 이 표, share.js GR, og/rec 이미지를 같이
 const BASE='https://clues-kappa.vercel.app';
 const NOTES={
   '01':{t:'FUN보드 사건 파일',g:['완전 해결','거의 해결','범인은 맞혔지만…','미해결']},
@@ -16,13 +16,14 @@ module.exports=(req,res)=>{
   const q=new URL(req.url,BASE).searchParams;
   const n=q.get('n'),note=NOTES[n];
   if(!note){res.statusCode=302;res.setHeader('Location',BASE+'/');return res.end()}
-  const r=(q.get('r')||'').slice(0,20),t=int(q.get('t')),h=int(q.get('h')),w=int(q.get('w')),en=q.get('lang')==='en';
-  const gi=note.g.indexOf(r);
-  const img=`${BASE}/og/${gi>=0?`rec/note${n}-${gi}`:`note${n}`}.png`;
-  const p=new URLSearchParams();if(en)p.set('lang','en');if(r)p.set('r',r);[['t',t],['h',h],['w',w]].forEach(([k,v])=>{if(v>=0)p.set(k,v)});
+  let gi=int(q.get('g'));if(!(gi>=0&&gi<note.g.length))gi=note.g.indexOf(q.get('r')||'');
+  const grade=gi>=0?note.g[gi]:'',t=int(q.get('t')),h=int(q.get('h')),w=int(q.get('w')),en=q.get('lang')==='en';
+  const stat=new URLSearchParams();[['t',t],['h',h],['w',w]].forEach(([k,v])=>{if(v>=0)stat.set(k,v)});
+  const img=`${BASE}/api/og?n=${n}&g=${gi>=0?gi:0}&${stat}`;
+  const p=new URLSearchParams();if(en)p.set('lang','en');if(grade)p.set('r',grade);stat.forEach((v,k)=>p.set(k,v));
   const to=`${BASE}/notes/${n}/?${p}`;
-  const stats=[t>=0&&`걸린 시간 ${Math.floor(t/60)}:${String(t%60).padStart(2,'0')}`,h>=0&&`힌트 ${h}장`,w>=0&&`틀린 암호 ${w}번`].filter(Boolean).join(' · ');
-  const title=`히든노트 ${n} 「${note.t}」${r?` · ${r}`:''}`,desc=`${stats?stats+' · ':''}너도 해 볼래?`;
+  const title=`「${note.t}」 ${grade||'기록'}`;
+  const desc=[t>=0&&`${Math.floor(t/60)}:${String(t%60).padStart(2,'0')}`,h>=0&&`힌트 ${h}장`].filter(Boolean).join(' · ')+' — 너도 해 볼래?';
   res.statusCode=200;
   res.setHeader('Content-Type','text/html; charset=utf-8');
   res.setHeader('Cache-Control','public, max-age=86400');
@@ -32,6 +33,6 @@ module.exports=(req,res)=>{
 <meta property="og:title" content="${esc(title)}"><meta property="og:description" content="${esc(desc)}">
 <meta property="og:image" content="${esc(img)}"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta property="og:url" content="${esc(to)}"><meta name="twitter:card" content="summary_large_image">
-<meta http-equiv="refresh" content="0;url=${esc(to)}"><link rel="canonical" href="${esc(to)}">
+<meta http-equiv="refresh" content="0;url=${esc(to)}">
 </head><body><script>location.replace(${JSON.stringify(to)})</script><a href="${esc(to)}">${esc(title)}</a></body></html>`);
 };
