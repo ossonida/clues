@@ -81,7 +81,7 @@
 .hnfr button{font:inherit;font-weight:700;cursor:pointer;width:100%;border:2px solid #2a2422;background:#2a2422;color:#fffdf4;border-radius:3px;padding:10px}`;
     document.head.appendChild(css);
     const o=document.createElement('div');o.className='hnfr';o.setAttribute('role','dialog');o.setAttribute('aria-label',EN?'Friend record':'친구 기록');
-    o.innerHTML=`<div class="c"><p class="who">${EN?`A friend's record · Hidden Note ${NUM} "${esc(TITLE)}"`:`친구의 기록 · 히든노트 ${NUM} 「${esc(TITLE)}」`}</p><div class="st">${esc(r.slice(0,20))}</div>
+    o.innerHTML=`<div class="c"><p class="who">${EN?`A friend's record · Hidden Note ${NUM} "${esc(TITLE)}"`:`친구의 기록 · 히든노트 ${NUM} 「${esc(TITLE)}」`}</p><p style="margin:0;font-size:22px;font-weight:700">${r==='미해결'?(EN?'Not solved yet':'아직 못 풀었대요'):(EN?'Cleared!':'클리어했대요!')}</p><div class="st">${esc(r.slice(0,20))}</div>
       <dl>${rows.map(([a,b])=>`<div><dt>${a}</dt><dd>${b}</dd></div>`).join('')}</dl><button type="button">${EN?'Try it yourself':'나도 도전하기'}</button></div>`;
     const close=()=>{o.remove();try{const u=new URL(location.href);['r','t','h','w'].forEach(k=>u.searchParams.delete(k));history.replaceState(null,'',u)}catch{}};
     o.querySelector('button').onclick=close;o.onclick=e=>{if(e.target===o)close()};

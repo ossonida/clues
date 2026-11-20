@@ -1,25 +1,38 @@
 <!DOCTYPE html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../fonts/fonts.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/hada0127/hada-type-levelup@v2026.10.21/css/levelup-subset.css">
-<!-- 기록 공유 미리보기 바탕. api/og.js가 기록 카드 빈칸에 숫자를 찍는다. 칸 위치를 바꾸면 api/og.js SLOT도 같이 -->
+<!-- 기록 공유 미리보기 바탕 ?n=06&s=등급&st=도장. 왼쪽 폴라로이드는 메인 index.html 카드에서 가져온다.
+     api/og.js(drawRecord)가 오른쪽 기록 카드 빈칸에 숫자를 찍는다. 칸 위치를 바꾸면 drawRecord도 같이 -->
 <style>
 html,body{margin:0;width:1200px;height:630px;overflow:hidden}
 .c{position:relative;width:1200px;height:630px;background:repeating-linear-gradient(#fbf3b8 0 47px,#9fb6d8 47px 49px);background-color:#fbf3b8;font-family:'Kkakdugi Drafting',monospace;color:#2a2422}
 .c:before{content:"";position:absolute;left:70px;top:0;bottom:0;width:3px;background:#d9534f;box-shadow:6px 0 0 #d9534f}
 .c:after{content:"";position:absolute;left:0;right:0;top:0;height:26px;background:#6e1f2b}
-.l{position:absolute;left:104px;top:64px;width:500px;display:flex;flex-direction:column;align-items:flex-start}
-.k{font-size:26px;letter-spacing:4px;color:#6e1f2b}
-h1{margin:10px 0 0;word-break:keep-all;font-family:LevelUp,serif;font-weight:400;font-size:var(--hs,92px);line-height:1.05}
-.s{margin:40px 0 0 14px;border:10px solid #a3312a;color:#a3312a;font-family:LevelUp,serif;font-size:var(--ss,62px);padding:8px 26px;transform:rotate(-6deg);background:rgba(255,253,244,.7);white-space:nowrap}
-.f{position:absolute;left:104px;bottom:22px;font-size:24px;color:#5a5046}
+.k{position:absolute;left:104px;top:52px;font-size:24px;letter-spacing:4px;color:#6e1f2b}
+h1{position:absolute;left:104px;top:84px;margin:0;font-family:LevelUp,serif;font-weight:400;font-size:var(--hs,74px);line-height:1;white-space:nowrap}
+.pol{position:absolute;left:120px;top:196px;width:330px;background:#fff;padding:12px 12px 46px;transform:rotate(-4deg);box-shadow:0 14px 28px rgba(40,30,0,.32)}
+.pol svg{display:block;width:100%;height:auto}
+.pol .cap{position:absolute;left:14px;right:10px;bottom:10px;font-family:HEEJOY,cursive;font-size:26px;color:#333;white-space:nowrap;overflow:hidden}
+.st{position:absolute;left:330px;top:380px;border:10px solid #a3312a;color:#a3312a;font-family:LevelUp,serif;font-size:var(--ss,76px);padding:4px 24px;transform:rotate(-12deg);background:rgba(255,253,244,.78);white-space:nowrap;letter-spacing:4px}
+.f{position:absolute;left:104px;bottom:20px;font-size:22px;color:#5a5046}
 .p{position:absolute;left:640px;top:58px;width:500px;height:520px;background:#fffdf4;box-shadow:0 14px 30px rgba(60,40,0,.28);border-top:10px solid #a3312a}
-.p h2{position:absolute;left:36px;top:24px;margin:0;font-size:24px;letter-spacing:4px;color:#a3312a;font-weight:700}
+.p h2{position:absolute;left:36px;top:22px;margin:0;font-size:28px;color:#a3312a;font-weight:700;font-family:LevelUp,serif;font-weight:400}
 .p .lb{position:absolute;font-size:34px;color:#6b6358}
 .p hr{position:absolute;left:36px;right:36px;margin:0;border:0;border-top:3px dotted #b8ad95}
 .p .v{position:absolute;left:250px;top:345px;bottom:40px;border-left:3px dotted #b8ad95}
 </style></head><body><div class="c">
-<div class="l"><div class="k" id="k"></div><h1 id="h"></h1><div class="s" id="s"></div></div>
-<div class="p"><h2>MY RECORD</h2><div class="lb" style="left:36px;top:76px">걸린 시간</div><hr style="top:300px"><div class="lb" style="left:36px;top:322px">힌트</div><div class="lb" style="left:286px;top:322px" id="wl">틀린 암호</div><div class="v"></div></div>
-<div class="f">히든노트 · 브라우저에서 바로 하는 추리·방탈출</div></div>
-<script>const q=new URLSearchParams(location.search);k.textContent=q.get('k');h.textContent=q.get('h');s.textContent=q.get('s');
-const hl=[...q.get('h')].length,sl=[...q.get('s')].length;
-document.documentElement.style.setProperty('--hs',hl>7?'72px':'92px');document.documentElement.style.setProperty('--ss',sl>7?'50px':sl>5?'60px':'72px')</script></body></html>
+<div class="k" id="k"></div><h1 id="h"></h1><div class="pol" id="pol"></div><div class="st" id="st"></div>
+<div class="p"><h2 id="g"></h2><div class="lb" style="left:36px;top:76px">걸린 시간</div><hr style="top:300px"><div class="lb" style="left:36px;top:322px">힌트</div><div class="lb" style="left:286px;top:322px">틀린 암호</div><div class="v"></div></div>
+<div class="f">히든노트 · 브라우저에서 바로 하는 방탈출·추리 · 무료</div></div>
+<script>
+(async()=>{const q=new URLSearchParams(location.search),n=q.get('n');
+  const doc=new DOMParser().parseFromString(await (await fetch('../index.html')).text(),'text/html');
+  const a=doc.querySelector(`a.note[href="notes/${n}/"]`);
+  const h2=a.querySelector('h2').cloneNode(true);h2.querySelectorAll('br').forEach(b=>b.replaceWith(' '));
+  const title=h2.textContent.replace(/\s+/g,' ').trim();
+  k.textContent=`NOTE ${n} · 친구의 기록`;h.textContent=title;
+  const L=[...title].length;document.documentElement.style.setProperty('--hs',L>8?'52px':L>5?'64px':'74px');
+  const ph=a.querySelector('.photo');ph.querySelectorAll('svg.clip').forEach(x=>x.remove());pol.innerHTML=ph.innerHTML;
+  g.textContent=`RECORD · ${q.get('s')}`;
+  st.textContent=q.get('st');if([...q.get('st')].length>3)document.documentElement.style.setProperty('--ss','60px');
+  document.body.dataset.ready=1})();
+</script></body></html>

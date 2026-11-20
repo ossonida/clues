@@ -19,10 +19,11 @@ module.exports=(req,res)=>{
   let gi=int(q.get('g'));if(!(gi>=0&&gi<note.g.length))gi=note.g.indexOf(q.get('r')||'');
   const grade=gi>=0?note.g[gi]:'',t=int(q.get('t')),h=int(q.get('h')),w=int(q.get('w')),en=q.get('lang')==='en';
   const stat=new URLSearchParams();[['t',t],['h',h],['w',w]].forEach(([k,v])=>{if(v>=0)stat.set(k,v)});
-  const img=`${BASE}/api/og?n=${n}&g=${gi>=0?gi:0}&${stat}`;
+  const img=`${BASE}/api/og?n=${n}&g=${gi>=0?gi:0}&${stat}&v=3`;
   const p=new URLSearchParams();if(en)p.set('lang','en');if(grade)p.set('r',grade);stat.forEach((v,k)=>p.set(k,v));
   const to=`${BASE}/notes/${n}/?${p}`;
-  const title=`「${note.t}」 ${grade||'기록'}`;
+  const clear=!(n==='01'&&gi===3); // 01 미해결만 클리어 아님
+  const title=`「${note.t}」 ${clear?'클리어!':'도전 기록'}${grade?' · '+grade:''}`;
   const clock=s=>s>=3600?`${Math.floor(s/3600)}:${String(Math.floor(s/60)%60).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`:`${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
   const desc=[t>=0&&clock(t),h>=0&&`힌트 ${h}개`].filter(Boolean).join(' · ')+' — 너도 해 볼래?';
   res.statusCode=200;
