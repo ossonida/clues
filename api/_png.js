@@ -36,19 +36,29 @@ function build(w,h,zdata){
   let n=0;parts.forEach(p=>n+=p.length);const out=new Uint8Array(n);n=0;parts.forEach(p=>{out.set(p,n);n+=p.length});return out;
 }
 
-// 글자판: 칸 80×100, 칸마다 잉크가 있는 가로 범위를 찾아 둔다
-const GLYPHS='0123456789:-개번',CW=80,CH=100;
-function glyphBounds(g){const b={};[...GLYPHS].forEach((ch,i)=>{let l=CW,r=-1;
-  for(let x=0;x<CW;x++)for(let y=0;y<CH;y++){const p=(y*g.w+i*CW+x)*3;if(g.px[p]+g.px[p+1]+g.px[p+2]<600){if(x<l)l=x;if(x>r)r=x;break}}
+// 글자판: 칸 110×200, 줄(row) 0 = 큰 글자, 1 = 중간 글자. 칸마다 잉크가 있는 가로 범위를 찾아 둔다
+const GLYPHS='0123456789:-개번',CW=110,CH=200;
+function glyphBounds(g,row=0){const b={};[...GLYPHS].forEach((ch,i)=>{let l=CW,r=-1;
+  for(let x=0;x<CW;x++)for(let y=0;y<CH;y++){const p=((row*CH+y)*g.w+i*CW+x)*3;if(g.px[p]+g.px[p+1]+g.px[p+2]<600){if(x<l)l=x;if(x>r)r=x;break}}
   b[ch]=r<0?{l:0,r:CW/4}:{l,r}});return b}
 // 바탕 위 (오른쪽 끝 rx, 위 ty)에 글자를 오른쪽 맞춤으로 찍는다
-function stamp(base,g,bounds,text,rx,ty,gap=4){
+function width(bounds,text,gap=6){let w=0;[...text].forEach(c=>{if(bounds[c])w+=bounds[c].r-bounds[c].l+1+gap});return w-gap}
+function stamp(base,g,bounds,text,rx,ty,row=0,gap=6){
   const cs=[...text].filter(c=>bounds[c]);let wsum=0;cs.forEach(c=>wsum+=bounds[c].r-bounds[c].l+1+gap);
   let x=rx-wsum;
   for(const c of cs){const {l,r}=bounds[c],gi=GLYPHS.indexOf(c);
-    for(let yy=0;yy<CH;yy++)for(let xx=l;xx<=r;xx++){const s=(yy*g.w+gi*CW+xx)*3,dx=x+xx-l,dy=ty+yy;if(dx<0||dy<0||dx>=base.w||dy>=base.h)continue;
+    for(let yy=0;yy<CH;yy++)for(let xx=l;xx<=r;xx++){const s=((row*CH+yy)*g.w+gi*CW+xx)*3,dx=x+xx-l,dy=ty+yy;if(dx<0||dy<0||dx>=base.w||dy>=base.h)continue;
       const d=(dy*base.w+dx)*3,k=(g.px[s]+g.px[s+1]+g.px[s+2])/765; // 밝을수록 바탕 그대로
       for(let j=0;j<3;j++)base.px[d+j]=Math.round(base.px[d+j]*k+g.px[s+j]*(1-k))}
     x+=r-l+1+gap}
 }
-module.exports={parse,unfilter,toRaw,build,glyphBounds,stamp,GLYPHS};
+// 기록 카드에 숫자 찍기 (og/rec.html 카드 위치와 맞춘다). api/og.js와 브라우저 시험에서 같이 쓴다
+function drawRecord(P,base,gl,bd,t,h,w){
+  const clock=s=>s>=3600?`${Math.floor(s/3600)}:${String(Math.floor(s/60)%60).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`:`${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
+  const tv=t>=0?clock(t):'-',big=P.width(bd[0],tv)<=420; // 큰 글자가 카드에 안 들어가면 중간 글자
+  P.stamp(base,gl,bd[big?0:1],tv,1104,big?152:160,big?0:1);
+  P.stamp(base,gl,bd[1],h>=0?h+'개':'-',864,382,1);
+  if(w>=0)P.stamp(base,gl,bd[1],w+'번',1104,382,1);
+  else for(let y=372;y<566;y++)for(let x=884;x<1136;x++){const d=(y*base.w+x)*3;base.px[d]=255;base.px[d+1]=253;base.px[d+2]=244} // 틀린 암호를 안 세는 노트: 그 칸을 비운다
+}
+module.exports={parse,unfilter,toRaw,build,glyphBounds,width,stamp,drawRecord,GLYPHS};

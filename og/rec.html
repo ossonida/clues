@@ -1,22 +1,25 @@
 <!DOCTYPE html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../fonts/fonts.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/hada0127/hada-type-levelup@v2026.10.21/css/levelup-subset.css">
-<!-- 기록 공유 미리보기 바탕 (api/og.js가 값 칸에 숫자를 찍는다). 값 칸 위치를 바꾸면 api/og.js BOX도 같이 -->
+<!-- 기록 공유 미리보기 바탕. api/og.js가 기록 카드 빈칸에 숫자를 찍는다. 칸 위치를 바꾸면 api/og.js SLOT도 같이 -->
 <style>
 html,body{margin:0;width:1200px;height:630px;overflow:hidden}
 .c{position:relative;width:1200px;height:630px;background:repeating-linear-gradient(#fbf3b8 0 47px,#9fb6d8 47px 49px);background-color:#fbf3b8;font-family:'Kkakdugi Drafting',monospace;color:#2a2422}
-.c:before{content:"";position:absolute;left:96px;top:0;bottom:0;width:3px;background:#d9534f;box-shadow:6px 0 0 #d9534f}
-.c:after{content:"";position:absolute;left:0;right:0;top:0;height:30px;background:#6e1f2b}
-.k{position:absolute;left:130px;top:62px;font-size:28px;letter-spacing:5px;color:#6e1f2b}
-h1{position:absolute;left:130px;top:100px;margin:0;font-family:LevelUp,serif;font-weight:400;font-size:var(--hs,78px);line-height:1.1;width:560px}
-.s{position:absolute;left:150px;top:400px;border:8px solid #a3312a;color:#a3312a;font-family:LevelUp,serif;font-size:var(--ss,58px);padding:10px 28px;transform:rotate(-7deg);background:rgba(255,253,244,.65);white-space:nowrap}
-.f{position:absolute;left:130px;bottom:24px;font-size:24px;color:#5a5046}
-.p{position:absolute;left:720px;top:96px;width:420px;height:440px;background:#fffdf4;box-shadow:0 10px 24px rgba(60,40,0,.25);transform:rotate(1.5deg)}
-.r{position:absolute;left:760px;width:360px;height:110px;border-bottom:3px dotted #b8ad95}
-.r b{position:absolute;left:0;top:10px;font-size:30px;font-weight:400;color:#6b6358}
-.p h2{position:absolute;left:40px;top:28px;margin:0;font-size:26px;letter-spacing:3px;color:#a3312a}
-</style></head><body><div class="c"><div class="k" id="k"></div><h1 id="h"></h1><div class="s" id="s"></div>
-<div class="p"><h2>RECORD</h2></div>
-<div class="r" style="top:180px"><b>걸린 시간</b></div><div class="r" style="top:300px"><b>힌트</b></div><div class="r" style="top:420px"><b>틀린 암호</b></div>
+.c:before{content:"";position:absolute;left:70px;top:0;bottom:0;width:3px;background:#d9534f;box-shadow:6px 0 0 #d9534f}
+.c:after{content:"";position:absolute;left:0;right:0;top:0;height:26px;background:#6e1f2b}
+.l{position:absolute;left:104px;top:64px;width:500px;display:flex;flex-direction:column;align-items:flex-start}
+.k{font-size:26px;letter-spacing:4px;color:#6e1f2b}
+h1{margin:10px 0 0;word-break:keep-all;font-family:LevelUp,serif;font-weight:400;font-size:var(--hs,92px);line-height:1.05}
+.s{margin:40px 0 0 14px;border:10px solid #a3312a;color:#a3312a;font-family:LevelUp,serif;font-size:var(--ss,62px);padding:8px 26px;transform:rotate(-6deg);background:rgba(255,253,244,.7);white-space:nowrap}
+.f{position:absolute;left:104px;bottom:22px;font-size:24px;color:#5a5046}
+.p{position:absolute;left:640px;top:58px;width:500px;height:520px;background:#fffdf4;box-shadow:0 14px 30px rgba(60,40,0,.28);border-top:10px solid #a3312a}
+.p h2{position:absolute;left:36px;top:24px;margin:0;font-size:24px;letter-spacing:4px;color:#a3312a;font-weight:700}
+.p .lb{position:absolute;font-size:34px;color:#6b6358}
+.p hr{position:absolute;left:36px;right:36px;margin:0;border:0;border-top:3px dotted #b8ad95}
+.p .v{position:absolute;left:250px;top:345px;bottom:40px;border-left:3px dotted #b8ad95}
+</style></head><body><div class="c">
+<div class="l"><div class="k" id="k"></div><h1 id="h"></h1><div class="s" id="s"></div></div>
+<div class="p"><h2>MY RECORD</h2><div class="lb" style="left:36px;top:76px">걸린 시간</div><hr style="top:300px"><div class="lb" style="left:36px;top:322px">힌트</div><div class="lb" style="left:286px;top:322px" id="wl">틀린 암호</div><div class="v"></div></div>
 <div class="f">히든노트 · 브라우저에서 바로 하는 추리·방탈출</div></div>
 <script>const q=new URLSearchParams(location.search);k.textContent=q.get('k');h.textContent=q.get('h');s.textContent=q.get('s');
-if(q.get('h').length>9)document.documentElement.style.setProperty('--hs','62px');if(q.get('s').length>7)document.documentElement.style.setProperty('--ss','44px')</script></body></html>
+const hl=[...q.get('h')].length,sl=[...q.get('s')].length;
+document.documentElement.style.setProperty('--hs',hl>7?'72px':'92px');document.documentElement.style.setProperty('--ss',sl>7?'50px':sl>5?'60px':'72px')</script></body></html>
