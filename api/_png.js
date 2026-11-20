@@ -37,7 +37,7 @@ function build(w,h,zdata){
 }
 
 // 글자판: 칸 80×100, 칸마다 잉크가 있는 가로 범위를 찾아 둔다
-const GLYPHS='0123456789:-장번',CW=80,CH=100;
+const GLYPHS='0123456789:-개번',CW=80,CH=100;
 function glyphBounds(g){const b={};[...GLYPHS].forEach((ch,i)=>{let l=CW,r=-1;
   for(let x=0;x<CW;x++)for(let y=0;y<CH;y++){const p=(y*g.w+i*CW+x)*3;if(g.px[p]+g.px[p+1]+g.px[p+2]<600){if(x<l)l=x;if(x>r)r=x;break}}
   b[ch]=r<0?{l:0,r:CW/4}:{l,r}});return b}

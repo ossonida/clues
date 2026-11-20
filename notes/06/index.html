@@ -295,7 +295,8 @@ $('#snd').onclick=()=>{SND.on=!SND.on;const b=$('#snd');b.textContent=SND.on?'�
 
 /* 걸린 시간 */
 const fmtT=ms=>{const s=Math.max(0,Math.floor(ms/1000)),hh=Math.floor(s/3600),mm=Math.floor(s/60)%60,ss=String(s%60).padStart(2,'0');return hh?hh+':'+String(mm).padStart(2,'0')+':'+ss:mm+':'+ss};
-setInterval(()=>{if(!S||!S.start)return;$('#time').textContent=fmtT(S.ms||Date.now()-S.start)},1000);
+// 걸린 시간 = 화면을 보고 있던 시간만 (탭을 닫거나 다른 데 가 있던 시간은 안 셈)
+setInterval(()=>{if(!S||!S.start)return;if(!S.ms&&document.visibilityState==='visible'&&!$('#game').hidden){S.play=(S.play||0)+1000;if(S.play%10000===0)save()}$('#time').textContent=fmtT(S.ms||S.play||0)},1000);
 
 /* ---------- 장면 ---------- */
 const WALLS={A:['북','동','남','서'],B:['북','동','남','서'],C:['북','동','남','서']};
@@ -962,7 +963,7 @@ function openGen(){GEN=[];const L=['① 연료 밸브 열기','② 초크 닫기
 function powerBack(){SND.power();save();draw();say('불이 들어왔다. 창 너머 풍향탑 아래 사람 그림자가… 다시 보니 없다.');
   setTimeout(()=>toSlot(2,'자정. 바람이 더 세졌다. 바깥 풍향 바늘은 미친 듯이 돈다.'),3800)}
 function toSlot(t,msg){ana('chapter_solved',{chapter:S.t+1,minutes_used:anaMin()});S.t=t;ana('chapter_opened',{chapter:t+1,minutes_used:anaMin()});save();closeCard();draw();if(msg)say(msg)}
-function finish(){S.t=5;$('#matchLine').hidden=!S.f.matches;if(!S.ms){S.ms=Date.now()-S.start;record(S.ms,true);ana('chapter_solved',{chapter:5,minutes_used:anaMin()});ana('case_finished',{grade:'solved',points:1,clue_count:5,clue_total:5,minutes_used:anaMin(),play_minutes:anaMin()})}S.done=1;save();$('#game').hidden=true;$('#bag').hidden=true;$('#end').hidden=false;const sec=Math.round(S.ms/1000),hs=Object.values(S.hint||{}),h=hs.reduce((a,b)=>a+b,0);$('#took').textContent=Math.floor(sec/60)+':'+String(sec%60).padStart(2,'0');$('#hintCount').textContent=h;$('#seal6').textContent=h===0?'구름재 관측원':hs.every(n=>n<3)?'야간 관측원':'견습 관측원';window.scrollTo(0,0)}
+function finish(){S.t=5;$('#matchLine').hidden=!S.f.matches;if(!S.ms){S.ms=Math.max(1000,S.play||0);record(S.ms,true);ana('chapter_solved',{chapter:5,minutes_used:anaMin()});ana('case_finished',{grade:'solved',points:1,clue_count:5,clue_total:5,minutes_used:anaMin(),play_minutes:anaMin()})}S.done=1;save();$('#game').hidden=true;$('#bag').hidden=true;$('#end').hidden=false;const sec=Math.round(S.ms/1000),hs=Object.values(S.hint||{}),h=hs.reduce((a,b)=>a+b,0);$('#took').textContent=Math.floor(sec/60)+':'+String(sec%60).padStart(2,'0');$('#hintCount').textContent=h;$('#seal6').textContent=h===0?'구름재 관측원':hs.every(n=>n<3)?'야간 관측원':'견습 관측원';window.scrollTo(0,0)}
 
 /* ---------- 힌트 ---------- */
 $('#hint').onclick=()=>{const H=HINTS[S.t]||['이제 힌트는 필요 없다.','',''],got=S.hint[S.t]||0;
@@ -972,8 +973,8 @@ $('#hint').onclick=()=>{const H=HINTS[S.t]||['이제 힌트는 필요 없다.','
 
 /* ---------- 분석 (입력한 글은 보내지 않는다) ---------- */
 const ana=(name,params={},beacon=false)=>{if(window.hn)window.hn(name,params,beacon)};
-const anaMin=()=>S&&S.start?Math.min(999,Math.round(((S.ms||Date.now()-S.start))/60000)):0;
-addEventListener('pagehide',()=>{if(S.start&&!S.done)ana('case_left',{stage:'investigating',location:'slot_'+(S.t+1),clue_count:S.t,minutes_used:anaMin(),play_minutes:anaMin()},true)});
+const anaMin=()=>S&&S.start?Math.min(999,Math.round((S.ms||S.play||0)/60000)):0;
+addEventListener('pagehide',()=>{if(S.start&&!S.done){save();ana('case_left',{stage:'investigating',location:'slot_'+(S.t+1),clue_count:S.t,minutes_used:anaMin(),play_minutes:anaMin()},true)}});
 
 /* ---------- 시작 ---------- */
 load();
