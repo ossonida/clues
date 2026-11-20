@@ -103,6 +103,7 @@ header{display:flex;align-items:flex-end;gap:10px 16px;flex-wrap:wrap;margin-bot
 .cover .ph::before{content:"";position:absolute;top:-12px;left:40%;width:14px;height:36px;border:3px solid #8a8f96;border-radius:8px;background:transparent}
 .cover .ph figcaption{font-family:var(--hand);font-size:18px;color:#444}
 .end{text-align:center;padding:16px 0}
+.res6{margin:6px auto 14px;max-width:600px}.res6 .seal{display:inline-block;border:4px solid var(--stamp);color:var(--stamp);font-family:var(--serif);font-size:30px;padding:4px 18px;transform:rotate(-6deg);margin:6px 0 12px}.res6 dl{display:flex;justify-content:center;gap:28px;margin:0}.res6 dt{font-size:12px;color:var(--dim)}.res6 dd{margin:0;font-size:20px;font-weight:700}
 .end h2{font-family:var(--serif);margin:0 0 8px}
 /* 결말 피드백·기록 공유를 결말 메모 폭에 맞춰 가운데로 */
 .end .hnfb,.end .hnsh{max-width:600px;margin-left:auto;margin-right:auto;box-sizing:border-box}.end .hnfb{text-align:left}.end .hnsh{text-align:center}.end .hnsh .row{justify-content:center}.end .hnsh img{margin-left:auto;margin-right:auto}
@@ -199,11 +200,11 @@ header{display:flex;align-items:flex-end;gap:10px 16px;flex-wrap:wrap;margin-bot
     <p>날이 밝자 선배가 마스크를 쓰고 올라왔다. 03시 전보 덕분에 헬기가 뜰 수 있었다고 했다.</p>
     <p>사흘 뒤, 그 노인이 관측소까지 걸어 올라와 자기 이름을 말했다. 정기철. 1979년에 이 관측소에서 「구름재 둘」이라는 호출부호를 쓰던 관측원이었다.</p>
     <p>30년 전 오늘 밤에도 바위샘 쉼터에 사람들이 갇혔다. 그는 무전을 받고 혼자 내려갔지만, 폭풍 속에서 끝내 그 사람들을 데려오지 못했다. 그는 이듬해 봄 관측소를 그만두고 산을 내려갔다. 그 밤의 일은 기록에 「사고」라는 두 글자로만 남았고, 「구름재 둘」이라는 호출부호도 그해에 없어졌다.</p>
-    <p>"해마다 11월 13일이면 바위샘 쉼터까지만 올라갔다 내려와. 그날 밤도 그러려고 올라갔는데 눈보라에 길이 끊겼고, 쉼터 안에 등산객 둘이 먼저 갇혀 있더라고. 쉼터 비상 무전기로 송신을 눌렀어. 30년 전 그날처럼. 받아 줄 사람이 있을 줄은 몰랐네."</p>
+    <p>"해마다 11월 13일이면 바위샘 쉼터까지만 올라갔다 내려와. 그날 밤도 그러려고 올라갔는데 눈보라에 길이 끊겼고, 쉼터 안에 등산객 둘이 먼저 갇혀 있더라고. 한 사람은 발목이 부러졌고. 일흔넷 다리로는 업고 내려갈 수가 없었어. 휴대폰은 산 이쪽에선 안 터지고, 이 산에서 무전을 받아 줄 데는 관측소뿐이니까. 쉼터 비상 무전기로 송신을 눌렀어. 30년 전 그날처럼. 받아 줄 사람이 있을 줄은 몰랐네."</p>
     <p id="matchLine" hidden>나는 풍향탑 밑 눈 속에서 주운 「1979」 성냥갑을 내밀었다. 그는 말없이 한참 들여다보다가 주머니에 넣었다.</p>
     <p>풀리지 않은 것이 하나 남았다. 그날 21시, 내 첫 전보에 「구름재 둘 확인」이라는 답신이 왔다. 그 시각 정기철은 쉼터로 가는 산길에 있었다. 그 답신은 누가 보낸 걸까.</p>
   </div>
-  <p class="clock">근무 시간 <b id="took" style="display:inline;border:none"></b></p>
+  <div class="res6"><div class="seal" id="seal6"></div><dl><div><dt>걸린 시간</dt><dd id="took"></dd></div><div><dt>힌트</dt><dd><span id="hintCount">0</span>장</dd></div></dl></div>
   <p><button class="btn" id="again">처음부터 다시</button> <a class="btn primary" href="../../" style="text-decoration:none">사건 대장으로</a></p>
 </section>
 </div>
@@ -914,7 +915,7 @@ function overlayCard(){
     <p class="hand" style="background:#f3ead2;padding:10px">"02시 쉼터로 내려감. 구름재 둘."</p><p class="hand">천장 등이 잠깐 누렇게 흐려졌다가 다시 밝아졌다.</p>${S.f.sent2?'<p><button class="btn primary" id="toRadio">무전기가 지직거린다</button></p>':'<p class="hand">자정 전보를 아직 보내지 않았다.</p>'}`);
   if(S.f.sent2)$('#toRadio').onclick=()=>toSlot(3,'새벽 1시 40분. 무전기에서 잡음 섞인 목소리가 들린다.')}
 /* 무전: 볼륨이 너무 크면 잡음, 중간에서만 또렷 */
-const radioText=v=>v<3?'(너무 작아 거의 안 들린다)':v>6?'치이이익… 잡음에 목소리가 묻힌다.':'"…구름재, 구름재. 여기 구름재 둘.<br>일 일 공 팔 오. 이 삼 육 이 공.<br>두 사람 갇혔다. 위치는… [치직] …샘… 쉼터… [치직]"';
+const radioText=v=>v<3?'(너무 작아 거의 안 들린다)':v>6?'치이이익… 잡음에 목소리가 묻힌다.':'"…구름재, 구름재. 여기 구름재 둘.<br>일 일 공 팔 오. 이 삼 육 이 공.<br>두 사람 갇혔다. 한 명 다쳤다. 위치는… [치직] …샘… 쉼터… [치직]"';
 function openRadio(){S.vol=S.vol??8;const v=S.vol,text=radioText(v);if(!S.f.radio)SND.voice(v);
   openCard('무전기',`<p id="rtext" class="hand" style="min-height:96px;background:#1c2420;color:#cfe8d0;padding:12px;border-radius:4px">${text}</p>
     <p style="display:flex;gap:8px;align-items:center"><span>볼륨</span><input id="vol" type="range" min="0" max="10" value="${v}" style="flex:1;accent-color:#3e5a44"><b id="vnum">${v}</b></p>
@@ -961,7 +962,7 @@ function openGen(){GEN=[];const L=['① 연료 밸브 열기','② 초크 닫기
 function powerBack(){SND.power();save();draw();say('불이 들어왔다. 창 너머 풍향탑 아래 사람 그림자가… 다시 보니 없다.');
   setTimeout(()=>toSlot(2,'자정. 바람이 더 세졌다. 바깥 풍향 바늘은 미친 듯이 돈다.'),3800)}
 function toSlot(t,msg){ana('chapter_solved',{chapter:S.t+1,minutes_used:anaMin()});S.t=t;ana('chapter_opened',{chapter:t+1,minutes_used:anaMin()});save();closeCard();draw();if(msg)say(msg)}
-function finish(){S.t=5;$('#matchLine').hidden=!S.f.matches;if(!S.ms){S.ms=Date.now()-S.start;record(S.ms,true);ana('chapter_solved',{chapter:5,minutes_used:anaMin()});ana('case_finished',{grade:'solved',points:1,clue_count:5,clue_total:5,minutes_used:anaMin(),play_minutes:anaMin()})}S.done=1;save();$('#game').hidden=true;$('#bag').hidden=true;$('#end').hidden=false;const m=Math.round(S.ms/60000);$('#took').textContent=m+'분';window.scrollTo(0,0)}
+function finish(){S.t=5;$('#matchLine').hidden=!S.f.matches;if(!S.ms){S.ms=Date.now()-S.start;record(S.ms,true);ana('chapter_solved',{chapter:5,minutes_used:anaMin()});ana('case_finished',{grade:'solved',points:1,clue_count:5,clue_total:5,minutes_used:anaMin(),play_minutes:anaMin()})}S.done=1;save();$('#game').hidden=true;$('#bag').hidden=true;$('#end').hidden=false;const sec=Math.round(S.ms/1000),hs=Object.values(S.hint||{}),h=hs.reduce((a,b)=>a+b,0);$('#took').textContent=Math.floor(sec/60)+':'+String(sec%60).padStart(2,'0');$('#hintCount').textContent=h;$('#seal6').textContent=h===0?'구름재 관측원':hs.every(n=>n<3)?'야간 관측원':'견습 관측원';window.scrollTo(0,0)}
 
 /* ---------- 힌트 ---------- */
 $('#hint').onclick=()=>{const H=HINTS[S.t]||['이제 힌트는 필요 없다.','',''],got=S.hint[S.t]||0;

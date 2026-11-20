@@ -83,7 +83,23 @@ function start() {
 // 모든 이벤트에 붙는 공통값: <html lang>과 <html data-note>
 const defaults = () => ({lang: document.documentElement.lang === 'en' ? 'en' : 'ko', note: document.documentElement.dataset.note});
 
+// 틀린 암호 수: 결말 기록 공유(share.js)에 쓰려고 이 기기에만 센다. 전송·수집 동의와 무관하고 밖으로 보내지 않는다
+// 시작하면 '-'(아직 암호 시도 없음), 암호를 한 번이라도 시도하면 숫자. 시작 기록이 없으면(예전 판) 세지 않는다
+function tallyWrong(name, params) {
+  const note = document.documentElement.dataset.note;
+  if (!/^note[0-9]{2}$/.test(note || '')) return;
+  const key = 'hn.wrong.' + note;
+  try {
+    if (name === 'case_started' || name === 'case_restarted') localStorage.setItem(key, '-');
+    else if (name === 'puzzle_tried' && params) {
+      const n = localStorage.getItem(key);
+      if (n !== null) localStorage.setItem(key, String((parseInt(n, 10) || 0) + (params.outcome === 'wrong' ? 1 : 0)));
+    }
+  } catch {}
+}
+
 function send(name, params, beacon) {
+  tallyWrong(name, params);
   const p = clean(name, {...defaults(), ...params});
   if (p === null) { console.warn('[hn] unknown event', name); return; }
   if (window.hnDebug) console.log('[hn]', name, p);
