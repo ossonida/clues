@@ -283,6 +283,18 @@ const SND={on:true,ctx:null,wind:null,
   radioOpen(){this.noise(.12,1450,.028,.7);this.tone(760,510,.06,.01,'square')},
   radioSend(){if(!this.on)return;this.noise(.14,1250,.032,.75);this.tone(640,430,.07,.01,'square')},
   power(){this.noise(.12,170,.04,1);this.tone(86,122,.18,.018,'triangle');setTimeout(()=>this.tone(440,570,.13,.014,'sine'),120)},
+  // 발전기 시동: 시동줄 당기는 소리 → 털털털 빨라지는 폭발음 → 부르릉 (ok=false면 털털대다 멎음)
+  rumble(ok=true){const c=this.ac();if(!c||!this.on)return;const t=c.currentTime;
+    this.noise(.35,900,.09,.8); // 시동줄 촤악
+    const o=c.createOscillator(),lf=c.createOscillator(),lg=c.createGain(),am=c.createGain(),fl=c.createBiquadFilter(),v=c.createGain();
+    o.type='sawtooth';fl.type='lowpass';fl.frequency.value=260;fl.Q.value=4;
+    lf.type='square';lf.frequency.setValueAtTime(5,t+.35);lf.frequency.exponentialRampToValueAtTime(ok?28:9,t+(ok?1.6:1.1));
+    lg.gain.value=.5;am.gain.value=.5;lf.connect(lg).connect(am.gain); // 폭발 박동
+    o.frequency.setValueAtTime(32,t+.35);o.frequency.exponentialRampToValueAtTime(ok?62:40,t+(ok?1.6:1.1));if(!ok)o.frequency.exponentialRampToValueAtTime(18,t+1.7);
+    v.gain.setValueAtTime(.0001,t+.3);v.gain.linearRampToValueAtTime(.09,t+.45);
+    if(ok){v.gain.linearRampToValueAtTime(.12,t+1.3);v.gain.exponentialRampToValueAtTime(.03,t+2.6)}else{v.gain.linearRampToValueAtTime(.05,t+1.2);v.gain.exponentialRampToValueAtTime(.0001,t+1.8)}
+    o.connect(am).connect(fl).connect(v).connect(c.destination);o.start(t+.3);lf.start(t+.3);const end=t+(ok?2.7:1.9);o.stop(end);lf.stop(end);
+    for(let i=0;i<(ok?6:3);i++)setTimeout(()=>this.noise(.06,180,.06,1),400+i*(ok?160:260))}, // 배기 퍽퍽
   hum(on){const c=this.ac();if(!c)return;if(this.h){try{this.h.stop()}catch{}this.h=null}if(!on||!this.on)return;const o=c.createOscillator(),f=c.createBiquadFilter(),g=c.createGain();o.type='triangle';o.frequency.value=48;f.type='lowpass';f.frequency.value=110;g.gain.value=.012;o.connect(f).connect(g).connect(c.destination);o.start();this.h=o},
   // 난수 노이즈 대신, 고역 없는 두 저음이 아주 천천히 흔들리는 밤 공기.
   startWind(){const c=this.ac();if(!c||this.wind||!this.on)return;const t=c.currentTime,out=c.createGain(),f=c.createBiquadFilter(),lfo=c.createOscillator(),lg=c.createGain(),parts=[];
@@ -957,9 +969,9 @@ function openGen(){GEN=[];const L=['① 연료 밸브 열기','② 초크 닫기
   openCard('발전기',`<p class="hand">순서대로 눌러 본다.</p><div class="gen">${L.map((l,i)=>`<button data-g="${i+1}">${l}</button>`).join('')}</div><p class="hand" id="gmsg"></p>`);
   $('#card').querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>{if(b.classList.contains('on'))return;b.classList.add('on');GEN.push(+b.dataset.g);
     if(GEN.length<4)return;const ok=GEN.join('')==='1243';
-    if(!ok){$('#gmsg').textContent=GEN[2]===3&&GEN[3]===4?'털털거리다 멎었다. 점검표 그대로 했는데.':'시동이 안 걸린다.';SND.wrong();
+    if(!ok){$('#gmsg').textContent=GEN[2]===3&&GEN[3]===4?'털털거리다 멎었다. 점검표 그대로 했는데.':'시동이 안 걸린다.';if(GEN[2]===3)SND.rumble(false);else SND.wrong();
       setTimeout(()=>{GEN=[];$('#card').querySelectorAll('[data-g]').forEach(x=>x.classList.remove('on'))},900);return}
-    SND.hum(true);$('#gmsg').textContent='부르릉, 걸렸다!';S.f.power=1;save();setTimeout(()=>{closeCard();powerBack()},900)})}
+    SND.rumble(true);setTimeout(()=>SND.hum(true),2200);$('#gmsg').textContent='부르릉, 걸렸다!';S.f.power=1;save();setTimeout(()=>{closeCard();powerBack()},1800)})}
 function powerBack(){SND.power();save();draw();say('불이 들어왔다. 창 너머 풍향탑 아래 사람 그림자가… 다시 보니 없다.');
   setTimeout(()=>toSlot(2,'자정. 바람이 더 세졌다. 바깥 풍향 바늘은 미친 듯이 돈다.'),3800)}
 function toSlot(t,msg){ana('chapter_solved',{chapter:S.t+1,minutes_used:anaMin()});S.t=t;ana('chapter_opened',{chapter:t+1,minutes_used:anaMin()});save();closeCard();draw();if(msg)say(msg)}
