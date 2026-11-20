@@ -679,8 +679,8 @@ function drawC(w){
       <path d="M730 338 q30 -12 92 -4 V344 H730Z" fill="#e3e8ec"/>
       ${[[720,420],[680,404],[640,392],[600,380],[560,370],[516,360],[470,352]].map(([x,y],k)=>`<ellipse cx="${x}" cy="${y}" rx="7" ry="3" fill="#9aa6b2" opacity=".7" transform="rotate(${k%2?-14:8} ${x} ${y})"/>`).join('')}`;}
   if(w===2){const warm=!dark()&&(!S.f.stoveOff||S.f.power); // 남: 관측실 건물 북쪽 면(안에서 본 북쪽 벽의 뒤집힌 모습: 왼쪽 연통, 가운데 큰 창, 오른쪽 문) + 울타리 + 산 아래 불빛
-    s+=`<g transform="translate(520 0)"><path d="M0 330 L60 300 L140 318 L220 296 L300 330Z" fill="#1d2738"/><circle cx="96" cy="306" r="3" fill="#e0c060"/><circle cx="104" cy="309" r="2" fill="#e0c060" opacity=".7"/>${hs('lights',70,290,50,30)}
-      ${[20,90,160,230].map(x=>`<rect x="${x}" y="296" width="8" height="70" fill="#5b4632"/><path d="M${x} 296 h8" stroke="#e8eef2" stroke-width="3" stroke-linecap="round"/>`).join('')}<line x1="0" y1="316" x2="260" y2="316" stroke="#5b4632" stroke-width="5"/><line x1="0" y1="340" x2="260" y2="340" stroke="#5b4632" stroke-width="4"/>
+    s+=`<g transform="translate(520 0)"><path d="M0 330 L60 300 L140 318 L220 296 L300 330Z" fill="#1d2738"/><circle cx="96" cy="306" r="3" fill="#e0c060"/><circle cx="104" cy="309" r="2" fill="#e0c060" opacity=".7"/>
+      ${[20,90,160,230].map(x=>`<rect x="${x}" y="296" width="8" height="70" fill="#5b4632"/><path d="M${x} 296 h8" stroke="#e8eef2" stroke-width="3" stroke-linecap="round"/>`).join('')}<line x1="0" y1="316" x2="260" y2="316" stroke="#5b4632" stroke-width="5"/><line x1="0" y1="340" x2="260" y2="340" stroke="#5b4632" stroke-width="4"/>${hs('lights',70,290,50,30)}
       ${S.t>=1?'<rect x="120" y="304" width="30" height="22" fill="#efece0" transform="rotate(-10 135 315)"/>'+hs('fence',110,294,52,38):''}
       </g><g transform="translate(-300 0)"><g filter="url(#blurC)"><ellipse cx="560" cy="342" rx="260" ry="12" fill="#000" opacity=".4"/></g>
       <path d="M300 336 V96 H812 V336Z" fill="#2c3440" stroke="#161b22" stroke-width="3"/>${[136,176,216,256,296].map(y=>`<path d="M300 ${y} H812" stroke="#202730" stroke-width="2"/><path d="M300 ${y+2} H812" stroke="#3e4858" stroke-width="1" opacity=".6"/>`).join('')}
