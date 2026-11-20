@@ -236,6 +236,7 @@ header.hud{display:flex;align-items:flex-end;gap:10px 18px;flex-wrap:wrap;margin
 
 <script>
 const $=s=>document.querySelector(s);
+// ==== 데이터 (PAGES) ====
 const SAVE_KEY='hn.note02.v2';
 const END=8;   // 결과 페이지 번호
 
@@ -277,6 +278,7 @@ const GRIDF=[[['사','blue'],['랑','blue'],['칠','green'],['구','green']],
 // ── 상태 ──────────────────────────────
 const fresh=()=>({p:0,open:0,solved:{},hints:{},wrong:{},ms:0,started:false,rubbed:false,unfolded:false,
   tools:{bm:false,lamp:false},light:false,torn:{x:.1,y:1.6,r:180,done:false},lock:[0,0,0,0],done:false});
+// ==== 상태·저장 ====
 let S=fresh();
 let resumed=false;
 try{const d=JSON.parse(localStorage.getItem(SAVE_KEY)||'null');if(d){S={...fresh(),...d,tools:{...fresh().tools,...(d.tools||{})}};resumed=S.started&&!S.done}}catch{}
@@ -337,6 +339,7 @@ const L=(cls,html,no)=>`<p class="ln ${cls}">${no?`<span class="no">${no}</span>
 const FIX=(wrong,right)=>`<span class="fix"><s>${wrong}</s><i>${right}</i></span>`;
 const TINY=(t,c='green')=>`<span class="${c} tiny">${t}</span>`;
 
+// ==== 장 그리기 ====
 function pageCover(){
   return `<section class="cover">
     <div class="label"><h2>문예부 교환일기</h2><div>규칙: 앞 사람이 숨긴 말을 찾아 맨 아래 빈칸에 적어야 다음 장을 쓸 수 있음.</div></div>
@@ -540,6 +543,7 @@ function applyTool(){
   renderTools();
 }
 
+// ==== 정답 판정·장치 ====
 function check(p){
   const inp=$('#ans'),v=norm(inp.value),pg=PAGES[p],msg=$('#msg');
   if(!v)return;
@@ -679,6 +683,7 @@ let lastW=innerWidth;
 addEventListener('resize',()=>{if(innerWidth===lastW)return;lastW=innerWidth;for(const k in BM)delete BM[k];render(false)});
 
 // ── 힌트 ──────────────────────────────
+// ==== 힌트·모달 ====
 function openHint(){
   const p=S.p,pg=PAGES[p];if(!pg.hints)return;
   const got=S.hints[p]||0;

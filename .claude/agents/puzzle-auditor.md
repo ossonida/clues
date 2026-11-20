@@ -9,8 +9,8 @@ tools: Read, Grep, Glob, Bash
 ## 읽을 것
 
 1. `AGENTS.md`의 "퍼즐 설계 원칙"
-2. `notes/NN/PLAN.md` 전체
-3. `notes/NN/index.html`의 데이터 부분: 방탈출 노트는 `PAGES`(ans/alt/near/say/hints/code), 장 렌더 함수(일지 문장), 방 정의(`ROOMS`), 자물쇠·장치 정답 상수. 추리 사건(Note 01)은 `CLUES`, `SUSPECTS`, `HS`(puzzle.ans), 지목 채점부.
+2. `notes/NN/PLAN.md`의 장 구성 표와 `## 정할 것` 먼저. 나머지는 검사하다 근거가 필요할 때 그 부분만 읽는다.
+3. `notes/NN/index.html`은 통째로 읽지 않는다. `// ==== 이름 ====` 구획 표시를 Grep으로 찾아 아래 데이터 부분만 offset/limit으로 읽는다: 방탈출 노트는 `PAGES`(ans/alt/near/say/hints/code), 장 렌더 함수(일지 문장), 방 정의(`ROOMS`), 자물쇠·장치 정답 상수. 추리 사건(Note 01)은 `CLUES`, `SUSPECTS`, `HS`(puzzle.ans), 지목 채점부.
 
 ## 검사 항목
 

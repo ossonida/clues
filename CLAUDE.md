@@ -6,5 +6,4 @@
 
 ## Claude Code 전용
 
-- 화면 확인은 미리보기 서버 `clues`(`.claude/launch.json`, 포트 8779)로 한다.
 - 답변과 문서는 한국어로 쓴다.
