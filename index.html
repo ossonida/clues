@@ -455,7 +455,7 @@ document.querySelectorAll('td[data-cl]').forEach(async td=>{const note=td.datase
   const show=n=>{td.innerHTML=EN?n+'':n+'명'};show(s.n);
   try{const c=await connect(),snap=await c.store.getDoc(c.store.doc(c.db,'clueLikes','clear_'+note));show(s.n+(snap.exists()?Math.max(0,snap.data().count|0):0))}catch{}});
 // 화면에 보이는 추천 수의 기본값. 실제 누른 수(Firestore count)에 더해서 보여 준다. DB에는 안 쓴다.
-const SEED = {note03: 158, note01: 124, note04: 113, note02: 112, note05: 36, note06: 8};
+const SEED = {note03: 237, note01: 193, note04: 181, note02: 112, note05: 36, note06: 8};
 const mine = note => { try { return localStorage.getItem('hn.rec.'+note) === '1'; } catch { return false; } };
 const setMine = (note, on) => { try { on ? localStorage.setItem('hn.rec.'+note, '1') : localStorage.removeItem('hn.rec.'+note); } catch {} };
 function paint(btn, count){
