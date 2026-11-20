@@ -1,0 +1,38 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><link rel="stylesheet" href="../fonts/fonts.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/hada0127/hada-type-levelup@v2026.10.21/css/levelup-subset.css">
+<!-- 노트 링크 미리보기(og/noteNN.png) 틀. 메인 index.html의 노트 카드(폴라로이드 그림·제목·한 줄·장르·난이도·시간)를 그대로 가져와 Edge로 찍는다. ?n=06 -->
+<style>
+html,body{margin:0;width:1200px;height:630px;overflow:hidden}
+.c{position:relative;width:1200px;height:630px;background:repeating-linear-gradient(#fbf3b8 0 47px,#9fb6d8 47px 49px);background-color:#fbf3b8;font-family:'Kkakdugi Drafting',monospace;color:#2a2422}
+.c:before{content:"";position:absolute;left:70px;top:0;bottom:0;width:3px;background:#d9534f;box-shadow:6px 0 0 #d9534f}
+.c:after{content:"";position:absolute;left:0;right:0;top:0;height:26px;background:#6e1f2b}
+.l{position:absolute;left:104px;top:58px;width:560px}
+.badge{display:inline-block;background:#6e1f2b;color:#fffdf4;font-size:26px;padding:8px 16px;letter-spacing:1px}
+.no{font-size:26px;letter-spacing:4px;color:#a3312a;margin-top:22px}
+h1{margin:6px 0 0;font-family:LevelUp,serif;font-weight:400;font-size:var(--hs,96px);line-height:1.05;word-break:keep-all}
+.sub{font-family:HEEJOY,cursive;font-size:40px;line-height:1.25;color:#1b3a8a;margin-top:16px;word-break:keep-all}
+.meta{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
+.meta span{border:2px solid #2a2422;font-size:24px;padding:4px 12px;background:#fffdf4}
+.f{position:absolute;left:104px;bottom:22px;font-size:24px;color:#5a5046}
+.pol{position:absolute;right:56px;top:84px;width:450px;background:#fff;padding:16px 16px 70px;transform:rotate(4deg);box-shadow:0 18px 36px rgba(40,30,0,.35)}
+.pol svg{display:block;width:100%;height:auto}
+.pol .cap{position:absolute;left:20px;right:16px;bottom:16px;font-family:HEEJOY,cursive;font-size:34px;color:#333;white-space:nowrap;overflow:hidden}
+.tape{position:absolute;left:50%;top:-22px;width:150px;height:40px;margin-left:-75px;background:rgba(240,230,190,.85);transform:rotate(-4deg)}
+</style></head><body><div class="c">
+<div class="l"><div class="badge" id="badge"></div><div class="no" id="no"></div><h1 id="h"></h1><div class="sub" id="sub"></div><div class="meta" id="meta"></div></div>
+<div class="pol" id="pol"><span class="tape"></span></div>
+<div class="f">clues-kappa.vercel.app · 설치·가입 없이 무료</div></div>
+<script>
+(async()=>{const n=new URLSearchParams(location.search).get('n');
+  const doc=new DOMParser().parseFromString(await (await fetch('../index.html')).text(),'text/html');
+  const a=doc.querySelector(`a.note[href="notes/${n}/"]`);
+  const dd=t=>{const d=[...a.querySelectorAll('.fields div')].find(x=>x.querySelector('dt').textContent.trim()===t);return d?d.querySelector('dd').textContent.trim():''};
+  const genre=dd('장르')||'방탈출';
+  badge.textContent=`브라우저에서 바로 하는 ${genre}`;
+  no.textContent=a.querySelector('.no').textContent.trim();
+  const h2=a.querySelector('h2').cloneNode(true);h2.querySelectorAll('br').forEach(b=>b.replaceWith(' '));h.textContent=h2.textContent.replace(/s+/g,' ').trim();if([...h.textContent].length>8)document.documentElement.style.setProperty('--hs','76px');
+  sub.textContent=a.querySelector('.sub').textContent.trim();
+  meta.innerHTML=[dd('난이도'),dd('소요 시간')].filter(Boolean).map(x=>`<span>${x}</span>`).join('');
+  const ph=a.querySelector('.photo');ph.querySelectorAll('svg.clip').forEach(x=>x.remove());pol.insertAdjacentHTML('beforeend',ph.innerHTML);
+  document.body.dataset.ready=1})();
+</script></body></html>

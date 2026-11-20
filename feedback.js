@@ -62,7 +62,14 @@
     }catch(e){draft.busy=false;draft.msg=T.fail;paint(box)}
   }
 
+  // 클리어 수: 결말 화면이 처음 보일 때 이 기기에서 한 번만 clueLikes/clear_noteNN count +1 (메인 사건 대장 「클리어」 칸이 읽음)
+  async function countClear(){
+    const again=document.getElementById('again');if(!again||again.offsetParent===null)return;
+    const k='hn.clearCounted.'+NOTE;try{if(localStorage.getItem(k))return;const c=JSON.parse(localStorage.getItem('hn.clear.'+NOTE)||'{}');if(!c.ok)return;localStorage.setItem(k,'1')}catch{return}
+    try{const {store,db}=await connect();await store.setDoc(store.doc(db,'clueLikes','clear_'+NOTE),{count:store.increment(1)},{merge:true})}catch{try{localStorage.removeItem(k)}catch{}}
+  }
   function mount(){
+    countClear();
     const again=document.getElementById('again');if(!again)return;
     const row=again.parentElement;if(!row||row.parentElement.querySelector(':scope>.hnfb'))return;
     const box=document.createElement('section');box.className='hnfb';box.setAttribute('aria-label',T.q);

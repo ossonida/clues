@@ -11,7 +11,7 @@ analytics.js        GA4 전송. 스키마에 없는 이벤트·값은 버린다
 feedback.js         결말 화면 한 줄 피드백 (#again 위에 자동으로 붙음, Firestore clueFeedback, 쓰기만)
 share.js            결말 기록 공유 (기록 카드: /api/r 링크 → 미리보기에 등급 도장·기록, 받은 사람은 친구 기록 카드 → 시작 화면. 틀린 암호 수는 analytics.js가 hn.wrong.noteNN에 셈)
 api/r.js            기록 공유 링크용 Vercel 함수(의존성 없음). og 메타를 만들고 노트로 보낸다. 이미지는 og/rec/noteNN-등급번호.png. 노트·등급이 바뀌면 NOTES 표와 이미지도 같이
-og/                 링크 미리보기 이미지 (1200×630, card.html을 Edge로 찍어 만듦). 새 노트는 og:* 메타와 og/noteNN.png 추가
+og/                 링크 미리보기 이미지 (1200×630, Edge로 찍음). noteNN.png = note.html?n=NN (메인 카드 폴라로이드를 그대로 가져옴, 카드를 바꾸면 다시 찍기). rec/ = 기록 공유용. 새 노트는 og:* 메타와 og/noteNN.png 추가
 ANALYTICS.md        이벤트 설계 문서
 ART.md              장면 아트(SVG) 규칙. 그림을 그리거나 고치기 전에 반드시 읽는다
 notes/NN/index.html 사건 하나 = HTML 파일 하나 (CSS·JS 모두 인라인)
