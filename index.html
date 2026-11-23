@@ -457,6 +457,8 @@ document.querySelectorAll('td[data-cl]').forEach(async td=>{const note=td.datase
   try{const c=await connect(),snap=await c.store.getDoc(c.store.doc(c.db,'clueLikes','clear_'+note));show(s.n+(snap.exists()?Math.max(0,snap.data().count|0):0))}catch{}});
 // 화면에 보이는 추천 수의 기본값. 실제 누른 수(Firestore count)에 더해서 보여 준다. DB에는 안 쓴다.
 const SEED = {note03: 237, note01: 193, note04: 181, note02: 112, note05: 36, note06: 8};
+// 내 브라우저(?analytics=off로 분석에서 제외한 기기)에서 누른 추천은 화면에만 반영하고 DB에는 쓰지 않는다
+const OWNER = (()=>{ try { return new URLSearchParams(location.search).get('analytics')==='off' || localStorage.getItem('score.analytics.exclude.v1')==='1'; } catch { return false; } })();
 const mine = note => { try { return localStorage.getItem('hn.rec.'+note) === '1'; } catch { return false; } };
 const setMine = (note, on) => { try { on ? localStorage.setItem('hn.rec.'+note, '1') : localStorage.removeItem('hn.rec.'+note); } catch {} };
 function paint(btn, count){
@@ -479,6 +481,7 @@ document.querySelectorAll('.rec').forEach(async btn=>{
     btn.disabled = true;
     hn('recommend_clicked', {note, action: on ? 'add' : 'remove'});
     try{
+      if(OWNER) return;
       const c = await connect();
       await c.store.setDoc(c.store.doc(c.db, 'clueLikes', note), {count: c.store.increment(on ? 1 : -1)}, {merge: true});
     }catch(err){

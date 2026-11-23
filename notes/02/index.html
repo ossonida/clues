@@ -15,6 +15,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <script src="../../lang.js"></script>
+<script src="en.js"></script>
 <script>window.hn=window.hn||function(){(hn.q=hn.q||[]).push(arguments)}</script>
 <script type="module" src="../../analytics.js"></script>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
@@ -238,10 +239,15 @@ header.hud{display:flex;align-items:flex-end;gap:10px 18px;flex-wrap:wrap;margin
 const $=s=>document.querySelector(s);
 const SAVE_KEY='hn.note02.v2';
 const END=8;   // 결과 페이지 번호
+const LANG=window.HN_LANG==='en'&&window.HN_NOTE02_EN?'en':'ko';
+const EN=window.HN_NOTE02_EN||{};
+const tr=(key,ko)=>LANG==='en'&&EN.copy&&EN.copy[key]!==undefined?EN.copy[key]:ko;
+const text=(ko,en)=>LANG==='en'?en:ko;
+if(LANG==='en'){document.documentElement.lang='en';document.title=EN.title}
 
 // ── 퍼즐 데이터 ──────────────────────────────
 // ans: 정답, alt: 같이 인정할 답, near: "거의 맞았다"로 받아 줄 답, say: 특정 오답에 돌려줄 말
-const PAGES=[
+const KO_PAGES=[
   {tab:'표지'},
   {tab:'1장', ans:'다음은너야', near:['다음은','다음','다음은너','너야','은너야'],
    hints:['줄마다 맨 앞 글자를 눈여겨보세요.','각 줄 첫 글자를 위에서 아래로 읽어 보세요.','정답: 다음은너야']},
@@ -263,13 +269,14 @@ const PAGES=[
    hints:['선생님 글씨는 이 글자판에도 섞여 있어요. 그런데 어떤 순서로 읽어야 할까요?','4장처럼 책갈피를 글자판에 겹쳐 돌려 보세요. 돌릴 때마다 구멍 속에 선생님 숫자가 하나씩 보여요.','삼 → 칠 → 일 → 구, 자물쇠 번호 3719']},
   {tab:'끝'}
 ];
+const PAGES=LANG==='en'?EN.pages:KO_PAGES;
 
 // 책갈피 구멍 (4×4 칸 번호 = 줄*4+칸): (0,1) (1,0) (1,2) (3,3)
 const HOLES=[1,4,6,15];
 // 4장: 책갈피를 바로 놓고 시계 방향으로 돌리며 읽으면 "뒷장을보려면빛이필요해암호는등불"
-const GRID4=['필뒷려호','장는을면','등요빛해','이불암보'];
+const GRID4=LANG==='en'?EN.grid4:['필뒷려호','장는을면','등요빛해','이불암보'];
 // 마지막 장: [글자, 펜]. 초록 숫자는 책갈피를 돌린 순서대로 삼·칠·일·구
-const GRIDF=[[['사','blue'],['랑','blue'],['칠','green'],['구','green']],
+const GRIDF=LANG==='en'?EN.gridF:[[['사','blue'],['랑','blue'],['칠','green'],['구','green']],
              [['오','red'],['늘','red'],['삼','green'],['이','pencil']],
              [['별','pencil'],['팔','blue'],['육','red'],['월','pencil']],
              [['안','red'],['녕','red'],['일','green'],['십','blue']]];
@@ -318,8 +325,8 @@ function renderTabs(){
 function renderTools(){
   const el=$('#tools'),usable=S.started&&S.p>0&&S.p<END;
   if(!usable){el.innerHTML='';return}
-  const items=[['pencil','✏️ 연필',true],['eraser','🧽 지우개',true],['bm','🔖 책갈피',S.tools.bm],['lamp','💡 스탠드',S.tools.lamp]].filter(t=>t[2]);
-  el.innerHTML='<span>소지품</span>'+items.map(([id,label])=>
+  const items=[['pencil',text('✏️ 연필','✏️ Pencil'),true],['eraser',text('🧽 지우개','🧽 Eraser'),true],['bm',text('🔖 책갈피','🔖 Bookmark'),S.tools.bm],['lamp',text('💡 스탠드','💡 Desk lamp'),S.tools.lamp]].filter(t=>t[2]);
+  el.innerHTML=`<span>${text('소지품','Items')}</span>`+items.map(([id,label])=>
     `<button class="tool${TOOL===id?' on':''}${id==='lamp'&&S.light?' lit':''}${NEWTOOL===id?' new':''}" data-t="${id}" aria-pressed="${id==='lamp'?S.light:TOOL===id}">${label}</button>`).join('');
   NEWTOOL=null;
   el.querySelectorAll('.tool').forEach(b=>b.onclick=()=>{
@@ -337,7 +344,61 @@ const L=(cls,html,no)=>`<p class="ln ${cls}">${no?`<span class="no">${no}</span>
 const FIX=(wrong,right)=>`<span class="fix"><s>${wrong}</s><i>${right}</i></span>`;
 const TINY=(t,c='green')=>`<span class="${c} tiny">${t}</span>`;
 
+function pageCoverEn(){return `<section class="cover">
+  <div class="label"><h2>Literary Club Exchange Diary</h2><div>Rule: find the hidden words left by the previous writer. Write each one in the blank below to earn the next page.</div></div>
+  <p class="story">After club, I must have fallen asleep in the literary club room. When I wake up, the windows are dark and the door is locked from outside. Someone has clipped an unfamiliar four-digit padlock to the inside handle.<br>On the desk is an exchange diary last year’s members passed around. Someone wrote this inside the cover.</p>
+  <div class="rules">“Only the person who reads to the end <b>gets out.</b>”</div>
+  <button class="btn go" id="start">${S.started?'Open it again':'Open the diary'}</button>
+  <div class="proto">Your progress is saved in this browser.</div>
+</section>`}
+function page1En(){return `<article class="sheet turn">
+  ${L('head blue','<span>Thursday, March 14 · Clear</span><span>— Jiu</span>')}${L('','')}
+  ${L('blue','We made it through midterms somehow.')}
+  ${L('blue','Rain kept us inside after club.')}
+  ${L('blue',`I found Jiu’s old ${FIX('drafft','draft')} in the drawer.`)}
+  ${L('blue','Tomorrow, somebody else gets this notebook.')}
+  ${L('blue','Every page should keep one secret.')}${L('','')}
+  ${L('red','↳ Fixed one spelling slip. — Sera')}
+  <svg class="doodle" style="right:18px;top:calc(var(--nl) * 8 + 2px);width:58px;height:46px" viewBox="0 0 58 46" aria-hidden="true"><g fill="none" stroke="#1d4fc4" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 40 C 6 24, 12 14, 22 14 C 34 14, 40 24, 36 40 Z"/><path d="M14 18 L13 6 L21 13"/><path d="M30 13 L37 6 L36 18"/><circle cx="19" cy="25" r="1.3"/><circle cx="29" cy="25" r="1.3"/><path d="M22 30 Q24 32 26 30"/><path d="M36 36 C 46 36, 52 30, 50 22"/></g></svg>
+  <span class="doodle green" style="right:10px;top:calc(var(--nl) * 9 + 6px);font-family:var(--hand);font-size:24px;font-weight:700;transform:rotate(-8deg)">M</span>
+</article>${answerRow(1)}`}
+function page2En(){return `<article class="sheet turn">
+  ${L('head pencil','<span>Thursday, March 21 · Cloudy</span><span>— Haram</span>')}${L('','')}
+  ${L('pencil','My turn is a secret.')}
+  <div class="rub" id="rub"></div>
+  ${L('pencil right','A blank line is not always empty.')}
+</article>${answerRow(2)}`}
+function page3En(){const poem=['After class, sunlight leans in,','The clock hands settle near seven,','Chalk dust drifts above the desks,','Nine notebooks crowd the table,','Jiu corrects another line,','Haram says almost nothing,','Our three pens wait in a cup,','The room keeps last year’s voices,','Behind us, one page is still blank,','Before April comes, goodbye.'];return `<article class="sheet turn">
+  ${L('head red','<span>Thursday, March 28 · Rain</span><span>— Sera</span>')}
+  ${L('red',`　　“By the clubroom window”${TINY('S')}`)}${poem.map((s,i)=>L('red',s,i+1)).join('')}${L('','')}${L('','')}
+  ${S.unfolded?'<div class="flap"><b>4–1 · 9–3 · 2–5 · 7–3</b></div>':'<button class="corner" id="corner" aria-label="Unfold the corner" title="Folded corner"></button>'}
+</article>${answerRow(3)}`}
+function page4En(){return `<article class="sheet turn">
+  ${L('head blue','<span>Thursday, April 4 · Windy</span><span>— Jiu</span>')}
+  ${L('blue','Sera will correct this too, so here is a letter grid!')}
+  ${L('blue',`Read it any old way and it says nothing.${TINY('Y')}`)}
+  <div class="grid4">${GRID4.map(r=>[...r].map(ch=>`<span class="blue">${ch}</span>`).join('')).join('')}</div>${L('','')}
+</article>${answerRow(4)}`}
+function page5En(){const ticks=Array.from({length:12},(_,i)=>{const a=i*Math.PI/6,x1=50+40*Math.sin(a),y1=50-40*Math.cos(a),x2=50+(i%3?36:32)*Math.sin(a),y2=50-(i%3?36:32)*Math.cos(a);return `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}"/>`}).join('');return `<article class="sheet turn${S.light?' lit':''}">
+  ${L('head pencil','<span>Thursday, April 11 · Clear</span><span>— Haram</span>')}${L('','')}
+  ${L('pencil','The clubroom clock stopped today.')}${L('pencil','I told our teacher. She only smiled.')}${L('pencil','I drew my code on the back of this page.')}${L('','')}${L('','')}${L('','')}${L('','')}${L('','')}
+  <div class="back" style="top:calc(var(--nl) * 6 + 2px)" aria-hidden="true">Stopped clock
+    <svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" fill="none" stroke="rgb(60,60,70)" stroke-width="2"/><g stroke="rgb(60,60,70)" stroke-width="2" stroke-linecap="round">${ticks}</g><text x="50" y="25" font-size="11" text-anchor="middle" fill="rgb(60,60,70)" font-family="sans-serif">12</text><line x1="50" y1="50" x2="26.1" y2="47.9" stroke="rgb(60,60,70)" stroke-width="4" stroke-linecap="round"/><line x1="50" y1="50" x2="81.2" y2="32" stroke="rgb(60,60,70)" stroke-width="2.5" stroke-linecap="round"/><circle cx="50" cy="50" r="2.5" fill="rgb(60,60,70)"/></svg>
+    <span class="green" style="position:absolute;right:8px;bottom:-34px;font-size:1em;font-weight:700">OON</span>
+  </div>
+</article>${answerRow(5)}`}
+function page6En(){const tt='<div class="tt">Gather the colour none of us uses, in page order.</div>';return `<article class="sheet turn">
+  ${L('head red','<span>Thursday, April 18 · Cloudy</span><span>— Sera</span>')}${L('','')}${L('red','Someone has been writing in our notebook.')}${L('red','I tore it up before they could be caught.')}${L('','')}
+  <div class="tear" id="tear"><div class="tbox" style="clip-path:${tearTop}">${tt}</div><div class="tbox gap" style="clip-path:${tearBot}"></div><div class="scrapw${S.torn.done?' fixed':''}" id="scrapw"><div class="scrap" id="scrap" style="clip-path:${tearBot}" aria-label="Torn scrap: tap to turn, drag into place">${tt}</div></div></div>
+</article>${answerRow(6)}`}
+function page7En(){return `<article class="sheet turn">
+  ${L('head','<span class="blue">February 13 · The day before graduation</span><span class="pencil">— all four of us</span>')}${L('','')}${L('blue','The four of us each filled one square on the last page!')}${L('pencil','Our teacher changed the door code.')}${L('red','Last year’s code will not open it now.')}
+  <div class="grid4">${GRIDF.map(r=>r.map(([ch,c])=>`<span class="${c}">${ch}</span>`).join('')).join('')}</div>${L('green right','Congratulations, graduates.')}
+</article><section class="lock" id="lock"><h3>Door handle · four-digit padlock</h3><div class="dials">${S.lock.map((d,i)=>`<div class="dial"><button data-i="${i}" data-d="1" aria-label="Raise digit ${i+1}">▲</button><b>${d}</b><button data-i="${i}" data-d="-1" aria-label="Lower digit ${i+1}">▼</button></div>`).join('')}</div><button class="pull" id="pull">Pull</button><div class="msg" id="lockMsg"></div></section><div class="nav"><button data-go="6">← Previous page</button><span></span></div>`}
+function pageEndEn(){const h=hintTotal(),ansHints=Object.values(S.hints).filter(n=>n>=3).length,grade=h===0?'Honorary Member':ansHints===0?'Club Member':'Visitor';return `<article class="sheet turn result"><p class="big">Click. The door opens.</p><div class="seal">${grade}</div><dl><div><dt>Time</dt><dd>${fmt(S.ms)}</dd></div><div><dt>Hints</dt><dd>${h}</dd></div><div><dt>Wrong codes</dt><dd>${wrongTotal()}</dd></div></dl><p>Outside, a note in green ink is taped to the door.</p><div class="letter">Thank you for reading to the end.<br>The three of them left this notebook. Now it is your turn.<br>— Ms. Yoon, literary club adviser</div><p>The fourth handwriting had been hiding throughout the diary. Ms. Yoon had quietly built this escape game with the three graduating members for whoever joined next. At the very back, one line is still blank.</p><div class="row"><button class="btn" id="again">Play again</button><a class="btn primary" href="../../" style="text-decoration:none">Case archive</a></div></article>`}
+
 function pageCover(){
+  if(LANG==='en')return pageCoverEn();
   return `<section class="cover">
     <div class="label"><h2>문예부 교환일기</h2><div>규칙: 앞 사람이 숨긴 말을 찾아 맨 아래 빈칸에 적어야 다음 장을 쓸 수 있음.</div></div>
     <p class="story">방과 후 문예부실에서 깜빡 졸았다. 눈을 떠 보니 창밖은 벌써 어둑하고, 문은 밖에서 잠겨 있다. 안쪽 손잡이에는 처음 보는 4자리 번호자물쇠가 걸려 있다.<br>책상 위에는 작년 부원들이 돌려 쓰던 교환일기 한 권. 표지 안쪽에 누군가 이렇게 적어 두었다.</p>
@@ -348,6 +409,7 @@ function pageCover(){
 }
 
 function page1(){
+  if(LANG==='en')return page1En();
   return `<article class="sheet turn">
     ${L('head blue','<span>3월 14일 목요일 · 맑음</span><span>— 지우</span>')}
     ${L('','')}
@@ -369,6 +431,7 @@ function page1(){
 }
 
 function page2(){
+  if(LANG==='en')return page2En();
   return `<article class="sheet turn">
     ${L('head pencil','<span>3월 21일 목요일 · 흐림</span><span>— 하람</span>')}
     ${L('','')}
@@ -379,6 +442,7 @@ function page2(){
 }
 
 function page3(){
+  if(LANG==='en')return page3En();
   const poem=[
     '오후 네 시, 창문이 노랗다',
     '분필 냄새 칠판 위로 번지고',
@@ -403,6 +467,7 @@ function page3(){
 }
 
 function page4(){
+  if(LANG==='en')return page4En();
   return `<article class="sheet turn">
     ${L('head blue','<span>4월 4일 목요일 · 바람</span><span>— 지우</span>')}
     ${L('blue','서진이가 또 고칠까 봐 이번엔 글자판!')}
@@ -413,6 +478,7 @@ function page4(){
 }
 
 function page5(){
+  if(LANG==='en')return page5En();
   // 뒷장에 그린 진짜 시계(9시 10분). .back이 좌우로 뒤집혀 비치므로 앞에서는 2시 50분처럼 보인다.
   const ticks=Array.from({length:12},(_,i)=>{const a=i*Math.PI/6,x1=50+40*Math.sin(a),y1=50-40*Math.cos(a),x2=50+(i%3?36:32)*Math.sin(a),y2=50-(i%3?36:32)*Math.cos(a);return `<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}"/>`}).join('');
   return `<article class="sheet turn${S.light?' lit':''}">
@@ -439,6 +505,7 @@ const TEAR=[50,46,53,48,55,47,51,45,54,49,52,46,55,48,50,44,53,47,52,49,51];
 const tearTop='polygon(0% 0%,100% 0%,'+TEAR.map((y,i)=>`${100-i*5}% ${TEAR[20-i]}%`).join(',')+')';
 const tearBot='polygon('+TEAR.map((y,i)=>`${i*5}% ${y}%`).join(',')+',100% 100%,0% 100%)';
 function page6(){
+  if(LANG==='en')return page6En();
   const tt='<div class="tt">우리 안 쓰는 색만 장 순서대로 모아</div>';
   return `<article class="sheet turn">
     ${L('head red','<span>4월 18일 목요일 · 흐림</span><span>— 서진</span>')}
@@ -455,6 +522,7 @@ function page6(){
 }
 
 function page7(){
+  if(LANG==='en')return page7En();
   return `<article class="sheet turn">
     ${L('head','<span class="blue">2월 13일 · 졸업식 전날</span><span class="pencil">— 다 같이</span>')}
     ${L('','')}
@@ -474,6 +542,7 @@ function page7(){
 }
 
 function pageEnd(){
+  if(LANG==='en')return pageEndEn();
   const h=hintTotal(),ansHints=Object.values(S.hints).filter(n=>n>=3).length;
   const grade=h===0?'명예 문예부원':ansHints===0?'문예부원':'견학생';
   return `<article class="sheet turn result">
@@ -492,10 +561,10 @@ function pageEnd(){
 }
 
 function answerRow(p){
-  if(S.solved[p])return `<div class="pw"><label>오늘의 암호:</label><span class="done">${S.solved[p]}</span></div>
-    <div class="nav"><button data-go="${p-1}">← 앞 장</button><button data-go="${p+1}">다음 장 넘기기 →</button></div>`;
-  return `<form class="pw" id="pw" autocomplete="off"><label for="ans">오늘의 암호:</label><input id="ans" maxlength="20" spellcheck="false"><button class="btn primary">적기</button><div class="msg" id="msg"></div></form>
-    <div class="nav"><button data-go="${p-1}">← 앞 장</button><span></span></div>`;
+  if(S.solved[p])return `<div class="pw"><label>${text('오늘의 암호:','Today’s code:')}</label><span class="done">${S.solved[p]}</span></div>
+    <div class="nav"><button data-go="${p-1}">${text('← 앞 장','← Previous page')}</button><button data-go="${p+1}">${text('다음 장 넘기기 →','Turn the page →')}</button></div>`;
+  return `<form class="pw" id="pw" autocomplete="off"><label for="ans">${text('오늘의 암호:','Today’s code:')}</label><input id="ans" maxlength="20" spellcheck="false"><button class="btn primary">${text('적기','Write it')}</button><div class="msg" id="msg"></div></form>
+    <div class="nav"><button data-go="${p-1}">${text('← 앞 장','← Previous page')}</button><span></span></div>`;
 }
 
 // ── 렌더 ──────────────────────────────
@@ -509,11 +578,11 @@ function render(anim){
   $('#page').querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(+b.dataset.go));
   if(p===0)$('#start').onclick=()=>{if(!S.started)ana('case_started');S.started=true;S.open=Math.max(S.open,1);go(1)};
   const f=$('#pw');if(f)f.onsubmit=e=>{e.preventDefault();check(p)};
-  if(p===3){const c=$('#corner');if(c)c.onclick=()=>{S.unfolded=true;save();render(false);gain('bm','접힌 틈에서 구멍 뚫린 책갈피가 떨어졌다. 소지품에 넣었다.');renderTools()}}
+  if(p===3){const c=$('#corner');if(c)c.onclick=()=>{S.unfolded=true;save();render(false);gain('bm',text('접힌 틈에서 구멍 뚫린 책갈피가 떨어졌다. 소지품에 넣었다.','A hole-punched bookmark slips from the fold. You put it with your items.'));renderTools()}}
   if(p===6)bindTorn();
   if(p===7)bindLock();
   if(p===END){
-    $('#again').onclick=()=>{if(confirm('처음부터 다시 할까요? 지금 기록은 지워져요.')){ana('case_restarted');S=fresh();for(const k in STROKES)delete STROKES[k];for(const k in BM)delete BM[k];save();render(true)}};
+    $('#again').onclick=()=>{if(confirm(text('처음부터 다시 할까요? 지금 기록은 지워져요.','Start over? Your current progress will be erased.'))){ana('case_restarted');S=fresh();for(const k in STROKES)delete STROKES[k];for(const k in BM)delete BM[k];save();render(true)}};
   }
   setupSheet();
 }
@@ -548,9 +617,9 @@ function check(p){
     anaChapter('chapter_solved',p);
     S.solved[p]=pg.ans;S.open=Math.max(S.open,p+1);save();
     render(false);
-    if(p===3&&!S.tools.bm)gain('bm','책상 밑에 떨어져 있던 구멍 뚫린 책갈피를 주웠다. 소지품에 넣었다.');
-    else if(p===4&&!S.tools.lamp)gain('lamp','붙어 있던 다음 장이 떨어졌다. 이제 부실 책상 스탠드도 켤 수 있다.');
-    else toast('붙어 있던 다음 장이 떨어졌다.');
+    if(p===3&&!S.tools.bm)gain('bm',text('책상 밑에 떨어져 있던 구멍 뚫린 책갈피를 주웠다. 소지품에 넣었다.','You pick up a hole-punched bookmark that fell under the desk.'));
+    else if(p===4&&!S.tools.lamp)gain('lamp',text('붙어 있던 다음 장이 떨어졌다. 이제 부실 책상 스탠드도 켤 수 있다.','The next page comes loose. You can now turn on the clubroom desk lamp.'));
+    else toast(text('붙어 있던 다음 장이 떨어졌다.','The next page comes loose.'));
     renderTools();return;
   }
   S.wrong[p]=(S.wrong[p]||0)+1;save();
@@ -558,7 +627,7 @@ function check(p){
   const a=norm(pg.ans),said=pg.say&&pg.say[v];
   const near=pg.near.includes(v)||(a.length>=4&&lev(v,a)<=1)||(/^\d{4}$/.test(a)&&/^\d{4}$/.test(v)&&sameDigits(a,v));
   msg.className='msg'+(near&&!said?' near':'');
-  msg.textContent=said||(near?'거의 맞았다. 조금만 더…':['아닌 것 같다.','다음 장이 꿈쩍도 안 한다.','다시 읽어 보자.'][S.wrong[p]%3]);
+  msg.textContent=said||(near?text('거의 맞았다. 조금만 더…','Almost. Just a little more…'):text(['아닌 것 같다.','다음 장이 꿈쩍도 안 한다.','다시 읽어 보자.'][S.wrong[p]%3],['That does not seem right.','The next page will not budge.','Read it once more.'][S.wrong[p]%3]));
   $('#pw').classList.remove('shake');void $('#pw').offsetWidth;$('#pw').classList.add('shake');
   inp.select();
 }
@@ -568,10 +637,10 @@ function bindLock(){
   $('#lock').querySelectorAll('.dial button').forEach(b=>b.onclick=()=>{const i=+b.dataset.i;S.lock[i]=(S.lock[i]+(+b.dataset.d)+10)%10;b.parentNode.querySelector('b').textContent=S.lock[i];save()});
   $('#pull').onclick=()=>{
     const code=S.lock.join(''),m=$('#lockMsg'),ans=PAGES[7].code;
-    if(code===ans){ana('puzzle_tried',{puzzle:'chapter_7',outcome:'solved',attempt:(S.wrong[7]||0)+1,minutes_used:anaMinutes()});anaChapter('chapter_solved',7);S.done=true;S.p=END;TOOL=null;S.light=false;save();record(S.ms);ana('case_finished',{grade:'solved',points:1,clue_count:7,clue_total:7,minutes_used:anaMinutes(),play_minutes:anaMinutes()});toast('철컥!');render(true);return}
+    if(code===ans){ana('puzzle_tried',{puzzle:'chapter_7',outcome:'solved',attempt:(S.wrong[7]||0)+1,minutes_used:anaMinutes()});anaChapter('chapter_solved',7);S.done=true;S.p=END;TOOL=null;S.light=false;save();record(S.ms);ana('case_finished',{grade:'solved',points:1,clue_count:7,clue_total:7,minutes_used:anaMinutes(),play_minutes:anaMinutes()});toast(text('철컥!','Click!'));render(true);return}
     S.wrong[7]=(S.wrong[7]||0)+1;save();
     ana('puzzle_tried',{puzzle:'chapter_7',outcome:'wrong',attempt:S.wrong[7],minutes_used:anaMinutes()});
-    m.textContent=code==='9173'?'작년 번호로는 안 열린다. 정말 바뀌었나 보다.':sameDigits(code,ans)?'숫자는 맞는 것 같은데… 순서가 아닌가?':'꿈쩍도 안 한다.';
+    m.textContent=code==='9173'?text('작년 번호로는 안 열린다. 정말 바뀌었나 보다.','Last year’s code will not open it. It really has changed.'):sameDigits(code,ans)?text('숫자는 맞는 것 같은데… 순서가 아닌가?','The digits seem right… but perhaps not the order?'):text('꿈쩍도 안 한다.','It will not budge.');
     $('#lock').classList.remove('shake');void $('#lock').offsetWidth;$('#lock').classList.add('shake');
   };
 }
@@ -580,7 +649,7 @@ function bindLock(){
 function showBm(sh){
   const c=parseFloat(getComputedStyle(sh).getPropertyValue('--c'))||44;
   const bm=document.createElement('div');bm.className='bm';bm.setAttribute('aria-label','구멍 뚫린 책갈피 (끌어서 옮기기, 누르면 돌리기)');
-  bm.innerHTML=Array.from({length:16},(_,i)=>`<i class="${HOLES.includes(i)?'h':''}"></i>`).join('')+'<span class="lbl">지우 책갈피</span>';
+  bm.innerHTML=Array.from({length:16},(_,i)=>`<i class="${HOLES.includes(i)?'h':''}"></i>`).join('')+`<span class="lbl">${text('지우 책갈피','Jiu’s bookmark')}</span>`;
   sh.appendChild(bm);
   const W=sh.clientWidth,H=sh.offsetHeight,size=4*c;
   const st0=BM[S.p]||(BM[S.p]={x:W-size-14,y:Math.min(60,H-size),turns:0});
@@ -609,13 +678,13 @@ function bindTorn(){
     if(st.moved<6)return;S.torn.x=clamp(st.x+dx/W,-.3,.3);S.torn.y=clamp(st.y+dy/H,-.3,2);place()};
   s.onpointerup=s.onpointercancel=()=>{if(!st)return;w.classList.remove('drag');
     if(st.moved<6)S.torn.r=(S.torn.r+180)%360;
-    if(S.torn.r===0&&Math.abs(S.torn.x*W)<18&&Math.abs(S.torn.y*H)<18){S.torn={...S.torn,x:0,y:0,done:true};w.classList.add('fixed');s.onpointerdown=null;toast('찢긴 자리에 딱 맞는다.')}
+    if(S.torn.r===0&&Math.abs(S.torn.x*W)<18&&Math.abs(S.torn.y*H)<18){S.torn={...S.torn,x:0,y:0,done:true};w.classList.add('fixed');s.onpointerdown=null;toast(text('찢긴 자리에 딱 맞는다.','It fits the tear exactly.'))}
     st=null;save();place()};
 }
 
 // ── 연필 문지르기 ──────────────────────────────
 // 장 전체에 흑연을 칠할 수 있고, 2장의 빈 줄에만 눌린 글씨가 있다. 눌린 글씨 모양만큼은 흑연을 지워 종이색이 드러난다.
-const RUB_TEXT=['빨간 펜이 고친','글자만 읽어'];
+const RUB_TEXT=LANG==='en'?['READ RED','PEN']:['빨간 펜이 고친','글자만 읽어'];
 async function initRub(sh,cv){
   try{await document.fonts.load('40px "HEEJOY"')}catch{}
   if(!document.body.contains(cv))return;
@@ -682,11 +751,11 @@ addEventListener('resize',()=>{if(innerWidth===lastW)return;lastW=innerWidth;for
 function openHint(){
   const p=S.p,pg=PAGES[p];if(!pg.hints)return;
   const got=S.hints[p]||0;
-  $('#modal').innerHTML=`<h2>${pg.tab} 힌트</h2><div class="sub">포스트잇을 한 장씩 떼어 볼 수 있어요. 세 번째 장엔 정답이 적혀 있어요.</div>
-    <div class="posts">${pg.hints.map((h,i)=>i<got?`<div class="post"><small>포스트잇 ${i+1}</small>${h}</div>`
-      :i===got?`<button class="post closed" id="peel">포스트잇 ${i+1} 떼어 보기${i===2?' (정답)':''}</button>`
-      :`<div class="post closed">포스트잇 ${i+1}</div>`).join('')}</div>
-    <div class="actions"><button class="btn" id="mclose">닫기</button></div>`;
+  $('#modal').innerHTML=`<h2>${pg.tab} ${text('힌트','hint')}</h2><div class="sub">${text('포스트잇을 한 장씩 떼어 볼 수 있어요. 세 번째 장엔 정답이 적혀 있어요.','Peel back one sticky note at a time. The third note gives the answer.')}</div>
+    <div class="posts">${pg.hints.map((h,i)=>i<got?`<div class="post"><small>${text('포스트잇','Sticky note')} ${i+1}</small>${h}</div>`
+      :i===got?`<button class="post closed" id="peel">${text('포스트잇','Sticky note')} ${i+1} ${text('떼어 보기','— peel it back')}${i===2?text(' (정답)',' (answer)'):''}</button>`
+      :`<div class="post closed">${text('포스트잇','Sticky note')} ${i+1}</div>`).join('')}</div>
+    <div class="actions"><button class="btn" id="mclose">${text('닫기','Close')}</button></div>`;
   $('#mbg').classList.add('on');
   $('#mclose').onclick=closeM;
   const pe=$('#peel');if(pe)pe.onclick=()=>{S.hints[p]=got+1;ana('hint_revealed',{chapter:p,level:got+1,minutes_used:anaMinutes()});save();renderStats();openHint()};
@@ -695,6 +764,15 @@ function closeM(){$('#mbg').classList.remove('on')}
 $('#mbg').onclick=e=>{if(e.target.id==='mbg')closeM()};
 addEventListener('keydown',e=>{if(e.key==='Escape')closeM()});
 $('#btnHint').onclick=openHint;
+
+function localizeChrome(){if(LANG!=='en')return;
+  $('.brand .back').textContent='← Case archive / NOTE 02';
+  $('.brand .t').textContent='Literary Club Exchange Diary';
+  $('.brand small').textContent='Notebook escape room';
+  const stats=document.querySelectorAll('.stat span');stats[0].textContent='Time';stats[1].textContent='Hints';
+  $('#btnHint').textContent='Hint';
+}
+localizeChrome();
 
 if(!canOpen(S.p))S.p=0;
 ana('case_intro_viewed');

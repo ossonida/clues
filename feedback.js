@@ -62,10 +62,10 @@
     }catch(e){draft.busy=false;draft.msg=T.fail;paint(box)}
   }
 
-  // 클리어 수: 결말 화면이 처음 보일 때 이 기기에서 한 번만 clueLikes/clear_noteNN count +1 (메인 사건 대장 「클리어」 칸이 읽음)
+  // 클리어 수: 결말 화면이 처음 보일 때 이 기기에서 한 번만 (분석 제외한 내 기기는 세지 않음) clueLikes/clear_noteNN count +1 (메인 사건 대장 「클리어」 칸이 읽음)
   async function countClear(){
     const again=document.getElementById('again');if(!again||again.offsetParent===null)return;
-    const k='hn.clearCounted.'+NOTE;try{if(localStorage.getItem(k))return;const c=JSON.parse(localStorage.getItem('hn.clear.'+NOTE)||'{}');if(!c.ok)return;localStorage.setItem(k,'1')}catch{return}
+    const k='hn.clearCounted.'+NOTE;try{if(localStorage.getItem('score.analytics.exclude.v1')==='1')return;if(localStorage.getItem(k))return;const c=JSON.parse(localStorage.getItem('hn.clear.'+NOTE)||'{}');if(!c.ok)return;localStorage.setItem(k,'1')}catch{return}
     try{const {store,db}=await connect();await store.setDoc(store.doc(db,'clueLikes','clear_'+NOTE),{count:store.increment(1)},{merge:true})}catch{try{localStorage.removeItem(k)}catch{}}
   }
   function mount(){
