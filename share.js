@@ -1,4 +1,4 @@
-// 기록 공유: 결말 화면(#again 줄 위, 한 줄 피드백 아래)에 「기록 카드 공유」「친구에게 링크 보내기」를 붙인다.
+// 기록 공유: 결말 화면(#again 줄 위, 한 줄 피드백 아래)에 「친구에게 도전장 보내기」(기록 카드 링크)를 붙인다.
 // - feedback.js가 이 파일을 불러온다. 노트 코드는 건드리지 않는다.
 // - 기록은 hn.clear.noteNN({ok,best,last}), 힌트 수는 #hintCount, 틀린 암호 수는 hn.wrong.noteNN. 줄거리·정답은 넣지 않는다.
 // - 기록 카드는 /api/r 링크로 보낸다(메신저 미리보기에 등급 도장 이미지·기록, 누르면 노트로). 링크 보내기는 노트 주소 그대로.
@@ -15,13 +15,13 @@
   function recURL(){const r=rec(),p=new URLSearchParams({n:NUM}),gi=(GR[NUM]||[]).indexOf(grade());if(gi>=0)p.set('g',gi);if(r.ms)p.set('t',Math.round(r.ms/1000));if(r.hints>=0)p.set('h',r.hints);if(r.wrong>=0)p.set('w',r.wrong);if(EN)p.set('lang','en');return `https://clues-kappa.vercel.app/api/r?${p}`}
   const TITLE=(document.title.split(' | ')[0]||'').replace(/^Note\s*\d+\s*·\s*/i,'').trim();
   const T=EN?{
-    h:'Share your record',card:'Share my record',link:'Send to a friend',manual:'Copy the text below and send it.',copied:'Copied. Paste it into a chat.',
+    h:'Challenge a friend',card:'Challenge a friend',link:'Send to a friend',manual:'Copy the text below and send it.',copied:'Copied. Paste it into a chat.',
     fail:'Could not share. Please try again.',time:'Time',hints:'Hints',wrong:'Wrong codes',none:'none',done:'Escaped!',open:'Unsolved',
-    line:'Your turn?',friend:`A free mystery escape game in your browser: Hidden Note ${NUM} "${TITLE}". Keep a scrap of paper handy.`
+    line:'Think you can beat that?',line2:'Think you can crack it?',friend:`A free mystery escape game in your browser: Hidden Note ${NUM} "${TITLE}". Keep a scrap of paper handy.`
   }:{
-    h:'기록 공유',card:'기록 카드 공유',link:'친구에게 링크 보내기',manual:'아래 문구를 복사해서 보내 주세요.',copied:'복사했어요. 채팅방에 붙여 넣어 주세요.',
+    h:'도전장',card:'친구에게 도전장 보내기',link:'친구에게 링크 보내기',manual:'아래 문구를 복사해서 보내 주세요.',copied:'복사했어요. 채팅방에 붙여 넣어 주세요.',
     fail:'공유하지 못했어요. 다시 눌러 주세요.',time:'걸린 시간',hints:'힌트',wrong:'틀린 암호',none:'없음',done:'탈출!',open:'미해결',
-    line:'너도 해 볼래?',friend:`브라우저에서 바로 하는 무료 추리·방탈출, 히든노트 ${NUM} 「${TITLE}」. 메모지 한 장 옆에 두고 해 봐.`
+    line:'이 기록, 깰 수 있어?',line2:'너라면 풀 수 있어?',friend:`브라우저에서 바로 하는 무료 추리·방탈출, 히든노트 ${NUM} 「${TITLE}」. 메모지 한 장 옆에 두고 해 봐.`
   };
   function rec(){
     let ok=true,ms=0,hints=-1,wrong=-1;
@@ -34,8 +34,8 @@
   const fmt=ms=>{const H=Math.floor(ms/3600000),m=Math.floor(ms/60000)%60,s=Math.floor(ms/1000)%60;return EN?(H?`${H}h ${m}m`:m?`${m}m ${s}s`:`${s}s`):(H?`${H}시간 ${m}분`:m?`${m}분 ${s}초`:`${s}초`)};
   // 공유 문구: 카톡 등에 글로 보이는 기록 (걸린 시간 · 힌트 · 틀린 암호) + 주소(미리보기 카드는 og 이미지)
   function recordText(){
-    const r=rec(),g=grade()||(r.ok?T.done:T.open);
-    return EN?`"${TITLE}" ${g}${r.ms?' · '+fmt(r.ms):''}. ${T.line}`:`「${TITLE}」 ${g}${r.ms?' · '+fmt(r.ms):''}. ${T.line}`;
+    const r=rec(),g=grade()||(r.ok?T.done:T.open),line=r.ok&&g!=='미해결'?T.line:T.line2;
+    return EN?`"${TITLE}" ${g}${r.ms?' · '+fmt(r.ms):''}. ${line}`:`「${TITLE}」 ${g}${r.ms?' · '+fmt(r.ms):''}. ${line}`;
   }
   async function copy(s){try{await navigator.clipboard.writeText(s);return true}catch{}
     try{const a=document.createElement('textarea');a.value=s;a.setAttribute('readonly','');a.style.cssText='position:fixed;top:0;left:0;opacity:0';document.body.appendChild(a);a.select();const ok=document.execCommand('copy');a.remove();return ok}catch{return false}}
@@ -80,9 +80,9 @@
 .hnfr dl{margin:0 0 14px}.hnfr dl div{display:flex;padding:8px 0;border-bottom:1px dotted #b8ad95}.hnfr dt{width:45%;color:#6b6358}.hnfr dd{margin:0;font-size:20px}
 .hnfr button{font:inherit;font-weight:700;cursor:pointer;width:100%;border:2px solid #2a2422;background:#2a2422;color:#fffdf4;border-radius:3px;padding:10px}`;
     document.head.appendChild(css);
-    const o=document.createElement('div');o.className='hnfr';o.setAttribute('role','dialog');o.setAttribute('aria-label',EN?'Friend record':'친구 기록');
-    o.innerHTML=`<div class="c"><p class="who">${EN?`A friend's record · Hidden Note ${NUM} "${esc(TITLE)}"`:`친구의 기록 · 히든노트 ${NUM} 「${esc(TITLE)}」`}</p><p style="margin:0;font-size:22px;font-weight:700">${r==='미해결'?(EN?'Not solved yet':'아직 못 풀었대요'):(EN?'Cleared!':'클리어했대요!')}</p><div class="st">${esc(r.slice(0,20))}</div>
-      <dl>${rows.map(([a,b])=>`<div><dt>${a}</dt><dd>${b}</dd></div>`).join('')}</dl><button type="button">${EN?'Try it yourself':'나도 도전하기'}</button></div>`;
+    const o=document.createElement('div');o.className='hnfr';o.setAttribute('role','dialog');o.setAttribute('aria-label',EN?'Challenge from a friend':'친구의 도전장');
+    o.innerHTML=`<div class="c"><p class="who">${EN?`A challenge from a friend · Hidden Note ${NUM} "${esc(TITLE)}"`:`친구가 보낸 도전장 · 히든노트 ${NUM} 「${esc(TITLE)}」`}</p><p style="margin:0;font-size:22px;font-weight:700">${r==='미해결'?(EN?'They couldn’t crack it. Can you?':'친구는 못 풀었대요. 너라면?'):(EN?'They escaped. Can you beat this?':'친구는 이 기록으로 탈출했어요. 깰 수 있어?')}</p><div class="st">${esc(r.slice(0,20))}</div>
+      <dl>${rows.map(([a,b])=>`<div><dt>${a}</dt><dd>${b}</dd></div>`).join('')}</dl><button type="button">${r==='미해결'?(EN?'I’ll crack it':'내가 풀어 보기'):(EN?'Accept the challenge':'도전 받기')}</button></div>`;
     const close=()=>{o.remove();try{const u=new URL(location.href);['r','t','h','w'].forEach(k=>u.searchParams.delete(k));history.replaceState(null,'',u)}catch{}};
     o.querySelector('button').onclick=close;o.onclick=e=>{if(e.target===o)close()};
     (document.body||document.documentElement).appendChild(o);

@@ -23,9 +23,9 @@ module.exports=(req,res)=>{
   const p=new URLSearchParams();if(en)p.set('lang','en');if(grade)p.set('r',grade);stat.forEach((v,k)=>p.set(k,v));
   const to=`${BASE}/notes/${n}/?${p}`;
   const clear=!(n==='01'&&gi===3); // 01 미해결만 클리어 아님
-  const title=`「${note.t}」 ${clear?'클리어!':'도전 기록'}${grade?' · '+grade:''}`;
+  const title=`「${note.t}」 도전장 도착${grade?' · '+grade:''}`;
   const clock=s=>s>=3600?`${Math.floor(s/3600)}:${String(Math.floor(s/60)%60).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`:`${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
-  const desc=[t>=0&&clock(t),h>=0&&`힌트 ${h}개`].filter(Boolean).join(' · ')+' — 너도 해 볼래?';
+  const desc=[t>=0&&clock(t),h>=0&&`힌트 ${h}개`].filter(Boolean).join(' · ')+(clear?' — 이 기록, 깰 수 있어?':' — 친구는 못 풀었대요. 너라면?');
   res.statusCode=200;
   res.setHeader('Content-Type','text/html; charset=utf-8');
   res.setHeader('Cache-Control','public, max-age=86400');
