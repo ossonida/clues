@@ -8,10 +8,10 @@
 index.html          메인: 사건 노트 카드 + 사건 대장(표) + 추천 버튼(Firebase)
 lang.js             언어 결정 (?lang= → localStorage hn.lang → 브라우저 언어)
 analytics.js        GA4 전송. 스키마에 없는 이벤트·값은 버린다
-feedback.js         결말 화면 한 줄 피드백 (#again 위에 자동으로 붙음, Firestore clueFeedback, 쓰기만)
-share.js            결말 기록 공유 (기록 카드: /api/r 링크 → 미리보기에 등급 도장·기록, 받은 사람은 친구 기록 카드 → 시작 화면. 틀린 암호 수는 analytics.js가 hn.wrong.noteNN에 셈)
-api/r.js            기록 공유 링크용 Vercel 함수(의존성 없음). og 메타를 만들고 노트로 보낸다. 이미지는 og/rec/noteNN-등급번호.png. 노트·등급이 바뀌면 NOTES 표와 이미지도 같이
-og/                 링크 미리보기 이미지 (1200×630, Edge로 찍음). noteNN.png = note.html?n=NN (메인 카드 폴라로이드를 그대로 가져옴, 카드를 바꾸면 다시 찍기). rec/ = 기록 공유용. 새 노트는 og:* 메타와 og/noteNN.png 추가
+feedback.js         결말 화면 한 줄 피드백
+share.js, api/r.js  결말 기록 공유와 그 링크용 Vercel 함수
+og/                 링크 미리보기 이미지
+RELEASE.md          결말 기록·공유·og 이미지·메인 등록 절차. 그 일을 할 때만 읽는다
 ANALYTICS.md        이벤트 설계 문서
 ART.md              장면 아트(SVG) 규칙. 그림을 그리거나 고치기 전에 반드시 읽는다
 notes/NN/index.html 사건 하나 = HTML 파일 하나 (CSS·JS 모두 인라인)
@@ -20,32 +20,32 @@ notes/01/en.js      Note 01 영어 문구 (한국어는 index.html 안에 그대
 fonts/              공통 글꼴 (fonts.css → heejoy.css, kkakdugi.css, 각 폴더에 WOFF2 조각과 OFL.txt)
 ```
 
-| 사건 | 장르 | 상태 |
-| --- | --- | --- |
-| Note 01 FUN보드 사건 파일 | 코지 미스터리 (장소 조사, 심문, 범인 지목, 시간 80분) | 공개, 한/영, 분석 연결 |
-| Note 02 문예부 교환일기 | 노트 방탈출 (장마다 암호, 소지품) | 공개(한국어만), 분석 연결 |
-| Note 03 은하분교 숙직 일지 | 노트 방탈출 + 배치도/방 탐색 | 공개(한국어만), 분석 연결 |
-| Note 04 깡총이 연습장 | 낙서 방탈출 (장면 조작, 소지품) | 공개(한국어만), 분석 연결 |
-| Note 05 폐극장 2번 출구 | 일지 + 방 장면 + 장치 (손전등 어둠, 시트 겹치기, 차단기, 빛 신호, 필름 잇기) · 8장 · 소리 | 공개(한국어만), 분석 연결 |
-| Note 06 구름재 | 관측소 방탈출 (방 3개 × 네 벽, 시간대 5개, 전보 숫자표, 아이템 조합) · 소리 | 공개(한국어만), 분석 연결 |
+모두 공개·분석 연결. 영어판은 01만 있다.
+
+| 사건 | 장르 |
+| --- | --- |
+| 01 FUN보드 사건 파일 | 코지 미스터리 (장소 조사, 심문, 범인 지목, 시간 80분) |
+| 02 문예부 교환일기 | 노트 방탈출 (장마다 암호, 소지품) |
+| 03 은하분교 숙직 일지 | 노트 방탈출 + 배치도/방 탐색 |
+| 04 깡총이 연습장 | 낙서 방탈출 (장면 조작, 소지품) |
+| 05 폐극장 2번 출구 | 일지 + 방 장면 + 장치 · 8장 · 소리 |
+| 06 구름재 | 관측소 방탈출 (방 3개 × 네 벽, 시간대 5개, 아이템 조합) · 소리 |
 
 ## 실행·확인
 
 - 로컬 서버: `python -m http.server 8779` (Claude 미리보기는 `.claude/launch.json`의 `clues`). 파일을 바로 열면 폰트·모듈이 막힐 수 있으니 서버로 연다.
 - 화면을 바꾸면 미리보기에서 직접 확인한다: 콘솔 오류, 처음부터 끝까지 한 번 플레이, 모바일 375px 폭에서 가로 스크롤 없음.
-- 진행 저장은 localStorage에 남는다. 테스트 전에 해당 사건의 키를 지운다 (`hn.note02.v2`, `hn.note03.v2`, `hn.note04.v4`, `hn.note05.v4`, `hn.note01.save.v1`).
-- 사건을 끝내면 각 노트가 `hn.clear.noteNN`(`{ok, best, last}`, ms)에 기록을 남기고, 메인 사건 대장의 "내 기록" 칸이 그걸 읽는다. 새 노트도 결말에 `id="again"` 버튼을 두고 `<script src="../../feedback.js" defer></script>`를 넣는다. 끝나는 자리에서 `record(ms, ok)`를 부르고 `index.html`의 `SAVES`에 저장 키를 추가한다.
+- 진행 저장은 localStorage에 남는다. 테스트 전에 해당 사건의 키를 지운다 (노트별 키는 루트 `index.html`의 `SAVES`). 새 노트의 결말 연결은 `RELEASE.md`.
+- 사건 `index.html`은 50~160KB라 통째로 읽지 않는다. `// ==== 이름 ====` 구획 표시를 Grep으로 찾아 offset/limit으로 필요한 부분만 읽는다. 인라인 SVG 줄은 아주 길어서 Grep 결과에 걸리지 않게 패턴을 좁힌다.
 
 ## 코드 규칙
 
 - 사건 페이지는 **단일 HTML**. 외부 의존은 글꼴(아래)과 메인의 Firebase 정도만. 빌드 도구·프레임워크를 들이지 않는다.
-- 글꼴은 모두 SIL OFL 1.1. 페이지마다 `fonts/fonts.css`(직접 올린 WOFF2 조각)와 jsDelivr의 레벨업체 CSS를 불러온다.
-  - `--hand` 손글씨: 히조이체 `HEEJOY` (`fonts/heejoy/`, Regular만, size-adjust 80%로 예전 나눔손글씨 펜 크기에 맞춤)
-  - `--serif` 제목·명조 자리: 레벨업체 `LevelUp` (`cdn.jsdelivr.net/gh/hada0127/hada-type-levelup@v2026.10.21/css/levelup-subset.css`)
-  - `--mono`와 본문 고딕 자리: 깍두기 도면체 `Kkakdugi Drafting` (`fonts/kkakdugi/`, Regular·Bold)
+- 글꼴(모두 OFL)은 기존 노트 `<head>`의 글꼴 줄을 그대로 복사한다: `--hand` 히조이체 `HEEJOY`, `--serif` 레벨업체 `LevelUp`(jsDelivr), `--mono`·본문 깍두기 도면체 `Kkakdugi Drafting`. 다른 글꼴을 들이지 않는다.
 - 공통 틀: 리갈패드 바탕(`.app`, 빨간 제본, 파란 줄), 손글씨는 `HEEJOY`. 새 사건도 이 틀을 따르고 사건마다 색만 바꾼다.
 - 방탈출 노트(02, 03)는 같은 뼈대를 쓴다: `PAGES` 배열(ans / alt / near / say / hints), `S` 상태 + `save()`, 탭, 힌트 포스트잇 모달, 결과 도장. 새 노트는 03을 복사해서 시작한다.
 - 저장 키는 `hn.noteNN.vN`. 저장 구조가 바뀌면 버전을 올린다.
+- 사건 스크립트는 `// ==== 이름 ====` 구획 표시로 나눈다 (데이터, 상태·저장, 그리기, 조작, 결말, 힌트). 새 노트도 같이 둔다.
 - 분석을 붙이는 사건은 `<html data-note="noteNN">`, `lang.js`·`analytics.js`를 불러오고 `hn('이벤트', {...})`만 쓴다. 새 이벤트는 `analytics.js` 스키마와 `ANALYTICS.md`에 같이 추가한다. 입력한 글은 절대 보내지 않는다.
 - **색으로 구분하는 글씨·단서는 확실히 갈리게.** 빨강·초록·파랑처럼 서로 헷갈리는 색을 비슷한 밝기로 나란히 쓰지 않는다. 색은 진하게(바탕과 대비), 서로 색상 차이를 크게 하고, 가능하면 글꼴·굵기·밑줄 같은 두 번째 표시를 같이 둔다. 작은 글씨 단서는 너무 작게 두지 않는다 (Note 02 초록 글씨, Note 03 본문에서 지적받음).
 - 주석과 사용자 문구는 한국어. 식별자·이벤트 id는 영문 (`^[a-zA-Z][a-zA-Z0-9_]{0,39}$`).
@@ -63,9 +63,8 @@ fonts/              공통 글꼴 (fonts.css → heejoy.css, kkakdugi.css, 각 �
 
 ## 문서
 
-- **진행 중 인계 작업:** Note 05 소리 넣기. 명세 `notes/05/SOUND.md`를 그대로 따르고, 거기 적힌 범위 밖은 고치지 않는다.
 - 새 사건은 먼저 `notes/NN/PLAN.md`를 쓰고, 구현하면서 정답·장 구성이 바뀌면 PLAN.md도 같이 고친다.
-- 메인에 올릴 때: `index.html` 카드(+`data-en`) 와 사건 대장 행, `README.md` 표를 함께 갱신한다. 난이도는 ●○○○○ 5단계, 시간은 실제 플레이 기준.
+- 메인에 올릴 때는 `RELEASE.md`를 따른다 (Claude Code는 `/release-note`).
 
 ## Git
 

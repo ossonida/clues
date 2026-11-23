@@ -274,6 +274,7 @@ header.hud{display:flex;align-items:flex-end;gap:10px 18px;flex-wrap:wrap;margin
 <script>
 /* 공포는 어둠·번진 글씨·맞지 않는 날짜·혼자 켜지는 불로만. 점프 스케어 없음. 이상한 것마다 현실적인 정체가 있다 (PLAN.md 4장 표). */
 const $=s=>document.querySelector(s);
+// ==== 데이터 ====
 const SAVE_KEY='hn.note05.v4';
 const LAST=8,SW=600,SH=340;
 const ORDER=['torch','sheet','keys','loupe','reel','film','skey'];
@@ -291,6 +292,7 @@ const fresh=()=>({v:'cover',open:0,seen:0,clear:{},hints:{},ms:0,started:false,d
      6:{fold:[],door:false,call:true},
      7:{pulled:[]},
      8:{dial:[0,0,0,0],tray:[2,0,3,1],slots:[],sp:false,fi:0,crank:false,open:false,out:false}}});
+// ==== 상태·저장 ====
 let S=fresh();
 let resumed=false;
 try{const d=JSON.parse(localStorage.getItem(SAVE_KEY)||'null');if(d){const f=fresh();S={...f,...d,w:{...f.w}};for(const k in f.w)S.w[k]={...f.w[k],...((d.w||{})[k]||{})};resumed=S.started&&!S.done}}catch{}
@@ -335,6 +337,7 @@ function clearP(p){
 
 // ── 상영 일지 ──────────────────────────────
 // 일지에는 윤 기사가 그날 한 일만. 푸는 법은 방에 있다
+// ==== 일지·힌트 문구 (LOG, HINTS) ====
 const LOG={
   1:{date:'2026. 9. 5. (토)',wx:'맑음',body:[
     ['g','<b>공 문</b>별빛극장 건물 철거 공사를 2026년 11월 18일(수) 오전 7시에 시작합니다. 그 전까지 극장 안 시설물을 모두 비워 주시기 바랍니다.<br>구청 도시정비과'],
@@ -570,6 +573,7 @@ const SC={
     return {base,glow};
   },
 };
+// ==== 장면 그리기 ====
 function items(p,w){const L=[];
   if(p===1&&!S.bag.torch)L.push(['torch',95,262]);
   if(p===2){if(w.drawer&&!S.bag.sheet&&!S.used.sheet)L.push(['sheet',148,254]);if(w.open&&!S.bag.keys&&!S.used.keys)L.push(['keys',486,128])}
@@ -678,6 +682,7 @@ const used=k=>{delete S.bag[k];S.used[k]=true;S.hold=null};
 function keyDoor(w,h,msg){
   if(h==='keys'){w.door=true;S.hold=null;refresh();return msg}
   return S.bag.keys?'문이 잠겨 있다. 열쇠 꾸러미에 맞는 게 있을 것 같다.':'문이 잠겨 있다. 열쇠가 있어야겠다.'}
+// ==== 조작·장치 (TAP, ACT) ====
 const TAP={
   1:(t,w)=>{
     if(t==='poster'||t==='bus'||t==='notice'){openDev(t);return}
@@ -848,6 +853,7 @@ const ACT={
 };
 
 // ── 소리 ── (설계: notes/05/SOUND.md) 음악·놀래키는 소리 없음, 장소의 소리만
+// ==== 소리 ====
 const SND={
   ctx:null,master:null,on:(()=>{try{return localStorage.getItem('hn.sound')!=='off'}catch{return true}})(),log:[],prev:null,ambKey:null,amb:null,crankNode:null,ducked:false,
   init(){
@@ -937,6 +943,7 @@ const _pull=ACT.pull;
 ACT.pull=b=>{const w=W(),was=w.open;_pull(b);if(W()===w&&!w.open&&!was)SND.fx('rattle')};
 
 // ── 줍기 · 들기 ──────────────────────────────
+// ==== 소지품·장면 입력·탭 ====
 function take(id){
   const p=pageNo(),w=W();
   if(id==='film'){S.bag.film=(S.bag.film||0)+1;w.gate=true;NEWSLOT=id;save();refresh();toast('필름 문에 끼어 있던 걸 빼냈다. 끊어진 필름 토막이다. 내가 건 게 아니다.');return}
@@ -1035,6 +1042,7 @@ function go(v){if(!canView(v))return;if(v!==S.v)DEV=null;S.v=v;if(v[0]==='p')ana
   if(v[0]==='p'&&S.started&&(S.seen||0)<+v.slice(1))toast('일지에 아직 안 읽은 쪽이 있다. 소지품의 일지를 눌러 펼쳐 보자.')}
 
 // ── 쪽 ──────────────────────────────
+// ==== 표지·결말·렌더 ====
 function pageCover(){
   return `<section class="cover turn">
     <div class="ticket"><h2>별빛극장</h2><div>상영 일지 · 2026</div><div class="who">영사기사 윤만석</div></div>
@@ -1122,6 +1130,7 @@ $('#page').addEventListener('click',e=>{
 $('#page').addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches('[data-go]')){e.preventDefault();go(e.target.dataset.go)}});
 
 // ── 힌트 ──────────────────────────────
+// ==== 힌트·모달 ====
 function openHint(){
   const p=hintPage(),H=HINTS[p];if(!H||S.done)return;
   const got=S.hints[p]||0;

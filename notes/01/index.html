@@ -270,6 +270,7 @@ const LANG=window.HN_LANG==='en'&&window.HN_EN?'en':'ko', EN=window.HN_EN||{};
 function t(key,ko,...args){if(LANG!=='en')return ko;const v=EN.ui[key];return v===undefined?ko:typeof v==='function'?v(...args):v}
 
 /* ===================== DATA ===================== */
+// ==== 데이터 (단서·용의자·장소) ====
 const TOTAL_TIME = 80;
 
 const CLUES = {
@@ -494,6 +495,7 @@ if(LANG==='en'){
 }
 
 /* ===================== STATE ===================== */
+// ==== 상태·저장 ====
 let S;
 function reset(){
   S={time:TOTAL_TIME,clues:[],seen:new Set(),step:{},solved:{},apps:{},heard:{},asked:{},loc:'counter',over:false,cur:'seo',tries:{},startedAt:0,leftSent:false};
@@ -567,6 +569,7 @@ function clueBody(c){const d=CLUES[c];if(d.postit)return `<div class="paper" sty
 function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;')}
 
 /* ===================== RENDER ===================== */
+// ==== 화면 그리기 ====
 function render(){renderHud();renderLocs();renderScene();renderNotebook([])}
 function renderHud(){
   save();
@@ -614,6 +617,7 @@ function renderNotebook(fresh){
 }
 
 /* ===================== INVESTIGATE ===================== */
+// ==== 조사·자물쇠·휴대폰 ====
 function investigate(h){
   if(S.over)return;
   if(h.puzzle&&!S.solved[h.id]){if(h.phone)openPhoneLock(h);else if(h.dial)openDialLock(h);else openPad(h);return}
@@ -776,6 +780,7 @@ function present(k,c){
 /* 단계별 지목: 보기 없이 플레이어가 직접 고르고 입력 */
 const KEY_EVIDENCE=['c_t_choi','c_t_park','c_sheet','c_ledger','c_chat','c_cctvphoto','c_cup'];
 let ACC={};
+// ==== 지목·결말 ====
 function openAccuse(forced){
   if(S.over)return;
   ACC={forced:!!forced,who:null,hh:'',mm:'',ev:[],active:true,step:1};

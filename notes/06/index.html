@@ -213,6 +213,7 @@ header{display:flex;align-items:flex-end;gap:10px 16px;flex-wrap:wrap;margin-bot
 <div class="modal" id="modal"><div class="card" id="card"></div></div>
 
 <script>
+// ==== 데이터 (ITEMS, SLOTS, HINTS) ====
 const KEY='hn.note06.v1';
 const $=s=>document.querySelector(s);
 const ITEMS={
@@ -235,6 +236,7 @@ const HINTS=[
   ['셋째 서랍 → 운량 기호표. 그다음 마당 탐조등.','바퀴 아래 동그라미를 기호표 숫자로. 탐조등을 구름에 비추고 각도를 잰다. 각도판 옆 표에서 높이를 읽는다. 기온·바람도 03시 것으로 다시.','서랍 6284 → 탐조등 63° → 600 m. 백엽상 -3.4℃, 기록계 03시 270° 12 m/s → 11034 22712 30060']
 ];
 let idleT=0;
+// ==== 상태·저장 ====
 let S;
 function fresh(){return{t:0,room:'A',wall:{A:0,B:0,C:0},inv:[],f:{},hint:[0,0,0],start:0,ms:0}}
 function load(){try{S=Object.assign(fresh(),JSON.parse(localStorage.getItem(KEY)||'null')||{})}catch{S=fresh()}}
@@ -248,6 +250,7 @@ const TEMPS={0:['-2.6','-3.1'],2:['-3.0','-3.5'],3:['-3.2','-3.6'],4:['-3.4','-3
 function say(t){const e=$('#toast');if(!t){e.classList.remove('on');return}e.textContent=t;e.classList.add('on');clearTimeout(say.h);say.h=setTimeout(()=>e.classList.remove('on'),Math.min(7500,2600+t.length*45))}
 
 /* ---------- 소리 (Web Audio 합성, 끌 수 있음) ---------- */
+// ==== 소리 ====
 const SND={on:true,ctx:null,wind:null,
   ac(){if(!this.ctx){try{this.ctx=new (window.AudioContext||window.webkitAudioContext)()}catch{}}return this.ctx},
   noise(dur,f,g,q=1){const c=this.ac();if(!c||!this.on)return;const b=c.createBuffer(1,c.sampleRate*dur,c.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
@@ -311,6 +314,7 @@ const fmtT=ms=>{const s=Math.max(0,Math.floor(ms/1000)),hh=Math.floor(s/3600),mm
 setInterval(()=>{if(!S||!S.start)return;if(!S.ms&&document.visibilityState==='visible'&&!$('#game').hidden){S.play=(S.play||0)+1000;if(S.play%10000===0)save()}$('#time').textContent=fmtT(S.ms||S.play||0)},1000);
 
 /* ---------- 장면 ---------- */
+// ==== 방 그리기 (A 관측실, B, C) ====
 const WALLS={A:['북','동','남','서'],B:['북','동','남','서'],C:['북','동','남','서']};
 const RN={A:'관측실',B:'기계실',C:'마당'};
 const hs=(id,x,y,w,h)=>`<rect data-h="${id}" x="${x}" y="${y}" width="${w}" height="${h}" fill="transparent"/>`;
@@ -746,6 +750,7 @@ function drawDark(){touchMode();
 const aim=e=>{const r=$('#stage').getBoundingClientRect();LX=(e.clientX-r.left)/r.width*800;LY=(e.clientY-r.top)/r.height*450;if(dark())drawDark()};
 $('#stage').addEventListener('pointerdown',aim);$('#stage').addEventListener('pointermove',e=>{if(e.pointerType==='mouse'||e.buttons||e.pressure)aim(e)});
 function touchMode(){$('#stage').style.touchAction=dark()&&has('torch')?'none':''}
+// ==== 소지품·조합 ====
 function bag(){
   const b=$('#bag');b.hidden=!S.inv.length;document.body.classList.toggle('hasbag',!!S.inv.length);
   b.innerHTML=`<div class="in"><span class="lbl">소지품</span>${S.inv.map(i=>`<button class="it${hold===i?' on':''}" data-i="${i}" aria-label="${ITEMS[i][1]}" title="${ITEMS[i][1]}"><i aria-hidden="true">${ITEMS[i][0]}</i><span class="item-name">${ITEMS[i][1]}</span></button>`).join('')}${'<span class="it empty" aria-hidden="true"></span>'.repeat(Math.max(0,4-S.inv.length))}</div>`;
@@ -775,6 +780,7 @@ function openBook79(){
 }
 
 /* ---------- 조작 ---------- */
+// ==== 조작 (TAP) ====
 const TAP={
   window(){if(dark())return say('창밖이 새카맣다.');if(S.f.thanks)return say('김 서린 유리에 글씨가 남아 있다. 고마워. 이 방엔 나 혼자다.');if(S.t>=2)return say('김이 서렸다. 바깥엔 눈보라가 친다.');if(!S.f.wiped){S.f.sawDrawing=1;SND.found();save();return say('김 서린 유리에 누가 손가락으로 그려 놨다. 동그란 계기를 그리고, 그 옆에 오른쪽으로 화살표를 그었다.')}say('유리가 맑다. 바깥엔 바람이 분다.')},
   stove(){if(S.f.stoveOff){S.f.stoveOff=0;S.f.wiped=0;SND.valve();save();draw();return say('난로를 다시 켰다.')}
@@ -853,6 +859,7 @@ new MutationObserver(ms=>{if(ms.some(m=>m.addedNodes.length&&!m.removedNodes.len
 function closeCard(){SND.voiceStop();$('#modal').classList.remove('on')}
 $('#modal').addEventListener('click',e=>{if(e.target.id==='modal')closeCard()});
 /* 셋째 서랍: 숫자 바퀴 넷, 바퀴 아래 운량 기호. 정답 6284 (◕6 ◔2 ●8 ◑4) */
+// ==== 장치 (자물쇠·전보·드럼·라디오·각도·발전기) ====
 const LOCK_SYM=[[6,'M0 -12 A12 12 0 1 1 -12 0 L0 0Z'],[2,'M0 -12 A12 12 0 0 1 12 0 L0 0Z'],[8,'full'],[4,'M0 -12 A12 12 0 0 1 0 12 L0 0Z']];
 function openLock(){
   if(S.f.d3){SND.drawer(true);return openCard('셋째 서랍',`<p class="hand">열린 서랍 안에 탐조등 열쇠와 낡은 근무 수첩이 있다.<br>수첩 표지: 1979 · 정기철</p>`)}
@@ -974,6 +981,7 @@ function openGen(){GEN=[];const L=['① 연료 밸브 열기','② 초크 닫기
     SND.rumble(true);setTimeout(()=>SND.hum(true),2200);$('#gmsg').textContent='부르릉, 걸렸다!';S.f.power=1;save();setTimeout(()=>{closeCard();powerBack()},1800)})}
 function powerBack(){SND.power();save();draw();say('불이 들어왔다. 창 너머 풍향탑 아래 사람 그림자가… 다시 보니 없다.');
   setTimeout(()=>toSlot(2,'자정. 바람이 더 세졌다. 바깥 풍향 바늘은 미친 듯이 돈다.'),3800)}
+// ==== 진행·결말 ====
 function toSlot(t,msg){ana('chapter_solved',{chapter:S.t+1,minutes_used:anaMin()});S.t=t;ana('chapter_opened',{chapter:t+1,minutes_used:anaMin()});save();closeCard();draw();if(msg)say(msg)}
 function finish(){S.t=5;$('#matchLine').hidden=!S.f.matches;if(!S.ms){S.ms=Math.max(1000,S.play||0);record(S.ms,true);ana('chapter_solved',{chapter:5,minutes_used:anaMin()});ana('case_finished',{grade:'solved',points:1,clue_count:5,clue_total:5,minutes_used:anaMin(),play_minutes:anaMin()})}S.done=1;save();$('#game').hidden=true;$('#bag').hidden=true;$('#end').hidden=false;const sec=Math.round(S.ms/1000),hs=Object.values(S.hint||{}),h=hs.reduce((a,b)=>a+b,0);$('#took').textContent=Math.floor(sec/60)+':'+String(sec%60).padStart(2,'0');$('#hintCount').textContent=h;$('#seal6').textContent=h===0?'구름재 관측원':hs.every(n=>n<3)?'야간 관측원':'견습 관측원';window.scrollTo(0,0)}
 

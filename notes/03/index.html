@@ -279,6 +279,7 @@ header.hud{display:flex;align-items:flex-end;gap:10px 18px;flex-wrap:wrap;margin
 
 <script>
 const $=s=>document.querySelector(s);
+// ==== 데이터 (PAGES) ====
 const SAVE_KEY='hn.note03.v2';
 const LAST=6;   // 마지막 장 (6장은 종탑에서 종을 쳐서 푼다)
 
@@ -312,6 +313,7 @@ const ROOM_NAME={duty:'숙직실',office:'교무실',class:'교실',store:'창�
 // ── 상태 ──────────────────────────────
 const fresh=()=>({v:'cover',open:0,solved:{},hints:{},wrong:{},ms:0,started:false,done:false,
   rooms:{duty:true,office:false,class:false,store:false,music:false,bell:false,hall:false},tools:{key:false,torch:false,pencil:false,eraser:false},torch:false,held:null,rubbed:false,seatClean:false,cab:[0,0,0],drawer:false});
+// ==== 상태·저장·탭 ====
 let S=fresh();
 let resumed=false;
 try{const d=JSON.parse(localStorage.getItem(SAVE_KEY)||'null');if(d){S={...fresh(),...d,rooms:{...fresh().rooms,...(d.rooms||{})},tools:{...fresh().tools,...(d.tools||{})}};resumed=S.started&&!S.done}}catch{}
@@ -381,6 +383,7 @@ function go(v){if(!canView(v))return;S.v=v;if(isRoom(v)){S.here=v;ana('location_
 
 // ── 일지 ──────────────────────────────
 // [시각, 장소, 이상 유무(true=이상 있음), 비고]
+// ==== 일지·배치도 그리기 ====
 function logDay(date,weather,rows,foot,cls){
   return `<div class="${cls||''}">
     <div class="meta"><span>일자<b>${date}</b></span><span>날씨<b>${weather}</b></span><span>숙직자<b>한봉수</b></span></div>
@@ -512,6 +515,7 @@ function rollTable(){
     ${kids.map(([n,nm,m])=>`<tr><td>${n}</td><td class="nm">${nm}</td>${days.map(d=>`<td class="${m[d]||''}">${m[d]==='x'?'/':m[d]==='l'?'△':'○'}</td>`).join('')}</tr>`).join('')}
   </table></div><div class="legendline">○ 출석 &nbsp; / 결석 &nbsp; △ 지각 &nbsp;·&nbsp; 일요일과 15~17일 설 연휴는 뺌</div>`;
 }
+// ==== 방·장치 ====
 const ROOMS={
   duty:{desc:'다다미 두 장 넓이의 숙직실. 석유난로는 꺼져 있고 창에는 쇠창살이 박혀 있다. 빗소리가 창을 두드린다.',
     things:()=>[
@@ -677,6 +681,7 @@ function bindRope(){
   };
 }
 // 사건 대장에 보일 내 기록 (hn.clear.noteNN: 깼는지, 가장 빠른 시간, 마지막 시간)
+// ==== 결말·렌더 ====
 function record(ms,ok=true){try{const k='hn.clear.note03',p=JSON.parse(localStorage.getItem(k)||'{}');localStorage.setItem(k,JSON.stringify({ok:ok||!!p.ok,best:ok?Math.min(p.best||Infinity,ms):p.best||null,last:ms,at:Date.now()}))}catch{}}
 function finish(){
   anaChapter('chapter_solved',6);
@@ -766,6 +771,7 @@ function applyTorch(){
   });
 }
 
+// ==== 정답 판정 ====
 function check(p){
   const inp=$('#ans'),v=norm(inp.value),pg=PAGES[p],msg=$('#msg');
   if(!v)return;
@@ -792,6 +798,7 @@ function showM(title,html){
   $('#modal').innerHTML=`<h2>${title}</h2>${html}<div class="actions"><button class="btn" id="mclose">닫기</button></div>`;
   $('#mbg').classList.add('on');$('#mclose').onclick=closeM;
 }
+// ==== 힌트·모달 ====
 function openHint(){
   const p=hintPage(),pg=PAGES[p];if(!pg||!pg.hints||S.done)return;
   const got=S.hints[p]||0;

@@ -221,6 +221,7 @@ header.hud{display:flex;align-items:flex-end;gap:10px 18px;flex-wrap:wrap;margin
 
 <script>
 const $=s=>document.querySelector(s);
+// ==== 데이터 ====
 const SAVE_KEY='hn.note04.v4';
 const PLAY_LAST=6;
 const SW=600,SH=360,GY=300;   // 장면 크기, 땅 높이
@@ -234,6 +235,7 @@ const josa=(w,a,b)=>{const c=w.charCodeAt(w.length-1)-0xac00;return w+(c>=0&&c<1
 const fresh=()=>({v:'cover',open:0,clear:{},hints:{},ms:0,started:false,done:false,bag:{},used:{},hold:null,
   w:{1:{shook:false,half:false,shade:false,bridge:false},2:{ladder:false,erased:false,rub:[],plank:false},3:{big:{},umb:false,placed:false,rub:[],scrub:false},
     4:{found:false,unblue:false,traced:false,rub:[],done:false},5:{unlock:false,dial:[0,0,0,0],open:false},6:{star:false,read:false,door:false,opened:false}}});
+// ==== 상태·저장·탭 ====
 let S=fresh();
 let resumed=false;
 try{const d=JSON.parse(localStorage.getItem(SAVE_KEY)||'null');if(d){S={...fresh(),...d,w:{...fresh().w,...(d.w||{})}};resumed=S.started&&!S.done}}catch{}
@@ -409,6 +411,7 @@ const sun=(x,y)=>C(`<circle cx="${x}" cy="${y}" r="24" fill="#ffcf3a"/>`)+`<g st
 const fold=(ok)=>`<g class="fold${ok?' ready':''}" data-exit="1"><path d="M${SW} ${SH-58} L${SW} ${SH} L${SW-58} ${SH} Z" fill="#7aa884" opacity=".25"/><path d="M${SW-58} ${SH} L${SW} ${SH-58} L${SW-46} ${SH-46} Z" fill="#eef4e6" stroke="#9fbf9f" stroke-width="2"/><path d="M${SW-40} ${SH-30} l12 0 m-5 -5 l5 5 l-5 5" stroke="#4f7a5a" stroke-width="2.4" fill="none" stroke-linecap="round"/></g>`;
 const dotted=pts=>`<path d="M${pts.map(p=>p.join(' ')).join(' L')}" stroke="#7d7d7d" stroke-width="4" stroke-dasharray="1 11" stroke-linecap="round" fill="none"/>`;
 
+// ==== 장면 그리기 ====
 function tree(w){
   return `<g data-tap="tree" style="cursor:pointer">
     <rect x="96" y="80" width="130" height="150" fill="rgba(0,0,0,0)"/>
@@ -585,6 +588,7 @@ function pageLevel(p){
 
 // ── 넘기기 ──────────────────────────────
 // 사건 대장에 보일 내 기록 (hn.clear.noteNN: 깼는지, 가장 빠른 시간, 마지막 시간)
+// ==== 조작·진행 ====
 function record(ms,ok=true){try{const k='hn.clear.note04',p=JSON.parse(localStorage.getItem(k)||'{}');localStorage.setItem(k,JSON.stringify({ok:ok||!!p.ok,best:ok?Math.min(p.best||Infinity,ms):p.best||null,last:ms,at:Date.now()}))}catch{}}
 // 길이 다 열리면 귀퉁이가 반짝인다. 누르면 깡총이가 종이 밖으로 뛰어나가고 다음 장이 열린다
 function turnPage(){
@@ -728,6 +732,7 @@ function bindScene(){
 }
 
 // ── 표지 · 끝 ──────────────────────────────
+// ==== 표지·결말·렌더 ====
 function pageCover(){
   return `<section class="cover turn">
     <svg class="kc" viewBox="0 0 68 90" aria-hidden="true"><use href="#d-kc" filter="url(#rough)"/></svg>
@@ -771,6 +776,7 @@ function render(anim){
 }
 
 // ── 힌트 ──────────────────────────────
+// ==== 힌트·모달 ====
 function openHint(){
   const p=hintPage(),L=LV[p];if(!L||S.done)return;
   const got=S.hints[p]||0;
