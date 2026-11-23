@@ -1,0 +1,14 @@
+{
+  "name": "clues",
+  "version": "1.0.0",
+  "description": "Hidden Note - Browser-based detective mystery game",
+  "type": "module",
+  "scripts": {
+    "dev": "echo 'Static site - open index.html in browser'",
+    "build": "echo 'Static site - no build step required'"
+  },
+  "dependencies": {
+    "@vercel/analytics": "^1.4.1"
+  },
+  "private": true
+}
