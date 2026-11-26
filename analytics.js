@@ -1,10 +1,12 @@
-// 히든노트 이용 분석 (GA4). 스코어카운터와 같은 속성(G-NFEYJ27K5H)을 쓰고 content_group으로 구분한다.
+// 히든노트 이용 분석 (GA4). 전용 속성 Hidden Note(G-FKZ2L2LE8W)와 기존 공용 속성(G-NFEYJ27K5H, content_group=hidden_note)에 함께 보낸다.
 // 페이지에서는 window.hn('이벤트', {파라미터})로 부른다. 이 모듈이 뜨기 전에 부른 것도 큐에 쌓였다가 전송된다.
 // 원칙: 입력한 글(후기 등)·이메일·UID는 절대 보내지 않는다. 아래 스키마에 없는 이벤트·값은 버린다.
 // 내 방문 제외: 주소 끝에 ?analytics=off 를 한 번 붙여 열면 이 기기에서 계속 제외(스코어카운터와 같은 설정을 공유).
-const MEASUREMENT_ID = 'G-NFEYJ27K5H';
+const MEASUREMENT_ID = 'G-NFEYJ27K5H', HN_MEASUREMENT_ID = 'G-FKZ2L2LE8W';
 const EXCLUDE_KEY = 'score.analytics.exclude.v1', OPTOUT_KEY = 'score.analytics.optout.v1', NOTICE_KEY = 'hn.analytics.notice.v1';
 const disableKey = 'ga-disable-' + MEASUREMENT_ID;
+// 끄기는 두 ID 모두에 적용한다
+const setDisabled = off => { window[disableKey] = off; window['ga-disable-' + HN_MEASUREMENT_ID] = off; };
 
 const id = {re: /^[a-zA-Z][a-zA-Z0-9_]{0,39}$/};
 const note = {re: /^note[0-9]{2}$/};
@@ -69,11 +71,12 @@ let started = false;
 function start() {
   if (started || !enabled()) return;
   started = true;
-  window[disableKey] = false;
+  setDisabled(false);
   window.dataLayer = window.dataLayer || [];
   window.gtag = function () { window.dataLayer.push(arguments); };
   window.gtag('js', new Date());
   window.gtag('config', MEASUREMENT_ID, {content_group: 'hidden_note'});
+  window.gtag('config', HN_MEASUREMENT_ID);
   const s = document.createElement('script');
   s.async = true;
   s.src = 'https://www.googletagmanager.com/gtag/js?id=' + MEASUREMENT_ID;
@@ -111,7 +114,7 @@ function send(name, params, beacon) {
 const queued = (window.hn && window.hn.q) || [];
 window.hn = (name, params, beacon) => send(name, params, beacon);
 window.hn.enabled = enabled;
-window.hn.setEnabled = on => { store.set(OPTOUT_KEY, on ? '0' : '1'); window[disableKey] = !on; if (on) start(); };
+window.hn.setEnabled = on => { store.set(OPTOUT_KEY, on ? '0' : '1'); setDisabled(!on); if (on) start(); };
 start();
 queued.forEach(args => send(...args));
 
