@@ -1,6 +1,8 @@
 # 히든노트 이용 분석 설계
 
-스코어카운터와 같은 GA4 속성(`G-NFEYJ27K5H`)을 씁니다. 히든노트 페이지는 `content_group = hidden_note`로 들어가서, 보고서에서 **콘텐츠 그룹** 또는 **페이지 경로 `/clues/`** 로 걸러 보면 됩니다.
+전용 GA4 속성 **Hidden Note**(`G-FKZ2L2LE8W`, 스트림 Hidden Note Web)에 보냅니다. 이 속성에서는 따로 걸러 보지 않아도 됩니다.
+
+이전 데이터와 이어 보도록 스코어카운터와 함께 쓰던 공용 속성(`G-NFEYJ27K5H`)에도 같이 보냅니다. 공용 속성에서는 `content_group = hidden_note`로 걸러 봅니다.
 
 - 코드: [analytics.js](analytics.js) (스키마·전송), 각 페이지에서는 `hn('이벤트', {...})` 호출
 - 스키마에 없는 이벤트나 값은 전송하지 않습니다. 후기 내용, 이메일, Firebase UID는 보내지 않습니다.
